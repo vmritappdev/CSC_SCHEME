@@ -1,0 +1,180 @@
+
+import 'package:csc/loginfolder/loginscreen.dart';
+import 'package:csc/dashboardscreens/custmer_care.dart';
+import 'package:csc/dashboardscreens/brocher%20page.dart';
+import 'package:csc/dashboardscreens/active_scheme.dart';
+import 'package:csc/dashboardscreens/transations.dart';
+import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/dashboardscreens/saving%20account.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
+      home: NavigationDrawerScreen(),
+    ),
+  );
+}
+
+class NavigationDrawerScreen extends StatefulWidget {
+  const NavigationDrawerScreen({super.key});
+
+  @override
+  State<NavigationDrawerScreen> createState() => _NavigationDrawerScreenState();
+}
+
+class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
+  String firstName = "User"; // Default value
+  String lastName = "Name"; // Default value
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserDetails(); // Fetch shared preferences values
+  }
+
+  Future<void> loadUserDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      firstName = prefs.getString('firstName') ?? "User"; // Default if not found
+      lastName = prefs.getString('lastName') ?? "Name";
+    });
+  }
+
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear all stored data
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen1()), // Replace with your main app entry point
+      (route) => false, // Remove all previous routes
+    );
+  }
+
+  
+
+  @override
+  Widget build(BuildContext context) {
+    final localization = Provider.of<LocalizationProvider>(context);
+
+    return Drawer(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildHeader(context, localization),
+            buildMenuItems(context, localization),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildHeader(BuildContext context, LocalizationProvider localization) {
+    double topPadding = MediaQuery.of(context).padding.top;  // Dynamic top padding
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      color: Color.fromRGBO(2, 5, 62, 1),
+      padding: EdgeInsets.only(
+        top: 24 + topPadding, // Add top padding dynamically
+        bottom: screenHeight * 0.03, // 3% of screen height for bottom padding
+      ),
+      child: Column(
+        children: [
+          Image.asset(
+            'assets/images/csc2.png',
+            color: Colors.white,
+            height: screenHeight * 0.1,  // 10% of screen height for image
+            width: screenHeight * 0.1,   // 10% of screen height for width as well
+            fit: BoxFit.fill,
+          ),
+          Text(
+            "$firstName $lastName", // Display fetched values
+            style: GoogleFonts.lato(
+              color: Colors.white,
+              fontSize: screenHeight * 0.025,  // Font size 2.5% of screen height
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildMenuItems(BuildContext context, LocalizationProvider localization) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Container(
+      padding: EdgeInsets.all(screenWidth * 0.06),  // 6% of screen width for padding
+      child: Wrap(
+        spacing: 16,
+        children: [
+          buildMenuTile("assets/images/schme.png", localization.translate("Join Scheme"), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SavingsAccountScreen()),
+            );
+          }),
+
+          buildMenuTile("assets/images/myschme.png", localization.translate("My Scheme"), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PaymentCard()),
+            );
+          }),
+
+          buildMenuTile("assets/images/customre.png", localization.translate("Customer Care"), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CustomerCare()),
+            );
+          }),
+          buildMenuTile("assets/images/transation.png", localization.translate("Transactions"), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Transaction()),
+            );
+          }),
+          buildMenuTile("assets/images/browser.png", localization.translate("Brochure"), () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BrochureScreen()),
+            );
+          }),
+
+           buildMenuTile("assets/images/logout.png", localization.translate("LogOut"), () {
+         logout();
+          }),
+        ],
+      ),
+    );
+  }
+
+ ListTile buildMenuTile(String assetPath, String title, Function() onTap) {
+  double screenWidth = MediaQuery.of(context).size.width;  // Get screen width
+
+  return ListTile(
+    leading: Image.asset(
+      assetPath,
+      width: screenWidth * 0.08,  // Set the width to 8% of the screen width
+      height: screenWidth * 0.08, // Set the height to 8% of the screen width for a square image
+      fit: BoxFit.contain,
+    ),
+    title: Text(title, style: GoogleFonts.lato(fontSize: 14)),
+    onTap: onTap,
+  );
+}
+
+}

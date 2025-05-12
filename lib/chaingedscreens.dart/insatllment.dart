@@ -1,0 +1,830 @@
+import 'dart:convert';
+
+
+import 'package:csc/api_services.dart/installment_api.dart';
+import 'package:csc/chaingedscreens.dart/scner.dart';
+import 'package:csc/utillity/constant.dart';
+import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/model/activescheme.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+void main() {
+  runApp(
+    MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
+      home: InstallmentScreen(schemeId: ''),
+    ),
+  );
+}
+
+class InstallmentScreen extends StatefulWidget {
+  final String schemeId;
+
+  InstallmentScreen({required this.schemeId});
+
+  @override
+  _InstallmentScreenState createState() => _InstallmentScreenState();
+}
+
+class _InstallmentScreenState extends State<InstallmentScreen> {
+  int selectedInstallment = -1; // First unpaid installment index
+  List<Map<String, dynamic>> installments = [];
+  bool isLoading = true; // Loader flag
+
+double? balanceAmount;
+int? dueDays;
+double? paidAmount;
+String? _amountError;
+
+
+
+
+
+String selectedOption = 'emi';
+
+// String selectedOption = 'any';
+TextEditingController _amountController = TextEditingController(text: '');
+
+
+ String formatAmount(String value) {
+  try {
+    final formatter = NumberFormat('#,##0', 'en_IN');
+    String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    return formatter.format(int.parse(value.replaceAll(',', '')));
+  } catch (_) {
+    return value;
+  }
+}
+
+
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchInstallmentDetails();
+    
+    
+    
+    
+  }
+
+  // Fetch installment details from API
+ // This method calls fetchInstallmentDetails, updates UI based on response, and selects the first unpaid installment
+Future<void> _fetchInstallmentDetails() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? mobileNumber = prefs.getString('phoneNumber');
+  String schemeId = widget.schemeId;
+
+  if (schemeId.isEmpty || mobileNumber == null) {
+    print("Error: Mobile number or Scheme ID is missing.");
+    return;
+  }
+
+  setState(() {
+    isLoading = true;
+  });
+
+  final installmentDetails = await fetchInstallmentDetails(mobileNumber, schemeId);
+  if (installmentDetails != null && installmentDetails.isNotEmpty) {
+    setState(() {
+      installments = installmentDetails;
+    });
+    _selectFirstUnpaidInstallment();
+  }
+
+  setState(() {
+    isLoading = false;
+  });
+}
+
+// This method selects the first unpaid installment and fetches the balance and due days
+void _selectFirstUnpaidInstallment() {
+  setState(() {
+    selectedInstallment = -1;
+  });
+
+  for (int i = 0; i < installments.length; i++) {
+    if (installments[i]["payment_status"] != "Paid") {
+      setState(() {
+        selectedInstallment = i;
+      });
+
+      // Fetch extra data for selected installment
+      fetchBalanceAndDays(
+        widget.schemeId,
+        installments[i]["month"].toString(),
+        installments[i]["year"].toString(),
+      ).then((extraData) {
+
+      });
+      break;
+    }
+  }
+}
+
+
+
+
+  // Refresh screen after payment
+  void _refreshScreen() {
+    setState(() {
+      isLoading = true;
+    });
+    _fetchInstallmentDetails(); // Reload data from API
+  }
+
+   String getLocalizedInstallment(String installment, LocalizationProvider localization) {
+    RegExp regExp = RegExp(r'(\d+)(st|nd|rd|th) INSTALLMENT', caseSensitive: false);
+    Match? match = regExp.firstMatch(installment);
+    if (match != null) {
+      String number = match.group(1) ?? "";
+      return "${number} ${localization.translate("Installment")}";
+    }
+    return installment;
+  }
+
+
+
+  Future<void> fetchBalanceAndDays(String schemeId, String month, String year) async {
+  final url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      body: {
+        'scheme_id': schemeId,
+        'month': month,
+        'year': year,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['status'] == 200) {
+        setState(() {
+          balanceAmount = double.tryParse(data['balance_amount'].toString());
+          dueDays = int.tryParse(data['days'].toString());
+           paidAmount = double.tryParse(data['paid_amount'].toString());
+        });
+      }
+    } else {
+      print('Error fetching balance and days: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Exception: $e');
+  }
+}
+
+Color getStatusColor(String? status) {
+  if (status == "Paid") return Colors.green;
+  if (status == "Process") return Colors.orange;
+  return Colors.black; // Default for unpaid
+}
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+   final localization = Provider.of<LocalizationProvider>(context);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        title: Text(localization.translate('Installment Schedule'),
+        style: GoogleFonts.lato(color: Colors.white),),
+        leading: BackButton(color: Colors.white,),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(localization.translate("Payment Schedule"), 
+            style: TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            Expanded(
+              child: isLoading
+                  ? Center(child: Image.asset('assets/images/gif.gif',height: 100,width: 100,)) // Loader
+                  : ListView.builder(
+  itemCount: installments.length,
+  itemBuilder: (context, index) {
+    final installment = installments[index];
+    bool isPaid = installment["payment_status"] == "Paid";
+
+    // ✅ Show only Paid and First unpaid
+    if (!isPaid && index != selectedInstallment) {
+      return const SizedBox.shrink(); // ❌ Skip this one
+    }
+
+    return  Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+  Card(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(12),
+    side: BorderSide(
+      color: index == selectedInstallment && !isPaid
+          ? const Color.fromARGB(255, 5, 1, 37)
+          : Colors.transparent,
+      width: 2,
+    ),
+  ),
+  child: IgnorePointer(
+    ignoring: isPaid,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        RadioListTile<int>(
+          value: index,
+          groupValue: selectedInstallment,
+          onChanged: isPaid
+              ? null
+              : (int? value) {
+                  setState(() {
+                    selectedInstallment = value!;
+                  });
+                },
+          title: Text(
+            getLocalizedInstallment(
+              installment["installment"],
+              localization,
+            ),
+            style: GoogleFonts.lato(fontSize: 14),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+  isPaid
+      ? "${localization.translate("Paid on")} ${installment["month_year"]}"
+      : installment["payment_status"] == "Process"
+          ? "${localization.translate("Process")} ${installment["month_year"]}"
+          : "${localization.translate("Pay before")} ${installment["month_year"]}",
+  style: TextStyle(
+    color: getStatusColor(installment["payment_status"]),
+  ),
+),
+
+              if (!isPaid && paidAmount != null && balanceAmount != null)
+  Padding(
+    padding: const EdgeInsets.only(top: 4),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            'Paid: ₹${formatAmount(paidAmount!.toString())}',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Colors.green,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Balance: ₹${formatAmount(balanceAmount!.toString())}',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.redAccent,
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+
+            ],
+          ),
+          secondary: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+             Text(
+  "₹${installment["amount"]}",
+  style: TextStyle(
+    color: installment["payment_status"] == "Paid"
+        ? Colors.green
+        : installment["payment_status"] == "Process"
+            ? Colors.orange
+            : Colors.black, // Default color
+    fontWeight: FontWeight.bold,
+  ),
+),
+if (installment["payment_status"] == "Paid")
+  Padding(
+    padding: const EdgeInsets.only(left: 25),
+    child: Text(
+      "Paid",
+      style: TextStyle(color: Colors.green),
+    ),
+  ),
+if (installment["payment_status"] == "Process")
+  Padding(
+    padding: const EdgeInsets.only(left: 25),
+    child: Text(
+      "Process",
+      style: TextStyle(color: Colors.orange),
+    ),
+  ),
+
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+    
+
+
+    SizedBox(height: 20,),
+
+    // ✅ Extra line only for unpaid + selected card
+  if (!isPaid && index == selectedInstallment)
+  Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+        child: Text(
+          'Choose payment option',
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+        ),
+      ),
+      const SizedBox(height: 20),
+
+      // Pay Installment
+      Row(
+        children: [
+          Radio(
+            value: 'emi',
+            groupValue: selectedOption,
+            onChanged: (val) {
+              setState(() {
+                selectedOption = val!;
+              });
+            },
+            activeColor: Color(0xFF2B004B),
+          ),
+          const Text(
+            'Pay Installment',
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(width: 10),
+         Container(
+  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+  decoration: BoxDecoration(
+    color: () {
+      if (dueDays == null) return Colors.grey;
+      if (dueDays! >= 0) {
+        // Normal due - green color
+        return Colors.green;
+      } else {
+        // Overdue - orange color
+        return Colors.orange;
+      }
+    }(),
+    borderRadius: BorderRadius.circular(30),
+  ),
+  child: Text(
+    () {
+      if (dueDays == null) return '';
+      if (dueDays == 0) return 'DUE TODAY';
+      if (dueDays == 1) return 'DUE TOMORROW';
+      if (dueDays! > 1) return 'DUE IN $dueDays DAYS';
+      return 'OVERDUE BY ${dueDays?.abs()} DAYS';
+    }(),
+    style: const TextStyle(
+      color: Colors.white,
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+    ),
+  ),
+)
+
+        ],
+      ),
+
+      // Pay any amount
+      Row(
+        children: [
+          Radio(
+            value: 'any',
+            groupValue: selectedOption,
+            onChanged: (val) {
+              setState(() {
+                selectedOption = val!;
+              });
+            },
+            activeColor: Color(0xFF2B004B),
+          ),
+          const Text(
+            'Pay any amount',
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+
+      const SizedBox(height: 10),
+
+      if (selectedOption == 'any') ...[
+       TextFormField(
+  controller: _amountController,
+  keyboardType: TextInputType.number,
+  onChanged: (value) {
+    final digits = value.replaceAll(RegExp('[^0-9]'), '');
+    final formatted = formatAmount(digits); // Your formatting logic
+
+    setState(() {
+      _amountController.value = TextEditingValue(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length),
+      );
+
+      // 🧮 Extract entered amount
+      final raw = formatted.replaceAll(RegExp('[^0-9]'), '');
+      final enteredAmount = raw.isNotEmpty ? int.parse(raw) : 0;
+      final balAmount = balanceAmount?.toInt() ?? 0;
+
+      // ❌ Error if entered amount > balance + 1
+      if (enteredAmount > balAmount + 1) {
+        _amountError = 'Amount exceeds balance by more than ₹$balanceAmount';
+      } else {
+        _amountError = null;
+      }
+    });
+  },
+  decoration: InputDecoration(
+    prefixText: '₹',
+    labelText: 'Enter Amount',
+    border: OutlineInputBorder(),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Color(0xFF2B004B), width: 2),
+    ),
+    errorText: _amountError, // 👈 Shows error here
+  ),
+),
+
+        const SizedBox(height: 6),
+
+        // ✅ Paid & Balance Amount Row
+       
+      ],
+
+      const SizedBox(height: 30),
+    ],
+  ),
+
+
+
+  ],
+);
+
+  },
+)
+
+            ),
+
+            if (dueDays != null && dueDays! < 0)
+     Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(vertical: 0),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF3E0),
+                      border: Border.all(color: const Color(0xFFFF9800), width: 1.5),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: const [
+                            Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
+                            SizedBox(width: 8),
+                            Text(
+                              'Payment Access Disabled',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFEF6C00),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Color(0xFF5D4037),
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Row(
+                          children: [
+                            Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
+                            SizedBox(width: 6),
+                            Text(
+                              'Admin Contact: 94906 57008',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFBF360C),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+            if (installments.isNotEmpty &&
+                selectedInstallment != -1 &&
+                installments[selectedInstallment]["payment_status"] != "Paid")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8),
+
+
+                 SizedBox(
+  width: double.infinity,
+  child:ElevatedButton(
+  style: ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    backgroundColor: const Color.fromARGB(255, 9, 1, 45),
+    padding: EdgeInsets.symmetric(vertical: 14),
+  ),
+ onPressed: (installments[selectedInstallment]["status"] == "")
+    ? () async {
+        // Step 1: Get amounts
+        String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+        int enteredAmount = rawAmount.isNotEmpty ? double.parse(rawAmount).toInt() : 0;
+        int installmentAmount = double.parse(installments[selectedInstallment]["amount"].toString()).toInt();
+        int balAmount = balanceAmount?.toInt() ?? 0;
+
+        // Step 2: Validate entered amount for custom payment
+        if (selectedOption == 'any') {
+          if (enteredAmount == 0) {
+            // ⚠️ Empty amount
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Empty Amount"),
+                content: Text("Please enter an amount to proceed."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("OK"),
+                  ),
+                ],
+              ),
+            );
+            return;
+          }
+
+          if (enteredAmount > installmentAmount) {
+            // ❌ More than installment amount
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Invalid Amount"),
+                content: Text("You cannot pay more than the installment amount."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("OK"),
+                  ),
+                ],
+              ),
+            );
+            return;
+          }
+
+          if (enteredAmount > balAmount) {
+            // ❌ More than balance amount
+          _showInvalidOTPDialog1();
+            return;
+          }
+        }
+
+      
+       String finalAmount;
+
+
+        // Step 3: Proceed with valid final amount
+       if (rawAmount.isNotEmpty) {
+  finalAmount = enteredAmount.toString();
+} else if (installments[selectedInstallment]["payment_status"] != "Paid") {
+  finalAmount = balanceAmount?.toInt().toString() ?? "0";
+} else {
+  finalAmount = installmentAmount.toString();
+}
+
+
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Scanner(
+              activescheme: Activescheme.customparams(
+                schemeID: widget.schemeId,
+                amountRs: finalAmount,
+                month: installments[selectedInstallment]["month"],
+                year: installments[selectedInstallment]["year"],
+                payId: '',
+                rejectId: '',
+                 balanceAmount: balanceAmount?.toString() ?? "", // ✅
+                 installmentAmount: installmentAmount.toString(),  // ✅
+              ),
+              rejectId: '',
+              
+            ),
+          ),
+        );
+
+        // Step 4: Refresh
+        _refreshScreen();
+      }
+    : null,
+
+
+  // Step 6: Show button text
+  child:  Builder(
+  builder: (context) {
+    String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
+    int installmentAmount = double.parse(installments[selectedInstallment]["amount"].toString()).toInt();
+    int balAmount = balanceAmount?.toInt() ?? 0;
+    String paymentStatus = installments[selectedInstallment]["payment_status"].toString();
+
+    String finalAmount;
+
+    // Custom entered amount (Pay Any Amount)
+    if (selectedOption == 'any' && rawAmount.isNotEmpty) {
+      finalAmount = double.parse(rawAmount).toInt().toString();
+    }
+    // If it's unpaid, show balance amount
+    else if (paymentStatus != "Paid") {
+      finalAmount = balAmount.toString();
+    }
+    // If paid, show installment amount
+    else {
+      finalAmount = installmentAmount.toString();
+    }
+
+    return Text(
+      "${localization.translate("Pay")}: ₹${formatAmount(finalAmount)}",
+      style: TextStyle(color: Colors.white, fontSize: 16),
+    );
+  },
+),
+
+),
+
+
+),
+
+
+
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+  void _showInvalidOTPDialog() {
+  final double screenWidth = MediaQuery.of(context).size.width;
+  final double screenHeight = MediaQuery.of(context).size.height;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
+        ),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
+            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
+            SizedBox(height: screenHeight * 0.01),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
+              child: Text(
+                'Oops! You’re only allowed to pay up to your installment amount.',
+                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(2, 5, 62, 1),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+void _showInvalidOTPDialog1() {
+  final double screenWidth = MediaQuery.of(context).size.width;
+  final double screenHeight = MediaQuery.of(context).size.height;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
+        ),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
+            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
+            SizedBox(height: screenHeight * 0.01),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
+              child: Text(
+                'You cannot pay more than the remaining balance.',
+                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(2, 5, 62, 1),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "OK",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+}
