@@ -18,16 +18,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: EditProfileScreen(),
+      home: const EditProfileScreen(),
     ),
   );
 }
 
 class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
+
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -52,11 +54,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:EditProfileScreen(),
+      home:const EditProfileScreen(),
     ),
   );
 }
@@ -101,7 +103,7 @@ void _showInvalidOTPDialog(String message) {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -217,10 +219,10 @@ Future<bool> checkInternet() async {
           await saveUpdatedDetails();
 
           // Optionally, navigate to another screen after success
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 2), () {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '',)), // Replace with your actual next screen
+      MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)), // Replace with your actual next screen
     );
   });
         } else {
@@ -293,13 +295,13 @@ Future<bool> checkInternet() async {
                       Text(
                        localization.translate("Edit Profile Details"),
                         style: TextStyle(
-                          color: Color.fromRGBO(43, 49, 101, 1),
+                          color: const Color.fromRGBO(43, 49, 101, 1),
                           fontWeight: FontWeight.bold,
                          fontSize: MediaQuery.of(context).size.width * 0.05,  // 5% of the screen width
 
                         ),
                       ),
-                      Icon(Icons.person, color: Color.fromRGBO(43, 49, 101, 1)),
+                      const Icon(Icons.person, color: Color.fromRGBO(43, 49, 101, 1)),
                     ],
                   ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),  // 3% of the screen height
@@ -345,8 +347,8 @@ Future<bool> checkInternet() async {
 
                 if (_message.isNotEmpty)
  Container(
-  margin: EdgeInsets.symmetric(vertical: 10),
-  padding: EdgeInsets.all(12),
+  margin: const EdgeInsets.symmetric(vertical: 10),
+  padding: const EdgeInsets.all(12),
   decoration: BoxDecoration(
     color: _message == "Profile updated successfully"
         ? Colors.green.withOpacity(0.1)
@@ -362,7 +364,7 @@ Future<bool> checkInternet() async {
         _message == "Profile updated successfully" ? Icons.check_circle : Icons.error,
         color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
       ),
-      SizedBox(width: 10),
+      const SizedBox(width: 10),
       Expanded(
         child: Text(
           localization.translate(

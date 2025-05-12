@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 //void main() => runApp(MaterialApp(home: NotificationScreen()));
 
 class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
+
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
 }
@@ -15,7 +17,7 @@ NotificationItem(
       type: 'new_arrival',
       title: 'New Diamond Collection!',
       description: '24K Gold with VS1 Diamonds now available',
-      time: DateTime.now().subtract(Duration(minutes: 15)),
+      time: DateTime.now().subtract(const Duration(minutes: 15)),
       isRead: false,
       // imagePath: 'assets/images/gold1.jpg',
     ),
@@ -23,58 +25,58 @@ NotificationItem(
       type: 'price_alert',
       title: 'Gold Rate Increased',
       description: '22K gold price increased by 1.5% today',
-      time: DateTime.now().subtract(Duration(hours: 2)),
+      time: DateTime.now().subtract(const Duration(hours: 2)),
       isRead: true,
     ),
     NotificationItem(
       type: 'order_update',
       title: 'Order Shipped',
       description: 'Your custom necklace has been dispatched',
-      time: DateTime.now().subtract(Duration(days: 1)),
+      time: DateTime.now().subtract(const Duration(days: 1)),
       status: 'In Transit',
     ),
     NotificationItem(
       type: 'offer',
       title: 'Festival Special!',
       description: 'Get 20% off on antique jewellery designs',
-      time: DateTime.now().subtract(Duration(days: 2)),
-      expiry: DateTime.now().add(Duration(days: 3)),
+      time: DateTime.now().subtract(const Duration(days: 2)),
+      expiry: DateTime.now().add(const Duration(days: 3)),
     ),
     NotificationItem(
       type: 'appointment',
       title: 'Design Consultation',
       description: 'Your appointment confirmed for tomorrow 3 PM',
-      time: DateTime.now().subtract(Duration(hours: 5)),
+      time: DateTime.now().subtract(const Duration(hours: 5)),
     ),
     NotificationItem(
       type: 'wishlist',
       title: 'Back in Stock',
       description: '22K Mangalsutra design #452 is now available',
-      time: DateTime.now().subtract(Duration(days: 3)),
+      time: DateTime.now().subtract(const Duration(days: 3)),
     ),
     NotificationItem(
       type: 'event',
       title: 'Jewellery Exhibition',
       description: 'Annual gold exhibition starts this weekend',
-      time: DateTime.now().subtract(Duration(days: 4)),
+      time: DateTime.now().subtract(const Duration(days: 4)),
     ),
     NotificationItem(
       type: 'security',
       title: 'Security Alert',
       description: 'New device logged into your account',
-      time: DateTime.now().subtract(Duration(days: 5)),
+      time: DateTime.now().subtract(const Duration(days: 5)),
     ),
     NotificationItem(
       type: 'membership',
       title: 'Elite Member Benefits',
       description: 'Exclusive preview of new collections',
-      time: DateTime.now().subtract(Duration(days: 6)),
+      time: DateTime.now().subtract(const Duration(days: 6)),
     ),
     NotificationItem(
     type: 'anniversary',
     title: 'Celebrate with Gold!',
     description: 'Special discounts for account anniversary',
-    time: DateTime.now().subtract(Duration(days: 7)),
+    time: DateTime.now().subtract(const Duration(days: 7)),
     ),
   ];
 
@@ -82,9 +84,9 @@ NotificationItem(
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text('Notifications (${notifications.where((n) => !n.isRead).length})',style: TextStyle(color: Colors.white),),
-        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text('Notifications (${notifications.where((n) => !n.isRead).length})',style: const TextStyle(color: Colors.white),),
+        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
       ),
       body: ListView.builder(
         itemCount: notifications.length,
@@ -103,7 +105,7 @@ NotificationItem(
 
   Widget _buildNotificationCard(NotificationItem notification) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       color: notification.isRead ? Colors.white : Colors.amber[50],
       child: ListTile(
         leading: _buildLeadingIcon(notification),
@@ -118,7 +120,7 @@ NotificationItem(
             if (notification.status != null)
               Chip(
                 label: Text(notification.status!,
-                    style: TextStyle(fontSize: 12)),
+                    style: const TextStyle(fontSize: 12)),
                 backgroundColor: Colors.amber[100],
               ),
           ],
@@ -129,29 +131,29 @@ NotificationItem(
           Text(notification.description),
 
 
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
 
 
 
             Row(
               children: [
-              Icon(Icons.access_time, size: 14, color: Colors.grey),
+              const Icon(Icons.access_time, size: 14, color: Colors.grey),
 
 
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
 
 
                 Text(_formatTime(notification.time),
-                    style: TextStyle(fontSize: 12)),
+                    style: const TextStyle(fontSize: 12)),
                 if (notification.expiry != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Row(
                       children: [
-                        Icon(Icons.timer, size: 14, color: Colors.red),
+                        const Icon(Icons.timer, size: 14, color: Colors.red),
                         Text(
                           'Expires in ${notification.expiry!.difference(DateTime.now()).inDays}d',
-                          style: TextStyle(color: Colors.red, fontSize: 12),
+                          style: const TextStyle(color: Colors.red, fontSize: 12),
                         ),
                       ],
                     ),
@@ -184,14 +186,14 @@ NotificationItem(
     };
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
       color: Colors.amber[100],
       shape: BoxShape.circle,
       ),
       child: Icon(
       iconMap[notification.type],
-      color: Color.fromRGBO(2, 5, 67, 1),
+      color: const Color.fromRGBO(2, 5, 67, 1),
       ),
     );
   }

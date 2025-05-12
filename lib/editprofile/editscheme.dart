@@ -23,21 +23,21 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: Editscheme1(),
+      home: const Editscheme1(),
     ),
   );
 }
 
 class Editscheme1 extends StatefulWidget {
   //final String schemeId;
-  Editscheme1({
-    Key? key,
+  const Editscheme1({
+    super.key,
     
-  }) : super(key: key);
+  });
 
   @override
   _Editscheme1State createState() => _Editscheme1State();
@@ -144,7 +144,7 @@ String regId = '';        // Holds Registration ID
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -192,15 +192,11 @@ Future<bool> checkInternet() async {
   Future<void> updateSchemeDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
-    if (mobileNumber == null) {
-      setState(() => isLoading = false);
-      return;
-    }
 
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
    //   _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-   ErrorScreen();
+   const ErrorScreen();
       return  ;
     }
 
@@ -261,13 +257,13 @@ Future<bool> checkInternet() async {
       if (data['status'] == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           
-          SnackBar(content: Text("✅ Scheme updated successfully!",style: GoogleFonts.lato(color: Colors.white),),backgroundColor: Color.fromRGBO(2, 5, 62, 1),),
+          SnackBar(content: Text("✅ Scheme updated successfully!",style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
         );
 
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => JewelryTransactionScreen(schemeId: '',)), // Replace with your actual next screen
+      MaterialPageRoute(builder: (context) => const JewelryTransactionScreen(schemeId: '',)), // Replace with your actual next screen
     );
   });
       } else {
@@ -279,7 +275,7 @@ Future<bool> checkInternet() async {
   } catch (e) {
     print("❌ Error updating scheme: $e");
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("❌ Failed to update scheme.")),
+      const SnackBar(content: Text("❌ Failed to update scheme.")),
     );
   }
 }
@@ -298,11 +294,6 @@ Future<bool> checkInternet() async {
 Future<void> fetchSchemeDetails() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber == null) {
-    setState(() => isLoading = false);
-    return;
-  }
 
   final url = Uri.parse('$baseUrl/get_scheme_details.php');
   final body = {
@@ -409,16 +400,16 @@ Future<void> fetchSchemeDetails() async {
       return Wrap(
         children: [
           ListTile(
-            leading: Icon(Icons.camera),
-            title: Text('Camera'),
+            leading: const Icon(Icons.camera),
+            title: const Text('Camera'),
             onTap: () async {
               Navigator.pop(context);
               await _getImage(ImageSource.camera, isPanCard);
             },
           ),
           ListTile(
-            leading: Icon(Icons.image),
-            title: Text('Gallery'),
+            leading: const Icon(Icons.image),
+            title: const Text('Gallery'),
             onTap: () async {
               Navigator.pop(context);
               await _getImage(ImageSource.gallery, isPanCard);
@@ -454,13 +445,13 @@ Future<void> _getImage(ImageSource source, bool isPanCard) async {
 double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
       ),
-      iconTheme: IconThemeData(color: Colors.white),
-      backgroundColor: Color.fromRGBO(2, 6, 67, 1),
+      iconTheme: const IconThemeData(color: Colors.white),
+      backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
           padding: EdgeInsets.all(16.0.w),
@@ -469,8 +460,7 @@ double screenHeight = MediaQuery.of(context).size.height;
 
 
 
-                    Align(child: Text('Edit Custmer Information',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
-                    alignment: Alignment.bottomLeft,
+                    Align(alignment: Alignment.bottomLeft,child: Text('Edit Custmer Information',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
                     ),
 
 
@@ -521,8 +511,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                      height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                    ),
 
-                     Align(child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                     alignment: Alignment.bottomLeft,
+                     Align(alignment: Alignment.bottomLeft,child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
                      ),
 
                        SizedBox(
@@ -539,8 +528,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                      height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                    ),
 
-                     Align(child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                     alignment: Alignment.bottomLeft,
+                     Align(alignment: Alignment.bottomLeft,child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
                      ),
 
                        SizedBox(
@@ -609,9 +597,9 @@ double screenHeight = MediaQuery.of(context).size.height;
             imageUrl,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
-                Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                const Icon(Icons.broken_image, size: 40, color: Colors.grey),
           )
-        : Icon(Icons.image, size: 40, color: Colors.grey),
+        : const Icon(Icons.image, size: 40, color: Colors.grey),
   );
 }
 
@@ -642,7 +630,7 @@ double screenHeight = MediaQuery.of(context).size.height;
         decoration: InputDecoration(
           labelText: label,
           counterText: '', // ✅ Hide character counter if needed
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
       ),
     ),
@@ -665,8 +653,8 @@ double screenHeight = MediaQuery.of(context).size.height;
       decoration: InputDecoration(
         labelText: label,
         
-        border: OutlineInputBorder(),
-        suffixIcon: Icon(Icons.calendar_today),
+        border: const OutlineInputBorder(),
+        suffixIcon: const Icon(Icons.calendar_today),
       ),
       onTap: () async {
         DateTime? pickedDate = await showDatePicker(
@@ -676,23 +664,21 @@ double screenHeight = MediaQuery.of(context).size.height;
           lastDate: DateTime.now(),
         );
     
-        if (pickedDate != null) {
-          String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-          controller.text = formattedDate;
-        }
-      },
+        String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate!);
+        controller.text = formattedDate;
+            },
     ),
   );
 }
 
 Widget _buildNomineeRelationshipDropdown() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
         value: relationships.contains(selectedRelationship)
             ? selectedRelationship
             : null,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: "Nominee Relationship*",
           border: OutlineInputBorder(),
         ),
@@ -717,14 +703,14 @@ Widget _buildNomineeRelationshipDropdown() {
     return Visibility(
       visible: isOtherRelationVisible,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: TextField(
           inputFormatters: [
     FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
  // Blocks " and ,
   ],
           controller: otherController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: "Enter Custom Relationship",
             border: OutlineInputBorder(),
           ),
@@ -759,7 +745,7 @@ Widget genderDropdown(BuildContext context) {
       decoration: InputDecoration(
         labelText: localization.translate('Gender*'),
         labelStyle: GoogleFonts.lato(),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
         ),
         focusedBorder: OutlineInputBorder(
@@ -767,7 +753,7 @@ Widget genderDropdown(BuildContext context) {
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-        floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
       ),
       items: genderOptions
           .map((String gender) => DropdownMenuItem<String>(

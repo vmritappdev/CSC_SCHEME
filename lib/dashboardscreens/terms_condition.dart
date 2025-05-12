@@ -13,16 +13,16 @@ void main() {
   runApp(MaterialApp(
     builder: (context, child) {
       return MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
         child: child!,
       );
     },
-    home: TermsAndConditionsScreen(),
+    home: const TermsAndConditionsScreen(),
   ));
 }
 
 class TermsAndConditionsScreen extends StatefulWidget {
-  const TermsAndConditionsScreen({Key? key}) : super(key: key);
+  const TermsAndConditionsScreen({super.key});
 
   @override
   State<TermsAndConditionsScreen> createState() => _TermsAndConditionsScreenState();
@@ -38,7 +38,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
     if (mounted) {
       setState(() => isLoading = false);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  LoginScreen1()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>  const LoginScreen1()));
     }
   }
 
@@ -83,7 +83,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
             children: [
               BackButton(
                 color: Colors.white,
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Lang10())),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Lang10())),
               ),
               Text(localization.translate("Hello 👋"), style: titleStyle),
               const Icon(Icons.help_outline, color: Colors.white),

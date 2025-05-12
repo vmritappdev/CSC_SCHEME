@@ -26,7 +26,7 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -74,7 +74,7 @@ String? _imageError;
 
   String _statusMessage = '';
 
-   bool _isPopupShown = false; 
+   final bool _isPopupShown = false; 
 
   @override
   void initState() {
@@ -113,11 +113,6 @@ Future<bool> checkInternet() async {
   Future<void> _fetchVerificationResponse() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
-
-    if (mobileNumber == null) {
-      print("Mobile number not found.");
-      return;
-    }
 
     setState(() {
       _mobileNumber = mobileNumber;
@@ -160,11 +155,6 @@ Future<bool> checkInternet() async {
   Future<void> _fetchInstallmentResponse() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
 
   setState(() {
     _mobileNumber = mobileNumber;
@@ -280,7 +270,7 @@ Future<bool> checkInternet() async {
     }
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("No image to share.")),
+      const SnackBar(content: Text("No image to share.")),
     );
   }
 }
@@ -340,12 +330,6 @@ Future<void> _submitDetails() async {
       return;
     }
 
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
-
   setState(() {
     _isLoading = true;
     _statusMessage = '';
@@ -365,7 +349,7 @@ Future<void> _submitDetails() async {
 
 
     request.fields['status'] = "pending";
-    request.fields['mobile_number'] = mobileNumber;
+    request.fields['mobile_number'] = mobileNumber!;
     request.fields['scheme_id'] = widget.activescheme.schemeID;
     request.fields['month'] = widget.activescheme.month;
     request.fields['year'] = widget.activescheme.year;
@@ -404,10 +388,10 @@ print("Pay ID: ${widget.payid}");
     print("Response Body: $responseBody");
     
 
-    if (responseBody == null || responseBody.isEmpty) {
+    if (responseBody.isEmpty) {
       print("Error: Response body is null or empty.");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: Response is empty or invalid.")),
+        const SnackBar(content: Text("Error: Response is empty or invalid.")),
       );
       return;
     }
@@ -418,7 +402,7 @@ print("Pay ID: ${widget.payid}");
     } catch (e) {
       print("Error parsing JSON: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error parsing server response.")),
+        const SnackBar(content: Text("Error parsing server response.")),
       );
       return;
     }
@@ -473,7 +457,7 @@ double screenWidth = MediaQuery.of(context).size.width;
           );
         },
        ),
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         title: Text(
           localization.translate("Payment Details"),
           style: const TextStyle(color: Colors.white),
@@ -506,13 +490,13 @@ double screenWidth = MediaQuery.of(context).size.width;
 
 
                        Padding(
-  padding: EdgeInsets.only(top: 8, bottom: 16),
+  padding: const EdgeInsets.only(top: 8, bottom: 16),
   child: Text(
    localization.translate("Kindly upload the payment slip or a screenshot below for verification of your payment."),
     style: TextStyle(
       fontSize: screenWidth * 0.035,
       fontWeight: FontWeight.bold,
-      color:  Color.fromRGBO(2, 5, 62, 1),
+      color:  const Color.fromRGBO(2, 5, 62, 1),
      // fontStyle: FontStyle.italic
     ),
   ),
@@ -574,8 +558,8 @@ double screenWidth = MediaQuery.of(context).size.width;
   ),
 ),
 if (_showImageError)
-  Padding(
-    padding: const EdgeInsets.only(top: 5),
+  const Padding(
+    padding: EdgeInsets.only(top: 5),
     child: Text(
       "Please fill the image",
       style: TextStyle(color: Colors.red, fontSize: 13),
@@ -596,7 +580,7 @@ if (_showImageError)
    // labelText: localization.translate("Transaction Number"),
    labelText: 'Transaction Number',
     labelStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: screenWidth * 0.035), // Label text
-    border: OutlineInputBorder(),
+    border: const OutlineInputBorder(),
     contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
      // Adjust padding
   ),
@@ -628,6 +612,10 @@ if (_showImageError)
               
            // });
           },
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(),
+                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                        ),
 
 
                 
@@ -637,10 +625,6 @@ if (_showImageError)
 
                         
                         child: Text(localization.translate("Confirm"), style: const TextStyle(color: Colors.white, fontSize: 18)),
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(),
-                          backgroundColor: Color.fromRGBO(2, 5, 62, 1),
-                        ),
                       ),
                     ),
                   
@@ -699,13 +683,13 @@ if (_showImageError)
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 localization.translate("Your scheme registration is complete, but payment verification is still pending. Please wait while we complete the verification process."),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white70, fontSize: 13),
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   // Navigate to PaymentVerificationScreen & remove previous screens
@@ -714,15 +698,15 @@ if (_showImageError)
                     (Route<dynamic> route) => false, // Clear all previous screens
                   );
                 },
-                child: Text(localization.translate('okay')),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+                child: Text(localization.translate('okay')),
               ),
             ],
           ),

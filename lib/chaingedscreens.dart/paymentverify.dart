@@ -22,11 +22,6 @@ Future<void> verifyPaymentProcess() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("⚠️ Mobile number not found.");
-    return;
-  }
-
   final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
 
   try {
@@ -73,7 +68,7 @@ Future<void> verifyPaymentProcess() async {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text("OK"),
+          child: const Text("OK"),
         ),
       ],
     ),
@@ -84,8 +79,8 @@ Future<void> verifyPaymentProcess() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Verifying Payment')),
-      body: Center(child: Text('Checking...')),
+      appBar: AppBar(title: const Text('Verifying Payment')),
+      body: const Center(child: Text('Checking...')),
     );
   }
 }

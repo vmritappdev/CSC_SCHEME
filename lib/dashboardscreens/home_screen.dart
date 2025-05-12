@@ -43,7 +43,7 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -81,13 +81,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   switch (index) {
     case 1:
-      screen = AboutUsScreen();
+      screen = const AboutUsScreen();
       break;
     case 2:
-      screen = GoldShopOffersScreen();
+      screen = const GoldShopOffersScreen();
       break;
     case 3:
-      screen = FAQScreen();
+      screen = const FAQScreen();
       break;
     default:
       return;
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
    int selectedIndex = 0;
     bool isButtonClicked = false;
   bool isProcessComplete = false;
-   bool _isPopupShown = false; 
+   final bool _isPopupShown = false; 
 
     final List<String> images = [
     'assets/images/jewe.jpg',
@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
    int activeIndex = 0;
    String errorMessage = '';
    
-    String _selectedLanguage = 'తె';
+    final String _selectedLanguage = 'తె';
 
 
      String firstName = '';  // Default value for first name
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -234,7 +234,7 @@ bool _popupShown = false; // To track if popup is already shown
 void _startPolling() {
   if (!_isPolling) return; // ✅ Stop if polling is off
 
-  Future.delayed(Duration(seconds: 1), () async {
+  Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
       await _fetchVerificationResponse();
     
@@ -260,16 +260,7 @@ void dispose() {
 Future<void> _fetchVerificationResponse() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-  String schemeId = widget.activescheme.schemeID; // Use schemeId directly from Activescheme widget
-
-
-   
-
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;  // Exit if mobile number is not available
-  }
+  String schemeId = widget.activescheme.schemeID;
 
   final url = Uri.parse('$baseUrl/process_verification.php');  //'https://vmrdemos.com/csc_scheme/process_verification.php'
 
@@ -376,7 +367,7 @@ void showCompletePopup(VerificationResponse response) {
           title: Row(
             children: [
               Image.asset('assets/images/csc2.png', height: 40, width: 40),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
 
               Text(
                 Provider.of<LocalizationProvider>(context, listen: false)
@@ -398,12 +389,12 @@ void showCompletePopup(VerificationResponse response) {
                   width: 150,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentCard()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentCard()));
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                     ),
                     child: Text(
                       Provider.of<LocalizationProvider>(context, listen: false).translate("View Details"),
@@ -416,7 +407,7 @@ void showCompletePopup(VerificationResponse response) {
                   onPressed: () async {
                     Navigator.of(context, rootNavigator: true).pop(); // Close the popup
                     await closePopupAPI(); // Call API if needed
-                    Future.delayed(Duration(milliseconds: 200), () {
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       _popupShown = false; // Ensure popup flag resets after close
                     });
                   },
@@ -455,14 +446,6 @@ Future<void> closePopupAPI() async {
   final url = Uri.parse("$baseUrl/close_pop.php"); //"https://vmrdemos.com/csc_scheme/close_pop.php"
     SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-   
-
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;  // Exit if mobile number is not available
-  }
   try {
   //  final response = await http.get(url);
    final response = await http.post(
@@ -558,7 +541,7 @@ Future<void> closePopupAPI() async {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Jionscheme2(),
+          builder: (context) => const Jionscheme2(),
         ),
       );
     }
@@ -594,7 +577,7 @@ Future<void> closePopupAPI() async {
     
       final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final double padding = 2.0;
+    const double padding = 2.0;
 
 
     return WillPopScope(
@@ -604,15 +587,15 @@ Future<void> closePopupAPI() async {
         return false; // Prevent further back navigation
       },
       child: Scaffold(
-        drawer: NavigationDrawerScreen(),
-        backgroundColor: Color(0xFFFFF7E6),
+        drawer: const NavigationDrawerScreen(),
+        backgroundColor: const Color(0xFFFFF7E6),
         appBar: AppBar(
       
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
       
           toolbarHeight: 90,
           centerTitle: true,
-          backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
           
           title: 
             
@@ -676,7 +659,7 @@ Future<void> closePopupAPI() async {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => NotificationScreen()),
+                MaterialPageRoute(builder: (_) => const NotificationScreen()),
               );
             },
           ),
@@ -705,18 +688,18 @@ Future<void> closePopupAPI() async {
                 autoPlay: true,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 enableInfiniteScroll: false,
-                autoPlayAnimationDuration: Duration(milliseconds: 700),
+                autoPlayAnimationDuration: const Duration(milliseconds: 700),
                 onPageChanged: (index, reason) {
                   setState(() => activeIndex = index);
                 },
-                autoPlayInterval: Duration(seconds: 3),
+                autoPlayInterval: const Duration(seconds: 3),
               ),
               itemBuilder: (context, index, realIndex) {
                 final image = images[index];
                 return Container(
                   
                   width: double.infinity,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                  
                   ),
                   child: Stack(
@@ -731,7 +714,7 @@ Future<void> closePopupAPI() async {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 90),
+                        padding: const EdgeInsets.only(top: 90),
                       
                         child: Center(
                         child: buildIndicator()
@@ -757,7 +740,7 @@ Future<void> closePopupAPI() async {
               //"Today's Gold Rate",
              localization.translate("Today's Gold Rate"),
               style:GoogleFonts.lato(
-                color: Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
                 
               )
               // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
@@ -790,7 +773,7 @@ Future<void> closePopupAPI() async {
                   vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
                 ),
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: const Color.fromRGBO(2, 5, 62, 1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -809,7 +792,7 @@ Future<void> closePopupAPI() async {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
                   height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: AssetImage('assets/images/go.png'),
@@ -831,7 +814,7 @@ Future<void> closePopupAPI() async {
                   vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
                 ),
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: const Color.fromRGBO(2, 5, 62, 1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -850,7 +833,7 @@ Future<void> closePopupAPI() async {
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
                   height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: AssetImage('assets/images/silver.png'),
@@ -873,7 +856,7 @@ Future<void> closePopupAPI() async {
       
       Center(
         child: verificationResponse == null || verificationResponse?.process == "complete"
-        ? SizedBox.shrink() // No message displayed
+        ? const SizedBox.shrink() // No message displayed
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -881,7 +864,7 @@ Future<void> closePopupAPI() async {
               Expanded(
                 flex: 1,
                 child: verificationResponse?.process == "pending"
-                    ? Container(
+                    ? SizedBox(
                         height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
                         child: Marquee(
                           text: "Transaction Pending",
@@ -892,12 +875,12 @@ Future<void> closePopupAPI() async {
                           scrollAxis: Axis.horizontal,
                           blankSpace: 200,
                           velocity: 50,
-                          pauseAfterRound: Duration(seconds: 2),
+                          pauseAfterRound: const Duration(seconds: 2),
                           startPadding: 10,
                         ),
                       )
                     : verificationResponse?.process == "incomplete"
-                        ? Container(
+                        ? SizedBox(
                             height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
                             child: Marquee(
                               text: localization.translate("Your join scheme registration is still pending. Kindly complete your registration process."),
@@ -909,11 +892,11 @@ Future<void> closePopupAPI() async {
                               scrollAxis: Axis.horizontal,
                               blankSpace: 200,
                               velocity: 50,
-                              pauseAfterRound: Duration(seconds: 2),
+                              pauseAfterRound: const Duration(seconds: 2),
                               startPadding: 10,
                             ),
                           )
-                        : SizedBox.shrink(), // Fallback for other conditions
+                        : const SizedBox.shrink(), // Fallback for other conditions
               ),
 
 
@@ -979,7 +962,7 @@ Future<void> closePopupAPI() async {
             child: Text(
               localization.translate("Welcome Back"),
               style: GoogleFonts.lato(
-                color: Color.fromRGBO(43, 49, 101, 1),
+                color: const Color.fromRGBO(43, 49, 101, 1),
                 fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
                 fontWeight: FontWeight.bold,
               ),
@@ -996,12 +979,12 @@ Future<void> closePopupAPI() async {
           onTap: () {
             Navigator.push(
               context, 
-              MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '',)),
+              MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)),
             );
           },
           child: Image.asset(
             'assets/images/person1.png',
-            color: Color.fromRGBO(2, 5, 62, 1),
+            color: const Color.fromRGBO(2, 5, 62, 1),
             height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
           ),
         ),
@@ -1036,7 +1019,7 @@ Future<void> closePopupAPI() async {
         double spacing = getSpacing(constraints.maxWidth);
       
         return GridView.count(
-          padding: EdgeInsets.all(13),
+          padding: const EdgeInsets.all(13),
           crossAxisCount: crossAxisCount,
           crossAxisSpacing: spacing,
           mainAxisSpacing: spacing,
@@ -1048,7 +1031,7 @@ Future<void> closePopupAPI() async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SavingsAccountScreen(),
+                    builder: (context) => const SavingsAccountScreen(),
                   ),
                 );
               },
@@ -1060,15 +1043,15 @@ Future<void> closePopupAPI() async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoadingScreen(),
+                    builder: (context) => const LoadingScreen(),
                   ),
                 );
       
-                Future.delayed(Duration(seconds: 2), () {
+                Future.delayed(const Duration(seconds: 2), () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PaymentCard(),
+                      builder: (context) => const PaymentCard(),
                     ),
                   );
                 });
@@ -1088,15 +1071,15 @@ Future<void> closePopupAPI() async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoadingScreen(),
+                    builder: (context) => const LoadingScreen(),
                   ),
                 );
       
-                Future.delayed(Duration(seconds: 2), () {
+                Future.delayed(const Duration(seconds: 2), () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustomerCare(),
+                      builder: (context) => const CustomerCare(),
                     ),
                   );
                 });
@@ -1109,15 +1092,15 @@ Future<void> closePopupAPI() async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoadingScreen(),
+                    builder: (context) => const LoadingScreen(),
                   ),
                 );
       
-                Future.delayed(Duration(seconds: 2), () {
+                Future.delayed(const Duration(seconds: 2), () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Transaction(),
+                      builder: (context) => const Transaction(),
                     ),
                   );
                 });
@@ -1130,15 +1113,15 @@ Future<void> closePopupAPI() async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoadingScreen(),
+                    builder: (context) => const LoadingScreen(),
                   ),
                 );
       
-                Future.delayed(Duration(seconds: 1), () {
+                Future.delayed(const Duration(seconds: 1), () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>BrochureScreen(),
+                      builder: (context) =>const BrochureScreen(),
                     ),
                   );
                 });
@@ -1152,7 +1135,7 @@ Future<void> closePopupAPI() async {
       
       
       
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
       
       
           ],
@@ -1200,14 +1183,14 @@ Future<void> closePopupAPI() async {
             children: [
               // Top curved indicator
               AnimatedContainer(
-                duration: Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 200),
                 height: 5,
                 width: 40,
                 decoration: BoxDecoration(
                   color: isSelected
                       ? const Color.fromARGB(255, 3, 1, 22)
                       : Colors.transparent,
-                  borderRadius: BorderRadius.vertical(
+                  borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(20),
                   ),
                 ),
@@ -1219,7 +1202,7 @@ Future<void> closePopupAPI() async {
                 imagePath,
                 height: 24,
                 color: isSelected
-                    ? Color.fromARGB(255, 3, 1, 22)
+                    ? const Color.fromARGB(255, 3, 1, 22)
                     : Colors.black,
               ),
 
@@ -1229,7 +1212,7 @@ Future<void> closePopupAPI() async {
                 style: TextStyle(
                   fontSize: 13,
                   color: isSelected
-                      ? Color.fromARGB(255, 3, 1, 22)
+                      ? const Color.fromARGB(255, 3, 1, 22)
                       : Colors.black,
                   fontWeight:
                       isSelected ? FontWeight.bold : FontWeight.normal,
@@ -1308,7 +1291,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
             style: GoogleFonts.lato(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(33, 36, 86, 1),
+              color: const Color.fromRGBO(33, 36, 86, 1),
             ),
           ),
         ],
@@ -1326,7 +1309,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
             BoxShadow(
               color: Colors.black.withOpacity(0.2),
               blurRadius: 8,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -1341,7 +1324,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
         activeIndex: activeIndex,
         count: images.length,
          axisDirection: Axis.horizontal,
-        effect: SlideEffect(
+        effect: const SlideEffect(
           
           dotWidth: 10,
           dotHeight: 10,
@@ -1353,7 +1336,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
 
    Widget _buildBottomNavItem(String assetPath, String labelKey, int index, Widget screen) {
   final isSelected = selectedIndex == index;
-  final color = isSelected ? Color.fromRGBO(4, 18, 142, 1) : Colors.grey;
+  final color = isSelected ? const Color.fromRGBO(4, 18, 142, 1) : Colors.grey;
   final localization = Provider.of<LocalizationProvider>(context);
 
   return InkWell(
@@ -1381,7 +1364,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
           width: 30,
           height: 30,
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Text(
           localization.translate(labelKey),
           style: GoogleFonts.montserrat(
@@ -1411,20 +1394,14 @@ void showGoldBottomSheet(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    isBottomSheetOpen = false;
-    return;
-  }
-
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    ErrorScreen();
+    const ErrorScreen();
     isBottomSheetOpen = false;
     return;
   }
 
-  final url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
+  const url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
   final response = await http.post(
     Uri.parse(url),
     body: {'mobile_no': mobileNumber},
@@ -1447,7 +1424,7 @@ void showGoldBottomSheet(BuildContext context) async {
       showModalBottomSheet(
         context: currentContext,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (BuildContext context) {
@@ -1467,9 +1444,9 @@ void showGoldBottomSheet(BuildContext context) async {
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Container(
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(43, 49, 101, 1),
+                            color: const Color.fromRGBO(43, 49, 101, 1),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
@@ -1479,7 +1456,7 @@ void showGoldBottomSheet(BuildContext context) async {
                                 height: 60,
                                 width: 60,
                               ),
-                              SizedBox(width: 20),
+                              const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1494,7 +1471,7 @@ void showGoldBottomSheet(BuildContext context) async {
                       ),
                       // Scheme Details
                       Padding(
-                        padding: EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: Column(
                           children: schemeDetails.asMap().entries.map<Widget>((entry) {
                             int index = entry.key;
@@ -1516,8 +1493,8 @@ void showGoldBottomSheet(BuildContext context) async {
                                     padding: const EdgeInsets.only(right: 0),
                                     child: TextButton(
                                       style: TextButton.styleFrom(
-                                        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
-                                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(8),
                                         ),
@@ -1533,12 +1510,12 @@ void showGoldBottomSheet(BuildContext context) async {
                                       },
                                       child: Text(
                                         "${localization.translate("Pay")} ₹${scheme['amount']}",
-                                        style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
                                 ),
-                                Divider(),
+                                const Divider(),
                               ],
                             );
                           }).toList(),
@@ -1572,7 +1549,7 @@ void _showErrorDialog(BuildContext context, String message) {
     context: context,
     barrierDismissible: false, // Prevent closing by tapping outside
     builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
       //  borderRadius: BorderRadius.circular(16), // Rounded corners for dialog
       ),
       backgroundColor: Colors.white,
@@ -1620,7 +1597,7 @@ void _showErrorDialog(BuildContext context, String message) {
           // Full-Width Button at the Bottom
           Container(
             width: double.infinity, // Full width button
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromRGBO(2, 5, 62, 1), // Button background color
               borderRadius: BorderRadius.only(
                // bottomLeft: Radius.circular(16),
@@ -1652,8 +1629,8 @@ Widget buildInfoRow(IconData icon, String text) {
   return Row(
     children: [
       Icon(icon, color: Colors.yellow, size: 15),
-      SizedBox(width: 8),
-      Text(text, style: TextStyle(color: Colors.white)),
+      const SizedBox(width: 8),
+      Text(text, style: const TextStyle(color: Colors.white)),
     ],
   );
 }
@@ -1670,7 +1647,7 @@ void showWarningPopup(BuildContext context) {
     barrierDismissible: false, // Popup బయట tap చేసినా close అవకూడదు
     builder: (BuildContext context) {
       return Dialog(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero, 
         ),
         backgroundColor: Colors.white,
@@ -1711,7 +1688,7 @@ void showWarningPopup(BuildContext context) {
             // ✅ Full Width Button at Bottom
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -1721,7 +1698,7 @@ void showWarningPopup(BuildContext context) {
                 },
                 child: Text(
                  localization.translate("OK"),
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
             ),
@@ -1743,14 +1720,14 @@ void showCustomDialog(BuildContext context, String message) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Alert'),
+        title: const Text('Alert'),
         content: Text(message), // The message you want to display
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
             },
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       );

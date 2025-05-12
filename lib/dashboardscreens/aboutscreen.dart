@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class AboutUsScreen extends StatefulWidget {
+  const AboutUsScreen({super.key});
+
   @override
   State<AboutUsScreen> createState() => _AboutUsScreenState();
 }
@@ -23,7 +25,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       appBar: AppBar(
         
         elevation: 0.5,
-        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
@@ -36,7 +38,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
           Text(
            localization.translate("CHINNI SRINIVASULU CHETTY JEWELLERS"),
@@ -48,7 +50,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               letterSpacing: 1,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             localization.translate("Est. 1971"),
             textAlign: TextAlign.center,
@@ -58,24 +60,24 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               fontStyle: FontStyle.italic,
             ),
           ),
-          Divider(thickness: 1, height: 32),
+          const Divider(thickness: 1, height: 32),
           
           //sectionTitle("Our Legacy"),
          
 
          
 
-           SizedBox(height: 12),
+           const SizedBox(height: 12),
 
            
           Center(
             child: Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 50,
                   backgroundImage: AssetImage("assets/images/cscimage.jpg"),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                    localization.translate("Pavan Srinivas Chinni"),
                   style: GoogleFonts.lato(
@@ -91,22 +93,22 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 ),
 
 
-SizedBox(height: 15,),
+const SizedBox(height: 15,),
 
                  sectionText(
              localization.translate("Founded in 1971, Chinni Srinivasulu Chetty Jewellers has built a lasting reputation for trust, tradition, and unmatched quality in the world of fine jewellery. Over the decades, we’ve grown from a humble beginning into a respected name among customers who value not only our exquisite designs but also the genuine relationships we’ve nurtured with them.")),
               ],
             ),
           ),
-         SizedBox(height: 12),
+         const SizedBox(height: 12),
           sectionText(
              localization.translate("Under the visionary leadership of Pavan Srinivas Chinni, the business has evolved to meet modern demands while staying true to its heritage. We have expanded our offerings with a perfect blend of tradition and innovation — serving both retail and wholesale jewellery needs.")),
 
-           SizedBox(height: 12),
+           const SizedBox(height: 12),
 
            sectionText(localization.translate("Our wholesale operations, based in Chennai, Tamil Nadu, supply a wide range of BIS-hallmarked gold ornaments to jewellers across South India. Every piece is crafted with meticulous attention to detail, reflecting timeless craftsmanship and evolving style.")),
 
-           SizedBox(height: 12),
+           const SizedBox(height: 12),
 
           sectionText(localization.translate("In Nellore, Andhra Pradesh, our flagship retail showroom brings this legacy directly to our valued customers. The store offers an exclusive collection of gold jewellery — from elegant daily wear to breathtaking bridal sets — curated to match every occasion and personality, all at transparent and competitive prices.")),
              
@@ -116,10 +118,10 @@ SizedBox(height: 15,),
           bulletPoint(localization.translate("✅ Fair Pricing & Flexible Purchase Schemes")),
           bulletPoint(localization.translate("✅ Lifetime Support & Customer-Centric Service")),
 
-          Divider(thickness: 1, height: 40),
+          const Divider(thickness: 1, height: 40),
           sectionText(
          localization.translate( "With a team of warm, knowledgeable, and experienced professionals, we are committed to making every visit a personalized, delightful, and memorable jewellery shopping experience.")),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
         ],
       ),
 
@@ -129,7 +131,7 @@ floatingActionButton: FloatingActionButton.extended(
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => SavingsAccountScreen(),
+              builder: (context) => const SavingsAccountScreen(),
             )
           );
         },
@@ -171,7 +173,7 @@ floatingActionButton: FloatingActionButton.extended(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),
@@ -212,14 +214,14 @@ floatingActionButton: FloatingActionButton.extended(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, color: Colors.teal, size: 28),
-        SizedBox(width: 12),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
                   style: GoogleFonts.lato(fontSize: 15.5, fontWeight: FontWeight.bold)),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(subtitle,
                   style: GoogleFonts.lato(fontSize: 14, color: Colors.black87)),
             ],
@@ -234,9 +236,9 @@ floatingActionButton: FloatingActionButton.extended(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          Text("•", style: TextStyle(fontSize: 18, color: Colors.teal)),
+          const Text("•", style: TextStyle(fontSize: 18, color: Colors.teal)),
          // Text("✅", style: TextStyle(fontSize: 18, color: Colors.teal)),
-          SizedBox(width: 6),
+          const SizedBox(width: 6),
           Expanded(
             child: Text(
               text,

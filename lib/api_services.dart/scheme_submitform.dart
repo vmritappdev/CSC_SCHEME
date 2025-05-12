@@ -16,10 +16,8 @@ Future<Map<String, dynamic>?> submitRegistrationForm({
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
-    if (mobileNumber != null) {
-      data['mobile_no'] = mobileNumber;
-    }
-
+    data['mobile_no'] = mobileNumber!;
+  
     var request = http.MultipartRequest('POST', uri);
 
     data.forEach((key, value) {

@@ -5,21 +5,23 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: Dashboard(),
+      home: const Dashboard(),
     ),
   );
 }
 
 class Dashboard extends StatelessWidget {
+  const Dashboard({super.key});
+
 
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       
     );
   }
@@ -34,7 +36,7 @@ class AssetTile extends StatelessWidget {
   final Color color;
   final double value;
 
-  AssetTile({
+  const AssetTile({super.key, 
     required this.gifPath,
     required this.title,
     required this.amount,
@@ -49,7 +51,7 @@ class AssetTile extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
           child: Row(
             children: [
               CircleAvatar(
@@ -61,7 +63,7 @@ class AssetTile extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +73,7 @@ class AssetTile extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           amount,
@@ -79,30 +81,30 @@ class AssetTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     LinearProgressIndicator(
                       value: value,
                       backgroundColor: Colors.grey[300],
                       valueColor: AlwaysStoppedAnimation<Color>(color),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "$percentage",
-                          style: TextStyle(color: Colors.grey),
+                          percentage,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                         RichText(
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: balanceDues.split(":")[0] + ": ",
-                                style: TextStyle(color: Colors.grey),
+                                text: "${balanceDues.split(":")[0]}: ",
+                                style: const TextStyle(color: Colors.grey),
                               ),
                               TextSpan(
                                 text: balanceDues.split(":")[1],
-                                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),

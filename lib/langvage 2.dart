@@ -10,15 +10,17 @@ void main() {
   runApp(MaterialApp(
     builder: (context, child) {
       return MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
         child: child!,
       );
     },
-    home: Lang10(),
+    home: const Lang10(),
   ));
 }
 
 class Lang10 extends StatefulWidget {
+  const Lang10({super.key});
+
   @override
   _Lang10State createState() => _Lang10State();
 }
@@ -73,7 +75,7 @@ Future<String?> _getPhoneNumber() async {
     if (mounted) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => TermsAndConditionsScreen()),
+        MaterialPageRoute(builder: (context) => const TermsAndConditionsScreen()),
       );
     }
   }
@@ -97,7 +99,7 @@ Future<String?> _getPhoneNumber() async {
               fontSize: fontSize,
             ),
           ),
-          backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         ),
         body: Column(
           children: [
@@ -131,7 +133,7 @@ Future<String?> _getPhoneNumber() async {
                         ],
                         border: isSelected
                             ? Border.all(
-                                color: Color.fromRGBO(2, 5, 62, 1),
+                                color: const Color.fromRGBO(2, 5, 62, 1),
                                 width: padding * 0.3,
                               )
                             : null,
@@ -174,7 +176,7 @@ Future<String?> _getPhoneNumber() async {
               ),
             ),
             Container(
-              color: Color.fromRGBO(2, 5, 62, 1),
+              color: const Color.fromRGBO(2, 5, 62, 1),
               height: size.height * 0.08,
               width: double.infinity,
               child: Center(

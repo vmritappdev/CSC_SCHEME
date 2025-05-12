@@ -19,16 +19,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:MobileScreen(),
+      home:const MobileScreen(),
     ),
   );
 }
 
 class MobileScreen extends StatefulWidget {
+  const MobileScreen({super.key});
+
   @override
   _MobileScreenState createState() => _MobileScreenState();
 }
@@ -81,16 +83,16 @@ Future<void> sendMobileChangeRequest() async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(responseData['message'] ?? "Update Successful"),
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ),
       );
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => OtpScreen()),
+          MaterialPageRoute(builder: (context) => const OtpScreen()),
         );
       }
     }
@@ -135,7 +137,7 @@ Future<void> sendMobileChangeRequest() async {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -242,7 +244,7 @@ Future<void> verifyMobileNumber() async {
          localization.translate('Forgot Mobile Number'), 
         style: Theme.of(context).textTheme.titleLarge),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -279,7 +281,7 @@ Future<void> verifyMobileNumber() async {
                 child: ElevatedButton(
  onPressed: isLoading ? null : verifyMobileNumber, // Before: sendMobileChangeRequest
                   child: isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
                        localization.translate('Next'), 
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white)),
@@ -298,9 +300,9 @@ Future<void> verifyMobileNumber() async {
                       onPressed: () {
                         // Contact customer care action
                       },
-                      icon: Icon(Icons.call, color: Colors.orange),
+                      icon: const Icon(Icons.call, color: Colors.orange),
                       label: Text(localization.translate('Contact Customer Care'), 
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Color.fromRGBO(2, 5, 62, 1))),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: const Color.fromRGBO(2, 5, 62, 1))),
                     ),
                   ],
                 ),

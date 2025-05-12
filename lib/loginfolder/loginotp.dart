@@ -17,6 +17,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginOtp extends StatefulWidget {
+  const LoginOtp({super.key});
+
   @override
   _LoginOtpState createState() => _LoginOtpState();
 }
@@ -37,7 +39,7 @@ class _LoginOtpState extends State<LoginOtp> {
 
    bool _isOtpVisible = false;
   bool _isResendAvailable = false;
-  bool _isOtpCorrect = false;
+  final bool _isOtpCorrect = false;
   int _timerSeconds = 30;
 
   String? loginPage; // to hold the login_page value from API
@@ -66,16 +68,12 @@ class _LoginOtpState extends State<LoginOtp> {
     await prefs.reload();  // ✅ Reloads latest data
     String? phoneNumber = prefs.getString('userPhoneNumber');
 
-    if (phoneNumber != null) {
-      setState(() {
-        
-        phoneController.text = phoneNumber;
-      });
-      print("✅ Loaded Mobile Number,,,,,: $phoneNumber");
-    } else {
-      print("❌ Mobile Number Not Found");
+    setState(() {
+      
+      phoneController.text = phoneNumber!;
+    });
+    print("✅ Loaded Mobile Number,,,,,: $phoneNumber");
     }
-  }
 
 
 
@@ -125,7 +123,7 @@ class _LoginOtpState extends State<LoginOtp> {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -159,7 +157,7 @@ void _onResendOtp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 
-    if (mobileNumber == null || mobileNumber.isEmpty) {
+    if (mobileNumber!.isEmpty) {
       _showErrorPopup("❌ Mobile Number Not Found! Please Try Again.");
       return;
     }
@@ -248,7 +246,7 @@ Future<bool> checkInternet() async {
     await prefs.reload(); // ✅ Ensures latest data is fetched
     String? mobileNumber = prefs.getString('userPhoneNumber');
 
-    if (mobileNumber == null || mobileNumber.length != 10) {
+    if (mobileNumber!.length != 10) {
       print("❌ Mobile Number not found in SharedPreferences");
       return;
     }
@@ -389,7 +387,7 @@ void _verifyOtpAndProceed() {
     if (loginPage == 'create_mpin') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => CreateMpinScreen5()),
+        MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
       );
     } else if (loginPage == 'home') {
       Navigator.pushReplacement(
@@ -446,13 +444,13 @@ void _verifyOtpAndProceed() {
         fontSize = fontSize.clamp(12, 24);
         final localization = Provider.of<LocalizationProvider>(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(),
+          shape: const RoundedRectangleBorder(),
           backgroundColor: Colors.white,
           contentPadding: EdgeInsets.zero,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -461,11 +459,11 @@ void _verifyOtpAndProceed() {
                   style: GoogleFonts.lato(fontSize: 17, color: Colors.red),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(2, 5, 62, 1),
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(2, 5, 62, 1),
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -473,7 +471,7 @@ void _verifyOtpAndProceed() {
                   },
                   child: Text(
                     localization.translate("OK"),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -501,7 +499,7 @@ void _verifyOtpAndProceed() {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LoginScreen1(),
+                builder: (context) => const LoginScreen1(),
               ),
             );
           },
@@ -521,19 +519,19 @@ void _verifyOtpAndProceed() {
                 counterText: '',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                // onPressed: isLoading ? null : verifyMobileNumber,
                 onPressed: _isOtpButtonClicked ? null : verifyMobileNumber, // Disable after click
                 child: isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Text(localization.translate("Get OTP"),
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                        style: const TextStyle(color: Colors.white, fontSize: 18)),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             
             if (isOtpSent) ...[
               Row(
@@ -569,7 +567,7 @@ void _verifyOtpAndProceed() {
                   );
                 }),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
            SizedBox(
   width: double.infinity,
   child: ElevatedButton(
@@ -578,21 +576,21 @@ void _verifyOtpAndProceed() {
     },
     child: Text(
       localization.translate("Verify OTP"),
-      style: TextStyle(color: Colors.white, fontSize: 18),
+      style: const TextStyle(color: Colors.white, fontSize: 18),
     ),
   ),
 ),
 
 
 
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                Row(
   mainAxisAlignment: MainAxisAlignment.center,
   children: [
     Text(
       _isResendAvailable
-          ? localization.translate("Didn't receive the OTP?") + " "
+          ? "${localization.translate("Didn't receive the OTP?")} "
           : (_timerSeconds == 1
               ? localization.translate("Resend in 1 second") 
               : localization.translate("Resend OTP in $_timerSeconds seconds")),

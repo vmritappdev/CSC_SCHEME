@@ -11,7 +11,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 50), () {
+    Future.delayed(const Duration(seconds: 50), () {
       print("50 Seconds Timer Completed!"); // 50 sec తర్వాత action
     });
   }
@@ -21,11 +21,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:LoadingScreen(),
+      home:const LoadingScreen(),
     ),
   );
 }

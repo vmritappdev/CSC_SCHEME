@@ -10,11 +10,6 @@ class RegistrationService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 
-    if (mobileNumber == null) {
-      print("📵 Mobile number not found in SharedPreferences.");
-      return null;
-    }
-
     try {
       final response = await http.post(
         url,

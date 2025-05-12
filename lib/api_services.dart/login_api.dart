@@ -13,7 +13,7 @@ class UserService {
       await prefs.reload();
       String? mobileNumber = prefs.getString('userPhoneNumber');
 
-      if (mobileNumber == null || mobileNumber.length != 10) {
+      if (mobileNumber?.length != 10) {
         print("❌ Mobile Number not found in SharedPreferences");
         return false;
       }

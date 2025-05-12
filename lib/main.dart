@@ -25,16 +25,18 @@ void main() async {
           create: (_) => LocalizationProvider(),
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(360, 690), // 👈 Set this based on your Figma/Design
+      designSize: const Size(360, 690), // 👈 Set this based on your Figma/Design
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
@@ -42,25 +44,25 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter App',
           theme: ThemeData(
-            primaryColor: Color.fromRGBO(2, 5, 62, 1),
+            primaryColor: const Color.fromRGBO(2, 5, 62, 1),
             scaffoldBackgroundColor: Colors.white,
             textTheme: GoogleFonts.latoTextTheme(),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+                backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
             ),
-            inputDecorationTheme: InputDecorationTheme(
+            inputDecorationTheme: const InputDecorationTheme(
               border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
               ),
             ),
           ),
-          home: SplashScreen(),
+          home: const SplashScreen(),
         );
       },
     );

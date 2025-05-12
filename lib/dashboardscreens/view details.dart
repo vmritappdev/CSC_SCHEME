@@ -28,11 +28,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: JewelryTransactionScreen(schemeId: ''),
+      home: const JewelryTransactionScreen(schemeId: ''),
     ),
   );
 }
@@ -40,16 +40,16 @@ void main() {
 class JewelryTransactionScreen extends StatefulWidget {
   final String schemeId;
 
-  JewelryTransactionScreen({required this.schemeId});
+  const JewelryTransactionScreen({super.key, required this.schemeId});
 
   @override
   State<JewelryTransactionScreen> createState() => _JewelryTransactionScreenState();
 }
 
 class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
-  final Color headerBackgroundColor = Color.fromRGBO(2, 5, 62, 1);
+  static const Color headerBackgroundColor = Color.fromRGBO(2, 5, 62, 1);
   final Color cardBackgroundColor = Colors.white;
-  final Color titleTextColor = Color.fromRGBO(2, 5, 62, 1);
+  static const Color titleTextColor = Color.fromRGBO(2, 5, 62, 1);
   final Color bodyTextColor = Colors.black87;
 
    //String mobile_number = "Loading...";
@@ -146,11 +146,6 @@ Future<void> verifyPaymentProcess() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 
-    if (mobileNumber == null) {
-      print("⚠️ Mobile number not found in SharedPreferences.");
-      return;
-    }
-
     print("📱 Mobile Number for API: $mobileNumber");
 
     final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
@@ -224,7 +219,7 @@ Future<void> verifyPaymentProcess() async {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -266,7 +261,7 @@ double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
      // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: headerBackgroundColor,
         centerTitle: true,
         title: Text(
@@ -279,7 +274,7 @@ double screenHeight = MediaQuery.of(context).size.height;
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Column(
                 children: [
@@ -295,7 +290,7 @@ double screenHeight = MediaQuery.of(context).size.height;
               installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
               context: context,
             );
-                  }).toList(),
+                  }),
 
 
 
@@ -326,8 +321,8 @@ double screenHeight = MediaQuery.of(context).size.height;
 
       
      Container(
-  margin: EdgeInsets.all(16), // Space outside the box
-  padding: EdgeInsets.all(16), // Space inside the box
+  margin: const EdgeInsets.all(16), // Space outside the box
+  padding: const EdgeInsets.all(16), // Space inside the box
   decoration: BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(12), // Rounded corners
@@ -336,7 +331,7 @@ double screenHeight = MediaQuery.of(context).size.height;
         color: Colors.grey.withOpacity(0.3), // Shadow color
         spreadRadius: 2,
         blurRadius: 8,
-        offset: Offset(0, 3), // Shadow position
+        offset: const Offset(0, 3), // Shadow position
       ),
     ],
   ),
@@ -351,7 +346,7 @@ double screenHeight = MediaQuery.of(context).size.height;
       Row(
         children: [
           Text(
-            "${localization.translate("Total Paid Amount")}",
+            localization.translate("Total Paid Amount"),
             style: GoogleFonts.lato(
               color: Colors.black, 
               fontWeight: FontWeight.bold
@@ -360,7 +355,7 @@ double screenHeight = MediaQuery.of(context).size.height;
         ],
       ),
 
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
 
 
     
@@ -368,7 +363,7 @@ double screenHeight = MediaQuery.of(context).size.height;
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.account_balance_wallet, color: Colors.green),
+          const Icon(Icons.account_balance_wallet, color: Colors.green),
 
           Text(
             "₹ $totalAmount",
@@ -392,7 +387,7 @@ double screenHeight = MediaQuery.of(context).size.height;
         ],
       ),
 
-      SizedBox(height: 12),
+      const SizedBox(height: 12),
 
       // Progress Indicator
       LinearProgressIndicator(
@@ -402,23 +397,23 @@ double screenHeight = MediaQuery.of(context).size.height;
         minHeight: 8,
       ),
 
-      SizedBox(height: 12),
+      const SizedBox(height: 12),
 
       // Outstanding Amount
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "${localization.translate("Outstanding Amount")}",
+            localization.translate("Outstanding Amount"),
             style: GoogleFonts.lato(
               color: Colors.red, 
               fontWeight: FontWeight.bold
             ),
           ),
-          Text(':', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+          const Text(':', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           Text(
             '₹ $balanceAmount',
-            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -449,11 +444,11 @@ double screenHeight = MediaQuery.of(context).size.height;
              
 
            Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))
                   ],
                 ),
@@ -462,12 +457,12 @@ double screenHeight = MediaQuery.of(context).size.height;
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.person, color: Colors.blue),
-                        SizedBox(width: 8),
+                        const Icon(Icons.person, color: Colors.blue),
+                        const SizedBox(width: 8),
   Text(
             capitalizeEachWord(name), // Capitalize each word
             style: GoogleFonts.lato(
-              color: Color.fromRGBO(2, 5, 67, 1),
+              color: const Color.fromRGBO(2, 5, 67, 1),
               fontWeight: FontWeight.bold,
               fontSize: 14 * MediaQuery.of(context).textScaleFactor,
             ),
@@ -475,18 +470,18 @@ double screenHeight = MediaQuery.of(context).size.height;
 
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.phone, color: Colors.green),
-                        SizedBox(width: 8),
-                        Text(phone, style: TextStyle(fontSize: 15)),
+                        const Icon(Icons.phone, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Text(phone, style: const TextStyle(fontSize: 15)),
                       ],
                     ),
-                    SizedBox(height: 12),
-                    infoRow('Scheme No','$regNo'),
+                    const SizedBox(height: 12),
+                    infoRow('Scheme No',regNo),
                     infoRow('Total Installments',   '$totalInstallments'),
-                    infoRow('Paid Installments',    '$paidInstallments',),
+                    infoRow('Paid Installments',    paidInstallments,),
                   ],
                 ),
               ),
@@ -511,8 +506,8 @@ double screenHeight = MediaQuery.of(context).size.height;
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(value, style: TextStyle(color: Colors.black54)),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(value, style: const TextStyle(color: Colors.black54)),
         ],
       ),
     );
@@ -575,7 +570,7 @@ switch (status) {
   return SizedBox(
    // height: 190,
     child: Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       //color: cardBackgroundColor,
        color: Colors.white, // White background
     shadowColor: Colors.grey.withOpacity(0.3), // Optional: shadow color
@@ -618,7 +613,7 @@ switch (status) {
               final String id = accountDetails[0]['id'] ?? '';
               final String month = accountDetails[0]['month'] ?? '';
               final String year = accountDetails[0]['year'] ?? '';
-              final String pay_id = accountDetails[0]['pay_id'] ?? ''; // Fetch the pay_id
+              final String payId = accountDetails[0]['pay_id'] ?? ''; // Fetch the pay_id
     
               // Print the fetched details for verification
               print("Reject clicked: Amount: $amount, ID: $id, Month: $month, Year: $year, Pay ID: $payid");
@@ -631,10 +626,10 @@ switch (status) {
                     amountRs: amount,
                     month: month,
                     year: year,
-                    payId: pay_id
+                    payId: payId
                     
                   ),
-                  rejectId: pay_id,
+                  rejectId: payId,
                   ),
     
     
@@ -720,7 +715,7 @@ switch (status) {
                 horizontal: MediaQuery.of(context).size.width * 0.02,
               ),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: const Color.fromRGBO(2, 5, 62, 1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -731,7 +726,7 @@ switch (status) {
                     color: Colors.white,
                     size: 12 * MediaQuery.of(context).textScaleFactor,
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                   Text(
                     localization.translate("Download"),
                     style: GoogleFonts.lato(
@@ -775,7 +770,7 @@ void _showErrorDialog(BuildContext context, String message) {
     context: context,
     barrierDismissible: false, // Prevent closing by tapping outside
     builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
        // borderRadius: BorderRadius.circular(16), // Rounded corners for dialog
       ),
       backgroundColor: Colors.white,
@@ -825,7 +820,7 @@ void _showErrorDialog(BuildContext context, String message) {
           // Full-Width Button at the Bottom
           Container(
             width: double.infinity, // Full width button
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromRGBO(2, 5, 62, 1), // Button background color
               borderRadius: BorderRadius.only(
               //  bottomLeft: Radius.circular(16),
@@ -893,7 +888,7 @@ void _showErrorDialog(BuildContext context, String message) {
     if (installmentNumber == 1) return '1st Installment';
     if (installmentNumber == 2) return '2nd Installment';
     if (installmentNumber == 3) return '3rd Installment';
-    return '$installmentNumber' + 'th Installment';
+    return '$installmentNumber' 'th Installment';
   }
 
   void downloadRecepit(String receiptNo) {

@@ -21,17 +21,17 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:CustomerCare(),
+      home:const CustomerCare(),
     ),
   );
 }
 
 class CustomerCare extends StatefulWidget {
-  const CustomerCare({Key? key}) : super(key: key);
+  const CustomerCare({super.key});
 
   @override
   State<CustomerCare> createState() => _CustomerCareState();
@@ -96,7 +96,7 @@ class _CustomerCareState extends State<CustomerCare> {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -147,7 +147,7 @@ Future<void> submitForm() async {
   bool hasInternet = await ApiService().checkInternet();
   if (!hasInternet) {
    // _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-   ErrorScreen();
+   const ErrorScreen();
     return;
   }
 
@@ -266,13 +266,13 @@ Future<void> requestCallPermission() async {
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: BackButton(color: Colors.white),
+        leading: const BackButton(color: Colors.white),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         title: Text(
          localization.translate("Enquiry Form"),
           style: GoogleFonts.roboto(
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 18,
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -297,7 +297,7 @@ Future<void> requestCallPermission() async {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                    border: const OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -314,7 +314,7 @@ Future<void> requestCallPermission() async {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                    border: const OutlineInputBorder(borderSide: BorderSide.none),
                   ),
                   keyboardType: TextInputType.phone,
                   validator: (value) {
@@ -335,9 +335,9 @@ Future<void> requestCallPermission() async {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[200],
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                    border: const OutlineInputBorder(borderSide: BorderSide.none),
                     hintText: localization.translate('Enter your complaint details...',),
-                    hintStyle: TextStyle(fontSize: 14),
+                    hintStyle: const TextStyle(fontSize: 14),
                   ),
                   validator: (value) {
     if (value == null || value.trim().isEmpty) {
@@ -346,27 +346,27 @@ Future<void> requestCallPermission() async {
     return null;
   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                
                 SizedBox(
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
+                      shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(2, 5, 62, 1),
+                      backgroundColor: WidgetStateProperty.all(
+                        const Color.fromRGBO(2, 5, 62, 1),
                       ),
                     ),
                     onPressed: submitForm,
                     child: Text(
                       localization.translate('SUBMIT'),
                       style: GoogleFonts.roboto(
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -377,7 +377,7 @@ Future<void> requestCallPermission() async {
                 ),
 
 
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
 
                Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,15 +386,15 @@ Future<void> requestCallPermission() async {
       onTap: makePhoneCall,
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 20,
             backgroundColor: Colors.green,
             child: Icon(Icons.phone, color: Colors.white, size: 20),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             localization.translate('Phone Call'),
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -403,15 +403,15 @@ Future<void> requestCallPermission() async {
       onTap: _openWhatsApp,
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 20,
             backgroundColor: Colors.green,
             child: Icon(Icons.chat, color: Colors.white, size: 20),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(
             localization.translate('WhatsApp Chat'),
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -420,23 +420,23 @@ Future<void> requestCallPermission() async {
 ),
 
 
-SizedBox(height: 10,),
+const SizedBox(height: 10,),
 
 
 
-    SizedBox(height: 8),
+    const SizedBox(height: 8),
 
 
 
 Container(
-  padding: EdgeInsets.all(16),
+  padding: const EdgeInsets.all(16),
   decoration: BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(16),
     border: Border.all(color: Colors.grey.shade300),
-    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
+    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
   ),
-  child: Column(
+  child: const Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // Adding the "Communication Address" box
@@ -499,8 +499,8 @@ Container(
 
 if (_message.isNotEmpty)
   Container(
-    padding: EdgeInsets.all(12),
-    margin: EdgeInsets.symmetric(vertical: 12),
+    padding: const EdgeInsets.all(12),
+    margin: const EdgeInsets.symmetric(vertical: 12),
     decoration: BoxDecoration(
       color: _message.startsWith('Success') ? Colors.green[50] : Colors.red[50],
       border: Border.all(
@@ -520,7 +520,7 @@ if (_message.isNotEmpty)
 
 
 
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
 
 
         Expanded(

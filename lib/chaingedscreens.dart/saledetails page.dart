@@ -7,7 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BillSummaryScreen extends StatefulWidget {
   final String saleId;
-  const BillSummaryScreen({Key? key, required this.saleId}) : super(key: key);
+  const BillSummaryScreen({super.key, required this.saleId});
 
   @override
   State<BillSummaryScreen> createState() => _BillSummaryScreenState();
@@ -100,7 +100,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7), // Premium light background
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF0A0E21), // Darker premium color
         centerTitle: true,
         elevation: 0,
@@ -123,7 +123,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
         padding: EdgeInsets.all(isSmallScreen ? 12 : 20),
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 600),
+            constraints: const BoxConstraints(maxWidth: 600),
             child: Container(
               padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
               decoration: BoxDecoration(
@@ -136,7 +136,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                     offset: const Offset(0, 10),
                   ),
                 ],
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
@@ -153,9 +153,9 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   Row(
                     children: [
                       Icon(Icons.receipt_long,
-                          color: Color(0xFF0A0E21),
+                          color: const Color(0xFF0A0E21),
                           size: isSmallScreen ? 24 : 28),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Text(
                         'Bill Summary',
                         style: GoogleFonts.playfairDisplay(
@@ -202,7 +202,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   Container(
                     padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
                     decoration: BoxDecoration(
-                      color: Color(0xFF0A0E21).withOpacity(0.05),
+                      color: const Color(0xFF0A0E21).withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -245,17 +245,17 @@ Center(
       );
       if (!launched) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch download link')),
+          const SnackBar(content: Text('Could not launch download link')),
         );
       }
     },
-    icon: Icon(Icons.download),
-    label: Text('Download Sale Invoice'),
+    icon: const Icon(Icons.download),
+    label: const Text('Download Sale Invoice'),
     style: ElevatedButton.styleFrom(
-      backgroundColor: Color(0xFF0A0E21),
+      backgroundColor: const Color(0xFF0A0E21),
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
     ),
   ),
 ),

@@ -18,16 +18,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: LoginPage(),
+      home: const LoginPage(),
     ),
   );
 }
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -40,9 +42,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _showFingerprint = false;
   String errorMessage = '';
   bool _isBiometricAvailable = false;
-  bool _isPinVisible = false;
+  final bool _isPinVisible = false;
 
-  List<String> _enteredMpin = [];
+  final List<String> _enteredMpin = [];
 final String correctMpin = "1234"; // Example correct MPIN
 
 
@@ -106,7 +108,7 @@ void _validatePin() async {
       errorMessage = ''; // <<< Correct MPIN ayite error message empty cheyyadam
     });
 
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
@@ -230,7 +232,7 @@ Future<void> _authenticateUser() async {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -289,14 +291,14 @@ Future<bool> checkInternet() async {
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
     //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-    ErrorScreen();
+    const ErrorScreen();
       return false;
     }
     const String phpUrl = "$baseUrl/mpin_verify.php";
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');
-      if (mobileNumber == null || mobileNumber.isEmpty) {
+      if (mobileNumber!.isEmpty) {
         setState(() {
           errorMessage = 'Mobile number not found. Please try again.';
         });
@@ -325,13 +327,13 @@ Future<bool> checkInternet() async {
     bool hasInternet = await checkInternet();
   if (!hasInternet) {
   //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-  ErrorScreen();
+  const ErrorScreen();
     return;
   }
     try {
       bool isAuthenticated = await auth.authenticate(
         localizedReason: 'Scan your fingerprint to login',
-        options: AuthenticationOptions(stickyAuth: true, biometricOnly: true),
+        options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true),
       );
       if (isAuthenticated) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -393,7 +395,7 @@ Widget build(BuildContext context) {
               BoxShadow(
                 color: Colors.grey.shade300,
                 blurRadius: 10,
-                offset: Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -416,7 +418,7 @@ Widget build(BuildContext context) {
       onPressed: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ForgotScreen()),
+          MaterialPageRoute(builder: (context) => const ForgotScreen()),
         );
       },
       child: Text(
@@ -452,7 +454,7 @@ Widget build(BuildContext context) {
             child: _isSuccess
                 ? Icon(Icons.check_circle, color: Colors.green, size: iconSize)
                
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
           ),
         ),
 
@@ -477,7 +479,7 @@ Widget build(BuildContext context) {
             BoxShadow(
               color: Colors.grey.shade300,
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -511,7 +513,7 @@ Widget build(BuildContext context) {
                     BoxShadow(
                       color: Colors.grey.shade300,
                       blurRadius: 8,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),

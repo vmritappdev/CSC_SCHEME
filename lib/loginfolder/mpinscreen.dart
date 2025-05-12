@@ -20,11 +20,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:CreateMpinScreen5(),
+      home:const CreateMpinScreen5(),
     ),
   );
 }
@@ -148,7 +148,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
                 child: 
                    ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(2, 5, 62, 1), 
+                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1), 
                      // shadowColor: Colors.transparent, 
                      padding: EdgeInsets.symmetric(
   vertical: MediaQuery.of(context).size.height * 0.015, // Dynamic Vertical Padding
@@ -237,7 +237,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
 
       
 
-      if (mobileNumber == null || mobileNumber.isEmpty) {
+      if (mobileNumber!.isEmpty) {
         setState(() {
            errorMessage = 'Mobile number not found. Please try again.';
         });
@@ -355,7 +355,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
           fontSize = fontSize.clamp(12, 24); // Set min/max limits
   final localization = Provider.of<LocalizationProvider>(context);
           return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
              // borderRadius: BorderRadius.circular(10),
             ),
             backgroundColor: Colors.white,
@@ -363,7 +363,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: constraints.maxWidth * 0.08, // Dynamic height
                   width: constraints.maxWidth * 0.08,  // Dynamic width
@@ -372,7 +372,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
@@ -384,11 +384,11 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(2, 5, 62, 1),
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(2, 5, 62, 1),
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -453,7 +453,7 @@ void _showInvalidOTPDialog(String message) {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(

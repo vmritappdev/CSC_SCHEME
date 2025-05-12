@@ -23,14 +23,16 @@ void main() {
   runApp(MaterialApp(
      builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-    home: SavingsAccountScreen()));
+    home: const SavingsAccountScreen()));
 }
 
 class SavingsAccountScreen extends StatefulWidget {
+  const SavingsAccountScreen({super.key});
+
   @override
   _SavingsAccountScreenState createState() => _SavingsAccountScreenState();
 }
@@ -40,7 +42,7 @@ class _SavingsAccountScreenState extends State<SavingsAccountScreen> {
   bool isTransactionComplete = false;
   bool isPaymentComplete = false;
 
-    bool _isLoading = false;
+    final bool _isLoading = false;
     String processStatus = "";
     String id = '';
 
@@ -86,7 +88,7 @@ class _SavingsAccountScreenState extends State<SavingsAccountScreen> {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -160,15 +162,10 @@ Future<bool> checkInternet() async {
     }
 
     
-  final String apiUrl = "$baseUrl/process_verification.php";
+  const String apiUrl = "$baseUrl/process_verification.php";
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
 
   try {
     final response = await http.post(
@@ -243,7 +240,7 @@ Future<bool> checkInternet() async {
         ),
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.push(context, 
             MaterialPageRoute(
@@ -254,7 +251,7 @@ Future<bool> checkInternet() async {
         ),
       ),
       body: _isLoading
-      ? CircularProgressIndicator()
+      ? const CircularProgressIndicator()
      : Column(
         children: [
           Container(
@@ -294,12 +291,12 @@ Future<bool> checkInternet() async {
                       ],
                     ),
                   ),
-                Container(
+                SizedBox(
                     width: double.infinity,
                     height: screenHeight * 0.07,
                     child: ElevatedButton(
   style: ElevatedButton.styleFrom(
-    backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
@@ -323,7 +320,7 @@ Future<bool> checkInternet() async {
   if (processStatus == "1") {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
+      MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
     );
     return; // Stop further execution
   }
@@ -331,7 +328,7 @@ Future<bool> checkInternet() async {
   if (!isGoldSchemeComplete) {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Jionscheme2()),
+      MaterialPageRoute(builder: (context) => const Jionscheme2()),
     );
     if (result == true) {
       setState(() {
@@ -352,7 +349,7 @@ Future<bool> checkInternet() async {
   } else if (!isPaymentComplete) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
+      MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
     );
   } else {
     setState(() {
@@ -364,7 +361,7 @@ Future<bool> checkInternet() async {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Jionscheme2()),
+      MaterialPageRoute(builder: (context) => const Jionscheme2()),
     );
   }
 },
@@ -471,7 +468,7 @@ Future<bool> checkInternet() async {
                 MaterialPageRoute(builder: (context) => nextScreen), // Open new screen
               );
             },
-            child: Text("OK", style: TextStyle(color: Colors.blue)),
+            child: const Text("OK", style: TextStyle(color: Colors.blue)),
           ),
         ],
       );

@@ -23,6 +23,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen1 extends StatefulWidget {
+  const LoginScreen1({super.key});
+
   @override
   _LoginScreen1State createState() => _LoginScreen1State();
 }
@@ -32,7 +34,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController mpinController = TextEditingController();
   String errorMessage = '';
-   String _message = '';
+   final String _message = '';
 bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
@@ -46,14 +48,14 @@ Future<void> _checkSavedPhoneNumber() async {
   await prefs.reload(); // Ensure the latest data is fetched
   String? savedPhoneNumber = prefs.getString('userPhoneNumber');
 
-  if (savedPhoneNumber != null && savedPhoneNumber.length == 10) {
+  if (savedPhoneNumber!.length == 10) {
     print("✅ Mobile Number Found: $savedPhoneNumber");
 
     // Navigate directly to the HomeScreen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => const LoginPage(),
       ),
     );
   } else {
@@ -77,16 +79,12 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     await prefs.reload();  // ✅ Reloads latest data
     String? phoneNumber = prefs.getString('userPhoneNumber');
 
-    if (phoneNumber != null) {
-      setState(() {
-        
-        phoneController.text = phoneNumber;
-      });
-      print("✅ Loaded Mobile Number: $phoneNumber");
-    } else {
-      print("❌ Mobile Number Not Found");
+    setState(() {
+      
+      phoneController.text = phoneNumber!;
+    });
+    print("✅ Loaded Mobile Number: $phoneNumber");
     }
-  }
 
 
 
@@ -113,7 +111,7 @@ Future<void> _fetchUserDetails() async {
     await prefs.reload(); // ✅ Ensures latest data is fetched
     String? mobileNumber = prefs.getString('userPhoneNumber');
 
-    if (mobileNumber == null || mobileNumber.length != 10) {
+    if (mobileNumber!.length != 10) {
       print("❌ Mobile Number not found in SharedPreferences");
       return;
     }
@@ -244,7 +242,7 @@ void _verifyMpin() async {
     await _fetchUserDetails();
 
     // Navigate to HomeScreen
-    await Future.delayed(Duration(milliseconds: 300)); // Allow saving to complete
+    await Future.delayed(const Duration(milliseconds: 300)); // Allow saving to complete
     await loadPhoneNumber(); // Ensure it loads correctly
 
     Navigator.pushReplacement(
@@ -271,7 +269,7 @@ void _showErrorPopup() {
     builder: (BuildContext context) {
       final localization = Provider.of<LocalizationProvider>(context);
       return AlertDialog(
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
         ),
         backgroundColor: Colors.white,
@@ -279,10 +277,10 @@ void _showErrorPopup() {
         content: Column(
         mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             // 🔴 Icon Added
-            Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
-            SizedBox(height: 10),
+            const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
+            const SizedBox(height: 10),
             // 📄 Message
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -296,12 +294,12 @@ void _showErrorPopup() {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // 🔘 OK Button
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-              color: const Color.fromRGBO(2, 5, 62, 1),
+              decoration: const BoxDecoration(
+              color: Color.fromRGBO(2, 5, 62, 1),
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               ),
               child: TextButton(
@@ -316,7 +314,7 @@ void _showErrorPopup() {
                 },
                 child: Text(
                   localization.translate("OK"),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
@@ -367,7 +365,7 @@ void _showErrorPopup() {
                         Navigator.push(
                           context, 
                           MaterialPageRoute(
-                            builder: (context) => TermsAndConditionsScreen(),
+                            builder: (context) => const TermsAndConditionsScreen(),
                           )
                         );
                       },
@@ -409,7 +407,7 @@ void _showErrorPopup() {
                   Navigator.pushReplacement(
                     context, 
                     MaterialPageRoute(
-                      builder: (context) => ForgotScreen1(),
+                      builder: (context) => const ForgotScreen1(),
                     )
                   );
                 },
@@ -424,13 +422,13 @@ void _showErrorPopup() {
                 Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
 
               SizedBox(height: screenHeight * 0.04),
-              _buildButton(localization.translate("Login"), Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+              _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
               SizedBox(height: screenHeight * 0.015),
-              _buildButton(localization.translate("Login with OTP"), Colors.white, Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+              _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
                  Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>LoginOtp(),
+          builder: (context) =>const LoginOtp(),
         ),
       );
             
@@ -439,20 +437,20 @@ void _showErrorPopup() {
               SizedBox(height: screenHeight * 0.03),
               Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
                  SizedBox(height: screenHeight * 0.02),
-              GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
+              GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:const Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
               ),
               onTap: () {
                  Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>CurvedImageScreen2(),
+          builder: (context) =>const CurvedImageScreen2(),
         ),
       );
               },
               ),
 
               SizedBox(height: screenHeight * 0.03),
-              Divider(),
+              const Divider(),
               SizedBox(height: screenHeight * 0.015),
              // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
             ],
@@ -484,7 +482,7 @@ Widget _buildTextField(
       keyboardType: label == "Mobile Number" ? TextInputType.phone : TextInputType.number,
       maxLength: maxLength,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Color.fromARGB(255, 3, 21, 47)),
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47)),
         suffixIcon: label == "MPIN"
             ? IconButton(
                 icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility),
@@ -533,7 +531,7 @@ void showLoaderDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Center(
-        child: Container(
+        child: SizedBox(
           width: 100,
           height: 100,
           child: Image.asset(

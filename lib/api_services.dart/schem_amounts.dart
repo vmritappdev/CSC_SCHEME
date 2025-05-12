@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   Future<List<String>> fetchAmounts() async {
-    final String url = "$baseUrl/get_amount.php";
+    const String url = "$baseUrl/get_amount.php";
 
     try {
       final response = await http.get(Uri.parse(url));

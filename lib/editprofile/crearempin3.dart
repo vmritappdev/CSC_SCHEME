@@ -14,11 +14,11 @@ import 'package:provider/provider.dart';
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:CreateMpin2Screen(),
+      home:const CreateMpin2Screen(),
     ),
   );
 }
@@ -38,7 +38,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
 
 
 
-  final defaultPinTheme = PinTheme(
+  static const defaultPinTheme = PinTheme(
     width: 80,
     height: 70,
     textStyle: TextStyle(
@@ -70,7 +70,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
                 maxHeight: screenHeight,
                 maxWidth: screenWidth,
               ),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     Color.fromRGBO(2, 5, 62, 1),
@@ -112,7 +112,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
 
                             Align(
                               alignment: Alignment.centerLeft,
@@ -136,7 +136,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
 
 
 
-                            Align(
+                            const Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Confirm_Mpin',
@@ -158,7 +158,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
 
                                 child: Text(
                                   errorMessage,
-                                  style: TextStyle(color: Colors.red),
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               ),
                             SizedBox(height: screenHeight * 0.09),
@@ -188,7 +188,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
         defaultPinTheme: defaultPinTheme,
         focusedPinTheme: defaultPinTheme.copyWith(
           decoration: defaultPinTheme.decoration!.copyWith(
-            border: Border(bottom: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2)),
+            border: const Border(bottom: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2)),
           ),
         ),
         onChanged: onChanged,
@@ -203,7 +203,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () {
@@ -243,7 +243,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           Navigator.pop(context);
           Navigator.push(
             context,

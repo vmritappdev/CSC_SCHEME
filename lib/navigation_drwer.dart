@@ -16,11 +16,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: NavigationDrawerScreen(),
+      home: const NavigationDrawerScreen(),
     ),
   );
 }
@@ -56,7 +56,7 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
     await prefs.clear(); // Clear all stored data
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen1()), // Replace with your main app entry point
+      MaterialPageRoute(builder: (context) => const LoginScreen1()), // Replace with your main app entry point
       (route) => false, // Remove all previous routes
     );
   }
@@ -85,7 +85,7 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      color: Color.fromRGBO(2, 5, 62, 1),
+      color: const Color.fromRGBO(2, 5, 62, 1),
       padding: EdgeInsets.only(
         top: 24 + topPadding, // Add top padding dynamically
         bottom: screenHeight * 0.03, // 3% of screen height for bottom padding
@@ -124,33 +124,33 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
           buildMenuTile("assets/images/schme.png", localization.translate("Join Scheme"), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SavingsAccountScreen()),
+              MaterialPageRoute(builder: (context) => const SavingsAccountScreen()),
             );
           }),
 
           buildMenuTile("assets/images/myschme.png", localization.translate("My Scheme"), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PaymentCard()),
+              MaterialPageRoute(builder: (context) => const PaymentCard()),
             );
           }),
 
           buildMenuTile("assets/images/customre.png", localization.translate("Customer Care"), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CustomerCare()),
+              MaterialPageRoute(builder: (context) => const CustomerCare()),
             );
           }),
           buildMenuTile("assets/images/transation.png", localization.translate("Transactions"), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Transaction()),
+              MaterialPageRoute(builder: (context) => const Transaction()),
             );
           }),
           buildMenuTile("assets/images/browser.png", localization.translate("Brochure"), () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => BrochureScreen()),
+              MaterialPageRoute(builder: (context) => const BrochureScreen()),
             );
           }),
 

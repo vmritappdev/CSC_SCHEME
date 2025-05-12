@@ -11,7 +11,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class ReceiptPDFGenerator {
   final String payId;
-  final PdfColor textColor = PdfColor.fromInt(0xCC000000); // 0xCC = 80% opacity
+  static const PdfColor textColor = PdfColor.fromInt(0xCC000000); // 0xCC = 80% opacity
 
 
   ReceiptPDFGenerator({required this.payId});
@@ -82,13 +82,13 @@ class ReceiptPDFGenerator {
             decoration: pw.BoxDecoration(
               border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
               borderRadius: pw.BorderRadius.circular(12),
-              gradient: pw.LinearGradient(
+              gradient: const pw.LinearGradient(
                 colors: [PdfColors.white, secondaryColor],
                 begin: pw.Alignment.topCenter,
                 end: pw.Alignment.bottomCenter,
               ),
             ),
-            padding: pw.EdgeInsets.all(24),
+            padding: const pw.EdgeInsets.all(24),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
@@ -121,7 +121,7 @@ class ReceiptPDFGenerator {
                                   color: primaryColor,
                                 )),
                             pw.Text("Advanced Gold Purchased Plan",
-                                style: pw.TextStyle(
+                                style: const pw.TextStyle(
                                   fontSize: 12,
                                   color: accentColor,
                                   letterSpacing: 1.2,
@@ -137,11 +137,11 @@ class ReceiptPDFGenerator {
 
                 /// Company Info with Elegant Styling
                 pw.Container(
-                  padding: pw.EdgeInsets.all(12),
+                  padding: const pw.EdgeInsets.all(12),
                   decoration: pw.BoxDecoration(
                     color: PdfColors.white,
                     borderRadius: pw.BorderRadius.circular(8),
-                    boxShadow: [
+                    boxShadow: const [
                       pw.BoxShadow(
                         color: PdfColors.grey300,
                         blurRadius: 2,
@@ -160,9 +160,9 @@ class ReceiptPDFGenerator {
                               color: primaryColor)),
                       pw.Text(
                           "${data['c_city']}, ${data['c_state']} - ${data['c_pin']}",
-                          style: pw.TextStyle(fontSize: 10, color: textColor)),
+                          style: const pw.TextStyle(fontSize: 10, color: textColor)),
                       pw.Text("Phone: ${data['c_phone']}", 
-                          style: pw.TextStyle(fontSize: 10, color: textColor)),
+                          style: const pw.TextStyle(fontSize: 10, color: textColor)),
                     ],
                   ),
                 ),
@@ -180,7 +180,7 @@ class ReceiptPDFGenerator {
                     ),
                     pw.Center(
                       child: pw.Container(
-                        padding: pw.EdgeInsets.symmetric(horizontal: 16),
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 16),
                         decoration: pw.BoxDecoration(
                           color: secondaryColor,
                           borderRadius: pw.BorderRadius.circular(20),
@@ -202,11 +202,11 @@ class ReceiptPDFGenerator {
 
                 /// Receipt Details in Elegant Layout
                 pw.Container(
-                  padding: pw.EdgeInsets.all(16),
+                  padding: const pw.EdgeInsets.all(16),
                   decoration: pw.BoxDecoration(
                     color: PdfColors.white,
                     borderRadius: pw.BorderRadius.circular(8),
-                    boxShadow: [
+                    boxShadow: const [
                       pw.BoxShadow(
                         color: PdfColors.grey200,
                         blurRadius: 3,
@@ -263,7 +263,7 @@ class ReceiptPDFGenerator {
         alignment: pw.Alignment.centerRight,
         child: pw.Text(
           'Authorized Signature',
-          style: pw.TextStyle(fontSize: 12),
+          style: const pw.TextStyle(fontSize: 12),
         ),
       ),
     ],
@@ -300,7 +300,7 @@ class ReceiptPDFGenerator {
             style: pw.TextStyle(
               fontSize: 11,
               fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(0xFF7F8C8D),
+              color: const PdfColor.fromInt(0xFF7F8C8D),
             ),
           ),
         ),

@@ -15,11 +15,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: ForgotScreen(),
+      home: const ForgotScreen(),
     ),
   );
 }
@@ -56,7 +56,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
       builder: (BuildContext context) {
         final localization = Provider.of<LocalizationProvider>(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(),
+          shape: const RoundedRectangleBorder(),
           backgroundColor: Colors.white,
           contentPadding: EdgeInsets.zero,
           content: Column(
@@ -227,7 +227,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   void _navigateToNextScreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => CreateMpinScreen5()),
+      MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
     );
   }
 

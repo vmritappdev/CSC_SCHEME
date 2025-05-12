@@ -22,11 +22,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: ProfileScreen(schemeID: '',),
+      home: const ProfileScreen(schemeID: '',),
     ),
   );
 }
@@ -35,7 +35,7 @@ class ProfileScreen extends StatefulWidget {
 
   final String schemeID; // Optional image path parameter
 
-  const ProfileScreen({required this.schemeID});
+  const ProfileScreen({super.key, required this.schemeID});
   
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -99,10 +99,10 @@ Future<void> _pickImage() async {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text("Choose Option"),
+        title: const Text("Choose Option"),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(1), child: Text("Gallery")),
-          TextButton(onPressed: () => Navigator.of(context).pop(2), child: Text("Camera")),
+          TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
+          TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
         ],
       );
     },
@@ -122,7 +122,7 @@ Future<void> _pickImage() async {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
+      builder: (_) => const Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
     );
 
     try {
@@ -164,16 +164,11 @@ Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
-
   const String apiUrl = "$baseUrl/profile.php";
 
   try {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
-    request.fields['mobile_no'] = mobileNumber;
+    request.fields['mobile_no'] = mobileNumber!;
    //  request.fields['profile_image'] = ImagePicker().toString(); // Add mobile number to request
 
     if (profileImage != null) {
@@ -218,11 +213,6 @@ Future<void> fetchAndSaveImage() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return; // Exit if no mobile number
-  }
-
   const String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
 
   try {
@@ -264,16 +254,16 @@ Future<void> fetchAndSaveImage() async {
         centerTitle: true,
         title: Text(
         localization.translate("PROFILE DETAILS"),
-          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Stack(
               children: [
                Positioned(
@@ -299,7 +289,7 @@ Future<void> fetchAndSaveImage() async {
         right: 0,
         child: GestureDetector(
           onTap: _pickImage, // ✅ Camera icon click => Open picker
-          child: CircleAvatar(
+          child: const CircleAvatar(
             radius: 15,
             backgroundColor: Colors.white,
             child: Icon(
@@ -316,19 +306,19 @@ Future<void> fetchAndSaveImage() async {
 
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              localization.translate("$firstName"),
-              style: TextStyle(
+              localization.translate(firstName),
+              style: const TextStyle(
                 color: Color.fromRGBO(2, 5, 62, 1),
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              localization.translate("$phoneNumber"),
-              style: TextStyle(color: Color.fromRGBO(2, 5, 62, 1),),
+              localization.translate(phoneNumber),
+              style: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1),),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Navigation Buttons
            _buildButton(
@@ -338,7 +328,7 @@ Future<void> fetchAndSaveImage() async {
     // Navigate to Edit Profile Screen
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditProfileScreen()),
+      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
     );
   },
 ),
@@ -348,7 +338,7 @@ _buildButton(
   onPressed: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditMPINScreen()),
+      MaterialPageRoute(builder: (context) => const EditMPINScreen()),
     );
   },
 ),
@@ -361,7 +351,7 @@ _buildButton(
   onPressed: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Editscheme1()),
+      MaterialPageRoute(builder: (context) => const Editscheme1()),
     );
   },
 ),
@@ -374,12 +364,12 @@ _buildButton(
   onPressed: () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => FAQScreen()),
+      MaterialPageRoute(builder: (context) => const FAQScreen()),
     );
   },
 ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             
           ],
@@ -391,21 +381,21 @@ _buildButton(
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PaymentCard(),
+              builder: (context) => const PaymentCard(),
             ) 
           ); // Redirect or logout functionality
         },
         label: Text(
           localization.translate("My Scheme"),
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
        // icon: Icon(Icons.logout, color: Colors.white),
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: Color.fromRGBO(2, 5, 62, 1),
-        shape: CircularNotchedRectangle(),
+        color: const Color.fromRGBO(2, 5, 62, 1),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -413,7 +403,7 @@ _buildButton(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
+                icon: const Icon(Icons.home, color: Colors.white),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -423,7 +413,7 @@ _buildButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),
@@ -445,9 +435,9 @@ _buildButton(
     child: ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey[200],
-        foregroundColor: Color.fromRGBO(2, 5, 62, 1),
-        padding: EdgeInsets.symmetric(vertical: 16),
-        minimumSize: Size(double.infinity, 50),
+        foregroundColor: const Color.fromRGBO(2, 5, 62, 1),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -455,11 +445,11 @@ _buildButton(
       ),
       icon: Padding(
         padding: const EdgeInsets.only(left: 10),
-        child: Icon(icon, color: Color.fromRGBO(2, 5, 62, 1), size: 20),
+        child: Icon(icon, color: const Color.fromRGBO(2, 5, 62, 1), size: 20),
       ),
       label: Text(
         label,
-        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
       ),
       onPressed: onPressed,
     ),

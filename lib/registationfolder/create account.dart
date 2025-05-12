@@ -29,17 +29,19 @@ import 'package:connectivity_plus/connectivity_plus.dart';
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:CurvedImageScreen2(),
+      home:const CurvedImageScreen2(),
     ),
   );
 }
 
 
 class CurvedImageScreen2 extends StatefulWidget {
+  const CurvedImageScreen2({super.key});
+
   @override
   State<CurvedImageScreen2> createState() => _CurvedImageScreen2State();
 }
@@ -64,7 +66,7 @@ class _CurvedImageScreen2State extends State<CurvedImageScreen2> {
   await prefs.reload(); // Ensure the latest data is fetched
   String? savedPhoneNumber = prefs.getString('userPhoneNumber');
 
-  if (savedPhoneNumber != null && savedPhoneNumber.length == 10) {
+  if (savedPhoneNumber!.length == 10) {
     print("✅ Mobile Number Found: $savedPhoneNumber");
 
     // Navigate directly to the HomeScreen
@@ -96,10 +98,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   Future<void> loadPhoneNumber() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? phoneNumber = prefs.getString('userPhoneNumber');
-    if (phoneNumber != null) {
-      phoneController.text = phoneNumber;
+    phoneController.text = phoneNumber!;
     }
-  }
 
    void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
@@ -132,7 +132,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -168,9 +168,9 @@ Future<void> savePhoneNumber(String mobileNumber) async {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           title: Row(
             children: [
-              Icon(Icons.error, color: Colors.red, size: 30),
+              const Icon(Icons.error, color: Colors.red, size: 30),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Text(
+              const Text(
                 'Alert Message',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -178,7 +178,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
           ),
           content: Text(
             message,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           actions: [
             SizedBox(
@@ -186,7 +186,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
              // width: MediaQuery.of(context).size.width * 0.9,
               child: Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromRGBO(2, 5, 62, 1),
                 //  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
                 ),
@@ -194,7 +194,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text(
+                  child: const Text(
                     "OK",
                     style: TextStyle(
                       color: Colors.white,
@@ -240,7 +240,7 @@ Future<void> submitForm() async {
       _isLoading = true;
     });
 
-    final url = "$baseUrl/save_account.php";    //"https://vmrdemos.com/csc_scheme/save_account.php"
+    const url = "$baseUrl/save_account.php";    //"https://vmrdemos.com/csc_scheme/save_account.php"
 
     final data = {
       'f_name': _controllerFirstName.text,
@@ -277,7 +277,7 @@ Future<void> submitForm() async {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => OtpScreen()),
+            MaterialPageRoute(builder: (context) => const OtpScreen()),
           );
         } else {
           _showInvalidOTPDialog(responseData['message']);
@@ -331,16 +331,15 @@ Future<void> submitForm() async {
                           child: Column(
                             children: [
 
-                              Align(child: BackButton(
+                              Align(alignment: Alignment.bottomLeft, child: BackButton(
                                 onPressed: () {
                                   Navigator.push(context,
                                   MaterialPageRoute(
-                                    builder: (context) => LoginScreen1(),
+                                    builder: (context) => const LoginScreen1(),
                                   )
                                   );
                                 },
-                              ),
-                              alignment: Alignment.bottomLeft),
+                              )),
                               Image.asset(
                                 'assets/images/csc2.png',
                               height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
@@ -353,7 +352,7 @@ Future<void> submitForm() async {
                                   fontSize: MediaQuery.of(context).size.width * 0.05,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FontStyle.italic,
-                                  color: Color.fromRGBO(2, 5, 67, 1),
+                                  color: const Color.fromRGBO(2, 5, 67, 1),
                                 ),
                               ),
 
@@ -376,7 +375,7 @@ Future<void> submitForm() async {
                         localization.translate("Register"),
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
-                           color: Color.fromRGBO(2, 5, 69, 1),
+                           color: const Color.fromRGBO(2, 5, 69, 1),
                             fontWeight: FontWeight.bold,
                             fontSize:MediaQuery.of(context).size.width * 0.05,
                           ),
@@ -468,7 +467,7 @@ Future<void> submitForm() async {
     
      ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1), // Make button background transparent
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1), // Make button background transparent
        // shadowColor: Colors.transparent, // Remove shadow if any
        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
       ),
@@ -546,11 +545,11 @@ Future<void> submitForm() async {
           labelText: labelText,
           
           labelStyle: GoogleFonts.lato(
-            textStyle: TextStyle(fontSize: screenWidth * 0.04, color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
+            textStyle: TextStyle(fontSize: screenWidth * 0.04, color: const Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
           ),
           prefixIcon: Icon(icon),
          // contentPadding: EdgeInsets.all(15),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
            focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
@@ -567,7 +566,7 @@ Future<void> submitForm() async {
    Widget _buildPhoneField() {
      final localization = Provider.of<LocalizationProvider>(context, listen: true);
   return Padding(
-     padding: EdgeInsets.symmetric(horizontal: 20),
+     padding: const EdgeInsets.symmetric(horizontal: 20),
     child: TextFormField(
        inputFormatters: [
     FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
@@ -582,7 +581,7 @@ Future<void> submitForm() async {
         labelText:localization.translate("Mobile Number"),
       //  labelStyle: const TextStyle(color: Colors.black),
        labelStyle: GoogleFonts.lato(
-            textStyle: TextStyle(fontSize: 15, color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(fontSize: 15, color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
           ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         prefixIcon: Padding(

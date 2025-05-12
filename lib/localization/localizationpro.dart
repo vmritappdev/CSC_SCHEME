@@ -27,14 +27,16 @@ class LocalizationProvider extends ChangeNotifier {
   }
 
   /// Load saved language code from SharedPreferences
-  Future<void> loadSavedLanguage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedLanguageCode = prefs.getString('language_code');  // Get saved language code
-    
-    if (savedLanguageCode != null) {
-      await LocalizationService.load(savedLanguageCode);  // Load the language
-      _languageCode = savedLanguageCode;
-      notifyListeners();  // Notify UI to rebuild
-    }
-  }
+Future<void> loadSavedLanguage() async {
+  final prefs = await SharedPreferences.getInstance();
+  final savedLanguageCode = prefs.getString('language_code');
+
+  // Fallback to a default language if none is saved
+  final languageCodeToLoad = savedLanguageCode ?? 'en'; // Replace 'en' with your default
+
+  await LocalizationService.load(languageCodeToLoad);
+  _languageCode = languageCodeToLoad;
+  notifyListeners(); // Notify UI to rebuild
+}
+
 }

@@ -1,7 +1,6 @@
 // active_scheme_service.dart
 
 import 'dart:convert';
-import 'dart:io';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/model/SchemeResponseNew.dart';
 import 'package:csc/utillity/check%20internet.dart';
@@ -22,14 +21,12 @@ class ActiveSchemeService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 
-    if (mobileNumber == null) return null;
-
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
     if (context.mounted) {
       Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => ErrorScreen()),
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
         );
       }
       return null;
@@ -69,7 +66,7 @@ class ActiveSchemeService {
 
           
         }
-        print("✅ Full Active Scheme Response: ${data}");
+        print("✅ Full Active Scheme Response: $data");
       }
 
       

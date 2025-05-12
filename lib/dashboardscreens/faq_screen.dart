@@ -10,16 +10,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: FAQScreen(),
+      home: const FAQScreen(),
     ),
   );
 }
 
 class FAQScreen extends StatefulWidget {
+  const FAQScreen({super.key});
+
   @override
   _FAQScreenState createState() => _FAQScreenState();
 }
@@ -59,7 +61,7 @@ class _FAQScreenState extends State<FAQScreen> {
             fontSize: screenWidth * 0.045,
           ),
         ),
-        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
         elevation: 2,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -102,8 +104,8 @@ class _FAQScreenState extends State<FAQScreen> {
                       size: screenWidth * 0.06, // ✅ Dynamic Icon Size
                     ),
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: const Color.fromARGB(255, 242, 240, 240),
+                      borderSide: const BorderSide(
+                      color: Color.fromARGB(255, 242, 240, 240),
                       ),
                       borderRadius: BorderRadius.circular(screenWidth * 0.02), 
                     ),
@@ -124,7 +126,7 @@ class _FAQScreenState extends State<FAQScreen> {
                   child: ElevatedButton(
                     onPressed: _openWhatsApp,
                     style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                       shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(screenWidth * 0.02), // ✅ Dynamic Border Radius
                       ),
@@ -231,8 +233,8 @@ class _FAQScreenState extends State<FAQScreen> {
             },
             context
           ),
-          Divider(),
-          SizedBox(height: 20),
+          const Divider(),
+          const SizedBox(height: 20),
         ],
       );
     });

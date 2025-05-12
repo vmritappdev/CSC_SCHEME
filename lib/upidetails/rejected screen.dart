@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class PaymentRejectedScreen extends StatefulWidget {
    final String rejectId;
 
-   PaymentRejectedScreen({required this.rejectId});
+   const PaymentRejectedScreen({super.key, required this.rejectId});
 
   @override
   State<PaymentRejectedScreen> createState() => _PaymentRejectedScreenState();
@@ -28,7 +28,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
           "Payment Rejected",
           style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
         ),
-        leading: BackButton(color: Colors.white),
+        leading: const BackButton(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.05),
@@ -97,7 +97,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
               //  Navigator.pop(context);
               },
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: Colors.redAccent, width: 2),
+                side: const BorderSide(color: Colors.redAccent, width: 2),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

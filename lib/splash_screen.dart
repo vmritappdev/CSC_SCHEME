@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -28,19 +28,19 @@ class _SplashScreenState extends State<SplashScreen> {
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
 
     // Delay for splash screen
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     if (isFirstTime) {
       // Navigate to Language Selection Screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LanguageSelectionScreen1()),
+        MaterialPageRoute(builder: (context) => const LanguageSelectionScreen1()),
       );
     } else {
       // Navigate to Login Screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen1()),
+        MaterialPageRoute(builder: (context) => const LoginScreen1()),
       );
     }
   }

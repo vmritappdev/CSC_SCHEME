@@ -19,11 +19,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: ForgotScreen1(),
+      home: const ForgotScreen1(),
     ),
   );
 }
@@ -87,7 +87,7 @@ Future<String?> loadMobileNumber() async {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -138,7 +138,7 @@ Future<bool> checkInternet() async {
     // ✅ Validation
     if (mobileNumber.isEmpty || mobileNumber.length != 10) {
     //  _showErrorPopup(localization.translate("Enter a valid 10-digit mobile number"));
-    ErrorScreen();
+    const ErrorScreen();
       return;
     }
 
@@ -168,7 +168,7 @@ Future<bool> checkInternet() async {
         // ✅ Navigate to CreateTempPinScreen1 on success
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CreateMpin1Screen()),
+          MaterialPageRoute(builder: (context) => const CreateMpin1Screen()),
         );
       } else {
         _showErrorPopup(localization.translate("This mobile number is not found."));
@@ -202,13 +202,13 @@ void initState() {
         fontSize = fontSize.clamp(12, 24);
         final localization = Provider.of<LocalizationProvider>(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(),
+          shape: const RoundedRectangleBorder(),
           backgroundColor: Colors.white,
           contentPadding: EdgeInsets.zero,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -217,11 +217,11 @@ void initState() {
                   style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(2, 5, 62, 1),
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(2, 5, 62, 1),
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -229,7 +229,7 @@ void initState() {
                   },
                   child: Text(
                     localization.translate("OK"),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -259,23 +259,23 @@ void initState() {
             children: [
               SizedBox(height: screenHeight * 0.1),
               Align(
+                alignment: Alignment.bottomLeft,
                 child: BackButton(
                   onPressed: (){
                     Navigator.push(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => LoginScreen1(),
+                        builder: (context) => const LoginScreen1(),
                       )
                     );
                   },
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: const Color.fromRGBO(2, 5, 62, 1),
                 ),
-                alignment: Alignment.bottomLeft,
               ),
               Image.asset('assets/images/csc2.png', height: 90),
               Text(
                localization.translate('CSCJEWELLERYS'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold,
@@ -290,15 +290,15 @@ void initState() {
                   controller: _controllerMobileNumber,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.only(top: 10),
+                    contentPadding: const EdgeInsets.only(top: 10),
                     counterText: '',
                     hintText: localization.translate("Mobile Number*"),
-                    hintStyle: TextStyle(
+                    hintStyle: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
-                    prefixIcon: Icon(Icons.phone, size: 20),
+                    prefixIcon: const Icon(Icons.phone, size: 20),
                     border: OutlineInputBorder(
                     //  borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(5),
@@ -312,17 +312,17 @@ void initState() {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : verifyMobileNumber,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : Text(
                          localization.translate("Verify Mobile Number"),
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          style: const TextStyle(color: Colors.white, fontSize: 18),
                         ),
                 ),
               ),

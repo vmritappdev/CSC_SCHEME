@@ -14,16 +14,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: GoldShopOffersScreen(),
+      home: const GoldShopOffersScreen(),
     ),
   );
 }
 
 class GoldShopOffersScreen extends StatelessWidget {
+  const GoldShopOffersScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
@@ -89,7 +91,7 @@ class GoldShopOffersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: BackButton(color: Colors.white),
+        leading: const BackButton(color: Colors.white),
         title: Text(
           localization.translate("Gold Shop Offers"),
           style: GoogleFonts.lato(
@@ -98,7 +100,7 @@ class GoldShopOffersScreen extends StatelessWidget {
             fontSize: fontSize,
           ),
         ),
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
       ),
       body: Padding(
         padding: EdgeInsets.all(screenWidth * 0.02),
@@ -173,7 +175,7 @@ class GoldShopOffersScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PaymentCard(),
+              builder: (context) => const PaymentCard(),
             ),
           );
         },
@@ -185,8 +187,8 @@ class GoldShopOffersScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: Color.fromRGBO(2, 5, 62, 1),
-        shape: CircularNotchedRectangle(),
+        color: const Color.fromRGBO(2, 5, 62, 1),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -212,7 +214,7 @@ class GoldShopOffersScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),

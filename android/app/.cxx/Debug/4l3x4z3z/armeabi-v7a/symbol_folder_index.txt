@@ -1,0 +1,1 @@
+/Users/brahmaiahadigopula/AndroidStudioProjects/vs_code_projects/csc_app/CSC_SCHEME/build/app/intermediates/cxx/Debug/4l3x4z3z/obj/armeabi-v7a

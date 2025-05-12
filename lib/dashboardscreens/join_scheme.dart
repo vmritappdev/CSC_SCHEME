@@ -36,11 +36,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: Jionscheme2(),
+      home: const Jionscheme2(),
     ),
   );
 }
@@ -48,6 +48,8 @@ void main() {
 
 
 class Jionscheme2 extends StatefulWidget {
+  const Jionscheme2({super.key});
+
   @override
   _Jionscheme2State createState() => _Jionscheme2State();
 }
@@ -125,7 +127,7 @@ class _Jionscheme2State extends State<Jionscheme2> {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(2, 5, 62, 1),
+                    color: const Color.fromRGBO(2, 5, 62, 1),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(screenWidth * 0.02),
                       bottomRight: Radius.circular(screenWidth * 0.02),
@@ -186,20 +188,20 @@ Future<void> _pickImage(int containerNumber) async {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Choose an option"),
+        title: const Text("Choose an option"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text("Camera"),
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Camera"),
               onTap: () {
                 Navigator.pop(context, ImageSource.camera);
               },
             ),
             ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text("Gallery"),
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Gallery"),
               onTap: () {
                 Navigator.pop(context, ImageSource.gallery);
               },
@@ -336,7 +338,7 @@ String schemeAmount = '';
 
 
   Future<void> fetchAmounts() async {
-  final String url = "$baseUrl/get_amount.php";
+  const String url = "$baseUrl/get_amount.php";
   
   try {
     final response = await http.get(Uri.parse(url));
@@ -370,11 +372,6 @@ Future<void> fetchVerifiedAmount() async {
   final url = Uri.parse("$baseUrl/amount_verification.php");
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
 
   print("🔗 API URL: $url");
   print("📤 Sending Parameters: mobile_no=$mobileNumber, scheme_amount=${_amountController.text}");
@@ -615,7 +612,7 @@ return prefs.getString('mobile_number');
       _phoneController.text = prefs.getString('phoneNumber') ?? '';
       _emailController.text = prefs.getString('email') ?? '';
 
-      selectedGender = prefs.getString('gender') ?? null;
+      selectedGender = prefs.getString('gender');
 
 
       dobController.clear();                      
@@ -827,14 +824,12 @@ DateTime? selectedDate;
       builder: (context, child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            useMaterial3: false,
-            colorScheme: ColorScheme.dark(
+            colorScheme: const ColorScheme.dark(
               primary: Colors.orange,
               onPrimary: Colors.white,
               surface: Colors.black,
               onSurface: Colors.white,
-            ),
-            dialogBackgroundColor: Colors.black,
+            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.black),
           ),
           child: child!,
         );
@@ -851,7 +846,7 @@ DateTime? selectedDate;
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('You must be 18 years or older to select this date.'),
             backgroundColor: Colors.red,
           ),
@@ -893,7 +888,7 @@ DateTime? selectedDate;
          appBar: AppBar(
             automaticallyImplyLeading: false,
             toolbarHeight: 140,
-            backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+            backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
             title: Padding(
              padding: const EdgeInsets.only(bottom: 0),
               child: Column(
@@ -910,13 +905,13 @@ DateTime? selectedDate;
                                 builder: (context) => HomeScreen(activescheme: Activescheme(),),
                               ));
                        },
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                      ),
                       Image.asset('assets/images/csc2.png',
                          height: 70, color: Colors.white)
                     ],
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -949,16 +944,16 @@ DateTime? selectedDate;
                     Text(
                      // 'SCHEME REGISTRATION',
                      localization.translate("SCHEME REGISTRATION"),
-                        style:GoogleFonts.lato( color: Color.fromRGBO(2, 5, 62, 1),
+                        style:GoogleFonts.lato( color: const Color.fromRGBO(2, 5, 62, 1),
                             fontSize: 20,
                             fontWeight: FontWeight.bold)
                             ),
                     Text(
                       //'Continue to Register',
                       localization.translate("Customer Imformation"),
-                        style: GoogleFonts.lato(color: Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
+                        style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
                             ),
-                    Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
+                    const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
         
                     
                     Textamount(),
@@ -969,7 +964,7 @@ DateTime? selectedDate;
                 
                     buildrow(),
         
-                    SizedBox(height: 16,),
+                    const SizedBox(height: 16,),
                     // Mobile Number
                   _buildTextField(
           controller: _phoneController,
@@ -1015,7 +1010,7 @@ DateTime? selectedDate;
           },
           readOnly: true,
           suffixIcon: IconButton(
-        icon: Icon(
+        icon: const Icon(
           Icons.calendar_today,
           color: Color.fromRGBO(2, 5, 62, 1),
         ),
@@ -1027,14 +1022,14 @@ DateTime? selectedDate;
         
 
 
-           SizedBox(height: 16,),
+           const SizedBox(height: 16,),
         
                     // Email ID
                   _buildTextField(
           controller: _emailController,
           label: localization.translate("Email ID(Optional)"),
           readOnly: true,
-          prefixIcon: Icon(Icons.email_outlined),
+          prefixIcon: const Icon(Icons.email_outlined),
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
         if (value != null && value.isNotEmpty) {
@@ -1163,7 +1158,7 @@ _buildTextField2(
 
                  
         
-          SizedBox(height: 5,),
+          const SizedBox(height: 5,),
                 
                     _buildTextField(controller: referralController,
                      label: 
@@ -1175,7 +1170,7 @@ _buildTextField2(
                      
                 
                 
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                 
                 
                      Padding(
@@ -1187,7 +1182,7 @@ _buildTextField2(
                         style: GoogleFonts.lato(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(2, 5, 62, 1),
+                          color: const Color.fromRGBO(2, 5, 62, 1),
                         ),
                       ),
                     ),
@@ -1225,7 +1220,7 @@ _buildTextField2(
     }
   },
 ),
- SizedBox(height: 10),
+ const SizedBox(height: 10),
 
                 
                    //  BankDetails(),
@@ -1303,12 +1298,12 @@ _buildTextField2(
 //HDFC0001234
                 
         
-                    SizedBox(height: 16,),
+                    const SizedBox(height: 16,),
         
                    
                    
                 
-                     SizedBox(height: 16,),
+                     const SizedBox(height: 16,),
                 
                       Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -1319,7 +1314,7 @@ _buildTextField2(
                         style: GoogleFonts.lato(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(2, 5, 62, 1),
+                          color: const Color.fromRGBO(2, 5, 62, 1),
                         ),
                       ),
                     ),
@@ -1343,7 +1338,7 @@ _buildTextField2(
                       setState(() => selectedNomineeRelation = value);
                     }),
                 
-                    SizedBox(height: 5,),
+                    const SizedBox(height: 5,),
                     
                   
                 /*
@@ -1389,7 +1384,7 @@ _buildTextField2(
   */
 ),
                 
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                    
                     SizedBox(
                      // height: 50,
@@ -1398,26 +1393,26 @@ _buildTextField2(
                         controller: nomineeMobileController,
                         decoration: InputDecoration(
                           counterText: '',
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                            focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                 floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
                            // Remove border
                         //  filled: true,
                           //fillColor: Colors.grey[200], // Fill color for TextField
                           labelText:localization.translate( "Nominee Phone Number (Optional)"),labelStyle: GoogleFonts.lato()
                         ),
                         keyboardType: TextInputType.phone,
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ),
                 
                 
                 
-                    SizedBox(height: 16,),
+                    const SizedBox(height: 16,),
                 
                 buildRow4(),
                    
@@ -1432,12 +1427,12 @@ _buildTextField2(
           
         ElevatedButton(
   style: ButtonStyle(
-    shape: MaterialStatePropertyAll(
+    shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
     ),
-    backgroundColor: MaterialStatePropertyAll(
+    backgroundColor: const WidgetStatePropertyAll(
       Color.fromRGBO(1, 5, 41, 1),
     ),
   ),
@@ -1466,7 +1461,7 @@ _buildTextField2(
               SnackBar(
                 content: Text(localization.translate("Please accept the Terms and Conditions to proceed.")),
                 backgroundColor: Colors.red,
-                duration: Duration(seconds: 2),
+                duration: const Duration(seconds: 2),
               ),
             );
             return;
@@ -1597,7 +1592,7 @@ _buildTextField2(
       });
 
       // Simulate a network request
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         setState(() {
           isLoading = false; // Reset loading state
            isButtonVisible = false; // Hides the button
@@ -1608,43 +1603,43 @@ _buildTextField2(
     barrierDismissible: false,
      context: currentContext,
     builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
       //  borderRadius: BorderRadius.circular(20),
       ),
       contentPadding: EdgeInsets.zero, // Remove extra padding
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Lottie.asset(
             'assets/images/suc.json',
             width: 60,
             height: 60,
             repeat: false, // Play animation only once
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             localization.translate("Success!"),
             style:GoogleFonts.lato(fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.green,)
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               localization.translate("Scheme Registration submitted successfully!"),
               textAlign: TextAlign.center,style: GoogleFonts.lato(),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
       actionsPadding: EdgeInsets.zero, // Remove default padding from actions
       actions: [
         Container(
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color.fromRGBO(2, 5, 65, 1),
             borderRadius: BorderRadius.only(
             //  bottomLeft: Radius.circular(20),
@@ -1662,11 +1657,11 @@ _buildTextField2(
               );
             },
             style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15), // Fix button height
+              padding: const EdgeInsets.symmetric(vertical: 15), // Fix button height
             ),
             child: Text(
              localization.translate('OK'),
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 fontSize: 16,
@@ -1697,7 +1692,7 @@ Widget buildRow3() {
    // mainAxisAlignment: MainAxisAlignment.start,
     children: [
       Checkbox(
-        activeColor: Color.fromRGBO(2, 5, 62, 1),
+        activeColor: const Color.fromRGBO(2, 5, 62, 1),
         value: _termsAccepted,
         onChanged: (value) {
           setState(() {
@@ -1713,13 +1708,13 @@ Widget buildRow3() {
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => TermsAndConditionsScreen2(),
+              builder: (context) => const TermsAndConditionsScreen2(),
             ),
           );
         },
         child: Focus(
           focusNode: _termsFocus,
-          child: Text(
+          child: const Text(
             'By joining this scheme, you agree to our\nterms and conditions and privacy policy.',
             style: TextStyle(
               fontSize: 13,
@@ -1763,13 +1758,13 @@ Widget buildRow4(){
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => TermsAndConditionsScreen2(),
+              builder: (context) => const TermsAndConditionsScreen2(),
             ),
           );
         },
                     child: RichText(
                       text: TextSpan(
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         children: [
                           TextSpan(text: localization.translate("By signing up you agree to our"),style: GoogleFonts.lato()),
                           TextSpan(
@@ -1815,7 +1810,7 @@ Widget buildRow4(){
                   // Deposit Amount
                    Text(
                     localization.translate("Deposit Amount"),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
                       color: Colors.black,
@@ -1827,11 +1822,11 @@ Widget buildRow4(){
                 controller: _amountController,
                // focusNode: _amountFocusNode,
                 decoration:  InputDecoration(
-                   border: UnderlineInputBorder(),
-                   focusedBorder:UnderlineInputBorder(
-                     borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+                   border: const UnderlineInputBorder(),
+                   focusedBorder:const UnderlineInputBorder(
+                     borderSide: BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
                    ),
-                 floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
 
                   hintText: localization.translate("Enter Amount"),
                   //border: UnderlineInputBorder(),
@@ -1841,6 +1836,7 @@ Widget buildRow4(){
                   if (value == null || value.isEmpty) {
                     return localization.translate('Please enter an amount');
                   }
+                  return null;
                 
                 },
               ),
@@ -1879,9 +1875,9 @@ Widget buildRow4(){
       child: Container(
   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
   decoration: BoxDecoration(
-    color: selectedAmount == value ? Color.fromRGBO(2, 5, 62, 1) : Colors.transparent, // Background color
+    color: selectedAmount == value ? const Color.fromRGBO(2, 5, 62, 1) : Colors.transparent, // Background color
     border: Border.all(
-      color: selectedAmount == value ? Color.fromRGBO(2, 5, 62, 1) : const Color.fromRGBO(2, 5, 62, 1),
+      color: selectedAmount == value ? const Color.fromRGBO(2, 5, 62, 1) : const Color.fromRGBO(2, 5, 62, 1),
     ),
     borderRadius: BorderRadius.circular(15),
   ),
@@ -1977,13 +1973,13 @@ void _onIfscChanged(String ifsc) {
           value: items.contains(selectedValue) ? selectedValue : null, // ✅ fixed here
           decoration: InputDecoration(
             labelText: label,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+            floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
           ),
           items: items
               .map((item) => DropdownMenuItem(value: item, child: Text(item)))
@@ -2006,7 +2002,7 @@ void _onIfscChanged(String ifsc) {
             controller: otherController,
             decoration: InputDecoration(
               labelText: "Enter Nominee Relation",
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
@@ -2031,15 +2027,11 @@ void _onIfscChanged(String ifsc) {
 Widget _buildTextField({
   required TextEditingController controller,
   required String label,
-   
- // List<TextInputFormatter>? inputFormatters,
-  String? hintText,
   TextInputType? keyboardType,
   bool readOnly = false,
   Widget? suffixIcon,
   Widget? prefixIcon,
    int? maxLength,
-   TextCapitalization textCapitalization = TextCapitalization.none,
   String? Function(String?)? validator,
   void Function(String)? onChanged, // Add a validator parameter
 }) {
@@ -2060,7 +2052,7 @@ Widget _buildTextField({
         counterText: '',
         labelText: label,labelStyle: GoogleFonts.lato(),
       
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           
         ),
          focusedBorder: OutlineInputBorder(
@@ -2068,7 +2060,7 @@ Widget _buildTextField({
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                 floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
  // Reduce padding
 
         suffixIcon: suffixIcon,
@@ -2106,13 +2098,13 @@ Widget _buildTextField4({
       hintText: 'AAAA0123456',
       
       hintStyle: GoogleFonts.lato(fontSize: 15),
-      border: OutlineInputBorder(),
+      border: const OutlineInputBorder(),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
         borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-      floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+      floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
       counterText: "",
     ),
     validator: validator, // Validator function added
@@ -2139,7 +2131,7 @@ Widget _buildTextField4({
                 decoration: InputDecoration(
                   
                   labelText: localization.translate('First Name*'),labelStyle: GoogleFonts.lato(),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1),width: 2)
                   ), 
                    focusedBorder: OutlineInputBorder(
@@ -2147,18 +2139,18 @@ Widget _buildTextField4({
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
         ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-              floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
+              floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
  // Reduce padding
 
                 //  filled: true,
                  // fillColor: Colors.grey[200], // Fill color for TextField
                 ),
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
             
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Expanded(
           child: SizedBox(
             height: 50,
@@ -2174,7 +2166,7 @@ Widget _buildTextField4({
                  textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                    labelText: localization.translate('Last Name*'),labelStyle: GoogleFonts.lato(),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1),width: 2)
                   ), // Remove border
                    focusedBorder: OutlineInputBorder(
@@ -2182,13 +2174,13 @@ Widget _buildTextField4({
           borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
         ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                         floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
+                         floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
  
 
                  // filled: true,
                  // fillColor: Colors.grey[200], // Fill color for TextField
                 ),
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
             ),
           ),
@@ -2247,7 +2239,7 @@ Widget _buildTextField1({
                 decoration: InputDecoration(
                   labelText: label,
                   counterText: "",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
@@ -2282,7 +2274,7 @@ Widget _buildTextField1({
                   borderRadius: BorderRadius.circular(8),
                 ),
                child: selectedImage != null
-    ? Image.file(selectedImage!, fit: BoxFit.cover)
+    ? Image.file(selectedImage, fit: BoxFit.cover)
     : (adharImage != null && adharImage!.isNotEmpty)
         ? Image.network(adharImage!, fit: BoxFit.cover)
         : const Icon(Icons.image, color: Colors.grey),
@@ -2327,7 +2319,7 @@ Widget _buildTextField3({
                 decoration: InputDecoration(
                   labelText: label,
                   counterText: "",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
@@ -2362,7 +2354,7 @@ Widget _buildTextField3({
                   borderRadius: BorderRadius.circular(8),
                 ),
                child: selectedImage != null
-    ? Image.file(selectedImage!, fit: BoxFit.cover)
+    ? Image.file(selectedImage, fit: BoxFit.cover)
     : (nomineeimage != null && nomineeimage!.isNotEmpty)
         ? Image.network(nomineeimage!, fit: BoxFit.cover)
         : const Icon(Icons.image, color: Colors.grey),
@@ -2410,7 +2402,7 @@ Widget _buildTextField2({
                   labelText: label,
                   hintText: hintText,
                   counterText: "",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
@@ -2440,7 +2432,7 @@ Widget _buildTextField2({
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child:  selectedImage != null
-    ? Image.file(selectedImage!, fit: BoxFit.cover)
+    ? Image.file(selectedImage, fit: BoxFit.cover)
     : (panImage != null && panImage!.isNotEmpty)
         ? Image.network(panImage!, fit: BoxFit.cover)
         : const Icon(Icons.image, color: Colors.grey),
@@ -2468,7 +2460,7 @@ void _showSuccessPopup(BuildContext context, activescheme) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // Rounded corners
       ),
-      contentPadding: EdgeInsets.all(20), // Better padding
+      contentPadding: const EdgeInsets.all(20), // Better padding
       content: Column(
         mainAxisSize: MainAxisSize.min, // Small popup size maintain cheyyadam
         children: [
@@ -2481,22 +2473,22 @@ void _showSuccessPopup(BuildContext context, activescheme) {
               fit: BoxFit.cover,
             ),
           ), 
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
             localization.translate('Congratulations!'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18, 
               fontWeight: FontWeight.bold,
               color: Colors.green, 
             ),
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(
             localization.translate("Your Scheme Registration Was Completed Successfully."),
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black87, fontSize: 14), 
+            style: const TextStyle(color: Colors.black87, fontSize: 14), 
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           ElevatedButton(
             onPressed: () async {
               // Save mobile number and join scheme
@@ -2545,16 +2537,16 @@ void _showSuccessPopup(BuildContext context, activescheme) {
            );
 
             },
-            child: Text(
-              localization.translate("Okay"),
-            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green, // Green button
               foregroundColor: Colors.white, // White text
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
               ),
+            ),
+            child: Text(
+              localization.translate("Okay"),
             ),
           ),
         ],

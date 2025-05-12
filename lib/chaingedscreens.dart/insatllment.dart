@@ -18,11 +18,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: InstallmentScreen(schemeId: ''),
+      home: const InstallmentScreen(schemeId: ''),
     ),
   );
 }
@@ -30,7 +30,7 @@ void main() {
 class InstallmentScreen extends StatefulWidget {
   final String schemeId;
 
-  InstallmentScreen({required this.schemeId});
+  const InstallmentScreen({super.key, required this.schemeId});
 
   @override
   _InstallmentScreenState createState() => _InstallmentScreenState();
@@ -53,7 +53,7 @@ String? _amountError;
 String selectedOption = 'emi';
 
 // String selectedOption = 'any';
-TextEditingController _amountController = TextEditingController(text: '');
+final TextEditingController _amountController = TextEditingController(text: '');
 
 
  String formatAmount(String value) {
@@ -88,7 +88,7 @@ Future<void> _fetchInstallmentDetails() async {
   String? mobileNumber = prefs.getString('phoneNumber');
   String schemeId = widget.schemeId;
 
-  if (schemeId.isEmpty || mobileNumber == null) {
+  if (schemeId.isEmpty) {
     print("Error: Mobile number or Scheme ID is missing.");
     return;
   }
@@ -97,7 +97,7 @@ Future<void> _fetchInstallmentDetails() async {
     isLoading = true;
   });
 
-  final installmentDetails = await fetchInstallmentDetails(mobileNumber, schemeId);
+  final installmentDetails = await fetchInstallmentDetails(mobileNumber!, schemeId);
   if (installmentDetails != null && installmentDetails.isNotEmpty) {
     setState(() {
       installments = installmentDetails;
@@ -151,7 +151,7 @@ void _selectFirstUnpaidInstallment() {
     Match? match = regExp.firstMatch(installment);
     if (match != null) {
       String number = match.group(1) ?? "";
-      return "${number} ${localization.translate("Installment")}";
+      return "$number ${localization.translate("Installment")}";
     }
     return installment;
   }
@@ -159,7 +159,7 @@ void _selectFirstUnpaidInstallment() {
 
 
   Future<void> fetchBalanceAndDays(String schemeId, String month, String year) async {
-  final url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
+  const url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
 
   try {
     final response = await http.post(
@@ -202,10 +202,10 @@ Color getStatusColor(String? status) {
    final localization = Provider.of<LocalizationProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         title: Text(localization.translate('Installment Schedule'),
         style: GoogleFonts.lato(color: Colors.white),),
-        leading: BackButton(color: Colors.white,),
+        leading: const BackButton(color: Colors.white,),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -213,8 +213,8 @@ Color getStatusColor(String? status) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(localization.translate("Payment Schedule"), 
-            style: TextStyle(fontSize: 16)),
-            SizedBox(height: 10),
+            style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 10),
             Expanded(
               child: isLoading
                   ? Center(child: Image.asset('assets/images/gif.gif',height: 100,width: 100,)) // Loader
@@ -324,16 +324,16 @@ Color getStatusColor(String? status) {
   ),
 ),
 if (installment["payment_status"] == "Paid")
-  Padding(
-    padding: const EdgeInsets.only(left: 25),
+  const Padding(
+    padding: EdgeInsets.only(left: 25),
     child: Text(
       "Paid",
       style: TextStyle(color: Colors.green),
     ),
   ),
 if (installment["payment_status"] == "Process")
-  Padding(
-    padding: const EdgeInsets.only(left: 25),
+  const Padding(
+    padding: EdgeInsets.only(left: 25),
     child: Text(
       "Process",
       style: TextStyle(color: Colors.orange),
@@ -351,15 +351,15 @@ if (installment["payment_status"] == "Process")
     
 
 
-    SizedBox(height: 20,),
+    const SizedBox(height: 20,),
 
     // ✅ Extra line only for unpaid + selected card
   if (!isPaid && index == selectedInstallment)
   Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Padding(
-        padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
+      const Padding(
+        padding: EdgeInsets.only(left: 12, top: 4, bottom: 4),
         child: Text(
           'Choose payment option',
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
@@ -378,7 +378,7 @@ if (installment["payment_status"] == "Process")
                 selectedOption = val!;
               });
             },
-            activeColor: Color(0xFF2B004B),
+            activeColor: const Color(0xFF2B004B),
           ),
           const Text(
             'Pay Installment',
@@ -430,7 +430,7 @@ if (installment["payment_status"] == "Process")
                 selectedOption = val!;
               });
             },
-            activeColor: Color(0xFF2B004B),
+            activeColor: const Color(0xFF2B004B),
           ),
           const Text(
             'Pay any amount',
@@ -471,8 +471,8 @@ if (installment["payment_status"] == "Process")
   decoration: InputDecoration(
     prefixText: '₹',
     labelText: 'Enter Amount',
-    border: OutlineInputBorder(),
-    focusedBorder: OutlineInputBorder(
+    border: const OutlineInputBorder(),
+    focusedBorder: const OutlineInputBorder(
       borderSide: BorderSide(color: Color(0xFF2B004B), width: 2),
     ),
     errorText: _amountError, // 👈 Shows error here
@@ -516,12 +516,12 @@ if (installment["payment_status"] == "Process")
                         ),
                       ],
                     ),
-                    child: Column(
+                    child: const Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
                             SizedBox(width: 8),
                             Text(
@@ -534,8 +534,8 @@ if (installment["payment_status"] == "Process")
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
+                        SizedBox(height: 8),
+                        Text(
                           'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.',
                           style: TextStyle(
                             fontSize: 11,
@@ -543,8 +543,8 @@ if (installment["payment_status"] == "Process")
                             height: 1.4,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        const Row(
+                        SizedBox(height: 12),
+                        Row(
                           children: [
                             Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
                             SizedBox(width: 6),
@@ -567,7 +567,7 @@ if (installment["payment_status"] == "Process")
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
 
                  SizedBox(
@@ -576,7 +576,7 @@ if (installment["payment_status"] == "Process")
   style: ElevatedButton.styleFrom(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     backgroundColor: const Color.fromARGB(255, 9, 1, 45),
-    padding: EdgeInsets.symmetric(vertical: 14),
+    padding: const EdgeInsets.symmetric(vertical: 14),
   ),
  onPressed: (installments[selectedInstallment]["status"] == "")
     ? () async {
@@ -593,12 +593,12 @@ if (installment["payment_status"] == "Process")
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text("Empty Amount"),
-                content: Text("Please enter an amount to proceed."),
+                title: const Text("Empty Amount"),
+                content: const Text("Please enter an amount to proceed."),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text("OK"),
+                    child: const Text("OK"),
                   ),
                 ],
               ),
@@ -611,12 +611,12 @@ if (installment["payment_status"] == "Process")
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text("Invalid Amount"),
-                content: Text("You cannot pay more than the installment amount."),
+                title: const Text("Invalid Amount"),
+                content: const Text("You cannot pay more than the installment amount."),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text("OK"),
+                    child: const Text("OK"),
                   ),
                 ],
               ),
@@ -696,7 +696,7 @@ if (installment["payment_status"] == "Process")
 
     return Text(
       "${localization.translate("Pay")}: ₹${formatAmount(finalAmount)}",
-      style: TextStyle(color: Colors.white, fontSize: 16),
+      style: const TextStyle(color: Colors.white, fontSize: 16),
     );
   },
 ),
@@ -749,7 +749,7 @@ if (installment["payment_status"] == "Process")
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -804,7 +804,7 @@ void _showInvalidOTPDialog1() {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(

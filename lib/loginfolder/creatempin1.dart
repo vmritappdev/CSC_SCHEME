@@ -27,7 +27,7 @@ class _CreateMpin1ScreenState extends State<CreateMpin1Screen> {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -41,14 +41,14 @@ class _CreateMpin1ScreenState extends State<CreateMpin1Screen> {
 
 
 
-  final defaultPinTheme = PinTheme(
+  static const defaultPinTheme = PinTheme(
     width: 80,
     height: 70,
-    textStyle: const TextStyle(
+    textStyle: TextStyle(
       color: Colors.black,
       fontSize: 22,
     ),
-    decoration: const BoxDecoration(
+    decoration: BoxDecoration(
       border: Border(bottom: BorderSide(color: Colors.grey)),
     ),
   );
@@ -76,7 +76,7 @@ class _CreateMpin1ScreenState extends State<CreateMpin1Screen> {
 void initState() {
   super.initState();
   WidgetsBinding.instance.addPostFrameCallback((_) async {
-    await Future.delayed(Duration(seconds: 1)); // 🔴 Extra Delay for Async Storage
+    await Future.delayed(const Duration(seconds: 1)); // 🔴 Extra Delay for Async Storage
     String? mobile = await loadMobileNumber();
     debugPrint("📥 Loaded Mobile Number at CreateMpin1Screen: $mobile");
   });
@@ -91,7 +91,7 @@ void initState() {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');
 
-      if (mobileNumber == null || mobileNumber.isEmpty) {
+      if (mobileNumber!.isEmpty) {
         print("❌ Mobile Number not found in SharedPreferences");
         return;
       }
@@ -327,7 +327,7 @@ void initState() {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');
 
-      if (mobileNumber == null || mobileNumber.isEmpty) {
+      if (mobileNumber!.isEmpty) {
         setState(() {
           errorMessage = 'Mobile number not found. Please login again.';
         });

@@ -20,11 +20,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:PaymentVerificationScreen(id: '',),
+      home:const PaymentVerificationScreen(id: '',),
     ),
   );
 }
@@ -32,7 +32,7 @@ void main() {
 class PaymentVerificationScreen extends StatefulWidget {
   final String id;
 
-   PaymentVerificationScreen({required this.id});
+   const PaymentVerificationScreen({super.key, required this.id});
   @override
   State<PaymentVerificationScreen> createState() => _PaymentVerificationScreenState();
 }
@@ -58,7 +58,7 @@ void initState() {
 
     print("📞 Fetched Mobile Number: $mobileNumber"); // Debugging
 
-    if (mobileNumber != null && widget.id != null) {
+    if (mobileNumber != null) {
       // Start periodic API call
       startPeriodicApiCall(mobileNumber!, widget.id);
     } else {
@@ -73,7 +73,7 @@ void startPeriodicApiCall(String mobileNumber, String id) {
   periodicTimer?.cancel();
 
   // Start a new periodic timer
-  periodicTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+  periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
     verifyPayment(mobileNumber, id); // Call the API
   });
 }
@@ -97,11 +97,6 @@ void dispose() {
   Future<void> verifyPayment(String mobileNumber, String id) async {
      SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  }
     setState(() {
       isVerifying = true;
     });
@@ -227,12 +222,12 @@ String processTimer(String remaingtimer) {
           );
         },
        ),
-        backgroundColor: Color.fromRGBO(43, 49, 101, 1),
+        backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
         elevation: 0,
         centerTitle: true,
         title: Text(
           localization.translate("Payment Verification Process"),
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
@@ -303,7 +298,7 @@ String processTimer(String remaingtimer) {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.timelapse, color: Colors.orange),
+                      const Icon(Icons.timelapse, color: Colors.orange),
                       SizedBox(width: screenWidth * 0.02),
                       Expanded(
                         child: Column(
@@ -330,7 +325,7 @@ String processTimer(String remaingtimer) {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                      const Icon(Icons.radio_button_unchecked, color: Colors.grey),
                       SizedBox(width: screenWidth * 0.02),
                       Expanded(
                         child: Text(
@@ -353,7 +348,7 @@ String processTimer(String remaingtimer) {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info, color: Colors.orange),
+                  const Icon(Icons.info, color: Colors.orange),
                   SizedBox(width: screenWidth * 0.02),
 
                   Expanded(
@@ -384,9 +379,9 @@ String processTimer(String remaingtimer) {
                 );
               },
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(),
+                shape: const RoundedRectangleBorder(),
                 minimumSize: Size(double.infinity, screenHeight * 0.06),
-                backgroundColor: Color.fromRGBO(43, 49, 101, 1),
+                backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
               ),
               child: Text(
                 localization.translate("okay"),

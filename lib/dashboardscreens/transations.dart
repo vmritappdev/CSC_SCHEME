@@ -34,11 +34,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: Transaction(),
+      home: const Transaction(),
     ),
   );
 }
@@ -102,19 +102,14 @@ Future<void> saveMobileNumber(String mobileNumber) async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    ErrorScreen(); // This should be a Navigator.push or similar
-    return;
-  }
-
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
+    const ErrorScreen(); // This should be a Navigator.push or similar
     return;
   }
 
   print("Mobile number retrieved: $mobileNumber");
 
   // Backend call
-  final transactionsData = await fetchTransactionsFromApi(mobileNumber, schemeId);
+  final transactionsData = await fetchTransactionsFromApi(mobileNumber!, schemeId);
 
   if (transactionsData != null && transactionsData.isNotEmpty) {
     setState(() {
@@ -143,7 +138,7 @@ Future<void> saveMobileNumber(String mobileNumber) async {
 Future<void> _fetchPayDetails(String id) async {
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    ErrorScreen(); // Navigator.push(context, MaterialPageRoute(...)) ideally
+    const ErrorScreen(); // Navigator.push(context, MaterialPageRoute(...)) ideally
     return;
   }
 
@@ -172,18 +167,13 @@ Future<void> _fetchPayDetails(String id) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("Mobile number not found.");
-    return;
-  } else {
-    print("Mobile number retrieved: $mobileNumber");
-  }
+  print("Mobile number retrieved: $mobileNumber");
 
   setState(() {
     isLoading = true;
   });
 
-  final response = await fetchSchemesFromApi(mobileNumber);
+  final response = await fetchSchemesFromApi(mobileNumber!);
 
   if (response != null) {
     setState(() {
@@ -243,7 +233,7 @@ Future<void> _fetchPayDetails(String id) async {
     Match? match = regExp.firstMatch(installment);
     if (match != null) {
       String number = match.group(1) ?? "";
-      return "${number} ${localization.translate("Installment")}";
+      return "$number ${localization.translate("Installment")}";
     }
     return installment;
   }
@@ -274,7 +264,7 @@ Future<void> _fetchPayDetails(String id) async {
 
                     Row(
                       children: [
-                        BackButton(color: Colors.white),
+                        const BackButton(color: Colors.white),
 
                         SizedBox(width: MediaQuery.of(context).size.width * 0.05),
 
@@ -327,7 +317,7 @@ Future<void> _fetchPayDetails(String id) async {
 
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.payment, // Transaction icon
                           size: 24,
                           color: Color.fromRGBO(2, 5, 62, 1),
@@ -339,7 +329,7 @@ Future<void> _fetchPayDetails(String id) async {
                            fontSize: MediaQuery.of(context).size.width * 0.045,
 
                             fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(2, 5, 62, 1),
+                            color: const Color.fromRGBO(2, 5, 62, 1),
                           ),
                         ),
                       ],
@@ -362,7 +352,7 @@ Future<void> _fetchPayDetails(String id) async {
     isExpanded: true,
     items: [
       // 'All' option
-      DropdownMenuItem<String>(
+      const DropdownMenuItem<String>(
         value: 'all',
         child: Text('All'),
       ),
@@ -372,25 +362,25 @@ Future<void> _fetchPayDetails(String id) async {
           value: scheme['reg_id'].toString(), // ✅ Only reg_id as value
           child: RichText(
             text: TextSpan(
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: const TextStyle(fontSize: 16, color: Colors.black),
               children: [
                 TextSpan(
                   text: '${scheme['reg_id']}  ', // ✅ reg_id
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
                   text: '${scheme['f_name']} ${scheme['l_name']}  ', // ✅ f_name and l_name
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                 ),
                 TextSpan(
                   text: '₹${scheme['scheme_amount']}', // ✅ scheme_amount
-                  style: TextStyle(color: Colors.green),
+                  style: const TextStyle(color: Colors.green),
                 ),
               ],
             ),
           ),
         );
-      }).toList(),
+      }),
     ],
     decoration: InputDecoration(
       labelText: localization.translate("Select Scheme ID"),
@@ -398,11 +388,11 @@ Future<void> _fetchPayDetails(String id) async {
         vertical: MediaQuery.of(context).size.height * 0.006,
         horizontal: MediaQuery.of(context).size.width * 0.04,
       ),
-      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 3)),
-      focusedBorder: OutlineInputBorder(
+      border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 3)),
+      focusedBorder: const OutlineInputBorder(
         borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
       ),
-      floatingLabelStyle: TextStyle(color: Color.fromRGBO(2, 5, 62, 1)),
+      floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1)),
     ),
     onChanged: (value) {
       setState(() {
@@ -433,7 +423,7 @@ Future<void> _fetchPayDetails(String id) async {
             final status = transaction['status'];
              final remark = transaction['remark'];
              final time = transaction['time'];
-              final reg_id = transaction['reg_id'];
+              final regId = transaction['reg_id'];
              
           final statusColor = status == 'Completed'
     ? Colors.green
@@ -472,7 +462,7 @@ Future<void> _fetchPayDetails(String id) async {
                   style:  TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.030,
                 
-                    color: Color.fromRGBO(2, 5, 62, 1),
+                    color: const Color.fromRGBO(2, 5, 62, 1),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -491,7 +481,7 @@ Future<void> _fetchPayDetails(String id) async {
   '${getOrdinalSuffix(int.tryParse(transaction['remark']?.replaceAll(RegExp(r'[^0-9]'), '') ?? '') ?? 0)} installment',
   style: TextStyle(
     fontSize: MediaQuery.of(context).size.width * 0.03,
-    color: Color.fromRGBO(2, 5, 62, 1),
+    color: const Color.fromRGBO(2, 5, 62, 1),
   //  fontWeight: FontWeight.bold,
   ),
 ),
@@ -545,7 +535,7 @@ Future<void> _fetchPayDetails(String id) async {
             color: Colors.black,
           ),
         ),
-        SizedBox(height: 2), // spacing between amount and status
+        const SizedBox(height: 2), // spacing between amount and status
         Text(
           status,
           style: TextStyle(
@@ -556,7 +546,7 @@ Future<void> _fetchPayDetails(String id) async {
         ),
       ],
     ),
-    SizedBox(width: 8), // space between column and arrow
+    const SizedBox(width: 8), // space between column and arrow
     Icon(
       Icons.arrow_forward_ios,
       size: 11,
@@ -590,7 +580,7 @@ Future<void> _fetchPayDetails(String id) async {
     // Show bottom sheet with rejection reason
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -610,7 +600,7 @@ Future<void> _fetchPayDetails(String id) async {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   'Reason for Rejection',
                   style: TextStyle(
@@ -619,14 +609,14 @@ Future<void> _fetchPayDetails(String id) async {
                     color: Colors.red[900],
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Container(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.red[50],
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Color.fromRGBO(2, 6, 67, 1),
+                      color: const Color.fromRGBO(2, 6, 67, 1),
                       width: 2,
                     ),
                   ),
@@ -634,7 +624,7 @@ Future<void> _fetchPayDetails(String id) async {
                     'The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008',
                     style: TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.03,
-                      color: Color.fromRGBO(2, 6, 67, 1),
+                      color: const Color.fromRGBO(2, 6, 67, 1),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -670,7 +660,7 @@ Future<void> _fetchPayDetails(String id) async {
           ),
 
 
-SizedBox(height: 40,),
+const SizedBox(height: 40,),
           
         ],
       ),
@@ -681,7 +671,7 @@ SizedBox(height: 40,),
           Navigator.push(
             context, 
             MaterialPageRoute(
-            builder: (context) => PaymentCard(),
+            builder: (context) => const PaymentCard(),
             )
           );
         },
@@ -725,7 +715,7 @@ SizedBox(height: 40,),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),
@@ -794,7 +784,7 @@ SizedBox(height: 40,),
       return StatefulBuilder(
         builder: (context, setState) {
           // **API Fetch Function**
-          Future<void> _fetchPayDetails() async {
+          Future<void> fetchPayDetails() async {
             final url = Uri.parse('$baseUrl/get_pay_details.php');
 
             try {
@@ -825,7 +815,7 @@ SizedBox(height: 40,),
           }
 
           // **API Fetching Start (కోడ్ ఓపెన్ కాగానే ఇది ఓపెన్ అవుతుంది)**
-          WidgetsBinding.instance.addPostFrameCallback((_) => _fetchPayDetails());
+          WidgetsBinding.instance.addPostFrameCallback((_) => fetchPayDetails());
 
           return Column(
             mainAxisSize: MainAxisSize.min,

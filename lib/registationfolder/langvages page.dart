@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageSelectionScreen1 extends StatefulWidget {
+  const LanguageSelectionScreen1({super.key});
+
   @override
   _LanguageSelectionScreen1State createState() =>
       _LanguageSelectionScreen1State();
@@ -38,7 +40,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
     if (!isFirstTime) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen1()),
+        MaterialPageRoute(builder: (context) => const LoginScreen1()),
       );
     }
   }
@@ -61,7 +63,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => TermsAndConditionsScreen(),
+        builder: (context) => const TermsAndConditionsScreen(),
       ),
     );
   }
@@ -82,7 +84,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
             fontSize: screenWidth * 0.045,
           ),
         ),
-        backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
       ),
       body: Column(
         children: [
@@ -115,7 +117,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
                       ],
                       border: isSelected
                           ? Border.all(
-                              color: Color.fromRGBO(2, 5, 62, 1),
+                              color: const Color.fromRGBO(2, 5, 62, 1),
                               width: screenWidth * 0.01,
                             )
                           : null,
@@ -132,7 +134,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Text(
                             lang["english"],
                             style: GoogleFonts.lato(
@@ -158,7 +160,7 @@ class _LanguageSelectionScreen1State extends State<LanguageSelectionScreen1> {
             ),
           ),
           Container(
-            color: Color.fromRGBO(2, 5, 62, 1),
+            color: const Color.fromRGBO(2, 5, 62, 1),
             height: screenHeight * 0.08,
             width: double.infinity,
             child: Center(

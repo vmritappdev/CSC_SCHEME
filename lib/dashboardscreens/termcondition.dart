@@ -13,16 +13,16 @@ void main() {
   runApp(MaterialApp(
     builder: (context, child) {
       return MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
         child: child!,
       );
     },
-    home: TermsAndConditionsScreen2(),
+    home: const TermsAndConditionsScreen2(),
   ));
 }
 
 class TermsAndConditionsScreen2 extends StatefulWidget {
-  const TermsAndConditionsScreen2({Key? key}) : super(key: key);
+  const TermsAndConditionsScreen2({super.key});
 
   @override
   State<TermsAndConditionsScreen2> createState() => _TermsAndConditionsScreen2State();

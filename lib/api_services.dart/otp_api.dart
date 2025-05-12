@@ -9,7 +9,7 @@ Future<Map<String, dynamic>?> fetchOtpFromApiHelper() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null || mobileNumber.isEmpty) return null;
+  if (mobileNumber!.isEmpty) return null;
 
   try {
     final response = await http.post(

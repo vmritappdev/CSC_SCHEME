@@ -28,16 +28,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:PaymentCard(),
+      home:const PaymentCard(),
     ),
   );
 }
 
 class PaymentCard extends StatefulWidget {
+  const PaymentCard({super.key});
+
   @override
   _PaymentCardState createState() => _PaymentCardState();
 }
@@ -111,7 +113,7 @@ String overdue = "no";
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -143,13 +145,7 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null) {
-    print("Mobile number not found in SharedPreferences.");
-    showNoSchemePopup(currentContext); // Mobile number not found, show popup
-    return;
-  }
-
-  final String apiUrl = "$baseUrl/active_pop.php";   
+  const String apiUrl = "$baseUrl/active_pop.php";   
 
   try {
     final response = await http.post(
@@ -198,14 +194,14 @@ void showNoSchemePopup(BuildContext currentContext) {
     context: currentContext,
      barrierDismissible: false,
     builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
       //  borderRadius: BorderRadius.circular(20),
       ),
       contentPadding: EdgeInsets.zero, // Remove extra padding
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -213,18 +209,18 @@ void showNoSchemePopup(BuildContext currentContext) {
                 'assets/images/csc2.png',
                 height: 50,
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
                 localization.translate("No Scheme Details"),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Color.fromRGBO(2, 5, 62, 1),)
+                  color: const Color.fromRGBO(2, 5, 62, 1),)
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               localization.translate("Sorry, you have not joined any schemes. Kindly register to join a scheme."),
               textAlign: TextAlign.center,
@@ -234,14 +230,14 @@ void showNoSchemePopup(BuildContext currentContext) {
               )
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
         ],
       ),
       actionsPadding: EdgeInsets.zero, // Remove default actions padding
       actions: [
         Container(
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color.fromRGBO(2, 5, 62, 1),
             borderRadius: BorderRadius.only(
               //bottomLeft: Radius.circular(20),
@@ -259,7 +255,7 @@ void showNoSchemePopup(BuildContext currentContext) {
               );
             },
             style: TextButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15), // Fix button height
+              padding: const EdgeInsets.symmetric(vertical: 15), // Fix button height
             ),
             child: Text(
               localization.translate("OK"),
@@ -412,7 +408,7 @@ Future<void> verifyPaymentProcess(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null || mobileNumber.isEmpty) {
+  if (mobileNumber!.isEmpty) {
     print("⚠️ Mobile number not found.");
     return;
   }
@@ -495,7 +491,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
         barrierDismissible: false, // Prevent closing by tapping outside
     builder: (context) => Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
       //  borderRadius: BorderRadius.circular(24.0),
       ),
       elevation: 10,
@@ -560,8 +556,8 @@ void showPremiumPopup(BuildContext context, String title, String message, String
 
            Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(2, 5, 62, 1),
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(2, 5, 62, 1),
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               ),
               child: TextButton(
@@ -569,7 +565,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
                   Navigator.pop(context);
                   callClosePayPopApi(id);
                 },
-                child: Text(
+                child: const Text(
                   ("OK"),
                   style: TextStyle(
                     color: Colors.white,
@@ -638,7 +634,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
   _buildSectionTitle("Active Schemes"),
   ListView.builder(
     shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
+    physics: const NeverScrollableScrollPhysics(),
     itemCount: activeSchemeNew!.activeSchemes.length,
     itemBuilder: (context, index) {
       final schemeDetail = activeSchemeNew!.activeSchemes[index];
@@ -728,7 +724,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
          // MyScreen(), // Closed schemes or any additional widget
 
 
-         SizedBox(  height: 40)
+         const SizedBox(  height: 40)
           ],
         ),
       ),
@@ -737,7 +733,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
           Navigator.push(
             context, 
             MaterialPageRoute(
-              builder: (context) => SavingsAccountScreen(),
+              builder: (context) => const SavingsAccountScreen(),
             )
           );
         },
@@ -779,7 +775,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),
@@ -798,7 +794,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
         alignment: Alignment.centerLeft,
         child: Text(
           title,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -872,7 +868,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                       title,
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold,
                         fontSize: 14* MediaQuery.of(context).textScaleFactor,
-                        color: Color.fromRGBO(2, 5, 62, 1),)
+                        color: const Color.fromRGBO(2, 5, 62, 1),)
                     ),
                   ),
             
@@ -901,7 +897,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                  Text(
   capitalizeEachWord(name), // Capitalize each word
   style: GoogleFonts.lato(
-    color: Color.fromRGBO(2, 5, 67, 1),
+    color: const Color.fromRGBO(2, 5, 67, 1),
     fontWeight: FontWeight.bold,
     fontSize: 12 * MediaQuery.of(context).textScaleFactor,
   ),
@@ -916,7 +912,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                   children: [
                     Icon(iconWidget.icon, color: iconWidget.color, size: 20),
                     const SizedBox(width: 8.0),
-                    Text(detail,style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold),),
+                    Text(detail,style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold),),
                   ],
                 ),
               const SizedBox(height: 8.0),
@@ -989,8 +985,8 @@ onPressed: () {
 ,
         
     style:ButtonStyle(
-  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-    (Set<MaterialState> states) {
+  backgroundColor: WidgetStateProperty.resolveWith<Color>(
+    (Set<WidgetState> states) {
       final isOverDue = (over_due_status ?? "").toLowerCase().trim() == "over due";
       final isClosed = scheme_status.toLowerCase().trim() == "closed";
       final isActive = scheme_status.toLowerCase().trim() == "active";
@@ -1010,7 +1006,7 @@ onPressed: () {
       return const Color.fromRGBO(2, 5, 62, 1); // Default dark blue
     },
   ),
-  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5),
     ),
@@ -1073,7 +1069,7 @@ onPressed: () {
     final localization = Provider.of<LocalizationProvider>(context);
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: schemes.length,
       itemBuilder: (context, index) {
         final schemeDetail = schemes[index];
@@ -1148,13 +1144,13 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
               ),
             ],
           ),
-          child: SingleChildScrollView(
+          child: const SingleChildScrollView(
           //  controller: scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: const [
+                  children: [
                     Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 18),
                     SizedBox(width: 8),
                     Text(
@@ -1167,8 +1163,8 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                SizedBox(height: 12),
+                Text(
                   'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.',
                   style: TextStyle(
                     fontSize: 13,
@@ -1176,8 +1172,8 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 20),
-                const Row(
+                SizedBox(height: 20),
+                Row(
                   children: [
                     Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
                     SizedBox(width: 8),
@@ -1228,10 +1224,10 @@ void showClosedSchemeBottomSheet(BuildContext context) {
             ],
           ),
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: const Column(
             mainAxisSize: MainAxisSize.min, // 👈 very important to shrink-wrap content
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Row(
                 children: [
                   Icon(Icons.info_outline, color: Colors.red, size: 18),
@@ -1301,10 +1297,10 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
           ),
         ],
       ),
-      child: Column(
+      child: const Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Row(
             children: [
               Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),

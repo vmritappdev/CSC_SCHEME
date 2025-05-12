@@ -10,7 +10,7 @@ Future<Map<String, dynamic>?> fetchInstallmentHistory(String schemeId) async {
   final prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null || mobileNumber.isEmpty) {
+  if (mobileNumber!.isEmpty) {
     print("Mobile number not found.");
     return null;
   }

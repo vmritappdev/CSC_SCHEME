@@ -26,16 +26,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home:OtpScreen(),
+      home:const OtpScreen(),
     ),
   );
 }
 
 class OtpScreen extends StatefulWidget {
+  const OtpScreen({super.key});
+
   @override
   _OtpScreenState createState() => _OtpScreenState();
 }
@@ -64,7 +66,7 @@ int timerSeconds = 30;
  bool _isResendAvailable = false;
    bool _isOtpVisible = false;
   
-  bool _isOtpCorrect = false;
+  final bool _isOtpCorrect = false;
 
   
    bool isOtpSent = false;
@@ -162,7 +164,7 @@ void _showInvalidOTPDialog(String message) {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -258,18 +260,18 @@ void _showInvalidOTPDialog(String message) {
       return Container(
         
         width: double.infinity, // 👈 Full Width
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               "✅ OTP Verified!",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            Text("Click 'I Have Proceed' to continue."),
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
+            const Text("Click 'I Have Proceed' to continue."),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context); // Close Bottom Sheet
@@ -288,7 +290,7 @@ void _showInvalidOTPDialog(String message) {
     print("✅ Navigating to Next Screen...");
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => CreateMpinScreen5()),
+      MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
     );
   }
 
@@ -340,7 +342,7 @@ void checkOtp() {
           fontSize = fontSize.clamp(12, 24); // Set min/max limits
   final localization = Provider.of<LocalizationProvider>(context);
           return AlertDialog(
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
              // borderRadius: BorderRadius.circular(10),
             ),
             backgroundColor: Colors.white,
@@ -348,7 +350,7 @@ void checkOtp() {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SizedBox(
                   height: constraints.maxWidth * 0.08, // Dynamic height
                   width: constraints.maxWidth * 0.08,  // Dynamic width
@@ -357,7 +359,7 @@ void checkOtp() {
                     fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
@@ -369,11 +371,11 @@ void checkOtp() {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(2, 5, 62, 1),
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(2, 5, 62, 1),
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -415,7 +417,7 @@ void checkOtp() {
 
 
   void startTimer() {
-  Timer.periodic(Duration(seconds: 10), (timer) {
+  Timer.periodic(const Duration(seconds: 10), (timer) {
     if (timerSeconds == 0) {
       timer.cancel();
     //  fetchOtpFromApi(); // ✅ Call API when timer ends
@@ -458,7 +460,7 @@ void _onResendOtp() {
               Navigator.pushReplacement(
               context, 
                       MaterialPageRoute(
-                        builder: (context) => CurvedImageScreen2(),
+                        builder: (context) => const CurvedImageScreen2(),
                       )
                     );
           } ,
@@ -511,11 +513,11 @@ void _onResendOtp() {
                           Navigator.push(
                             context, 
                             MaterialPageRoute(
-                              builder: (context) => MobileScreen(),
+                              builder: (context) => const MobileScreen(),
                             )
                           );
                         },
-                        icon: Icon(Icons.edit, size: 21, color: Colors.red),
+                        icon: const Icon(Icons.edit, size: 21, color: Colors.red),
                       ),
                     ],
                   ),
@@ -540,16 +542,16 @@ void _onResendOtp() {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             maxLength: 1,
-            style: TextStyle(fontSize: 22),
+            style: const TextStyle(fontSize: 22),
             decoration: InputDecoration(
               counterText: '',
-              contentPadding: EdgeInsets.symmetric(vertical: 12), // Reduce padding
+              contentPadding: const EdgeInsets.symmetric(vertical: 12), // Reduce padding
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5), // Make it rounded
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
-                borderSide: BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
+                borderSide: const BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
               ),
             ),
             onChanged: (value) {
@@ -575,7 +577,7 @@ void _onResendOtp() {
                     width: screenWidth * 0.8,
                     height: screenHeight * 0.06,
                     child: DecoratedBox(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color.fromRGBO(2, 5, 62, 1), // First color
@@ -600,7 +602,7 @@ void _onResendOtp() {
                          // backgroundColor: Color.fromRGBO(33, 36, 86, 1),
                           backgroundColor: Colors.transparent, // Make button background transparent
                           shadowColor: Colors.transparent, // Remove shadow if any
-                          shape: RoundedRectangleBorder(
+                          shape: const RoundedRectangleBorder(
                            // borderRadius: BorderRadius.circular(8),
                           ),
                         ),
@@ -626,7 +628,7 @@ void _onResendOtp() {
             children: [
               Text(
           _isResendAvailable
-              ? localization.translate("Didn't receive the OTP?") + " "
+              ? "${localization.translate("Didn't receive the OTP?")} "
               : (timerSeconds == 1
                   ? localization.translate("Resend in 1 second") 
                   : localization.translate("Resend OTP in $timerSeconds seconds")),

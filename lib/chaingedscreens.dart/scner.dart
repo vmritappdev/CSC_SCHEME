@@ -27,7 +27,7 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -75,7 +75,7 @@ class _ScannerState extends State<Scanner> {
     }
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("No image to share.")),
+      const SnackBar(content: Text("No image to share.")),
     );
   }
 }
@@ -111,7 +111,7 @@ class _ScannerState extends State<Scanner> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Copied "$upiId"'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.green,
       ),
     );
@@ -158,7 +158,7 @@ class _ScannerState extends State<Scanner> {
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -207,7 +207,7 @@ Future<bool> checkInternet() async {
     String? mobileNumber = prefs.getString('phoneNumber');
     String schemeId = widget.activescheme.schemeID ?? '';
 
-    if (mobileNumber == null || mobileNumber.isEmpty) return;
+    if (mobileNumber!.isEmpty) return;
 
  bool hasInternet = await checkInternet();
     if (!hasInternet) {
@@ -216,7 +216,7 @@ Future<bool> checkInternet() async {
     }
 
 
-    final url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
+    const url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
 
     try {
       final response = await http.post(Uri.parse(url), body: {
@@ -278,8 +278,8 @@ Future<bool> checkInternet() async {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          backgroundColor: Color.fromRGBO(2, 5, 62, 1),
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
           centerTitle: true,
           title: Text(
             localization.translate("UPI Transaction"),
@@ -315,7 +315,7 @@ Future<bool> checkInternet() async {
               ),
            
               SizedBox(height: screenHeight * 0.01),
-             Container(
+             SizedBox(
   width: screenWidth * 0.4,
   height: screenWidth * 0.5,
   child: Image.asset(
@@ -327,7 +327,7 @@ Future<bool> checkInternet() async {
               SizedBox(height: screenHeight * 0.02),
 
           
-    Align(
+    const Align(
       alignment: Alignment.centerLeft,
       child: Text(
                 'UPI Details',
@@ -346,9 +346,9 @@ Future<bool> checkInternet() async {
                 const Text('UPI ID:', style: TextStyle(fontWeight: FontWeight.w500)),
                 Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 45),
-                      child: const Text('Chinnipavan-2@okhdfcbank'),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 45),
+                      child: Text('Chinnipavan-2@okhdfcbank'),
                     ),
                     IconButton(
                       onPressed: () {
@@ -384,9 +384,9 @@ Column(
         const Text('Bank Name:', style: TextStyle(fontWeight: FontWeight.w500)),
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 130),
-              child: const Text('HDFC Bank',style: TextStyle(fontSize: 12)),
+            const Padding(
+              padding: EdgeInsets.only(right: 130),
+              child: Text('HDFC Bank',style: TextStyle(fontSize: 12)),
             ),
             IconButton(
               onPressed: () {
@@ -410,9 +410,9 @@ Column(
         const Text('Account No:', style: TextStyle(fontWeight: FontWeight.w500)),
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 95),
-              child: const Text('50200103097351',style: TextStyle(fontSize: 12)),
+            const Padding(
+              padding: EdgeInsets.only(right: 95),
+              child: Text('50200103097351',style: TextStyle(fontSize: 12)),
             ),
             IconButton(
               onPressed: () {
@@ -436,9 +436,9 @@ Column(
         const Text('IFSC Code:', style: TextStyle(fontWeight: FontWeight.w500)),
         Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 115),
-              child: const Text('HDFC0002043',style: TextStyle(fontSize: 12)),
+            const Padding(
+              padding: EdgeInsets.only(right: 115),
+              child: Text('HDFC0002043',style: TextStyle(fontSize: 12)),
             ),
             IconButton(
               onPressed: () {
@@ -538,11 +538,11 @@ Column(
                 ),
               ),
              Text(
-  ': Rs. ${widget.activescheme.amountRs?.isNotEmpty == true
+  ': Rs. ${widget.activescheme.amountRs.isNotEmpty == true
       ? widget.activescheme.amountRs
-      : widget.activescheme.balanceAmount?.isNotEmpty == true
+      : widget.activescheme.balanceAmount.isNotEmpty == true
           ? widget.activescheme.balanceAmount
-          : widget.activescheme.installmentAmount?.isNotEmpty == true
+          : widget.activescheme.installmentAmount.isNotEmpty == true
               ? widget.activescheme.installmentAmount
               : installmentAmount}', // Use fetched value finally
   style: TextStyle(
@@ -585,7 +585,7 @@ Column(
               _isChecked = value ?? false;
             });
           },
-          activeColor: Color.fromRGBO(2, 5, 62, 1),
+          activeColor: const Color.fromRGBO(2, 5, 62, 1),
         ),
         Expanded(
           child: Text(
@@ -603,7 +603,7 @@ Column(
       width: double.infinity,
       height: 45,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(2, 5, 62, 1)),
+        style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
         onPressed: _isChecked ? _navigateToPaymentScreen : null,
         child: Text(
          localization.translate("I Have Paid"), 
@@ -618,9 +618,9 @@ String _getSchemeAmount() {
   final amountRs = widget.activescheme.amountRs;
   final balanceAmount = widget.activescheme.balanceAmount;
 
-  if (amountRs != null && amountRs.isNotEmpty) {
+  if (amountRs.isNotEmpty) {
     return amountRs;
-  } else if (balanceAmount != null && balanceAmount.isNotEmpty) {
+  } else if (balanceAmount.isNotEmpty) {
     return balanceAmount;
   } else {
     return '0';

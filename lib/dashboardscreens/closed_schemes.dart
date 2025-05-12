@@ -20,18 +20,18 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: MyScreen(schemeId: '',),
+      home: const MyScreen(schemeId: '',),
     ),
   );
 }
 
 class MyScreen extends StatefulWidget {
    final String schemeId;
-   const MyScreen({Key? key, required this.schemeId}) : super(key: key); // 🆕 Constructor update
+   const MyScreen({super.key, required this.schemeId}); // 🆕 Constructor update
 
 
  //  const MyScreen({Key? key, required t}) : super(key: key);
@@ -40,8 +40,8 @@ class MyScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<MyScreen> {
-  bool _isExpanded = false;
-  bool _showDetails = false;
+  final bool _isExpanded = false;
+  final bool _showDetails = false;
   String lastPayDate = '';
   String totalPayAmount = '';
   String regId = '';
@@ -135,7 +135,7 @@ List<dynamic> salesList = [];
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -191,13 +191,13 @@ Future<void> fetchClosedSchemeData() async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    ErrorScreen();
+    const ErrorScreen();
     return;
   }
 
   print("Mobile Number for Closed Scheme Data: $mobileNumber"); // Debugging
 
-  if (mobileNumber != null && mobileNumber.isNotEmpty) {
+  if (mobileNumber!.isNotEmpty) {
     try {
       final url = Uri.parse('$baseUrl/closed_scheme.php'); //'https://vmrdemos.com/csc_scheme/closed_scheme.php'
       final response = await http.post(
@@ -265,7 +265,7 @@ Future<void> fetchSchemeDetails() async {
 
   print("Mobile Number for Scheme Details: $mobileNumber"); // Debugging line
 
-  if (mobileNumber != null && mobileNumber.isNotEmpty) {
+  if (mobileNumber!.isNotEmpty) {
     try {
       final url = Uri.parse('$baseUrl/scheme_deatails.php');
       final response = await http.post(
@@ -341,12 +341,12 @@ Future<void> fetchSchemeDetails() async {
 
 
         
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
           child: Text(
          //   localization.translate("Closed Scheme"),
          '',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
              // color: Color.fromRGBO(43, 49, 101, 1),
@@ -361,12 +361,12 @@ Future<void> fetchSchemeDetails() async {
 
 
   if (salesList.isNotEmpty || refoundamount.isNotEmpty) ...[
-  Padding(
-    padding: const EdgeInsets.only(left: 10, right: 10),
+  const Padding(
+    padding: EdgeInsets.only(left: 10, right: 10),
     child: Divider(),
   ),
-  Padding(
-    padding: const EdgeInsets.only(left: 10),
+  const Padding(
+    padding: EdgeInsets.only(left: 10),
     child: Row(
       children: [
         Text(
@@ -382,12 +382,12 @@ Future<void> fetchSchemeDetails() async {
     ),
   ),
 
-    Padding(
-                  padding: const EdgeInsets.only(left: 10,right: 10),
+    const Padding(
+                  padding: EdgeInsets.only(left: 10,right: 10),
                   child: Divider(),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -417,7 +417,7 @@ Future<void> fetchSchemeDetails() async {
                         children: [
                           Text(
                              '₹$totalAmount' , // Add Rupee symbol before the amount
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -425,7 +425,7 @@ Future<void> fetchSchemeDetails() async {
                           ),
                           Text(
                              schemeId ,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 11,
                             ),
@@ -440,14 +440,14 @@ Future<void> fetchSchemeDetails() async {
                         children: [
                           Text(
                             localization.translate("Scheme Start Date"),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 11,
                             ),
                           ),
                           Text(
                             localization.translate("Scheme End Date"),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 11,
                             ),
@@ -462,7 +462,7 @@ Future<void> fetchSchemeDetails() async {
                         children: [
                           Text(
                              schemeStartDate , // Add Rupee symbol before the amount
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -470,7 +470,7 @@ Future<void> fetchSchemeDetails() async {
                           ),
                           Text(
                              schemeEndDate ,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 11,
                             ),
@@ -539,7 +539,7 @@ else
 
                
                 Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -560,13 +560,13 @@ else
     String saleAmount = sale['sale_amount']?.toString() ?? '0.00';
     String saleDate = sale['gold_date']?.toString() ?? '';
     String invoiceNumber = sale['invoice']?.toString() ?? '';
-    String sale_id = sale['sale_id']?.toString() ?? '';
+    String saleId = sale['sale_id']?.toString() ?? '';
 
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => BillSummaryScreen(saleId: sale_id)),
+          MaterialPageRoute(builder: (_) => BillSummaryScreen(saleId: saleId)),
         );
       },
       child: Container(
@@ -578,7 +578,7 @@ else
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Order Details',
               style: TextStyle(
                 fontSize: 11,
@@ -589,7 +589,7 @@ else
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Ornament Purchase Amount:',
                   style: TextStyle(
                     fontSize: 11,
@@ -598,7 +598,7 @@ else
                 ),
                 Text(
                   '₹$saleAmount',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -609,7 +609,7 @@ else
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Date of Purchase:',
                   style: TextStyle(
                     fontSize: 11,
@@ -618,7 +618,7 @@ else
                 ),
                 Text(
                   saleDate.isNotEmpty ? saleDate : '[DD-MM-YYYY]',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -629,7 +629,7 @@ else
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Invoice Number:',
                   style: TextStyle(
                     fontSize: 11,
@@ -638,7 +638,7 @@ else
                 ),
                 Text(
                   invoiceNumber,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -654,7 +654,7 @@ else
 ),
                     
 //else 
-  SizedBox.shrink(),  // If no sales data is available
+  const SizedBox.shrink(),  // If no sales data is available
 
                       const SizedBox(height: 16),
 
@@ -662,7 +662,7 @@ else
                       (double.tryParse(refoundamount) ?? 0) > 0
                      
                      ? Container(
-                        padding: EdgeInsets.all(8.0), // Reduced padding to decrease height
+                        padding: const EdgeInsets.all(8.0), // Reduced padding to decrease height
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(8.0),
@@ -671,7 +671,7 @@ else
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // Refund Details Title
-                            Text(
+                            const Text(
                               'Refund Details',
                               style: TextStyle(
                                 fontSize: 12,
@@ -684,7 +684,7 @@ else
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   'Refund Amount:',
                                   style: TextStyle(
                                     fontSize: 11,
@@ -693,7 +693,7 @@ else
                                 ),
                                 Text(
                                   refoundamount.isNotEmpty ? '₹$refoundamount' : '',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -704,7 +704,7 @@ else
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   'Refund Date:',
                                   style: TextStyle(
                                     fontSize: 11,
@@ -713,7 +713,7 @@ else
                                 ),
                                 Text(
                                   refounddate.isNotEmpty ? refounddate : ']',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -726,7 +726,7 @@ else
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   'Refund Bill Number:',
                                   style: TextStyle(
                                     fontSize: 11,
@@ -735,7 +735,7 @@ else
                                 ),
                                 Text(
                                   refoundbill.isNotEmpty ? refoundbill : '',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -746,11 +746,11 @@ else
                           ],
                         ),
                       )
-                 : SizedBox.shrink(), 
+                 : const SizedBox.shrink(), 
                       const SizedBox(height: 16),
 
                       // View Investment Details Button
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
 
                       /*

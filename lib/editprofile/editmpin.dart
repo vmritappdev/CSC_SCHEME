@@ -19,11 +19,11 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: EditMPINScreen(),
+      home: const EditMPINScreen(),
     ),
   );
 }
@@ -106,7 +106,7 @@ bool _isOtpExpired = false;
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -164,7 +164,7 @@ Future<void> fetchOtpApi() async {
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
     //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-    ErrorScreen();
+    const ErrorScreen();
       return;
     }
   String mobileNumber = _controllerMobileNumber.text;
@@ -215,7 +215,7 @@ _isOtpExpired = false;
 }
 
 void _startOtpExpiryTimer() {
-  Future.delayed(Duration(minutes: 10), () {
+  Future.delayed(const Duration(minutes: 10), () {
     if (mounted && otpSentTime != null) {
       final now = DateTime.now();
       final difference = now.difference(otpSentTime!).inMinutes;
@@ -260,12 +260,12 @@ void _startOtpExpiryTimer() {
     if (_isOtpCorrect) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => CreateMpinScreen5()),
+        MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
       );
     } 
     else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Invalid OTP. Please try again.")),
+        const SnackBar(content: Text("Invalid OTP. Please try again.")),
       );
     }
   }
@@ -437,7 +437,7 @@ double screenHeight = MediaQuery.of(context).size.height;
   children: [
     Text(
       _isResendAvailable
-          ? localization.translate("Didn't receive the OTP?") + " "
+          ? "${localization.translate("Didn't receive the OTP?")} "
           : (_timerSeconds == 1
               ? localization.translate("Resend in 1 second") 
               : localization.translate("Resend OTP in $_timerSeconds seconds")),
