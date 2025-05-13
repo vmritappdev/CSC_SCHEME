@@ -436,12 +436,12 @@ Container(
     border: Border.all(color: Colors.grey.shade300),
     boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
   ),
-  child: const Column(
+  child:  Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       // Adding the "Communication Address" box
       Text(
-          'Communication Address:',
+         localization.translate('Communication Address:'),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
         ),
       
@@ -456,19 +456,19 @@ Container(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Csc Jewellerys',
+                 localization.translate('Csc Jewellerys'),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
                 ),
                 SizedBox(height: 4),
                 Row(
                   children: [
                     Text(
-                      'Mandapal Strret,',
+localization.translate('Mandapal Street,'),
                       style: TextStyle(color: Colors.black87, fontSize: 14),
                     ),
                     SizedBox(width: 8),
                     Text(
-                      'Nellore - 524001,',
+                     localization.translate('Nellore - 524001'),
                       style: TextStyle(color: Colors.black87, fontSize: 14),
                     ),
                   ],
@@ -476,12 +476,12 @@ Container(
                 Row(
                   children: [
                     Text(
-                      'Andhra Pradesh',
+localization.translate('Andhra Pradesh'),
                       style: TextStyle(color: Colors.black87, fontSize: 14),
                     ),
                     SizedBox(width: 8),
                     Text(
-                      'Mobile: 9490657008',
+                   localization.translate('Mobile: 9490657008'),
                       style: TextStyle(color: Colors.black54),
                     ),
                   ],

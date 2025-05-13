@@ -413,7 +413,7 @@ Future<void> verifyPaymentProcess(BuildContext context) async {
     return;
   }
 
-  final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
+  final url = Uri.parse('$baseUrl/payment_process_verification.php');
 
   try {
     final response = await http.post(
@@ -460,7 +460,7 @@ Future<void> verifyPaymentProcess(BuildContext context) async {
 }
 
 Future<void> callClosePayPopApi(String id) async {
-  final closeUrl = Uri.parse('https://vmrdemos.com/csc_scheme/close_pay_pop.php');
+  final closeUrl = Uri.parse('$baseUrl/close_pay_pop.php');
 
   try {
     final closeResponse = await http.post(
@@ -631,7 +631,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
            
 
              if (activeSchemeNew != null && activeSchemeNew!.activeSchemes.isNotEmpty) ...[
-  _buildSectionTitle("Active Schemes"),
+  _buildSectionTitle(localization.translate("Active Schemes")),
   ListView.builder(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
@@ -651,7 +651,7 @@ void showPremiumPopup(BuildContext context, String title, String message, String
    dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
     ? getOverdueStatus(schemeDetail.dueDate) == "1"
         ? "" // Don't show anything if overdue
-        : localization.translate("Next Installment: ") + formatDueDate(schemeDetail.dueDate)
+        : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
     : "",
 
 
@@ -894,6 +894,8 @@ double screenHeight = MediaQuery.of(context).size.height;
                       fontWeight: FontWeight.bold,
                       fontSize: 12* MediaQuery.of(context).textScaleFactor,)
                   ),
+
+                  
                  Text(
   capitalizeEachWord(name), // Capitalize each word
   style: GoogleFonts.lato(

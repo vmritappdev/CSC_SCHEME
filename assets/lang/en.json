@@ -170,7 +170,14 @@
   "UPI Number": "UPI Number",
   "UPI ID": "UPI ID",
 
-  
+
+  "Advance Gold Purchase":"Advance Gold Purchase",
+  "100% V.A. Free on Items up to 18% Wastage":"100% V.A. Free on Items up to 18% Wastage",
+   "Flexible Monthly Investment": "Flexible Monthly Investment",
+   "Short Term - Great Benefits":"Short Term - Great Benefits",
+   
+
+
 
   "LogOut":"LogOut",
   "Quick Pay":"Quick Pay",
@@ -198,9 +205,7 @@
  "Payment Verification Process": "Payment Verification Process",
   "CSC 916 JEWELLRY SCHEME": "CSC 916 JEWELLRS SCHEME",
   "Scheme Name": "Scheme Name",
-  "100% Wastage Free": "100% Wastage Free",
-  "Flexible investment": "Flexible investment",
-  "Short period, great benefits": "Short period, great benefits",
+ 
   "Investment Due Date:10/11/2024": "Investment Due Date:10/11/2024",
   "Active Schemes": "Active Schemes",
   "No Scheme Details":"No Scheme Details",
@@ -210,6 +215,26 @@
   "View details": "View details",
   "Rs. 1000/P.M.": "Rs. 1000/P.M.",
   "Rs.10,000": "Rs.10,000",
+  "Balance":"Balance",
+  "EMI":"EMI",
+  "Pay Installment":"Pay Installment",
+  "any":"any",
+  "Pay any amount":"Pay any amount",
+  "Amount exceeds balance by more than":"Amount exceeds balance by more than",
+  "DUE TODAY":"DUE TODAY",
+
+  "Choose payment option":"Choose payment option",
+
+
+"Payment Access Disabled":"Payment Access Disabled",
+"You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.":"You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.",
+"Admin Contact: 94906 57008":"Admin Contact: 94906 57008",
+"Empty Amount":"Empty Amount",
+"Please enter an amount to proceed.":"Please enter an amount to proceed.",
+"Invalid Amount":"Invalid Amount",
+"You cannot pay more than the installment amount.":"You cannot pay more than the installment amount.",
+"Oops! You’re only allowed to pay up to your installment amount.":"Oops! You’re only allowed to pay up to your installment amount.",
+  "You cannot pay more than the remaining balance.":"You cannot pay more than the remaining balance.",
 
 
   "Add Scheme": "Add Scheme",
@@ -339,7 +364,7 @@
     "Add": "Add",
     "home": "Home",
     "Transform": "Transform",
-    "1st INVESTMENT": "1st Investment",
+    "1st installment": "1st installment",
     "2nd INVESTMENT": "2nd Investment",
     "3rd INVESTMENT": "3rd Investment",
     "4th INVESTMENT": "4th Investment",
@@ -352,7 +377,12 @@
     "11th INVESTMENT": "11th Investment",
   
 
+ "Installment Amount":"Installment Amount",
+ "Change Join Scheme":"Change Join Scheme",
+ "Enter Custom Relationship":"Enter Custom Relationship",
+"✅ Scheme updated successfully!":"✅ Scheme updated successfully!",
 
+ "Change Profile":"Change Profile",
 
   "Buy Successful": "Buy Successful",
    "38.7 mg": "38.7 mg",
@@ -468,6 +498,30 @@
     "Yes, you can purchase special items with applicable wastage (VA) and making charges.": "Yes, you can purchase special items with applicable wastage (VA) and making charges.",
     "Can I buy Gold Coins?": "Can I buy Gold Coins?",
     "Yes, gold coins can be purchased with up to a 50% discount on wastage (VA).": "Yes, gold coins can be purchased with up to a 50% discount on wastage (VA).",
+
+
+      
+"You must make the monthly advance payment by the 10th of every month. Payments can be made via Cash, UPI, or Demand Draft in favor of “CSC Jewellers.” You may also use the CSC Jewellers Mobile App for online payments.":"You must make the monthly advance payment by the 10th of every month. Payments can be made via Cash, UPI, or Demand Draft in favor of “CSC Jewellers.” You may also use the CSC Jewellers Mobile App for online payments.",
+    
+ "What if I purchase jewelry exceeding the accumulated amount?":"What if I purchase jewelry exceeding the accumulated amount?",
+   "Can I purchase watches in this plan?":"Can I purchase watches in this plan?", 
+  "Is the monthly advance amount fixed or variable?": "Is the monthly advance amount fixed or variable?",
+
+ "Communication Address:":"Communication Address:",
+ "Csc Jewellerys":"Csc Jewellerys",
+ "Mandapal Street,":"Mandapal Street,",
+ "Nellore - 524001":"Nellore - 524001",
+ "Andhra Pradesh":"Andhra Pradesh",
+ "Mobile: 9490657008":"Mobile: 9490657008",
+
+ "Resend in 1 second":"Resend in 1 second",
+
+ "Please enter valid OTP":"Please enter valid OTP",
+
+ "✅ OTP Verified!":"✅ OTP Verified!",
+ "Click 'I Have Proceed' to continue.":"Click 'I Have Proceed' to continue.",
+ "I Have Proceed":"I Have Proceed",
+ "Resend OTP in $timerSeconds seconds":"Resend OTP in $timerSeconds seconds",
 
 
     

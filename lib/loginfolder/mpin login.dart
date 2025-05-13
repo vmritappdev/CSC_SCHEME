@@ -128,7 +128,8 @@ void _validatePin() async {
  void _onDelete() {
   if (_enteredMpin.isNotEmpty) {
     setState(() {
-      _enteredMpin.removeLast();
+   //   _enteredMpin.removeLast();
+       _pin = _pin.substring(0, _pin.length - 1);
     });
   }
 }
@@ -502,6 +503,15 @@ Widget build(BuildContext context) {
           children: row.map((number) {
             return GestureDetector(
               onTap: () => number == '⌫' ? _onDelete() : _onKeyTap(number),
+
+               onLongPress: () {
+    if (number == '⌫') {
+      setState(() {
+        _pin = ''; // full MPIN clear
+      });
+    }
+  },
+              
               child: Container(
                 margin: EdgeInsets.all(screenWidth * 0.025),
                 width: buttonSize,

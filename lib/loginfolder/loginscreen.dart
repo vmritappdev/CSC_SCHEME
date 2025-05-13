@@ -1,6 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/loginfolder/loginotp.dart';
 import 'package:csc/utillity/check%20internet.dart';
@@ -92,7 +91,9 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   void initState() {
     super.initState();
     loadPhoneNumber();
-  _checkSavedPhoneNumber();
+ WidgetsBinding.instance.addPostFrameCallback((_) {
+    _checkSavedPhoneNumber();
+  });
   
     
     
@@ -104,7 +105,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   
 
 Future<void> _fetchUserDetails() async {
-  const String apiUrl = "$baseUrl/get_reg_account_details.php";  //"https://vmrdemos.com/csc_scheme/get_reg_account_details.php"
+  const String apiUrl = "$baseUrl/get_reg_account_details.php";  
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -285,7 +285,7 @@ Color getStatusColor(String? status) {
       children: [
         Expanded(
           child: Text(
-            'Paid: ₹${formatAmount(paidAmount!.toString())}',
+            "${localization.translate('Paid')}: ₹${formatAmount(paidAmount!.toString())}",
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,
@@ -295,7 +295,7 @@ Color getStatusColor(String? status) {
         ),
         Expanded(
           child: Text(
-            'Balance: ₹${formatAmount(balanceAmount!.toString())}',
+          "${localization.translate('Balance')}: ₹${formatAmount(balanceAmount!.toString())}",
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
@@ -358,10 +358,12 @@ if (installment["payment_status"] == "Process")
   Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Padding(
+
+      
+       Padding(
         padding: EdgeInsets.only(left: 12, top: 4, bottom: 4),
         child: Text(
-          'Choose payment option',
+         localization.translate('Choose payment option'),
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
         ),
       ),
@@ -371,7 +373,7 @@ if (installment["payment_status"] == "Process")
       Row(
         children: [
           Radio(
-            value: 'emi',
+            value: localization.translate('emi'),
             groupValue: selectedOption,
             onChanged: (val) {
               setState(() {
@@ -380,8 +382,8 @@ if (installment["payment_status"] == "Process")
             },
             activeColor: const Color(0xFF2B004B),
           ),
-          const Text(
-            'Pay Installment',
+           Text(
+          localization.translate('Pay Installment'),
             style: TextStyle(fontSize: 16),
           ),
           const SizedBox(width: 10),
@@ -403,13 +405,14 @@ if (installment["payment_status"] == "Process")
   child: Text(
     () {
       if (dueDays == null) return '';
-      if (dueDays == 0) return 'DUE TODAY';
-      if (dueDays == 1) return 'DUE TOMORROW';
+      if (dueDays == 0) return localization.translate('DUE TODAY');
+      if (dueDays == 1) return localization.translate('DUE TOMORROW');
       if (dueDays! > 1) return 'DUE IN $dueDays DAYS';
+      
       return 'OVERDUE BY ${dueDays?.abs()} DAYS';
-    }(),
+     }(),
     style: const TextStyle(
-      color: Colors.white,
+    color: Colors.white,
       fontSize: 12,
       fontWeight: FontWeight.w500,
     ),
@@ -432,8 +435,8 @@ if (installment["payment_status"] == "Process")
             },
             activeColor: const Color(0xFF2B004B),
           ),
-          const Text(
-            'Pay any amount',
+           Text(
+          localization.translate( 'Pay any amount') ,
             style: TextStyle(fontSize: 16),
           ),
         ],
@@ -461,8 +464,11 @@ if (installment["payment_status"] == "Process")
       final balAmount = balanceAmount?.toInt() ?? 0;
 
       // ❌ Error if entered amount > balance + 1
+
+     // _amountError = 'Amount exceeds balance by more than ₹$balanceAmount';
       if (enteredAmount > balAmount + 1) {
-        _amountError = 'Amount exceeds balance by more than ₹$balanceAmount';
+        _amountError = 
+          "${localization.translate('Amount exceeds balance by more than')}: ₹${formatAmount(balanceAmount!.toString())}";
       } else {
         _amountError = null;
       }
@@ -470,7 +476,7 @@ if (installment["payment_status"] == "Process")
   },
   decoration: InputDecoration(
     prefixText: '₹',
-    labelText: 'Enter Amount',
+    labelText: localization.translate('Enter Amount'),
     border: const OutlineInputBorder(),
     focusedBorder: const OutlineInputBorder(
       borderSide: BorderSide(color: Color(0xFF2B004B), width: 2),
@@ -516,7 +522,7 @@ if (installment["payment_status"] == "Process")
                         ),
                       ],
                     ),
-                    child: const Column(
+                    child:  Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -525,7 +531,7 @@ if (installment["payment_status"] == "Process")
                             Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
                             SizedBox(width: 8),
                             Text(
-                              'Payment Access Disabled',
+                             localization.translate('Payment Access Disabled'),
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
@@ -536,7 +542,7 @@ if (installment["payment_status"] == "Process")
                         ),
                         SizedBox(height: 8),
                         Text(
-                          'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.',
+                         localization.translate('You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
                           style: TextStyle(
                             fontSize: 11,
                             color: Color(0xFF5D4037),
@@ -549,7 +555,7 @@ if (installment["payment_status"] == "Process")
                             Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
                             SizedBox(width: 6),
                             Text(
-                              'Admin Contact: 94906 57008',
+                             localization.translate('Admin Contact: 94906 57008'),
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
@@ -593,12 +599,12 @@ if (installment["payment_status"] == "Process")
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text("Empty Amount"),
-                content: const Text("Please enter an amount to proceed."),
+                title:  Text(localization.translate("Empty Amount")),
+                content:  Text(localization.translate("Please enter an amount to proceed.")),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"),
+                    child:  Text(localization.translate("OK")),
                   ),
                 ],
               ),
@@ -611,12 +617,12 @@ if (installment["payment_status"] == "Process")
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text("Invalid Amount"),
-                content: const Text("You cannot pay more than the installment amount."),
+                title:  Text(localization.translate("Invalid Amount")),
+                content:  Text(localization.translate("You cannot pay more than the installment amount.")),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"),
+                    child:  Text(localization.translate("OK")),
                   ),
                 ],
               ),
@@ -721,6 +727,7 @@ if (installment["payment_status"] == "Process")
   void _showInvalidOTPDialog() {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+  final localization = Provider.of<LocalizationProvider>(context);
 
   showDialog(
     context: context,
@@ -741,7 +748,7 @@ if (installment["payment_status"] == "Process")
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
               child: Text(
-                'Oops! You’re only allowed to pay up to your installment amount.',
+               localization.translate('Oops! You’re only allowed to pay up to your installment amount.'),
                 style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
                 textAlign: TextAlign.center,
               ),
@@ -757,7 +764,7 @@ if (installment["payment_status"] == "Process")
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "OK",
+                 localization.translate("OK"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenWidth * 0.045, // Dynamic Button Font Size
@@ -776,6 +783,7 @@ if (installment["payment_status"] == "Process")
 void _showInvalidOTPDialog1() {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+  final localization = Provider.of<LocalizationProvider>(context);
 
   showDialog(
     context: context,
@@ -796,7 +804,7 @@ void _showInvalidOTPDialog1() {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
               child: Text(
-                'You cannot pay more than the remaining balance.',
+               localization.translate('You cannot pay more than the remaining balance.'),
                 style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
                 textAlign: TextAlign.center,
               ),
@@ -812,7 +820,7 @@ void _showInvalidOTPDialog1() {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "OK",
+                 localization.translate("OK"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenWidth * 0.045, // Dynamic Button Font Size

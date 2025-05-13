@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:csc/api_services.dart/otp_api.dart';
 import 'package:csc/chaingedscreens.dart/chainge%20mobile%20.dart';
 
@@ -136,6 +134,7 @@ int timerSeconds = 30;
 void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+   final localization = Provider.of<LocalizationProvider>(context);
 
   showDialog(
     context: context,
@@ -252,6 +251,7 @@ void _showInvalidOTPDialog(String message) {
   
 
   void showProceedBottomSheet() {
+     final localization = Provider.of<LocalizationProvider>(context,listen: false);
   showModalBottomSheet(
     context: context,
     isScrollControlled: true, // 👈 Full Screen Support
@@ -265,19 +265,19 @@ void _showInvalidOTPDialog(String message) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "✅ OTP Verified!",
+             Text(
+             localization.translate("✅ OTP Verified!"),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Text("Click 'I Have Proceed' to continue."),
+             Text(localization.translate("Click 'I Have Proceed' to continue.")),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context); // Close Bottom Sheet
                 navigateToNextScreen();
               },
-              child: Text("I Have Proceed",style: GoogleFonts.lato(color: Colors.white),),
+              child: Text(localization.translate("I Have Proceed"),style: GoogleFonts.lato(color: Colors.white),),
             ),
           ],
         ),

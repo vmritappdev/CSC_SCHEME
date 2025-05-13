@@ -1,10 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-
-
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/api_services.dart/transation.dart/fetchdetails_api.dart';
 import 'package:csc/api_services.dart/transation.dart/fetchschemes.dart';
 import 'package:csc/api_services.dart/transation.dart/paydetails_api.dart';
@@ -940,6 +935,7 @@ IconData getStatusIcon(String status) {
 }
 
 Color getStatusIconColor(String status) {
+  final localization = Provider.of<LocalizationProvider>(context);
   switch (status.toLowerCase()) {
     case 'processing':
       return Colors.orange;

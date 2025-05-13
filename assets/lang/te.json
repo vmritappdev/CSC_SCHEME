@@ -208,6 +208,10 @@
  "WhatsApp Chat":"వాట్సాప్ చాట్",
 
 
+ "Advance Gold Purchase": "అడ్వాన్స్ గోల్డ్ కొనుగోలు",
+ "100% V.A. Free on Items up to 18% Wastage":  "18% వరకు వెస్ట్ేజ్ ఉన్న వస్తువులపై 100% వి.ఏ. ఉచితం",
+  "Flexible Monthly Investment": "సౌకర్యవంతమైన నెలనెలా పెట్టుబడి",
+  "Short Term - Great Benefits":  "చిన్న కాలం - గొప్ప లాభాలు",
  
  
  "Paid on": "చెల్లించబడింది:",
@@ -381,6 +385,12 @@
   "10th INVESTMENT": "10వ పెట్టుబడి",
   "11th INVESTMENT": "11వ పెట్టుబడి",
 
+  "Installment Amount": "తరచు చెల్లింపు మొత్తం",
+
+  "Change Profile": "ప్రొఫైల్ మార్చు",
+  "Change Join Scheme": "చేరిన స్కీమ్‌ను మార్చు",
+  "Enter Custom Relationship": "ఇతర సంబంధాన్ని నమోదు చేయండి",
+  "✅ Scheme updated successfully!": "✅ స్కీమ్ విజయవంతంగా అప్డేట్ చేయబడింది!",
 
   "Buy Successful": "కొనుగోలు విజయవంతమైంది",
   "38.7 mg": "38.7 మి.గ్రా.",
@@ -458,11 +468,30 @@
   "installment_4_date": "05/05/24",
   "installment_4_receipt_no": "27QR25-191884",
   "installment_4_amount": "10000",
-  "Paid": "చెల్లింపు పూర్తయింది",
+  "Paid": "పూర్తయింది",
   "Download Receipt": "రసీదును డౌన్లోడ్ చేయండి",
 
+  "Balance": "మిగిలిన మొత్తం",
+  "Choose payment option": "చెల్లింపు ఆప్షన్‌ను ఎంచుకోండి",
+  "EMI":"ఈఎంఐ",
+  "Pay Installment":"ఇన్‌స్టాల్‌మెంట్ చెల్లించండి",
+  "any":"ఏదైనా",
+  "Pay any amount":"ఏదైనా మొత్తాన్ని చెల్లించండి",
+  "Amount exceeds balance by more than":"మొత్తం, మిగిలిన మొత్తాన్ని పైగా మించిపోతోంది",
+"DUE TODAY":"ఈరోజే గడువు",
 
-  
+
+"Payment Access Disabled": "చెల్లింపు యాక్సెస్ నిలిపివేయబడింది",
+"You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.":"మీరు 60 రోజుల నుండి మీ కిష్టాన్ని చెల్లించలేదు. అందుచేత, నేరుగా చెల్లింపు ఎంపిక ని అప్రాప్తమైంది. దయచేసి CSC జ్యువెలర్ల నిర్వహణను సంప్రదించండి లేదా మా బ్రాంచ్ నెల్లూరులో సందర్శించండి.",
+"Admin Contact: 94906 57008": "నిర్వాహక సంతోషం: 94906 57008",
+"Empty Amount": "ఖాళీ మొత్తం",
+"Please enter an amount to proceed.":"దయచేసి కొనసాగించడానికి మొత్తాన్ని నమోదు చేయండి.",
+"Invalid Amount": "చెల్లని మొత్తం",
+"You cannot pay more than the installment amount.": "మీరు ఇన్‌స్టాల్‌మెంట్ మొత్తం కంటే ఎక్కువ చెల్లించలేరు.",
+"Oops! You’re only allowed to pay up to your installment amount.": "అయ్యో! మీరు ఇన్‌స్టాల్‌మెంట్ మొత్తం వరకు మాత్రమే చెల్లించగలరు.",
+"You cannot pay more than the remaining balance.":"మీరు మిగిలిన బాకీ మొత్తానికి మించి చెల్లించలేరు.",
+
+
     
     "Frequently asked questions": "ప్రశ్నలు & సమాధానాలు",
     "Chat with us": "మాతో చాట్ చేయండి",
@@ -496,6 +525,42 @@
     "Yes, you can purchase special items with applicable wastage (VA) and making charges.": "అవును, మీరు వ్యర్థం (VA) మరియు తయారీ చార్జీలతో ప్రత్యేక వస్తువులను కొనుగోలు చేయవచ్చు.",
     "Can I buy Gold Coins?": "నేను గోల్డ్ కాయిన్స్ కొనుగోలు చేయగలనా?",
     "Yes, gold coins can be purchased with up to a 50% discount on wastage (VA).": "అవును, మీరు గోల్డ్ కాయిన్స్ ని 50% డిస్కౌంట్‌తో వ్యర్థం (VA) కొనుగోలు చేయవచ్చు.",
+
+
+
+
+
+       "You must make the monthly advance payment by the 10th of every month. Payments can be made via Cash, UPI, or Demand Draft in favor of “CSC Jewellers.” You may also use the CSC Jewellers Mobile App for online payments.": "ప్రతి నెల 10వ తేదీ లోపు మీరు మాసిక ముందస్తు చెల్లింపును చేయాలి. చెల్లింపులు నగదు, UPI లేదా “CSC Jewellers” పేరుపై డిమాండ్ డ్రాఫ్ట్ ద్వారా చేయవచ్చు. మీరు ఆన్‌లైన్ చెల్లింపుల కోసం CSC Jewellers మొబైల్ యాప్‌ను కూడా ఉపయోగించవచ్చు.",
+
+      "Within 6 months: No discount on wastage (VA) will be provided.\n 7th or 8th month: 30% discount on wastage (VA), applicable only if VA is up to 18% and limitedto the accumulated value.\n9th month: 40% discount on VA (up to 18%), limited to the accumulated value.\n10th month: 50% discount on VA (up to 18%), limited to the accumulated gold value. ": "6 నెలల్లోగా: వ్యర్థం (VA)పై ఎలాంటి డిస్కౌంట్ ఇవ్వబడదు.\n7వ లేదా 8వ నెల: వ్యర్థం (VA)పై 30% డిస్కౌంట్ ఇవ్వబడుతుంది, ఇది VA 18% లోపల ఉంటే మాత్రమే వర్తిస్తుంది మరియు కూడబెట్టిన విలువ వరకే పరిమితం.\n9వ నెల: VA (18% లోపల)పై 40% డిస్కౌంట్, కూడబెట్టిన విలువ వరకే పరిమితం.\n10వ నెల: VA (18% లోపల)పై 50% డిస్కౌంట్, కూడబెట్టిన బంగారు విలువ వరకే పరిమితం.",
+  "To qualify for zero wastage (VA), all monthly payments must be made continuously. Any missed payment will result in discontinuation of the plan.":"శూన్య వ్యర్థం (VA) అర్హత పొందేందుకు, ప్రతి నెల చెల్లింపులు నిరంతరంగా చేయాలి. ఒకదాన్ని కూడా మిస్ అయితే, ప్లాన్ నిలిపివేయబడుతుంది.",
+ "What if I purchase jewelry exceeding the accumulated amount?": "కూడబెట్టిన మొత్తాన్ని మించిన ఆభరణాలను నేను కొనుగోలు చేస్తే ఏమవుతుంది?",
+ "If your purchase exceeds the accumulated amount, the applicable wastage (VA) and other charges on the excess portion must be paid at the time of purchase.": "మీ కొనుగోలు కూడబెట్టిన మొత్తాన్ని మించితే, అదనంగా కొనుగోలు చేసిన భాగంపై వర్తించే వ్యర్థం (VA) మరియు ఇతర చార్జీలు కొనుగోలు సమయంలో చెల్లించాలి.",
+"Upon completing 11 months from your enrollment date, you can purchase gold jewelry of your choice with zero wastage (VA) up to 18%, limited to your accumulated value.":"మీ నమోదు తేదీ నుండి 11 నెలలు పూర్తి చేసాక, మీరు మీ ఎంపికైన బంగారు ఆభరణాలను శూన్య వ్యర్థం (VA) 18% వరకు, కూడబెట్టిన విలువకు పరిమితం చేయబడినట్లు కొనుగోలు చేయవచ్చు.",
+"Yes, wastage (VA) will be charged on special items like ethnic jewelry, vintage jewelry, pooja items, silver articles, silver jewelry, and other special items not included in this estimate. Charges for precious stones, semi-precious stones, zircon, birthstones, and other stones will also apply. If a member wishes to purchase any of these items, they may contact the showroom for details.": "అవును, ఈ అంచనాలో చేర్చబడని ప్రత్యేక వస్తువులపై వ్యర్థం (VA) చార్జ్ చేయబడుతుంది, ఉదాహరణకు ఎథ్నిక్ జ్యూవెలరీ, పాతకాలపు ఆభరణాలు, పూజా వస్తువులు, వెండి వస్తువులు, వెండి ఆభరణాలు మరియు ఇతర ప్రత్యేక వస్తువులు. విలువైన రత్నాలు, సెమీ-విలువైన రత్నాలు, జిర్కాన్, జన్మరత్నాలు మరియు ఇతర రత్నాలపై కూడా చార్జీలు వర్తిస్తాయి. ఒక సభ్యుడు ఈ వస్తువులను కొనుగోలు చేయాలనుకుంటే, వారు షోరూమ్‌తో సంప్రదించవచ్చు.",
+"Can I purchase watches in this plan?": "ఈ ప్లాన్‌లో నేను గడియారాలు కొనుగోలు చేయగలనా?",
+ "Is the monthly advance amount fixed or variable?":"మాసిక ముందస్తు మొత్తం స్థిరంగా ఉందా లేక మారుతుంది?",
+"No, this plan does not include eligibility for purchasing watches.":"కాదు, ఈ ప్లాన్ గడియారాలు కొనుగోలు చేయడానికి అర్హతను కలిగించదు.",
+"The monthly advance payment amount is fixed.":  "మాసిక ముందస్తు చెల్లింపు మొత్తం స్థిరంగా ఉంటుంది.",
+
+
+
+"Communication Address:": "సంప్రదించేందుకు చిరునామా:",
+"Csc Jewellerys": "సీఎస్‌సీ జువెల్లరీస్",
+"Mandapal Street,":"మండపాల్ వీధి,",
+"Nellore - 524001": "నెల్లూరు - 524001",
+"Andhra Pradesh":  "ఆంధ్రప్రదేశ్",
+"Mobile: 9490657008": "మొబైల్: 9490657008",
+"Resend in 1 second": "1 సెకనులో మళ్లీ పంపించండి",
+"Please enter valid OTP": "దయచేసి సరైన OTPని నమోదు చేయండి",
+
+
+
+"✅ OTP Verified!": "✅ OTP ధృవీకరించబడింది!",
+"Click 'I Have Proceed' to continue.":  "'నేను కొనసాగుతున్నాను' క్లిక్ చేసి కొనసాగించండి.",
+"I Have Proceed":"నేను కొనసాగుతున్నాను",
+"Resend OTP in $timerSeconds seconds":  "$timerSeconds సెకన్లలో OTPని మళ్లీ పంపించండి",
+
 
 
     

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/dashboardscreens/user_profile.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/view%20details.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -190,6 +191,7 @@ Future<bool> checkInternet() async {
 
 
   Future<void> updateSchemeDetails() async {
+          final localization = Provider.of<LocalizationProvider>(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 
@@ -257,13 +259,13 @@ Future<bool> checkInternet() async {
       if (data['status'] == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           
-          SnackBar(content: Text("✅ Scheme updated successfully!",style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
+          SnackBar(content: Text(localization.translate("✅ Scheme updated successfully!"),style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
         );
 
         Future.delayed(const Duration(seconds: 2), () {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const JewelryTransactionScreen(schemeId: '',)), // Replace with your actual next screen
+      MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')), // Replace with your actual next screen
     );
   });
       } else {
@@ -502,8 +504,8 @@ double screenHeight = MediaQuery.of(context).size.height;
                          _buildTextField(stateController, localization.translate("State*")),
                     _buildTextField(districtController, localization.translate("District*")),
                       _buildTextField(cityController, localization.translate("City*")),  
-                    _buildDocumentRow(localization.translate("Adhar Number*"), adharController, adharImage, false),
-                      _buildDocumentRow(localization.translate("Pancard Card Number*"), panController, panImage, true),
+                    _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage, false),
+                      _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage, true),
                    
                      _buildTextField(referralController,localization.translate( "Referral Name/Number")),
 
@@ -520,7 +522,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                     _buildTextField(bankNameController, localization.translate("Bank Name*")),
                        _buildTextField(holderName, localization.translate("Bank Account Holder Name*")),
                     _buildTextField(accountNoController, localization.translate("Bank Account No*")),
-                    _buildTextField(ifscCodeController, localization.translate("IFSC Code")),
+                    _buildTextField(ifscCodeController, localization.translate("IFSC Code*")),
                     _buildTextField(branchLocationController, localization.translate("Branch Location*")),
                    
 
@@ -537,7 +539,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                     _buildTextField(nomineeNameController, localization.translate("Nominee Full Name")),
 
                     //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
-                      _buildDocumentRow(localization.translate("Nominee Adhaar Number*"), nomineeadharController, nomineeimage, true),
+                      _buildDocumentRow(localization.translate("Nominee Adhar Number*"), nomineeadharController, nomineeimage, true),
 
                        // _buildNomineeRelationshipDropdown(),
                         _buildNomineeRelationshipDropdown(),
@@ -672,14 +674,15 @@ double screenHeight = MediaQuery.of(context).size.height;
 }
 
 Widget _buildNomineeRelationshipDropdown() {
+   final localization = Provider.of<LocalizationProvider>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<String>(
         value: relationships.contains(selectedRelationship)
             ? selectedRelationship
             : null,
-        decoration: const InputDecoration(
-          labelText: "Nominee Relationship*",
+        decoration:  InputDecoration(
+          labelText:localization.translate("Nominee Relationship*"),
           border: OutlineInputBorder(),
         ),
         items: relationships.toSet().map((String item) {
@@ -700,6 +703,7 @@ Widget _buildNomineeRelationshipDropdown() {
   }
 
   Widget _buildOtherRelationshipField() {
+      final localization = Provider.of<LocalizationProvider>(context);
     return Visibility(
       visible: isOtherRelationVisible,
       child: Padding(
@@ -710,8 +714,8 @@ Widget _buildNomineeRelationshipDropdown() {
  // Blocks " and ,
   ],
           controller: otherController,
-          decoration: const InputDecoration(
-            labelText: "Enter Custom Relationship",
+          decoration:  InputDecoration(
+            labelText: localization.translate("Enter Custom Relationship"),
             border: OutlineInputBorder(),
           ),
         ),
