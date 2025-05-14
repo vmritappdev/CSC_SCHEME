@@ -1,8 +1,9 @@
-import 'package:csc/chaingedscreens.dart/paymentverify.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/localization/provider.dart';
 import 'package:csc/splash_screen.dart';
-import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/upidetails/image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -56,13 +57,13 @@ class MyApp extends StatelessWidget {
               ),
             ),
             inputDecorationTheme: const InputDecorationTheme(
-              border: OutlineInputBorder(),
+            border: OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
+              borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
               ),
             ),
           ),
-          home: const SplashScreen(),
+          home: SplashScreen(),
         );
       },
     );

@@ -191,7 +191,7 @@ Future<bool> checkInternet() async {
 
 
   Future<void> updateSchemeDetails() async {
-          final localization = Provider.of<LocalizationProvider>(context);
+          final localization = Provider.of<LocalizationProvider>(context,listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
 

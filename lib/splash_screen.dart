@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/registationfolder/langvages%20page.dart';
+
+import 'package:csc/registationfolder/langvages.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Navigate to Language Selection Screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LanguageSelectionScreen1()),
+        MaterialPageRoute(builder: (context) => const LanguageSelectionScreen2()),
       );
     } else {
       // Navigate to Login Screen

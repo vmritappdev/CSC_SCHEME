@@ -573,7 +573,7 @@ if (_showImageError)
 
 
                    TextField(
-                    keyboardType: TextInputType.number,
+                    keyboardType: TextInputType.name,
   controller: _transactionNumberController,
   decoration:  InputDecoration(
     

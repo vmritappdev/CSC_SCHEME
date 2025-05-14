@@ -68,9 +68,7 @@ String overdue = "no";
   //  fetchActiveSchemes();
   loadSchemes();
  
-   verifyPaymentProcess(context);
-     
-   _startPolling();
+
   
 
     
@@ -149,7 +147,7 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
 
   try {
     final response = await http.post(
-      Uri.parse(apiUrl),
+    Uri.parse(apiUrl),
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: {'mobile_no': mobileNumber},
     );
@@ -390,197 +388,6 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
 }
 
 
-
-void _startPolling() {
-  if (!_isPolling || !mounted) return;
-
-  Future.delayed(const Duration(seconds: 1), () async {
-    if (_isPolling && mounted) {
-      await verifyPaymentProcess(context);
-      _startPolling(); // Keep polling until popup shows
-    }
-  });
-}
-
-Future<void> verifyPaymentProcess(BuildContext context) async {
-  print("🔔 verifyPaymentProcess called");
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? mobileNumber = prefs.getString('phoneNumber');
-
-  if (mobileNumber!.isEmpty) {
-    print("⚠️ Mobile number not found.");
-    return;
-  }
-
-  final url = Uri.parse('$baseUrl/payment_process_verification.php');
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'mobile_no': mobileNumber},
-    );
-
-    print("🌐 API Response Code: ${response.statusCode}");
-    print("📦 API Response Body: ${response.body}");
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-
-      if (data['response'] == 'success') {
-        List<dynamic> items = data['data'];
-
-        for (var item in items) {
-          String status = item['result_status'];
-          String regId = item['reg_id'];
-          String id = item['id'];
-
-          if (!_popupShown && mounted) {
-            _popupShown = true;
-            _isPolling = false;
-
-            showPremiumPopup(
-              context,
-              status == 'accept' ? "✅ Accepted" : "❌ Rejected",
-              "Your scheme $regId was ${status == 'accept' ? 'accepted' : 'rejected'}.",
-              id,
-            );
-          }
-        }
-      } else {
-        print("⚠️ API said failure: ${data['message']}");
-      }
-    } else {
-      print("❌ Unexpected HTTP status: ${response.statusCode}");
-    }
-  } catch (e) {
-    print("❌ Exception: $e");
-  }
-}
-
-Future<void> callClosePayPopApi(String id) async {
-  final closeUrl = Uri.parse('$baseUrl/close_pay_pop.php');
-
-  try {
-    final closeResponse = await http.post(
-      closeUrl,
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {'id': id},
-    );
-
-    if (closeResponse.statusCode == 200) {
-      final result = json.decode(closeResponse.body);
-      print("✅ close_pay_pop Response for ID $id: $result");
-    } else {
-      print("❌ close_pay_pop Error for ID $id: ${closeResponse.statusCode}");
-    }
-  } catch (e) {
-    print("❌ Exception in close_pay_pop API: $e");
-  }
-}
-
-
-
-
-
-void showPremiumPopup(BuildContext context, String title, String message, String id) {
-
-  showDialog(
-    context: context,
-        barrierDismissible: false, // Prevent closing by tapping outside
-    builder: (context) => Dialog(
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-      //  borderRadius: BorderRadius.circular(24.0),
-      ),
-      elevation: 10,
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              Colors.grey.shade50,
-            ],
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [Colors.blue.shade600, Colors.blue.shade400],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: const Icon(
-                Icons.info_outline_rounded,
-                color: Colors.white,
-                size: 32,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-                letterSpacing: 0.5,
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-                height: 1.4,
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-           Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  callClosePayPopApi(id);
-                },
-                child: const Text(
-                  ("OK"),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
 
 
 

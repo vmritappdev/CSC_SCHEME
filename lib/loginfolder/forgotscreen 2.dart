@@ -171,7 +171,7 @@ Future<bool> checkInternet() async {
           MaterialPageRoute(builder: (context) => const CreateMpin1Screen()),
         );
       } else {
-        _showErrorPopup(localization.translate("This mobile number is not found."));
+        _showErrorPopup(localization.translate("No records on this number"));
       }
     } catch (e) {
       print("❌ API Exception: $e");
@@ -250,83 +250,92 @@ void initState() {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.1),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: BackButton(
-                  onPressed: (){
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen1(),
-                      )
-                    );
-                  },
-                  color: const Color.fromRGBO(2, 5, 62, 1),
+    return WillPopScope(
+       onWillPop: () async {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen1()),
+      );
+      return false; // Prevent default back action
+    },
+      child: Scaffold(
+        
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.1),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: BackButton(
+                    onPressed: (){
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen1(),
+                        )
+                      );
+                    },
+                    color: const Color.fromRGBO(2, 5, 62, 1),
+                  ),
                 ),
-              ),
-              Image.asset('assets/images/csc2.png', height: 90),
-              Text(
-               localization.translate('CSCJEWELLERYS'),
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(43, 49, 101, 1),
+                Image.asset('assets/images/csc2.png', height: 90),
+                Text(
+                 localization.translate('CSCJEWELLERYS'),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(43, 49, 101, 1),
+                  ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.09),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: TextFormField(
-                  maxLength: 10,
-                  controller: _controllerMobileNumber,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.only(top: 10),
-                    counterText: '',
-                    hintText: localization.translate("Mobile Number*"),
-                    hintStyle: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    prefixIcon: const Icon(Icons.phone, size: 20),
-                    border: OutlineInputBorder(
-                    //  borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(5),
+                SizedBox(height: screenHeight * 0.09),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: TextFormField(
+                    maxLength: 10,
+                    controller: _controllerMobileNumber,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.only(top: 10),
+                      counterText: '',
+                      hintText: localization.translate("Mobile Number*"),
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      prefixIcon: const Icon(Icons.phone, size: 20),
+                      border: OutlineInputBorder(
+                      //  borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: isLoading ? null : verifyMobileNumber,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                SizedBox(height: screenHeight * 0.02),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: isLoading ? null : verifyMobileNumber,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    child: isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                           localization.translate("Verify Mobile Number"),
+                            style: const TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                   ),
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                         localization.translate("Verify Mobile Number"),
-                          style: const TextStyle(color: Colors.white, fontSize: 18),
-                        ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

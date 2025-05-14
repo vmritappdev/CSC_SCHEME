@@ -488,126 +488,151 @@ void _verifyOtpAndProceed() {
 
   @override
   Widget build(BuildContext context) {
+        final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
      final localization = Provider.of<LocalizationProvider>(context);
-    return Scaffold(
-      
-      appBar: AppBar(
-        title: Text(localization.translate("OTP Verification")),
-         automaticallyImplyLeading: false,
-        leading: BackButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LoginScreen1(),
-              ),
-            );
-          },
-        ),
-
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              maxLength: 10,
-              controller: mobileController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: localization.translate("Enter Mobile Number"),
-                counterText: '',
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-               // onPressed: isLoading ? null : verifyMobileNumber,
-                onPressed: _isOtpButtonClicked ? null : verifyMobileNumber, // Disable after click
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : Text(localization.translate("Get OTP"),
-                        style: const TextStyle(color: Colors.white, fontSize: 18)),
-              ),
-            ),
-            const SizedBox(height: 20),
-            
-            if (isOtpSent) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(6, (index) {
-                  return SizedBox(
-                    width: 40,
-                    child: TextField(
-                              inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
-  controller: otpControllers[index],
-  keyboardType: TextInputType.number,
-  maxLength: 1,
-  maxLengthEnforcement: MaxLengthEnforcement.enforced,
-  textAlign: TextAlign.center,
-  decoration: const InputDecoration(
-    counterText: '', // Hide counter
-    border: OutlineInputBorder(), // Optional: add visible border
-  ),
-  onChanged: (value) {
-    if (value.length == 1 && index < 5) {
-      Future.microtask(() {
-        FocusScope.of(context).nextFocus();
-      });
-    }
-
-     
-  },
-),
-
-                  );
-                }),
+    return WillPopScope(
+      onWillPop: () async {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen1()),
+      );
+      return false; // Prevent default back action
+    },
+      child: Scaffold(
+         
+       
+        body: Padding(
+         // padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+          child: Column(
+            children: [
+           SizedBox(height: screenHeight * 0.1),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: BackButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context, 
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen1(),
+                          )
+                        );
+                      },
+                      color: const Color.fromRGBO(2, 5, 62, 1),
+                    ),
+                  ),
+                  Image.asset('assets/images/csc2.png', height: 90),
+                  Text(
+                   localization.translate('CSCJEWELLERYS'),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(43, 49, 101, 1),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.09),
+              
+              TextField(
+                maxLength: 10,
+                controller: mobileController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: localization.translate("Enter Mobile Number"),
+                  counterText: '',
+                ),
               ),
               const SizedBox(height: 10),
-           SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: () {
-      _verifyOtpAndProceed(); // ✅ call the method
-    },
-    child: Text(
-      localization.translate("Verify OTP"),
-      style: const TextStyle(color: Colors.white, fontSize: 18),
-    ),
-  ),
-),
-
-
-
-                            const SizedBox(height: 20),
-
-               Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Text(
-      _isResendAvailable
-          ? "${localization.translate("Didn't receive the OTP?")} "
-          : (_timerSeconds == 1
-              ? localization.translate("Resend in 1 second") 
-              : localization.translate("Resend OTP in $_timerSeconds seconds")),
-      style: const TextStyle(color: Colors.grey),
-    ),
-    if (_isResendAvailable)
-      TextButton(
-        onPressed: _onResendOtp,
-        child: Text(
-          localization.translate('Resend'),
-          style: const TextStyle(color: Color.fromRGBO(6, 8, 34, 1),fontWeight: FontWeight.bold),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                 // onPressed: isLoading ? null : verifyMobileNumber,
+                  onPressed: _isOtpButtonClicked ? null : verifyMobileNumber, // Disable after click
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : Text(localization.translate("Get OTP"),
+                          style: const TextStyle(color: Colors.white, fontSize: 18)),
+                ),
+              ),
+              const SizedBox(height: 20),
+              
+              if (isOtpSent) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(6, (index) {
+                    return SizedBox(
+                      width: 40,
+                      child: TextField(
+                                inputFormatters: [
+      FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+       // Blocks " and ,
+        ],
+        controller: otpControllers[index],
+        keyboardType: TextInputType.number,
+        maxLength: 1,
+        maxLengthEnforcement: MaxLengthEnforcement.enforced,
+        textAlign: TextAlign.center,
+        decoration: const InputDecoration(
+      counterText: '', // Hide counter
+      border: OutlineInputBorder(), // Optional: add visible border
+        ),
+        onChanged: (value) {
+      if (value.length == 1 && index < 5) {
+        Future.microtask(() {
+          FocusScope.of(context).nextFocus();
+        });
+      }
+      
+       
+        },
+      ),
+      
+                    );
+                  }),
+                ),
+                const SizedBox(height: 10),
+             SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+      onPressed: () {
+        _verifyOtpAndProceed(); // ✅ call the method
+      },
+      child: Text(
+        localization.translate("Verify OTP"),
+        style: const TextStyle(color: Colors.white, fontSize: 18),
+      ),
         ),
       ),
-  ],
-),
+      
+      
+      
+                              const SizedBox(height: 20),
+      
+                 Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+      Text(
+        _isResendAvailable
+            ? "${localization.translate("Didn't receive the OTP?")} "
+            : (_timerSeconds == 1
+                ? localization.translate("Resend in 1 second") 
+                : localization.translate("Resend OTP in $_timerSeconds seconds")),
+        style: const TextStyle(color: Colors.grey),
+      ),
+      if (_isResendAvailable)
+        TextButton(
+          onPressed: _onResendOtp,
+          child: Text(
+            localization.translate('Resend'),
+            style: const TextStyle(color: Color.fromRGBO(6, 8, 34, 1),fontWeight: FontWeight.bold),
+          ),
+        ),
+        ],
+      ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

@@ -238,7 +238,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 Center(
   child: ElevatedButton.icon(
     onPressed: () async {
-      final Uri url = Uri.parse('$baseUrl/invoice.php?id=${widget.saleId}');
+      final Uri url = Uri.parse('$baseUrl/sale_print.php?id=${widget.saleId}');
       final bool launched = await launchUrl(
         url,
         mode: LaunchMode.inAppWebView, // 👈 try this mode

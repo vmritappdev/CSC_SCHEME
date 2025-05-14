@@ -495,7 +495,7 @@
     
     "Frequently asked questions": "ప్రశ్నలు & సమాధానాలు",
     "Chat with us": "మాతో చాట్ చేయండి",
-    "FAQ": "ఫాక్",
+    "FAQ": "తరచుగా అడిగే ప్రశ్నలు",
     "Ask me anything": "నేను ఏమైనా అడగగలుగుతాను",
     "Will the cash be refunded?": "నగదు తిరిగి ఇవ్వబడుతుందా?",
     "No, the cash will not be refunded under any circumstances, as per government regulations.": "కట్టుదిట్టమైన ప్రభుత్వ నియమాల ప్రకారం, ఎలాంటి పరిస్థితుల్లోనూ నగదు తిరిగి ఇవ్వబడదు.",
@@ -733,7 +733,7 @@
   "Enter a valid mobile number or email ID": "చెల్లుబాటు అయ్యే మొబైల్ నంబర్ లేదా ఇమెయిల్ IDని నమోదు చేయండి",
   "OTP Resent Successfully": "OTP విజయవంతంగా తిరిగి పంపబడింది",
   "Please enter a valid 6-digit OTP.": "దయచేసి చెల్లుబాటు అయ్యే 6-అంకెల OTPని నమోదు చేయండి.",
-
+  "We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.":"మీ MPIN లేదా మొబైల్ నంబర్‌ను మేము ధృవీకరించలేకపోయాము.\nదయచేసి మరోసారి తనిఖీ చేసి ప్రయత్నించండి.",
 
  
   

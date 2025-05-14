@@ -29,8 +29,8 @@ class _Lang10State extends State<Lang10> {
   final List<Map<String, dynamic>> languages = [
     {"native": "Telugu", "english": "\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41", "code": "te", "color": Colors.teal},
     {"native": "English", "english": "\u0C07\u0C02\u0C17\u0C4D\u0C32\u0C40\u0C37\u0C4D", "code": "en", "color": Colors.blue},
-    {"native": "Hindi", "english": "\u0939\u093F\u0928\u094D\u0926\u0940", "code": "hi", "color": Colors.orange},
-    {"native": "Tamil", "english": "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD", "code": "ta", "color": Colors.green},
+   // {"native": "Hindi", "english": "\u0939\u093F\u0928\u094D\u0926\u0940", "code": "hi", "color": Colors.orange},
+    //{"native": "Tamil", "english": "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD", "code": "ta", "color": Colors.green},
   ];
 
   String selectedLanguageCode = "en";

@@ -1187,6 +1187,9 @@ _buildTextField2(
                       ),
                     ),
                 
+
+                                    const SizedBox(height: 20,),
+                
                 
                     _buildTextField4(
  // controller: _ifscController, // <-- Add this line
@@ -1321,7 +1324,7 @@ _buildTextField2(
                 
                 
                 
-                   // SizedBox(height: 10,),
+                    SizedBox(height: 20,),
                 
                 
                   _buildTextField(controller:  nomineeNameController, 

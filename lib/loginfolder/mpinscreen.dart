@@ -317,7 +317,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                     localization.translate('Create MPIN Successfully'),
+                     localization.translate('MPIN Created Successfully'),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

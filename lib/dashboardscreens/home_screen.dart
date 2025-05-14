@@ -1735,37 +1735,85 @@ void showCustomDialog(BuildContext context, String message) {
   );
 }
 
+
+
  void _showLanguagePopup(BuildContext context, LocalizationProvider localization) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Select Language'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _languageOption(context, localization, 'English', 'en'),
-            _languageOption(context, localization, "తెలుగు", 'te'),
-            _languageOption(context, localization, "हिंदी", 'hi'),
-            _languageOption(context, localization, 'தமிழ்', 'ta'),
-          ],
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select Language',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _languageOption(context, localization, 'English', 'en', true),
+              _languageOption(context, localization, 'తెలుగు', 'te', true),
+              _languageOption(context, localization, 'हिंदी', 'hi', false),
+              _languageOption(context, localization, 'தமிழ்', 'ta', false),
+            ],
+          ),
         ),
       );
     },
   );
 }
 
-Widget _languageOption(BuildContext context, LocalizationProvider localization, String language, String languageCode) {
-  return ListTile(
-    title: Text(language),
-    onTap: () {
-      localization.changeLanguage(languageCode);  // Change language
-      Navigator.of(context).pop();  // Close the dialog
-    },
+Widget _languageOption(BuildContext context, LocalizationProvider localization, String language, String languageCode, bool isAvailable) {
+  return InkWell(
+    onTap: isAvailable
+        ? () {
+            localization.changeLanguage(languageCode);
+            Navigator.of(context).pop();
+          }
+        : null,
+    borderRadius: BorderRadius.circular(8),
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isAvailable ? const Color(0xFFF5F5F5) : const Color(0xFFF0F0F0),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isAvailable ? Colors.green : Colors.grey.shade300,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            language,
+            style: TextStyle(
+              fontSize: 16,
+              color: isAvailable ? Colors.black : Colors.grey.shade600,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            isAvailable ? 'Available' : 'Not Available',
+            style: TextStyle(
+              fontSize: 14,
+              color: isAvailable ? Colors.green : Colors.red,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }
-
-
 
 
 

@@ -522,6 +522,7 @@
  "Click 'I Have Proceed' to continue.":"Click 'I Have Proceed' to continue.",
  "I Have Proceed":"I Have Proceed",
  "Resend OTP in $timerSeconds seconds":"Resend OTP in $timerSeconds seconds",
+ "We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.":"We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.",
 
 
     

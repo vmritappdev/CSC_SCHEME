@@ -1,4 +1,5 @@
 
+import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -225,7 +226,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   }
 
   void _navigateToNextScreen() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
     );
@@ -233,81 +234,90 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 80),
-            Image.asset('assets/images/csc2.png', height: 90),
-            const Text(
-              'CSCJEWELLERYS',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
-            ),
-            const SizedBox(height: 40),
-
-            TextFormField(
-                      inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
-              maxLength: 10,
-              controller: _controllerMobileNumber,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: "Mobile Number*",
-                prefixIcon: const Icon(Icons.phone),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+    return WillPopScope(
+      onWillPop: () async {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen1()),
+      );
+      return false; // Prevent default back action
+    },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 80),
+              Image.asset('assets/images/csc2.png', height: 90),
+              const Text(
+                'CSCJEWELLERYS',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
               ),
-            ),
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-                onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
-                child: const Text("Verify Mobile Number", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-
-            if (_isOtpVisible) ...[
-              const SizedBox(height: 20),
-
-              Pinput(
-                controller: _controllerOtp,
-                length: 6,
-                onChanged: (pin) {
-                  _checkOtpMatch();
-                },
+              const SizedBox(height: 40),
+      
+              TextFormField(
+                        inputFormatters: [
+      FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+       // Blocks " and ,
+        ],
+                maxLength: 10,
+                controller: _controllerMobileNumber,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  counterText: '',
+                  hintText: "Mobile Number*",
+                  prefixIcon: const Icon(Icons.phone),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+                ),
               ),
               const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(_isResendAvailable
-                      ? "Didn't receive the OTP?"
-                      : "Resend OTP in $_timerSeconds seconds"),
-                  if (_isResendAvailable)
-                    TextButton(
-                      onPressed: fetchOtpApi,
-                      child: const Text("Resend", style: TextStyle(color: Color.fromRGBO(2, 5, 62, 1))),
-                    ),
-                ],
-              ),
-
+      
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  onPressed: _isVerifyEnabled ? _checkOtpMatch : null,
-                  child: const Text("✅ Verify OTP", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+                  onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
+                  child: const Text("Verify Mobile Number", style: TextStyle(color: Colors.white)),
                 ),
               ),
+      
+              if (_isOtpVisible) ...[
+                const SizedBox(height: 20),
+      
+                Pinput(
+                  controller: _controllerOtp,
+                  length: 6,
+                  onChanged: (pin) {
+                    _checkOtpMatch();
+                  },
+                ),
+                const SizedBox(height: 20),
+      
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_isResendAvailable
+                        ? "Didn't receive the OTP?"
+                        : "Resend OTP in $_timerSeconds seconds"),
+                    if (_isResendAvailable)
+                      TextButton(
+                        onPressed: fetchOtpApi,
+                        child: const Text("Resend", style: TextStyle(color: Color.fromRGBO(2, 5, 62, 1))),
+                      ),
+                  ],
+                ),
+      
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: _isVerifyEnabled ? _checkOtpMatch : null,
+                    child: const Text("✅ Verify OTP", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
