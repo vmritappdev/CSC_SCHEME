@@ -2127,7 +2127,7 @@ Widget _buildTextField4({
             height: 50,
             child: 
                TextField(
-                readOnly: true,
+                //readOnly: true,
                 textInputAction: TextInputAction.next,
                 controller: _firstNameController,
                  textCapitalization: TextCapitalization.words,
@@ -2163,7 +2163,7 @@ Widget _buildTextField4({
                 inputFormatters: [
     FilteringTextInputFormatter.deny(RegExp(r'[",]')), // Blocks " and ,
   ],
-                readOnly: true,
+               // readOnly: true,
                 textInputAction: TextInputAction.next,
                 controller: _lastNameController,
                  textCapitalization: TextCapitalization.words,
@@ -2267,23 +2267,70 @@ Widget _buildTextField1({
               ),
             ),
             const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onPickImage,
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 245, 236, 236),
-                  borderRadius: BorderRadius.circular(8),
+           GestureDetector(
+  onTap: () {
+    if (selectedImage != null || (adharImage != null && adharImage!.isNotEmpty)) {
+      // Show image in full screen dialog with edit icon
+      showDialog(
+        context: context,
+        builder: (_) {
+          return Dialog(
+            insetPadding: const EdgeInsets.all(10),
+            backgroundColor: Colors.transparent,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: selectedImage != null
+                      ? Image.file(selectedImage)
+                      : Image.network(adharImage!, fit: BoxFit.cover),
                 ),
-               child: selectedImage != null
-    ? Image.file(selectedImage, fit: BoxFit.cover)
-    : (adharImage != null && adharImage!.isNotEmpty)
-        ? Image.network(adharImage!, fit: BoxFit.cover)
-        : const Icon(Icons.image, color: Colors.grey),
-
-              ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // close the dialog
+                      onPickImage(); // open picker options
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      radius: 20,
+                      child: Icon(Icons.edit, color: Colors.white, size: 20),
+                    ),
+                  ),
+                ),
+              ],
             ),
+          );
+        },
+      );
+    } else {
+      onPickImage(); // no image yet, directly open picker
+    }
+  },
+  child: Stack(
+    children: [
+      Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 245, 236, 236),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: selectedImage != null
+              ? Image.file(selectedImage, fit: BoxFit.cover)
+              : (adharImage != null && adharImage!.isNotEmpty)
+                  ? Image.network(adharImage!, fit: BoxFit.cover)
+                  : const Icon(Icons.image, color: Colors.grey),
+        ),
+      ),
+    ],
+  ),
+),
+
           ],
         ),
       ],
@@ -2348,22 +2395,69 @@ Widget _buildTextField3({
             ),
             const SizedBox(width: 8),
             GestureDetector(
-              onTap: onPickImage,
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 245, 236, 236),
-                  borderRadius: BorderRadius.circular(8),
+  onTap: () {
+    if (selectedImage != null || (adharImage != null && adharImage!.isNotEmpty)) {
+      // Show image in full screen dialog with edit icon
+      showDialog(
+        context: context,
+        builder: (_) {
+          return Dialog(
+            insetPadding: const EdgeInsets.all(10),
+            backgroundColor: Colors.transparent,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: selectedImage != null
+                      ? Image.file(selectedImage)
+                      : Image.network(adharImage!, fit: BoxFit.cover),
                 ),
-               child: selectedImage != null
-    ? Image.file(selectedImage, fit: BoxFit.cover)
-    : (nomineeimage != null && nomineeimage!.isNotEmpty)
-        ? Image.network(nomineeimage!, fit: BoxFit.cover)
-        : const Icon(Icons.image, color: Colors.grey),
-
-              ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // close the dialog
+                      onPickImage(); // open picker options
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      radius: 20,
+                      child: Icon(Icons.edit, color: Colors.white, size: 20),
+                    ),
+                  ),
+                ),
+              ],
             ),
+          );
+        },
+      );
+    } else {
+      onPickImage(); // no image yet, directly open picker
+    }
+  },
+  child: Stack(
+    children: [
+      Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 245, 236, 236),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: selectedImage != null
+              ? Image.file(selectedImage, fit: BoxFit.cover)
+              : (adharImage != null && adharImage!.isNotEmpty)
+                  ? Image.network(adharImage!, fit: BoxFit.cover)
+                  : const Icon(Icons.image, color: Colors.grey),
+        ),
+      ),
+    ],
+  ),
+),
+
           ],
         ),
       ],
@@ -2372,7 +2466,7 @@ Widget _buildTextField3({
 }
 
 
-
+/*
 Widget _buildTextField2({
   required TextEditingController controller,
   required String label,
@@ -2425,22 +2519,69 @@ Widget _buildTextField2({
               ),
             ),
             const SizedBox(width: 8),
-            GestureDetector(
-              onTap: onPickImage,
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 245, 236, 236),
-                  borderRadius: BorderRadius.circular(8),
+           GestureDetector(
+  onTap: () {
+    if (selectedImage != null || (panImage != null && panImage!.isNotEmpty)) {
+      // Show image in full screen dialog with edit icon
+      showDialog(
+        context: context,
+        builder: (_) {
+          return Dialog(
+            insetPadding: const EdgeInsets.all(10),
+            backgroundColor: Colors.transparent,
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: selectedImage != null
+                      ? Image.file(selectedImage)
+                      : Image.network(panImage!, fit: BoxFit.cover),
                 ),
-                child:  selectedImage != null
-    ? Image.file(selectedImage, fit: BoxFit.cover)
-    : (panImage != null && panImage!.isNotEmpty)
-        ? Image.network(panImage!, fit: BoxFit.cover)
-        : const Icon(Icons.image, color: Colors.grey),
-              ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // close the dialog
+                      onPickImage(); // open picker options
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      radius: 20,
+                      child: Icon(Icons.edit, color: Colors.white, size: 20),
+                    ),
+                  ),
+                ),
+              ],
             ),
+          );
+        },
+      );
+    } else {
+      onPickImage(); // no image yet, directly open picker
+    }
+  },
+  child: Stack(
+    children: [
+      Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 245, 236, 236),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: selectedImage != null
+              ? Image.file(selectedImage, fit: BoxFit.cover)
+              : (panImage != null && panImage!.isNotEmpty)
+                  ? Image.network(panImage!, fit: BoxFit.cover)
+                  : const Icon(Icons.image, color: Colors.grey),
+        ),
+      ),
+    ],
+  ),
+),
           ],
         ),
       ],
@@ -2449,6 +2590,129 @@ Widget _buildTextField2({
 }
 
 
+*/
+
+
+Widget _buildTextField2({
+  required TextEditingController controller,
+  required String label,
+  required File? selectedImage,
+  required VoidCallback onPickImage,
+  required bool isPanRequired,
+  int? maxLength,
+  String? hintText,
+}) {
+  final localization = Provider.of<LocalizationProvider>(context);
+  return Padding(
+    padding: const EdgeInsets.only(top: 5.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              flex: 7,
+              child: TextFormField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp(r"[#&']")),
+                ],
+                controller: controller,
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.characters,
+                maxLength: maxLength,
+                readOnly: controller.text.isNotEmpty, // 👈 Prevent keyboard if PAN is already filled
+                decoration: InputDecoration(
+                  labelText: label,
+                  hintText: hintText,
+                  counterText: "",
+                  border: const OutlineInputBorder(),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                ),
+                validator: (value) {
+                  if (isPanRequired) {
+                    if (value == null || value.isEmpty) {
+                      return localization.translate("Please enter PAN number");
+                    } else if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(value)) {
+                      return localization.translate("Invalid PAN format ABCDE1234F");
+                    } else if (selectedImage == null &&
+                        (panImage == null || panImage!.isEmpty)) {
+                      return localization.translate("pls select pan card image");
+                    }
+                  }
+                  return null;
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () {
+                if (selectedImage != null || (panImage != null && panImage!.isNotEmpty)) {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return Dialog(
+                        insetPadding: const EdgeInsets.all(10),
+                        backgroundColor: Colors.transparent,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: selectedImage != null
+                                  ? Image.file(selectedImage)
+                                  : Image.network(panImage!, fit: BoxFit.cover),
+                            ),
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  onPickImage();
+                                },
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.black54,
+                                  radius: 20,
+                                  child: Icon(Icons.edit, color: Colors.white, size: 20),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  onPickImage();
+                }
+              },
+              child: Stack(
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 245, 236, 236),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: selectedImage != null
+                          ? Image.file(selectedImage, fit: BoxFit.cover)
+                          : (panImage != null && panImage!.isNotEmpty)
+                              ? Image.network(panImage!, fit: BoxFit.cover)
+                              : const Icon(Icons.image, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
 
 

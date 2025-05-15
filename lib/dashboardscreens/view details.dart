@@ -1,16 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
 
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/api_services.dart/view_api.dart';
-import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+
 
 
 
 import 'package:csc/chaingedscreens.dart/pd%20frecipit.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
-import 'package:csc/utillity/constant.dart';
+
 import 'package:csc/dashboardscreens/closed_schemes.dart';
 
 import 'package:csc/localization/localizationpro.dart';
@@ -20,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -51,6 +49,12 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   final Color cardBackgroundColor = Colors.white;
   static const Color titleTextColor = Color.fromRGBO(2, 5, 62, 1);
   final Color bodyTextColor = Colors.black87;
+  final RefreshController _refreshController = RefreshController();
+
+   void _onRefresh() async {
+  await fetchData(); // Wait for fresh data
+  _refreshController.refreshCompleted(); // Then complete refresh
+}
 
    //String mobile_number = "Loading...";
 
@@ -275,39 +279,55 @@ double screenHeight = MediaQuery.of(context).size.height;
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  _buildUserInfo(localization),
-                  ...accountDetails.map((installment) {
-                    return _buildTransactionCard(
- installmentNumber: accountDetails.indexOf(installment) + 1,
-              date: installment['date'],
-              receiptNo: installment['receipt_no'],
-              amount: installment['amount'],
-              payid: installment['pay_id'],
-              paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
-              installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
-              context: context,
-            );
-                  }),
+          : SmartRefresher(
+             controller: _refreshController,
+        onRefresh: _onRefresh,
 
-
-
-                    MyScreen(schemeId: widget.schemeId,),
-                   
-          
-
-
-
-
+          header: WaterDropHeader(
+          complete: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Icon(Icons.check, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+            ],
+          ),
+         waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+        ),
+            child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildUserInfo(localization),
+                    ...accountDetails.map((installment) {
+                      return _buildTransactionCard(
+             installmentNumber: accountDetails.indexOf(installment) + 1,
+                date: installment['date'],
+                receiptNo: installment['receipt_no'],
+                amount: installment['amount'],
+                payid: installment['pay_id'],
+                paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
+                installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
+                context: context,
+              );
+                    }),
+            
+            
+            
+                      MyScreen(schemeId: widget.schemeId,),
+                     
+            
+            
+            
+            
+            
+                    
+                  ],
+            
+            
                   
-                ],
-
-
-                
+                ),
               ),
-            ),
+          ),
     );
   }
 
@@ -675,7 +695,7 @@ switch (status) {
     
     
     
-           //SizedBox(height: MediaQuery.of(context).size.height * 0.012), // 1.2% of screen height
+         
     
            
     
@@ -862,13 +882,7 @@ void _showErrorDialog(BuildContext context, String message) {
           ),
         ),
 
-        /*
-        Text(
-          ":",
-          style: TextStyle(fontWeight: FontWeight.bold, color: bodyTextColor),
-        ),
-
-        */
+       
         Expanded(
           flex: 2, // Keeps values aligned properly
           child: Align(

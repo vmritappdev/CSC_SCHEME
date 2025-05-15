@@ -68,7 +68,7 @@ class BrochureScreen extends StatelessWidget {
 
             // ✅ Terms & Conditions
             const Text(
-              "Terms & Conditions:",
+            "Terms & Conditions:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent),
             ),
             const SizedBox(height: 5),
@@ -79,18 +79,7 @@ class BrochureScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // ✅ Download Button
-           Center(
-  child: ElevatedButton(
-    onPressed: () => checkAndRequestPermissions(context),
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromARGB(255, 12, 2, 29),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    ),
-    child: const Text("Download Brochure", style: TextStyle(fontSize: 16, color: Colors.white)),
-  ),
-),
-
+         
           ],
         ),
       ),

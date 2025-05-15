@@ -190,67 +190,89 @@ Future<bool> checkInternet() async {
 }
 
 
-  Future<void> updateSchemeDetails() async {
-          final localization = Provider.of<LocalizationProvider>(context,listen: false);
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? mobileNumber = prefs.getString('phoneNumber');
+Future<void> updateSchemeDetails() async {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? mobileNumber = prefs.getString('phoneNumber');
 
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-   //   _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-   const ErrorScreen();
-      return  ;
-    }
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    const ErrorScreen();
+    return;
+  }
 
-
-  final url = Uri.parse('$baseUrl/edit_reg_app.php');  //'https://vmrdemos.com/csc_scheme/edit_reg_app.php'
-
+  final url = Uri.parse('$baseUrl/edit_reg_app.php');
   print("🔵 Sending data to API: $url");
-  
-  final body = {
-   // 'id': widget.schemeId.toString(),  
-    'scheme_amount': '15000', 
-    'f_name': firstNameController.text,
-    'l_name': lastNameController.text,
-    'mobile_no': phoneController.text,
-    'date_of_birth': dobController.text,
-    'email_id': 'example@gmail.com',  
-    'door_no': doorNoController.text,
-    'address_line1': address1Controller.text,
-    'address_line2': address2Controller.text,
-    'city': cityController.text,
-    'pincode': pincodeController.text,
-    'country': 'India',
-    'state': stateController.text,
-    'disrict': districtController.text,
-    'referral': referralController.text,
-    'bank_name': bankNameController.text,
-    'holder_name': holderName.text,
-    'account_no': accountNoController.text,
-    'ifsc_code': ifscCodeController.text,
-    'branch_location': branchLocationController.text,
-    'nominee_name': nomineeNameController.text,
-    'relationship': nomineeRelationship.text,
-    'gender':gendController.text,
-    'nominee_mobile': nomineeMobileController.text,
-    'adhar_no': adharController.text,
-    'pan_no': panController.text,
-    'scheme_type': 'Gold',
-    'nominee_adhar': nomineeadharController.text,
-    'otherRelationship': otherController.text
-  };
-
-  print("📤 Request Body: $body");
 
   try {
-    //final response = await http.post(url, body: body);
-    final response = await http.post(url, body: {
-        'mobile_no': mobileNumber,
-       //'scheme_id': widget.schemeId.toString(),
-      });
+    var request = http.MultipartRequest('POST', url);
+
+    // Add text fields
+    request.fields.addAll({
+      'scheme_amount': '15000',
+      'f_name': firstNameController.text,
+      'l_name': lastNameController.text,
+      'mobile_no': mobileNumber ?? '',
+      'date_of_birth': dobController.text,
+      'email_id': 'example@gmail.com',
+      'door_no': doorNoController.text,
+      'address_line1': address1Controller.text,
+      'address_line2': address2Controller.text,
+      'city': cityController.text,
+      'pincode': pincodeController.text,
+      'country': 'India',
+      'state': stateController.text,
+      'disrict': districtController.text,
+      'referral': referralController.text,
+      'bank_name': bankNameController.text,
+      'holder_name': holderName.text,
+      'account_no': accountNoController.text,
+      'ifsc_code': ifscCodeController.text,
+      'branch_location': branchLocationController.text,
+      'nominee_name': nomineeNameController.text,
+      'relationship': nomineeRelationship.text,
+      'gender': gendController.text,
+      'nominee_mobile': nomineeMobileController.text,
+      'adhar_no': adharController.text,
+      'pan_no': panController.text,
+      'scheme_type': 'Gold',
+      'nominee_adhar': nomineeadharController.text,
+      'otherRelationship': otherController.text,
+    });
+
+
+
+              panImage = (request.fields['pan_image'] != null && request.fields['pan_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${request.fields['pan_image']}'
+              : '';
+
+          adharImage = (request.fields['adhar_image'] != null && request.fields['adhar_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${request.fields['adhar_image']}'
+              : '';
+
+          nomineeimage = (request.fields['nominee_adhar_image'] != null &&
+                  request.fields['nominee_adhar_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${request.fields['nominee_image']}'
+              : '';
+
+    // Print all text fields
+    print("📦 Fields being sent to API:");
+    request.fields.forEach((key, value) {
+      print("  $key: $value");
+    });
+
+    // Add image files if new image selected
+   
+    print("📤 Uploading...");
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
 
     print("🟢 Response Status Code: ${response.statusCode}");
     print("🟡 Raw Response Body: ${response.body}");
+    print("📸 Aadhar Image Path: $adharImage");
+print("📸 PAN Image Path: $panImage");
+print("📸 Nominee Image Path: $nomineeimage");
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -258,16 +280,21 @@ Future<bool> checkInternet() async {
 
       if (data['status'] == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          
-          SnackBar(content: Text(localization.translate("✅ Scheme updated successfully!"),style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
+          SnackBar(
+            content: Text(
+              localization.translate("✅ Scheme updated successfully!"),
+              style: GoogleFonts.lato(color: Colors.white),
+            ),
+            backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          ),
         );
 
         Future.delayed(const Duration(seconds: 2), () {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')), // Replace with your actual next screen
-    );
-  });
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
+          );
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("⚠️ Update failed: ${data['message']}")),
@@ -281,6 +308,7 @@ Future<bool> checkInternet() async {
     );
   }
 }
+
 
   /// **🔹 SharedPreferences లో స్టోర్ చేసిన ఇమేజ్‌లు లోడ్ చేయడం**
   Future<void> loadSavedImages() async {

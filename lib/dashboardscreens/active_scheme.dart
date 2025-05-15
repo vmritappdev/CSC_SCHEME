@@ -18,6 +18,7 @@ import 'package:csc/model/activescheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,7 +48,12 @@ class PaymentCard extends StatefulWidget {
 class _PaymentCardState extends State<PaymentCard> {
   SchemeResponseNew? activeSchemeNew;
   bool isDataLoaded = false; // Flag to track if data is loaded
-  
+   final RefreshController _refreshController = RefreshController();
+
+  void _onRefresh() async {
+  await loadSchemes(); // <-- Load schemes again during refresh
+  _refreshController.refreshCompleted();
+}
 
    bool showDialogFlag = false;
 
@@ -68,6 +74,8 @@ String overdue = "no";
   //  fetchActiveSchemes();
   loadSchemes();
  
+
+   
 
   
 
@@ -275,29 +283,20 @@ void showNoSchemePopup(BuildContext currentContext) {
   // Submit form and send data to API
  
 
-void loadSchemes() async {
-    final result = await _service.fetchActiveSchemes(context);
-    if (result != null) {
-      setState(() {
-        activeSchemeNew = result;
-        isDataLoaded = true;
-      });
-
-      
-  
-
-
-      
-    } else {
-      // No need to do anything here because ErrorScreen will be shown from service
-      setState(() {
-        isDataLoaded = true;
-      });
-
-
-      
-    }
+Future<void> loadSchemes() async {
+  final result = await _service.fetchActiveSchemes(context);
+  if (result != null) {
+    setState(() {
+      activeSchemeNew = result;
+      isDataLoaded = true;
+    });
+  } else {
+    setState(() {
+      isDataLoaded = true;
+    });
   }
+}
+
 
 
  
@@ -428,111 +427,128 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
           
         ),
       ),
-      body: SingleChildScrollView(
+      body: 
+      SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+
+          header: WaterDropHeader(
+          complete: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Icon(Icons.check, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+            ],
+          ),
+         waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+        ),
+        child: SingleChildScrollView(
         child: Column(
-          children: [
-
-
-           
-
-           
-
-             if (activeSchemeNew != null && activeSchemeNew!.activeSchemes.isNotEmpty) ...[
-  _buildSectionTitle(localization.translate("Active Schemes")),
-  ListView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemCount: activeSchemeNew!.activeSchemes.length,
-    itemBuilder: (context, index) {
-      final schemeDetail = activeSchemeNew!.activeSchemes[index];
-      return _buildSchemeCard(
-        context,
-        title: localization.translate("Advance Gold Purchase"),
-        details: [
-          localization.translate("100% V.A. Free on Items up to 18% Wastage"),
-          localization.translate("Flexible Monthly Investment"),
-          localization.translate("Short Term - Great Benefits"),
+        children: [
+        
+        
+             
+        
+             
+        
+               if (activeSchemeNew != null && activeSchemeNew!.activeSchemes.isNotEmpty) ...[
+          _buildSectionTitle(localization.translate("Active Schemes")),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: activeSchemeNew!.activeSchemes.length,
+            itemBuilder: (context, index) {
+        final schemeDetail = activeSchemeNew!.activeSchemes[index];
+        return _buildSchemeCard(
+          context,
+          title: localization.translate("Advance Gold Purchase"),
+          details: [
+            localization.translate("100% V.A. Free on Items up to 18% Wastage"),
+            localization.translate("Flexible Monthly Investment"),
+            localization.translate("Short Term - Great Benefits"),
+          ],
+          iconWidget: const Icon(Icons.check, color: Colors.green),
+          amount: localization.translate("Rs. ${schemeDetail.amount}"),
+           dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
+            ? getOverdueStatus(schemeDetail.dueDate) == "1"
+          ? "" // Don't show anything if overdue
+          : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
+            : "",
+        
+        
+          buttonText1: localization.translate("View details"),
+         buttonText2: getOverdueStatus(schemeDetail.dueDate) == "1"
+            ? localization.translate("Payment Disabled")
+            : 'Pay Rs. ${schemeDetail.amount}',
+        
+        
+        
+          dueText: getDueText(schemeDetail.dueDate, schemeDetail.schemeStatus),
+          dueTextColor: getDueDateColor(schemeDetail.dueDate, schemeDetail.schemeStatus),
+          month: schemeDetail.month,
+          year: schemeDetail.year,
+          schemeID: schemeDetail.schemeId,
+          amountRs: schemeDetail.amount.toString(),
+          msno: schemeDetail.msNo,
+          pay_status: schemeDetail.payStatus,
+          name: schemeDetail.name,
+          scheme_status: schemeDetail.schemeStatus,
+          over_due_status: schemeDetail.overdue,
+          buttonText3: ('')
+        );
+            },
+          ),
         ],
-        iconWidget: const Icon(Icons.check, color: Colors.green),
-        amount: localization.translate("Rs. ${schemeDetail.amount}"),
-   dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
-    ? getOverdueStatus(schemeDetail.dueDate) == "1"
-        ? "" // Don't show anything if overdue
-        : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
-    : "",
-
-
-        buttonText1: localization.translate("View details"),
-       buttonText2: getOverdueStatus(schemeDetail.dueDate) == "1"
-    ? localization.translate("Payment Disabled")
-    : 'Pay Rs. ${schemeDetail.amount}',
-
-      
-
-        dueText: getDueText(schemeDetail.dueDate, schemeDetail.schemeStatus),
-        dueTextColor: getDueDateColor(schemeDetail.dueDate, schemeDetail.schemeStatus),
-        month: schemeDetail.month,
-        year: schemeDetail.year,
-        schemeID: schemeDetail.schemeId,
-        amountRs: schemeDetail.amount.toString(),
-        msno: schemeDetail.msNo,
-        pay_status: schemeDetail.payStatus,
-        name: schemeDetail.name,
-        scheme_status: schemeDetail.schemeStatus,
-        over_due_status: schemeDetail.overdue,
-        buttonText3: ('')
-      );
-    },
-  ),
-],
-
-
-          
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(
-                color: Color.fromRGBO(2, 5, 62, 1),
-                thickness: 1,
+        
+        
+            
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Divider(
+                  color: Color.fromRGBO(2, 5, 62, 1),
+                  thickness: 1,
+                ),
               ),
-            ),
-
-            /*
-
-               Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  localization.translate("Closed Schemes"),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(43, 49, 101, 1),
+        
+              /*
+        
+                 Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    localization.translate("Closed Schemes"),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(43, 49, 101, 1),
+                    ),
                   ),
                 ),
               ),
-            ),
-
-            */
-
-
-
-
-                  if (activeSchemeNew?.suspendedSchemes.isNotEmpty == true) ...[
-                    _buildSectionTitle("Discontinue Schemes"),
-                    _buildSchemeList(activeSchemeNew!.suspendedSchemes),
-                  ],
-
-
-                   if (activeSchemeNew?.closedSchemes.isNotEmpty == true) ...[
-                    _buildSectionTitle("Closed Schemes"),
-                    _buildSchemeList(activeSchemeNew!.closedSchemes),
-                  ],
-         // MyScreen(), // Closed schemes or any additional widget
-
-
-         const SizedBox(  height: 40)
-          ],
+        
+              */
+        
+        
+        
+        
+                    if (activeSchemeNew?.suspendedSchemes.isNotEmpty == true) ...[
+                      _buildSectionTitle("Discontinue Schemes"),
+                      _buildSchemeList(activeSchemeNew!.suspendedSchemes),
+                    ],
+        
+        
+                     if (activeSchemeNew?.closedSchemes.isNotEmpty == true) ...[
+                      _buildSectionTitle("Closed Schemes"),
+                      _buildSchemeList(activeSchemeNew!.closedSchemes),
+                    ],
+           // MyScreen(), // Closed schemes or any additional widget
+        
+        
+           const SizedBox(  height: 40)
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(

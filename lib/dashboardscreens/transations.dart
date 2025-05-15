@@ -23,6 +23,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   runApp(
@@ -63,7 +64,19 @@ class _TransactionState extends State<Transaction> {
     String? selectedSchemeId; // Store selected scheme ID
   List<String> schemeIds = [];
    String? transactionId; 
-   
+
+   final RefreshController _refreshController = RefreshController();
+
+void _onRefresh() async {
+  try {
+    await fetchSchemes();
+    await _fetchTransactionData(selectedScheme);
+  } catch (e) {
+    print("Error during refresh: $e");
+  } finally {
+    _refreshController.refreshCompleted();
+  }
+}
 
   
 
@@ -297,359 +310,375 @@ Future<void> _fetchPayDetails(String id) async {
           ),
           
           Expanded(
-            child: Container(
-              color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+            child: SmartRefresher(
+              controller: _refreshController,
+        onRefresh: _onRefresh,
+
+          header: WaterDropHeader(
+          complete: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Icon(Icons.check, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+            ],
+          ),
+          waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+        ),
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                 SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
+              
+                    // Row with icon and title aligned
+                    Padding(
+                     padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+              ),
+              
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.payment, // Transaction icon
+                            size: 24,
+                            color: Color.fromRGBO(2, 5, 62, 1),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            localization.translate("Recent Transactions"), // Localized text
+                            style:  TextStyle(
+                             fontSize: MediaQuery.of(context).size.width * 0.045,
+              
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromRGBO(2, 5, 62, 1),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              
+              
+                     SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              
+              
+              
+                   
+                
+              
+                      
+                 Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                child: DropdownButtonFormField<String>(
+                  value: selectedSchemeId,
+                  isExpanded: true,
+                  items: [
+                    // 'All' option
+                    const DropdownMenuItem<String>(
+                      value: 'all',
+                      child: Text('All'),
+                    ),
+                    // Scheme options
+                    ...schemes.map((scheme) {
+                      return DropdownMenuItem<String>(
+                        value: scheme['reg_id'].toString(), // ✅ Only reg_id as value
+                        child: RichText(
+              text: TextSpan(
+                style: const TextStyle(fontSize: 16, color: Colors.black),
                 children: [
-               SizedBox(height: MediaQuery.of(context).size.height * 0.0125),
-
-                  // Row with icon and title aligned
-                  Padding(
-                   padding: EdgeInsets.symmetric(
-  horizontal: MediaQuery.of(context).size.width * 0.05,
-),
-
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.payment, // Transaction icon
-                          size: 24,
-                          color: Color.fromRGBO(2, 5, 62, 1),
+                  TextSpan(
+                    text: '${scheme['reg_id']}  ', // ✅ reg_id
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '${scheme['f_name']} ${scheme['l_name']}  ', // ✅ f_name and l_name
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  TextSpan(
+                    text: '₹${scheme['scheme_amount']}', // ✅ scheme_amount
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          localization.translate("Recent Transactions"), // Localized text
+                      );
+                    }),
+                  ],
+                  decoration: InputDecoration(
+                    labelText: localization.translate("Select Scheme ID"),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.006,
+                      horizontal: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 3)),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
+                    ),
+                    floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1)),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedSchemeId = value;
+                      searchController.text = value ?? ''; // ✅ Only reg_id will be shown in search bar
+                    });
+              
+                    // ✅ API ki only reg_id pass avuthundi
+                    if (selectedSchemeId == 'all') {
+                      _fetchTransactionData(null);
+                    } else {
+                      _fetchTransactionData(selectedSchemeId);
+                    }
+                  },
+                ),
+              ),
+              
+              
+              
+                  
+                    
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: transactions.length, // Dynamic list length based on fetched data
+                        itemBuilder: (context, index) {
+              final transaction = transactions[index];
+              final amount = transaction['amount'];
+              final status = transaction['status'];
+               final remark = transaction['remark'];
+               final time = transaction['time'];
+                final regId = transaction['reg_id'];
+               
+                        final statusColor = status == 'Completed'
+                  ? Colors.green
+                  : status == 'Rejected' || status == 'Unknown'
+                      ? Colors.red
+                      : status == 'Process'
+              ? Colors.orange
+              : Colors.grey; // Default color (if needed)
+               
+              
+              return Column(
+                children: [
+                  ListTile(
+                    leading: Container(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 4,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  getStatusIcon(status),
+                  color: getStatusIconColor(status),
+                  size: 24,
+                ),
+              ),
+              
+                  title:Text(
+                    transaction['reg_id'] ?? 'No Remark Available',  // Safely fetch and display 'remark'
+                    style:  TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.030,
+                  
+                      color: const Color.fromRGBO(2, 5, 62, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  
+                  
+                  
+                  
+                   subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                  
+                  
+                  
+                  
+                         Text(
+                '${getOrdinalSuffix(int.tryParse(transaction['remark']?.replaceAll(RegExp(r'[^0-9]'), '') ?? '') ?? 0)} installment',
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.03,
+                  color: const Color.fromRGBO(2, 5, 62, 1),
+                //  fontWeight: FontWeight.bold,
+                ),
+              ),
+                 
+              
+              
+              
+                     Text(
+                          "${transaction['date']} - ${transaction['time']}",
                           style:  TextStyle(
-                           fontSize: MediaQuery.of(context).size.width * 0.045,
-
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromRGBO(2, 5, 62, 1),
+                          fontSize: MediaQuery.of(context).size.width * 0.030,
+                     
+                            color: Colors.grey,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-
-
-       SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-
-
-
-                 
-              
-            
-        
-   Padding(
-  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-  child: DropdownButtonFormField<String>(
-    value: selectedSchemeId,
-    isExpanded: true,
-    items: [
-      // 'All' option
-      const DropdownMenuItem<String>(
-        value: 'all',
-        child: Text('All'),
-      ),
-      // Scheme options
-      ...schemes.map((scheme) {
-        return DropdownMenuItem<String>(
-          value: scheme['reg_id'].toString(), // ✅ Only reg_id as value
-          child: RichText(
-            text: TextSpan(
-              style: const TextStyle(fontSize: 16, color: Colors.black),
-              children: [
-                TextSpan(
-                  text: '${scheme['reg_id']}  ', // ✅ reg_id
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextSpan(
-                  text: '${scheme['f_name']} ${scheme['l_name']}  ', // ✅ f_name and l_name
-                  style: const TextStyle(color: Colors.blue),
-                ),
-                TextSpan(
-                  text: '₹${scheme['scheme_amount']}', // ✅ scheme_amount
-                  style: const TextStyle(color: Colors.green),
-                ),
-              ],
-            ),
-          ),
-        );
-      }),
-    ],
-    decoration: InputDecoration(
-      labelText: localization.translate("Select Scheme ID"),
-      contentPadding: EdgeInsets.symmetric(
-        vertical: MediaQuery.of(context).size.height * 0.006,
-        horizontal: MediaQuery.of(context).size.width * 0.04,
-      ),
-      border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 3)),
-      focusedBorder: const OutlineInputBorder(
-        borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
-      ),
-      floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1)),
-    ),
-    onChanged: (value) {
-      setState(() {
-        selectedSchemeId = value;
-        searchController.text = value ?? ''; // ✅ Only reg_id will be shown in search bar
-      });
-
-      // ✅ API ki only reg_id pass avuthundi
-      if (selectedSchemeId == 'all') {
-        _fetchTransactionData(null);
-      } else {
-        _fetchTransactionData(selectedSchemeId);
-      }
-    },
-  ),
-),
-
-
-
-                
                   
-                  Expanded(
-        child: ListView.builder(
-          itemCount: transactions.length, // Dynamic list length based on fetched data
-          itemBuilder: (context, index) {
-            final transaction = transactions[index];
-            final amount = transaction['amount'];
-            final status = transaction['status'];
-             final remark = transaction['remark'];
-             final time = transaction['time'];
-              final regId = transaction['reg_id'];
-             
-          final statusColor = status == 'Completed'
-    ? Colors.green
-    : status == 'Rejected' || status == 'Unknown'
-        ? Colors.red
-        : status == 'Process'
-            ? Colors.orange
-            : Colors.grey; // Default color (if needed)
-             
-
-            return Column(
-              children: [
-                ListTile(
-                  leading: Container(
-  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-  decoration: BoxDecoration(
-    color: Colors.grey[300],
-    shape: BoxShape.circle,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 4,
-        spreadRadius: 1,
-      ),
-    ],
-  ),
-  child: Icon(
-    getStatusIcon(status),
-    color: getStatusIconColor(status),
-    size: 24,
-  ),
-),
-
-                title:Text(
-                  transaction['reg_id'] ?? 'No Remark Available',  // Safely fetch and display 'remark'
-                  style:  TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.030,
+                      
                 
-                    color: const Color.fromRGBO(2, 5, 62, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                
-                
-                
-                
-                 subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                
-                
-                
-                
-           Text(
-  '${getOrdinalSuffix(int.tryParse(transaction['remark']?.replaceAll(RegExp(r'[^0-9]'), '') ?? '') ?? 0)} installment',
-  style: TextStyle(
-    fontSize: MediaQuery.of(context).size.width * 0.03,
-    color: const Color.fromRGBO(2, 5, 62, 1),
-  //  fontWeight: FontWeight.bold,
-  ),
-),
-   
-
-
-
-                   Text(
-                        "${transaction['date']} - ${transaction['time']}",
-                        style:  TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.030,
+              
+                            
+                  
+                        
                    
-                          color: Colors.grey,
+                             
+              
+                  
+                  
+                   
+                            ],
+                          ),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                  
+                  
+                        
+                     
+                       Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end, // aligns amount and status to the right
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "₹${NumberFormat('#,##0.00', 'en_IN').format(amount.abs())}",
+                        style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.03,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
                         ),
                       ),
-                
-                    
-              
-
-                          
-                
-                      
-                 
-                           
-
-                
-                
-                 
-                          ],
+                      const SizedBox(height: 2), // spacing between amount and status
+                      Text(
+                        status,
+                        style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.03,
+              fontWeight: FontWeight.bold,
+              color: statusColor,
                         ),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                
-                
-                      
-                   
-                     Row(
-  mainAxisSize: MainAxisSize.min,
-  crossAxisAlignment: CrossAxisAlignment.center,
-  children: [
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.end, // aligns amount and status to the right
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          "₹${NumberFormat('#,##0.00', 'en_IN').format(amount.abs())}",
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.03,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(height: 2), // spacing between amount and status
-        Text(
-          status,
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.03,
-            fontWeight: FontWeight.bold,
-            color: statusColor,
-          ),
-        ),
-      ],
-    ),
-    const SizedBox(width: 8), // space between column and arrow
-    Icon(
-      Icons.arrow_forward_ios,
-      size: 11,
-      color: Colors.grey[700],
-    ),
-  ],
-),
-
-                         
-                     
-                      
+                      ),
                     ],
                   ),
-                
-                
-                       onTap: () {
-  final transactionId = transaction['id']; // Installment ID
-  final status = transaction['status'];
-
-  if (status == 'Completed') {
-    _showCustomBottomSheet(context, transactionId);
-  } else if (status == 'Process') {
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentVerificationScreen(id: transactionId),
-      ),
-    );
-  } else if (status == 'Rejected') {
-    // Show bottom sheet with rejection reason
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                  const SizedBox(width: 8), // space between column and arrow
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 11,
+                    color: Colors.grey[700],
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Reason for Rejection',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red[900],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red[50],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color.fromRGBO(2, 6, 67, 1),
-                      width: 2,
-                    ),
-                  ),
-                  child: Text(
-                    'The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008',
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.03,
-                      color: const Color.fromRGBO(2, 6, 67, 1),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-},
-
-                
-
-                ),
-
-
-
-          
-
-          
-              ],
-            );
-          },
-        ),
-      ),
-
-
                 ],
+              ),
+              
+                           
+                       
+                        
+                      ],
+                    ),
+                  
+                  
+                         onTap: () {
+                final transactionId = transaction['id']; // Installment ID
+                final status = transaction['status'];
+              
+                if (status == 'Completed') {
+                  _showCustomBottomSheet(context, transactionId);
+                } else if (status == 'Process') {
+                  Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentVerificationScreen(id: transactionId),
+                    ),
+                  );
+                } else if (status == 'Rejected') {
+                  // Show bottom sheet with rejection reason
+                  showModalBottomSheet(
+                    context: context,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Reason for Rejection',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red[900],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color.fromRGBO(2, 6, 67, 1),
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      'The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.03,
+                        color: const Color.fromRGBO(2, 6, 67, 1),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+              
+                  
+              
+                  ),
+              
+              
+              
+                        
+              
+                        
+                ],
+              );
+                        },
+                      ),
+                    ),
+              
+              
+                  ],
+                ),
               ),
             ),
           ),

@@ -13,7 +13,7 @@ class _PremiumRefreshScreenState extends State<PremiumRefreshScreen> {
   void _onRefresh() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      items = ["New 1", "New 2", "New 3", "New 4"];
+     // items = ["New 1", "New 2", "New 3", "New 4"];
     });
     _refreshController.refreshCompleted();
   }
@@ -48,3 +48,11 @@ class _PremiumRefreshScreenState extends State<PremiumRefreshScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+
