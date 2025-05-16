@@ -262,72 +262,74 @@ Future<void> verifyPaymentProcess() async {
 double screenHeight = MediaQuery.of(context).size.height;
    
 
-    return Scaffold(
-     // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: headerBackgroundColor,
-        centerTitle: true,
-        title: Text(
-          localization.translate("Installments History"),
-          style: TextStyle(
-            fontSize: 18* MediaQuery.of(context).textScaleFactor,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return SafeArea(
+      child: Scaffold(
+       // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: headerBackgroundColor,
+          centerTitle: true,
+          title: Text(
+            localization.translate("Installments History"),
+            style: TextStyle(
+              fontSize: 18* MediaQuery.of(context).textScaleFactor,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SmartRefresher(
-             controller: _refreshController,
-        onRefresh: _onRefresh,
-
-          header: WaterDropHeader(
-          complete: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            Icon(Icons.check, color: Colors.green),
-            SizedBox(width: 8),
-            Text("Refresh Completed", style: TextStyle(color: Colors.green)),
-            ],
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SmartRefresher(
+               controller: _refreshController,
+          onRefresh: _onRefresh,
+      
+            header: WaterDropHeader(
+            complete: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Icon(Icons.check, color: Colors.green),
+              SizedBox(width: 8),
+              Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+              ],
+            ),
+           waterDropColor: const Color.fromARGB(255, 4, 2, 29),
           ),
-         waterDropColor: const Color.fromARGB(255, 4, 2, 29),
-        ),
-            child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildUserInfo(localization),
-                    ...accountDetails.map((installment) {
-                      return _buildTransactionCard(
-             installmentNumber: accountDetails.indexOf(installment) + 1,
-                date: installment['date'],
-                receiptNo: installment['receipt_no'],
-                amount: installment['amount'],
-                payid: installment['pay_id'],
-                paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
-                installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
-                context: context,
-              );
-                    }),
-            
-            
-            
-                      MyScreen(schemeId: widget.schemeId,),
-                     
-            
-            
-            
-            
-            
+              child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildUserInfo(localization),
+                      ...accountDetails.map((installment) {
+                        return _buildTransactionCard(
+               installmentNumber: accountDetails.indexOf(installment) + 1,
+                  date: installment['date'],
+                  receiptNo: installment['receipt_no'],
+                  amount: installment['amount'],
+                  payid: installment['pay_id'],
+                  paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
+                  installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
+                  context: context,
+                );
+                      }),
+              
+              
+              
+                        MyScreen(schemeId: widget.schemeId,),
+                       
+              
+              
+              
+              
+              
+                      
+                    ],
+              
+              
                     
-                  ],
-            
-            
-                  
+                  ),
                 ),
-              ),
-          ),
+            ),
+      ),
     );
   }
 

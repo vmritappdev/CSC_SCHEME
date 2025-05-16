@@ -88,137 +88,139 @@ class GoldShopOffersScreen extends StatelessWidget {
       ),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: const BackButton(color: Colors.white),
-        title: Text(
-          localization.translate("Gold Shop Offers"),
-          style: GoogleFonts.lato(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: fontSize,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: const BackButton(color: Colors.white),
+          title: Text(
+            localization.translate("Gold Shop Offers"),
+            style: GoogleFonts.lato(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+            ),
+          ),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+        ),
+        body: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.02),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
+              crossAxisSpacing: screenWidth * 0.02,
+              mainAxisSpacing: screenHeight * 0.02,
+              childAspectRatio: gridItemWidth / gridItemHeight, 
+            ),
+            itemCount: offers.length,
+            itemBuilder: (context, index) {
+              final offer = offers[index];
+              return Card(
+                elevation: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Image.asset(
+                        offer.imagePath,
+                        fit: BoxFit.cover,
+                        height: imageHeight,
+                        width: double.infinity,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.02),
+                      child: Text(
+                        offer.title,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.bold,
+                          fontSize: fontSize * 0.9,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            offer.originalPrice,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: fontSize * 0.8,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                          Text(
+                            offer.discountedPrice,
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: fontSize * 0.9,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+                  ],
+                ),
+              );
+            },
           ),
         ),
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.02),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
-            crossAxisSpacing: screenWidth * 0.02,
-            mainAxisSpacing: screenHeight * 0.02,
-            childAspectRatio: gridItemWidth / gridItemHeight, 
-          ),
-          itemCount: offers.length,
-          itemBuilder: (context, index) {
-            final offer = offers[index];
-            return Card(
-              elevation: 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Image.asset(
-                      offer.imagePath,
-                      fit: BoxFit.cover,
-                      height: imageHeight,
-                      width: double.infinity,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(screenWidth * 0.02),
-                    child: Text(
-                      offer.title,
-                      style: GoogleFonts.roboto(
-                        fontWeight: FontWeight.bold,
-                        fontSize: fontSize * 0.9,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          offer.originalPrice,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: fontSize * 0.8,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                        Text(
-                          offer.discountedPrice,
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: fontSize * 0.9,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                ],
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PaymentCard(),
               ),
             );
           },
+          label: Text(
+            localization.translate("Active Scheme"),
+            style: TextStyle(color: Colors.white, fontSize: fontSize * 0.9),
+          ),
+          backgroundColor: Colors.red,
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const PaymentCard(),
-            ),
-          );
-        },
-        label: Text(
-          localization.translate("Active Scheme"),
-          style: TextStyle(color: Colors.white, fontSize: fontSize * 0.9),
-        ),
-        backgroundColor: Colors.red,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: const Color.fromRGBO(2, 5, 62, 1),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: Icon(Icons.home, color: Colors.white, size: fontSize * 2),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme(),)),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Image.asset(
-                  'assets/images/faq.png',
-                  width: fontSize * 2,
-                  height: fontSize * 2,
-                  color: Colors.white,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          color: const Color.fromRGBO(2, 5, 62, 1),
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 8.0,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.home, color: Colors.white, size: fontSize * 2),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme(),)),
+                    );
+                  },
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const FAQScreen()),
-                  );
-                },
-              ),
-            ],
+                IconButton(
+                  icon: Image.asset(
+                    'assets/images/faq.png',
+                    width: fontSize * 2,
+                    height: fontSize * 2,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FAQScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

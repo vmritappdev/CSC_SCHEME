@@ -58,14 +58,16 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     final titleStyle = GoogleFonts.lato(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold, color: Colors.white);
     final textStyle = GoogleFonts.lato(fontSize: screenWidth * 0.04, color: Colors.white70);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF02053E),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildTopSection(localization, titleStyle, textStyle, screenHeight, screenWidth),
-            _buildTermsSection(localization, screenHeight, screenWidth),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF02053E),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildTopSection(localization, titleStyle, textStyle, screenHeight, screenWidth),
+              _buildTermsSection(localization, screenHeight, screenWidth),
+            ],
+          ),
         ),
       ),
     );

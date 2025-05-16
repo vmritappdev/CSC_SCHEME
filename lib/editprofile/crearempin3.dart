@@ -61,118 +61,120 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Container(
-              constraints: BoxConstraints(
-                maxHeight: screenHeight,
-                maxWidth: screenWidth,
-              ),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(2, 5, 62, 1),
-                    Color.fromRGBO(2, 5, 62, 1),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.centerRight,
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: screenHeight,
+                  maxWidth: screenWidth,
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: screenHeight * 0.13),
-                  Image.asset('assets/images/csc2.png', height: 90, fit: BoxFit.fill, color: Colors.white),
-                  Text(
-                   // localization.translate('app_name'),
-                   'JEWELLERS',
-                    style: GoogleFonts.lato(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.white,
-                    ),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromRGBO(2, 5, 62, 1),
+                      Color.fromRGBO(2, 5, 62, 1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.centerRight,
                   ),
-                  SizedBox(height: screenHeight * 0.15),
-                  Expanded(
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: screenHeight,
-                        maxWidth: screenWidth,
-                      ),
-                      decoration: BoxDecoration(
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: screenHeight * 0.13),
+                    Image.asset('assets/images/csc2.png', height: 90, fit: BoxFit.fill, color: Colors.white),
+                    Text(
+                     // localization.translate('app_name'),
+                     'JEWELLERS',
+                      style: GoogleFonts.lato(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic,
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
                       ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 30),
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Create_Mpin',
-                               // localization.translate('create_mpin'),
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04,
-),
-                              ),
-                            ),
-                            buildPinput(
-                              onChanged: (value) {
-                                setState(() {
-                                  mpin = value;
-                                  errorMessage = '';
-                                });
-                              },
-                            ),
-
-                         SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-
-
-
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Confirm_Mpin',
-                               // localization.translate('confirm_mpin'),
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
-                            ),
-                            buildPinput(
-                              onChanged: (value) {
-                                setState(() {
-                                  confirmMpin = value;
-                                  errorMessage = '';
-                                });
-                              },
-                            ),
-                            if (errorMessage.isNotEmpty)
-                              Padding(
-                               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.012),
-
+                    ),
+                    SizedBox(height: screenHeight * 0.15),
+                    Expanded(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: screenHeight,
+                          maxWidth: screenWidth,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 30),
+      
+                              Align(
+                                alignment: Alignment.centerLeft,
                                 child: Text(
-                                  errorMessage,
-                                  style: const TextStyle(color: Colors.red),
+                                  'Create_Mpin',
+                                 // localization.translate('create_mpin'),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04,
+      ),
                                 ),
                               ),
-                            SizedBox(height: screenHeight * 0.09),
-                            buildSubmitButton(localization),
-                          ],
+                              buildPinput(
+                                onChanged: (value) {
+                                  setState(() {
+                                    mpin = value;
+                                    errorMessage = '';
+                                  });
+                                },
+                              ),
+      
+                           SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+      
+      
+      
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Confirm_Mpin',
+                                 // localization.translate('confirm_mpin'),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                              ),
+                              buildPinput(
+                                onChanged: (value) {
+                                  setState(() {
+                                    confirmMpin = value;
+                                    errorMessage = '';
+                                  });
+                                },
+                              ),
+                              if (errorMessage.isNotEmpty)
+                                Padding(
+                                 padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.012),
+      
+                                  child: Text(
+                                    errorMessage,
+                                    style: const TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              SizedBox(height: screenHeight * 0.09),
+                              buildSubmitButton(localization),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -55,6 +55,18 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
   String confirmMpin = '';
   String errorMessage = '';
 
+final TextEditingController _mpinController = TextEditingController();
+final TextEditingController _confirmMpinController = TextEditingController();
+
+
+
+
+@override
+void dispose() {
+  _mpinController.dispose();
+  _confirmMpinController.dispose();
+  super.dispose();
+}
 
 
   
@@ -102,12 +114,19 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
 ),
 
               SizedBox(height: screenHeight * 0.02),
-              buildPinput((value) {
-                setState(() {
-                  mpin = value;
-                  errorMessage = '';
-                });
-              }),
+             // MPIN field
+buildPinput(
+  controller: _mpinController,
+  onChanged: (value) {
+    print('mpin changed: "$value"');
+    setState(() {
+      mpin = value;
+      errorMessage = '';
+    });
+  },
+),
+// Confirm MPIN field
+
               SizedBox(height: screenHeight * 0.07),
              Padding(
   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1), // Dynamic Padding
@@ -124,12 +143,17 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
 ),
 
               SizedBox(height: screenHeight * 0.02),
-              buildPinput((value) {
-                setState(() {
-                  confirmMpin = value;
-                  errorMessage = '';
-                });
-              }),
+buildPinput(
+  controller: _confirmMpinController,
+  onChanged: (value) {
+    print('confirmMpin changed: "$value"');
+    setState(() {
+      confirmMpin = value;
+      errorMessage = '';
+    });
+  },
+),
+
               if (errorMessage.isNotEmpty)
                Padding(
   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.015), // Dynamic Padding
@@ -177,172 +201,142 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
     );
   }
 
-  Widget buildPinput(ValueChanged<String> onChanged) {
-    return Padding(
-      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
-      child: Pinput(
-        length: 4,
-        defaultPinTheme: defaultPinTheme,
-        focusedPinTheme: defaultPinTheme.copyWith(
-          decoration: defaultPinTheme.decoration!.copyWith(
-            border: Border.all(color: const Color.fromRGBO(43, 49, 101, 1), width: 2),
-          ),
+Widget buildPinput({
+  required ValueChanged<String> onChanged,
+  required TextEditingController controller,
+}) {
+  return Padding(
+    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
+    child: Pinput(
+      length: 4,
+      controller: controller,
+      defaultPinTheme: defaultPinTheme,
+      focusedPinTheme: defaultPinTheme.copyWith(
+        decoration: defaultPinTheme.decoration!.copyWith(
+          border: Border.all(color: const Color.fromRGBO(43, 49, 101, 1), width: 2),
         ),
-        onChanged: onChanged,
       ),
-    );
-  }
-
-  Future<void> _submitForm(LocalizationProvider localization) async {
-    if (mpin.isEmpty || confirmMpin.isEmpty) {
-      setState(() {
-        errorMessage = localization.translate('Please enter both MPIN and Confirm MPIN.');
-      });
-      return;
-    }
-
-    if (mpin != confirmMpin) {
-      setState(() {
-        errorMessage = localization.translate('MPINs do not match!');
-      });
-      return;
-    }
-
-    final success = await _submitMpinToServer();
-    if (success) {
-     // _showCustomBottomSheet();
-        //  _showpopup(context);
-    }
-     _showpopup(context);
-  }
-
-  Future<bool> _submitMpinToServer() async {
-
-  const String apiUrl = "$baseUrl/save_mpin.php";  //"https://vmrdemos.com/csc_scheme/save_mpin.php"
-
-
-    bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-     // _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-          Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
+      onChanged: onChanged,
+    ),
   );
-      return false ;
-    }
+}
 
-    try {
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? mobileNumber = prefs.getString('phoneNumber');
+Future<void> _submitForm(LocalizationProvider localization) async {
+  String currentMpin = _mpinController.text.trim();
+  String currentConfirmMpin = _confirmMpinController.text.trim();
+
+  print('controller mpin: "$currentMpin"');
+  print('controller confirmMpin: "$currentConfirmMpin"');
+
+  if (currentMpin.isEmpty || currentConfirmMpin.isEmpty) {
+    setState(() {
+      errorMessage = localization.translate('Please enter both MPIN and Confirm MPIN.');
+    });
+    return;
+  }
+
+  if (currentMpin != currentConfirmMpin) {
+    setState(() {
+      errorMessage = localization.translate('MPINs do not match!');
+    });
+    _showErrorPopup(localization.translate('MPINs do not match!'));
+    return;
+  }
+
+  mpin = currentMpin; // update class variable if needed
+  confirmMpin = currentConfirmMpin;
+
+  final success = await _submitMpinToServer();
+  if (success) {
+    _showpopup(context);
+  } else {
+    _showErrorPopup(localization.translate("Failed to create MPIN. Please try again."));
+  }
+}
 
 
-      
+ Future<bool> _submitMpinToServer() async {
+  const String apiUrl = "$baseUrl/save_mpin.php";  // Your API URL
 
-      if (mobileNumber!.isEmpty) {
-        setState(() {
-           errorMessage = 'Mobile number not found. Please try again.';
-        });
-        return false;
-      }
+  String mpin = _mpinController.text.trim();
+  String confirmMpin = _confirmMpinController.text.trim();
 
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: {
-          'mpin': mpin,
-          'conform_mpin': confirmMpin,
-          'mobile_no': mobileNumber,
-        },
-      );
+  // Simple validation before API call
+  if (mpin.length < 4) {
+    setState(() {
+      errorMessage = 'MPIN must be at least 4 digits';
+    });
+    return false;
+  }
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['status'] == 'success') {
-          return true;
-        } else {
-          setState(() {
-           // errorMessage = jsonResponse['message'] ?? 'Something went wrong!';
-          });
-          return false;
-        }
-      } else {
-        setState(() {
-          errorMessage = 'Failed to connect to the server. Status: ${response.statusCode}';
-        });
-        return false;
-      }
-    } catch (e) {
+  if (mpin != confirmMpin) {
+    setState(() {
+      errorMessage = 'MPIN and Confirm MPIN do not match';
+    });
+    return false;
+  }
+
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+    );
+    return false;
+  }
+
+  try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? mobileNumber = prefs.getString('phoneNumber');
+
+    if (mobileNumber == null || mobileNumber.isEmpty) {
       setState(() {
-        errorMessage = 'An error occurred: $e';
+        errorMessage = 'Mobile number not found. Please try again.';
       });
       return false;
     }
-  }
 
- void _showCustomBottomSheet() {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) {
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.pop(context);
-       Navigator.pushAndRemoveUntil(
-  context,
-  MaterialPageRoute(
-    builder: (context) => HomeScreen(
-      activescheme: Activescheme(),
-    ),
-  ),
-  (Route<dynamic> route) => false, // Remove all previous routes
-);
+    print('mobileNumber from prefs: $mobileNumber');
+    print('Sending to API: mpin=$mpin, confirmMpin=$confirmMpin, mobile_no=$mobileNumber');
 
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: {
+        'mpin': mpin,
+        'conform_mpin': confirmMpin,
+        'mobile_no': mobileNumber,
+      },
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      print('Decoded JSON response: $jsonResponse');
+
+      if (jsonResponse['response'] == 'success') {
+        return true;
+      } else {
+        setState(() {
+          errorMessage = jsonResponse['message'] ?? 'Something went wrong!';
+        });
+        return false;
+      }
+    } else {
+      setState(() {
+        errorMessage = 'Failed to connect to the server. Status: ${response.statusCode}';
       });
-
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          double fontSize = constraints.maxWidth * 0.05; // Dynamic font size
-          fontSize = fontSize.clamp(12, 24); // Set min/max limits
-          final localization = Provider.of<LocalizationProvider>(context);
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(43, 49, 101, 1),
-                //  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                     localization.translate('MPIN Created Successfully'),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: fontSize, // Dynamic font size
-                      ),
-                    ),
-                    SizedBox(
-                      height: constraints.maxWidth * 0.08, // Dynamic height
-                      width: constraints.maxWidth * 0.08, // Dynamic width
-                      child: Lottie.asset(
-                        'assets/images/suc.json',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
+      return false;
+    }
+  } catch (e) {
+    setState(() {
+      errorMessage = 'An error occurred: $e';
+    });
+    return false;
+  }
 }
+
 
   void _showpopup(BuildContext context) {
   showDialog(
@@ -354,7 +348,7 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
         builder: (context, constraints) {
           double fontSize = constraints.maxWidth * 0.03; // Dynamic font size
           fontSize = fontSize.clamp(12, 24); // Set min/max limits
-  final localization = Provider.of<LocalizationProvider>(context);
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
           return AlertDialog(
             shape: const RoundedRectangleBorder(
              // borderRadius: BorderRadius.circular(10),
@@ -497,5 +491,32 @@ Future<bool> checkInternet() async {
 
   return false;
 }
+
+
+void _showErrorPopup(String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      final localization = Provider.of<LocalizationProvider>(context, listen: false);
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: Text(
+          localization.translate("Error"),
+          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(localization.translate("OK")),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
 }

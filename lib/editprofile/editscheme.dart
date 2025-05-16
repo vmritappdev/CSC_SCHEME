@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/dashboardscreens/user_profile.dart';
 import 'package:csc/utillity/constant.dart';
-import 'package:csc/dashboardscreens/view%20details.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 
 
@@ -473,132 +473,134 @@ Future<void> _getImage(ImageSource source, bool isPanCard) async {
     final localization = Provider.of<LocalizationProvider>(context);
     double screenWidth = MediaQuery.of(context).size.width;
 double screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
-      style: const TextStyle(color: Colors.white),
-      ),
-      iconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-          padding: EdgeInsets.all(16.0.w),
-                child: Column(
-                  children: [
-
-
-
-                    Align(alignment: Alignment.bottomLeft,child: Text('Edit Custmer Information',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
-                    ),
-
-
-
-
-                 
-
-                      SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                   ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
+        style: const TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
+        ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Padding(
+            padding: EdgeInsets.all(16.0.w),
+                  child: Column(
+                    children: [
+      
+      
+      
+                      Align(alignment: Alignment.bottomLeft,child: Text('Edit Custmer Information',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
+                      ),
+      
+      
+      
+      
                    
-                   //_buildTextField(schemController, localization.translate("Scheme Type")),
-                    _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
-                    _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
-                    _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
-                      SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                   ),
-                  //  _buildTextField(dobController, localization.translate("Date of Birth*")),
-                   _buildDateField(dobController, localization.translate("Date of Birth*")),
-
-                                      SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                   ),
-
-                //  genderDropdown(),
-                genderDropdown(context),
-
-
-                   SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                   ),
-                     _buildTextField(emailController, localization.translate("Email ID(Optional)")),
-                    _buildTextField(doorNoController, localization.translate("Door No*")),
-                     _buildTextField(address1Controller, localization.translate("Address Line 1*")),
-                    _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
-                        _buildTextField(pincodeController, localization.translate("Pincode*")),
-                         _buildTextField(countryController, localization.translate("Country*")),
-                         _buildTextField(stateController, localization.translate("State*")),
-                    _buildTextField(districtController, localization.translate("District*")),
-                      _buildTextField(cityController, localization.translate("City*")),  
-                    _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage, false),
-                      _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage, true),
-                   
-                     _buildTextField(referralController,localization.translate( "Referral Name/Number")),
-
-                       SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                   ),
-
-                     Align(alignment: Alignment.bottomLeft,child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+      
+                        SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
                      ),
-
-                       SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                   ),
-                    _buildTextField(bankNameController, localization.translate("Bank Name*")),
-                       _buildTextField(holderName, localization.translate("Bank Account Holder Name*")),
-                    _buildTextField(accountNoController, localization.translate("Bank Account No*")),
-                    _buildTextField(ifscCodeController, localization.translate("IFSC Code*")),
-                    _buildTextField(branchLocationController, localization.translate("Branch Location*")),
-                   
-
-                         SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                   ),
-
-                     Align(alignment: Alignment.bottomLeft,child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                     ),
-
-                       SizedBox(
-                     height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                   ),
-                    _buildTextField(nomineeNameController, localization.translate("Nominee Full Name")),
-
-                    //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
-                      _buildDocumentRow(localization.translate("Nominee Adhar Number*"), nomineeadharController, nomineeimage, true),
-
-                       // _buildNomineeRelationshipDropdown(),
-                        _buildNomineeRelationshipDropdown(),
-            if (isOtherRelationVisible) _buildOtherRelationshipField(),
-
-                    _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
-                   
-                   // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
-               
-                  
-                   
                      
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
-
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await updateSchemeDetails();
-                        },
-                        child: Text(
-                          localization.translate("Save Changes"),
-                          style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                     //_buildTextField(schemController, localization.translate("Scheme Type")),
+                      _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
+                      _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
+                      _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
+                        SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                     ),
+                    //  _buildTextField(dobController, localization.translate("Date of Birth*")),
+                     _buildDateField(dobController, localization.translate("Date of Birth*")),
+      
+                                        SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                     ),
+      
+                  //  genderDropdown(),
+                  genderDropdown(context),
+      
+      
+                     SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                     ),
+                       _buildTextField(emailController, localization.translate("Email ID(Optional)")),
+                      _buildTextField(doorNoController, localization.translate("Door No*")),
+                       _buildTextField(address1Controller, localization.translate("Address Line 1*")),
+                      _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
+                          _buildTextField(pincodeController, localization.translate("Pincode*")),
+                           _buildTextField(countryController, localization.translate("Country*")),
+                           _buildTextField(stateController, localization.translate("State*")),
+                      _buildTextField(districtController, localization.translate("District*")),
+                        _buildTextField(cityController, localization.translate("City*")),  
+                      _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage, false),
+                        _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage, true),
+                     
+                       _buildTextField(referralController,localization.translate( "Referral Name/Number")),
+      
+                         SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                     ),
+      
+                       Align(alignment: Alignment.bottomLeft,child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                       ),
+      
+                         SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                     ),
+                      _buildTextField(bankNameController, localization.translate("Bank Name*")),
+                         _buildTextField(holderName, localization.translate("Bank Account Holder Name*")),
+                      _buildTextField(accountNoController, localization.translate("Bank Account No*")),
+                      _buildTextField(ifscCodeController, localization.translate("IFSC Code*")),
+                      _buildTextField(branchLocationController, localization.translate("Branch Location*")),
+                     
+      
+                           SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                     ),
+      
+                       Align(alignment: Alignment.bottomLeft,child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                       ),
+      
+                         SizedBox(
+                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                     ),
+                      _buildTextField(nomineeNameController, localization.translate("Nominee Full Name")),
+      
+                      //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
+                        _buildDocumentRow(localization.translate("Nominee Adhar Number*"), nomineeadharController, nomineeimage, true),
+      
+                         // _buildNomineeRelationshipDropdown(),
+                          _buildNomineeRelationshipDropdown(),
+              if (isOtherRelationVisible) _buildOtherRelationshipField(),
+      
+                      _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
+                     
+                     // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
+                 
+                    
+                     
+                       
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
+      
+      
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await updateSchemeDetails();
+                          },
+                          child: Text(
+                            localization.translate("Save Changes"),
+                            style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 

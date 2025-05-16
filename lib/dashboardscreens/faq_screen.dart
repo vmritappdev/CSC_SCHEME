@@ -50,98 +50,100 @@ class _FAQScreenState extends State<FAQScreen> {
 
     final localization = Provider.of<LocalizationProvider>(context);
 
-    return Scaffold(
-      appBar:  AppBar(
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          localization.translate("FAQ"),
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: screenWidth * 0.045,
+    return SafeArea(
+      child: Scaffold(
+        appBar:  AppBar(
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: Text(
+            localization.translate("FAQ"),
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: screenWidth * 0.045,
+            ),
+          ),
+          backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
+          elevation: 2,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(15),
+            ),
           ),
         ),
-        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
-        elevation: 2,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(15),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.04), // ✅ Dynamic Padding
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                localization.translate("Frequently asked questions"),
-                style: GoogleFonts.lato(
-                  fontSize: screenWidth * 0.05, // ✅ Dynamic Font Size
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
-
-              SizedBox(
-                height: screenHeight * 0.06, // ✅ Dynamic Height
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value.toLowerCase(); // Update search query
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: localization.translate("Ask me anything"),
-                    hintStyle: GoogleFonts.lato(
-                      fontSize: screenWidth * 0.04, // ✅ Dynamic Font Size
-                      color: const Color.fromARGB(255, 176, 175, 175),
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                      size: screenWidth * 0.06, // ✅ Dynamic Icon Size
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                      color: Color.fromARGB(255, 242, 240, 240),
-                      ),
-                      borderRadius: BorderRadius.circular(screenWidth * 0.02), 
-                    ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth * 0.04), // ✅ Dynamic Padding
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  localization.translate("Frequently asked questions"),
+                  style: GoogleFonts.lato(
+                    fontSize: screenWidth * 0.05, // ✅ Dynamic Font Size
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-
-              SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
-
-              ..._buildFAQList(localization),
-
-              SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
-
-              Center(
-                child: SizedBox(
-                  height: screenHeight * 0.06, // ✅ Dynamic Button Height
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _openWhatsApp,
-                    style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.02), // ✅ Dynamic Border Radius
+                SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
+      
+                SizedBox(
+                  height: screenHeight * 0.06, // ✅ Dynamic Height
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value.toLowerCase(); // Update search query
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: localization.translate("Ask me anything"),
+                      hintStyle: GoogleFonts.lato(
+                        fontSize: screenWidth * 0.04, // ✅ Dynamic Font Size
+                        color: const Color.fromARGB(255, 176, 175, 175),
                       ),
-                    ),
-                    child: Text(
-                      localization.translate("Chat with us"),
-                      style: GoogleFonts.lato(
-                      fontSize: screenWidth * 0.045, // ✅ Dynamic Font Size
-                      color: Colors.white,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                        size: screenWidth * 0.06, // ✅ Dynamic Icon Size
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                        color: Color.fromARGB(255, 242, 240, 240),
+                        ),
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02), 
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+      
+                SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
+      
+                ..._buildFAQList(localization),
+      
+                SizedBox(height: screenHeight * 0.02), // ✅ Dynamic Spacing
+      
+                Center(
+                  child: SizedBox(
+                    height: screenHeight * 0.06, // ✅ Dynamic Button Height
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _openWhatsApp,
+                      style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02), // ✅ Dynamic Border Radius
+                        ),
+                      ),
+                      child: Text(
+                        localization.translate("Chat with us"),
+                        style: GoogleFonts.lato(
+                        fontSize: screenWidth * 0.045, // ✅ Dynamic Font Size
+                        color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

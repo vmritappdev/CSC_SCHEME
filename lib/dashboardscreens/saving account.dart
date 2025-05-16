@@ -228,215 +228,217 @@ Future<bool> checkInternet() async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final localization = Provider.of<LocalizationProvider>(context);
-    return Scaffold(
-    backgroundColor: Colors.grey[100],
-    appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          localization.translate('Join Scheme'),
-          style: GoogleFonts.lato( color: Colors.black,
-          fontSize: screenWidth * 0.045, 
-          fontWeight: FontWeight.bold,)
+    return SafeArea(
+      child: Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+          elevation: 0,
+          title: Text(
+            localization.translate('Join Scheme'),
+            style: GoogleFonts.lato( color: Colors.black,
+            fontSize: screenWidth * 0.045, 
+            fontWeight: FontWeight.bold,)
+          ),
+          backgroundColor: Colors.transparent,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(context, 
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(activescheme: Activescheme(),),
+              )
+              );
+            },
+          ),
         ),
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.push(context, 
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(activescheme: Activescheme(),),
-            )
-            );
-          },
+        body: _isLoading
+        ? const CircularProgressIndicator()
+       : Column(
+          children: [
+            Container(
+             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+              child: Image.asset(
+                 'assets/images/test2.png', // Update with your asset
+                   height: screenHeight * 0.25,
+              ),
+            ),
+             SizedBox(height: screenHeight * 0.02),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                   topLeft: Radius.circular(screenWidth * 0.05), // ✅ Dynamic Border Radius
+                  topRight: Radius.circular(screenWidth * 0.05),
+                  ),
+                ),
+                 padding: EdgeInsets.all(screenWidth * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                     localization.translate('3 STEPS TO COMPLETE YOUR REGISTRATION'),
+                      style: GoogleFonts.lato(fontWeight: FontWeight.bold,
+                       fontSize: screenWidth * 0.04,
+                        color: Colors.black,)
+                    ),
+                     SizedBox(height: screenHeight * 0.04), 
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          _buildStepItem(localization.translate('Scheme Registration'), isGoldSchemeComplete, false,context),
+                          _buildStepItem(localization.translate('Complete Transaction'), isTransactionComplete, false,context),
+                          _buildStepItem(localization.translate('Verified Payment'), isPaymentComplete, true,context),
+                        ],
+                      ),
+                    ),
+                  SizedBox(
+                      width: double.infinity,
+                      height: screenHeight * 0.07,
+                      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+        ),
+      
+      
+      
+      
+        onPressed: () async {
+        await fetchProcessStatus(); // Ensure latest status is fetched
+      
+        if (processStatus == "4") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PaymentRejectedScreen(rejectId: id,)), // Rejection screen
+      );
+      return; // Stop further execution
+        }
+      
+        if (processStatus == "1") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
+      );
+      return; // Stop further execution
+        }
+      
+        if (!isGoldSchemeComplete) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Jionscheme2()),
+      );
+      if (result == true) {
+        setState(() {
+          isGoldSchemeComplete = true;
+        });
+      }
+        } else if (!isTransactionComplete) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Scanner(activescheme: Activescheme(),rejectId: id,)),
+      );
+      if (result == true) {
+        setState(() {
+          isTransactionComplete = true;
+          saveProcessStatus();
+        });
+      }
+        } else if (!isPaymentComplete) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
+      );
+        } else {
+      setState(() {
+        isGoldSchemeComplete = false;
+        isTransactionComplete = false;
+        isPaymentComplete = false;
+        saveProcessStatus();
+      });
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Jionscheme2()),
+      );
+        }
+      },
+      
+      
+        /*
+         onPressed: () async {
+        await fetchProcessStatus(); // Ensure latest status is fetched
+      
+        if (processStatus == "1") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
+      );
+      return; // Stop further execution
+        }
+      
+        if (!isGoldSchemeComplete) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Jionscheme2()),
+      );
+      if (result == true) {
+        setState(() {
+          isGoldSchemeComplete = true;
+        });
+      }
+        } else if (!isTransactionComplete) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Scanner(activescheme: Activescheme())),
+      );
+      if (result == true) {
+        setState(() {
+          isTransactionComplete = true;
+          saveProcessStatus();
+        });
+      }
+        } else if (!isPaymentComplete) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
+      );
+        } else {
+      setState(() {
+        isGoldSchemeComplete = false;
+        isTransactionComplete = false;
+        isPaymentComplete = false;
+        saveProcessStatus();
+      });
+      
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Jionscheme2()),
+      );
+        }
+      },
+      */
+      
+        child: Text(
+      localization.translate('Get Started'),
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: screenWidth * 0.045,
+      ),
         ),
       ),
-      body: _isLoading
-      ? const CircularProgressIndicator()
-     : Column(
-        children: [
-          Container(
-           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-            child: Image.asset(
-               'assets/images/test2.png', // Update with your asset
-                 height: screenHeight * 0.25,
-            ),
-          ),
-           SizedBox(height: screenHeight * 0.02),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                 topLeft: Radius.circular(screenWidth * 0.05), // ✅ Dynamic Border Radius
-                topRight: Radius.circular(screenWidth * 0.05),
+      
+                    ),
+      
+                  ],
                 ),
               ),
-               padding: EdgeInsets.all(screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                   localization.translate('3 STEPS TO COMPLETE YOUR REGISTRATION'),
-                    style: GoogleFonts.lato(fontWeight: FontWeight.bold,
-                     fontSize: screenWidth * 0.04,
-                      color: Colors.black,)
-                  ),
-                   SizedBox(height: screenHeight * 0.04), 
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        _buildStepItem(localization.translate('Scheme Registration'), isGoldSchemeComplete, false,context),
-                        _buildStepItem(localization.translate('Complete Transaction'), isTransactionComplete, false,context),
-                        _buildStepItem(localization.translate('Verified Payment'), isPaymentComplete, true,context),
-                      ],
-                    ),
-                  ),
-                SizedBox(
-                    width: double.infinity,
-                    height: screenHeight * 0.07,
-                    child: ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-     padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-  ),
-
-
-
-
-  onPressed: () async {
-  await fetchProcessStatus(); // Ensure latest status is fetched
-
-  if (processStatus == "4") {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PaymentRejectedScreen(rejectId: id,)), // Rejection screen
-    );
-    return; // Stop further execution
-  }
-
-  if (processStatus == "1") {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
-    );
-    return; // Stop further execution
-  }
-
-  if (!isGoldSchemeComplete) {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Jionscheme2()),
-    );
-    if (result == true) {
-      setState(() {
-        isGoldSchemeComplete = true;
-      });
-    }
-  } else if (!isTransactionComplete) {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Scanner(activescheme: Activescheme(),rejectId: id,)),
-    );
-    if (result == true) {
-      setState(() {
-        isTransactionComplete = true;
-        saveProcessStatus();
-      });
-    }
-  } else if (!isPaymentComplete) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
-    );
-  } else {
-    setState(() {
-      isGoldSchemeComplete = false;
-      isTransactionComplete = false;
-      isPaymentComplete = false;
-      saveProcessStatus();
-    });
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Jionscheme2()),
-    );
-  }
-},
-
-
-  /*
-   onPressed: () async {
-  await fetchProcessStatus(); // Ensure latest status is fetched
-
-  if (processStatus == "1") {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
-    );
-    return; // Stop further execution
-  }
-
-  if (!isGoldSchemeComplete) {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Jionscheme2()),
-    );
-    if (result == true) {
-      setState(() {
-        isGoldSchemeComplete = true;
-      });
-    }
-  } else if (!isTransactionComplete) {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Scanner(activescheme: Activescheme())),
-    );
-    if (result == true) {
-      setState(() {
-        isTransactionComplete = true;
-        saveProcessStatus();
-      });
-    }
-  } else if (!isPaymentComplete) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
-    );
-  } else {
-    setState(() {
-      isGoldSchemeComplete = false;
-      isTransactionComplete = false;
-      isPaymentComplete = false;
-      saveProcessStatus();
-    });
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Jionscheme2()),
-    );
-  }
-},
-*/
-
-  child: Text(
-    localization.translate('Get Started'),
-    style: TextStyle(
-      color: Colors.white,
-      fontSize: screenWidth * 0.045,
-    ),
-  ),
-),
-
-                  ),
-
-                ],
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

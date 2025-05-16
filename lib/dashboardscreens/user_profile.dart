@@ -249,175 +249,177 @@ Future<void> fetchAndSaveImage() async {
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-        localization.translate("PROFILE DETAILS"),
-          style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+          localization.translate("PROFILE DETAILS"),
+            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-      ),
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            Stack(
-              children: [
-               Positioned(
-  child: Stack(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              GestureDetector(
-                onTap: () => _viewImage(context),
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: savedImageUrl.isNotEmpty
-                      ? (savedImageUrl.startsWith('http')
-                          ? NetworkImage(savedImageUrl)
-                          : FileImage(File(savedImageUrl))) as ImageProvider
-                      : null,
-                  child: savedImageUrl.isEmpty
-                      ? Icon(Icons.person, size: 50, color: Colors.grey[600])
-                      : null,
+              const SizedBox(height: 50),
+              Stack(
+                children: [
+                 Positioned(
+        child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () => _viewImage(context),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: savedImageUrl.isNotEmpty
+                        ? (savedImageUrl.startsWith('http')
+                            ? NetworkImage(savedImageUrl)
+                            : FileImage(File(savedImageUrl))) as ImageProvider
+                        : null,
+                    child: savedImageUrl.isEmpty
+                        ? Icon(Icons.person, size: 50, color: Colors.grey[600])
+                        : null,
+                  ),
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: _pickImage1,
-                  child: const CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 16,
-                      color: Color.fromRGBO(2, 5, 62, 1),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: _pickImage1,
+                    child: const CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: 16,
+                        color: Color.fromRGBO(2, 5, 62, 1),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-),
-
               ],
             ),
-            const SizedBox(height: 16),
-            Text(
-              localization.translate(firstName),
-              style: const TextStyle(
-                color: Color.fromRGBO(2, 5, 62, 1),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              localization.translate(phoneNumber),
-              style: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1),),
-            ),
-            const SizedBox(height: 20),
-
-            // Navigation Buttons
-           _buildButton(
-  label: localization.translate("Change Profile"), // Pass localized string here
-  icon: Icons.person,
-  onPressed: () {
-    // Navigate to Edit Profile Screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-    );
-  },
-),
-_buildButton(
-  label: localization.translate("Change Mpin"), // Pass localized string
-  icon: Icons.lock,
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const EditMPINScreen()),
-    );
-  },
-),
-
-
-
-_buildButton(
-  label: localization.translate("Change Join Scheme"), // Pass localized string
-  icon: Icons.lock,
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Editscheme1()),
-    );
-  },
-),
-
-
-
-_buildButton(
-  label: localization.translate("Help & Support"), // Pass localized string
-  icon: Icons.help,
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const FAQScreen()),
-    );
-  },
-),
-
-            const SizedBox(height: 20),
-
-            
-          ],
-        ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                localization.translate(firstName),
+                style: const TextStyle(
+                  color: Color.fromRGBO(2, 5, 62, 1),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                localization.translate(phoneNumber),
+                style: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1),),
+              ),
+              const SizedBox(height: 20),
+      
+              // Navigation Buttons
+             _buildButton(
+        label: localization.translate("Change Profile"), // Pass localized string here
+        icon: Icons.person,
         onPressed: () {
-          // Handle logout action
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const PaymentCard(),
-            ) 
-          ); // Redirect or logout functionality
+      // Navigate to Edit Profile Screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+      );
         },
-        label: Text(
-          localization.translate("My Scheme"),
-          style: const TextStyle(color: Colors.white),
-        ),
-       // icon: Icon(Icons.logout, color: Colors.white),
-        backgroundColor: Colors.red,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        color: const Color.fromRGBO(2, 5, 62, 1),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.home, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              IconButton(
-                icon:Image.asset('assets/images/faq.png',width: 30,height: 30,color: Colors.white,),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const FAQScreen()),
-                  );
-                },
-              ),
+      _buildButton(
+        label: localization.translate("Change Mpin"), // Pass localized string
+        icon: Icons.lock,
+        onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const EditMPINScreen()),
+      );
+        },
+      ),
+      
+      
+      
+      _buildButton(
+        label: localization.translate("Change Join Scheme"), // Pass localized string
+        icon: Icons.lock,
+        onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Editscheme1()),
+      );
+        },
+      ),
+      
+      
+      
+      _buildButton(
+        label: localization.translate("Help & Support"), // Pass localized string
+        icon: Icons.help,
+        onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const FAQScreen()),
+      );
+        },
+      ),
+      
+              const SizedBox(height: 20),
+      
+              
             ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            // Handle logout action
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PaymentCard(),
+              ) 
+            ); // Redirect or logout functionality
+          },
+          label: Text(
+            localization.translate("My Scheme"),
+            style: const TextStyle(color: Colors.white),
+          ),
+         // icon: Icon(Icons.logout, color: Colors.white),
+          backgroundColor: Colors.red,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          color: const Color.fromRGBO(2, 5, 62, 1),
+          shape: const CircularNotchedRectangle(),
+          notchMargin: 8.0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.home, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                IconButton(
+                  icon:Image.asset('assets/images/faq.png',width: 30,height: 30,color: Colors.white,),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const FAQScreen()),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

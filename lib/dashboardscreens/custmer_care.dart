@@ -168,56 +168,7 @@ Future<void> submitForm() async {
 
 
 
-/*
-  Future<void> submitForm() async {
 
-     bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-      return;
-    }
-
-
-
-    if (_formKey.currentState!.validate()) {
-      final url = "$baseUrl/enquiry.php";   // "https://vmrdemos.com/csc_scheme/enquiry.php"
-      final data = {
-        'name': _nameController.text,
-        'mobile_no': _phoneController.text,
-        'description': _descriptionController.text,
-      };
-
-      try {
-        final response = await http.post(
-          Uri.parse(url),
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-          body: data,
-        );
-
-        if (response.statusCode == 200) {
-          final responseData = json.decode(response.body);
-          setState(() {
-            _message = responseData['response'] == 'success'
-                ? 'Success: ${responseData['message']}'
-                : 'Error: ${responseData['message']}';
-          });
-        } else {
-          setState(() {
-            _message = 'Failed to load data. Status code: ${response.statusCode}';
-          });
-        }
-      } catch (e) {
-        setState(() {
-          _message = 'An error occurred: $e';
-        });
-      }
-    }
-  }
-
-  */
-
-
-  // Function to make a phone call
 
 
 Future<void> makePhoneCall() async {
@@ -262,281 +213,283 @@ Future<void> requestCallPermission() async {
     double padding = screenWidth * 0.05;
     double fontSize = screenWidth * 0.040;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: const BackButton(color: Colors.white),
-        centerTitle: true,
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-        title: Text(
-         localization.translate("Enquiry Form"),
-          style: GoogleFonts.roboto(
-            textStyle: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontStyle: FontStyle.italic,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: const BackButton(color: Colors.white),
+          centerTitle: true,
+          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          title: Text(
+           localization.translate("Enquiry Form"),
+            style: GoogleFonts.roboto(
+              textStyle: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: padding),
-                buildLabel(localization.translate('Name*'), fontSize),
-                TextFormField(
-                  
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your name';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: padding),
-                buildLabel(localization.translate('Mobile Number*'), fontSize),
-                TextFormField(
-                  readOnly: true,
-                  controller: _phoneController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your mobile number';
-                    } else if (value.length != 10) {
-                      return 'Please enter a valid 10-digit mobile number';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: padding),
-                buildLabel(localization.translate('Description*'), fontSize),
-
-                TextFormField(
-                  controller: _descriptionController,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    border: const OutlineInputBorder(borderSide: BorderSide.none),
-                    hintText: localization.translate('Enter your complaint details...',),
-                    hintStyle: const TextStyle(fontSize: 14),
-                  ),
-                  validator: (value) {
-    if (value == null || value.trim().isEmpty) {
-      return localization.translate('pls enter discription');
-    }
-    return null;
-  },
-                ),
-                const SizedBox(height: 20),
-               
-                SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      backgroundColor: WidgetStateProperty.all(
-                        const Color.fromRGBO(2, 5, 62, 1),
-                      ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(padding),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: padding),
+                  buildLabel(localization.translate('Name*'), fontSize),
+                  TextFormField(
+                    
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: const OutlineInputBorder(borderSide: BorderSide.none),
                     ),
-                    onPressed: submitForm,
-                    child: Text(
-                      localization.translate('SUBMIT'),
-                      style: GoogleFonts.roboto(
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-
-
-                const SizedBox(height: 10,),
-
-               Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    GestureDetector(
-      onTap: makePhoneCall,
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.green,
-            child: Icon(Icons.phone, color: Colors.white, size: 20),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            localization.translate('Phone Call'),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    ),
-    GestureDetector(
-      onTap: _openWhatsApp,
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.green,
-            child: Icon(Icons.chat, color: Colors.white, size: 20),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            localization.translate('WhatsApp Chat'),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
-
-const SizedBox(height: 10,),
-
-
-
-    const SizedBox(height: 8),
-
-
-
-Container(
-  padding: const EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(16),
-    border: Border.all(color: Colors.grey.shade300),
-    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
-  ),
-  child:  Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Adding the "Communication Address" box
-      Text(
-         localization.translate('Communication Address:'),
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
-        ),
+                  SizedBox(height: padding),
+                  buildLabel(localization.translate('Mobile Number*'), fontSize),
+                  TextFormField(
+                    readOnly: true,
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: const OutlineInputBorder(borderSide: BorderSide.none),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your mobile number';
+                      } else if (value.length != 10) {
+                        return 'Please enter a valid 10-digit mobile number';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: padding),
+                  buildLabel(localization.translate('Description*'), fontSize),
       
-      SizedBox(height: 12),  // Space between the label and the address
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+                  TextFormField(
+                    controller: _descriptionController,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      border: const OutlineInputBorder(borderSide: BorderSide.none),
+                      hintText: localization.translate('Enter your complaint details...',),
+                      hintStyle: const TextStyle(fontSize: 14),
+                    ),
+                    validator: (value) {
+      if (value == null || value.trim().isEmpty) {
+        return localization.translate('pls enter discription');
+      }
+      return null;
+        },
+                  ),
+                  const SizedBox(height: 20),
+                 
+                  SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        backgroundColor: WidgetStateProperty.all(
+                          const Color.fromRGBO(2, 5, 62, 1),
+                        ),
+                      ),
+                      onPressed: submitForm,
+                      child: Text(
+                        localization.translate('SUBMIT'),
+                        style: GoogleFonts.roboto(
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+      
+      
+                  const SizedBox(height: 10,),
+      
+                 Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.location_on, color: Color(0xFF023344), size: 30),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                 localization.translate('Csc Jewellerys'),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
-                ),
-                SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-localization.translate('Mandapal Street,'),
-                      style: TextStyle(color: Colors.black87, fontSize: 14),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                     localization.translate('Nellore - 524001'),
-                      style: TextStyle(color: Colors.black87, fontSize: 14),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text(
-localization.translate('Andhra Pradesh'),
-                      style: TextStyle(color: Colors.black87, fontSize: 14),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                   localization.translate('Mobile: 9490657008'),
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ],
+      GestureDetector(
+        onTap: makePhoneCall,
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.green,
+              child: Icon(Icons.phone, color: Colors.white, size: 20),
             ),
-          ),
+            const SizedBox(width: 8),
+            Text(
+              localization.translate('Phone Call'),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+      GestureDetector(
+        onTap: _openWhatsApp,
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.green,
+              child: Icon(Icons.chat, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              localization.translate('WhatsApp Chat'),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
         ],
       ),
-    ],
-  ),
-),
-
-
-
-if (_message.isNotEmpty)
-  Container(
-    padding: const EdgeInsets.all(12),
-    margin: const EdgeInsets.symmetric(vertical: 12),
-    decoration: BoxDecoration(
-      color: _message.startsWith('Success') ? Colors.green[50] : Colors.red[50],
-      border: Border.all(
-        color: _message.startsWith('Success') ? Colors.green : Colors.red,
-        width: 1.5,
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
+      
+      
+      const SizedBox(height: 10,),
+      
+      
+      
+      const SizedBox(height: 8),
+      
+      
+      
+      Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: Colors.grey.shade300),
+      boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3))],
+        ),
+        child:  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          _message.startsWith('Success') ? Icons.check_circle : Icons.error,
-          color: _message.startsWith('Success') ? Colors.green : Colors.red,
-        ),
-
-
-
-
-        const SizedBox(width: 10),
-
-
-        Expanded(
-          child: Text(
-            _message,
-            style: TextStyle(
-              color: _message.startsWith('Success') ? Colors.green[800] : Colors.red[800],
-              fontWeight: FontWeight.w600,
-            ),
+        // Adding the "Communication Address" box
+        Text(
+           localization.translate('Communication Address:'),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
           ),
+        
+        SizedBox(height: 12),  // Space between the label and the address
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.location_on, color: Color(0xFF023344), size: 30),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                   localization.translate('Csc Jewellerys'),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+      localization.translate('Mandapal Street,'),
+                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                       localization.translate('Nellore - 524001'),
+                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+      localization.translate('Andhra Pradesh'),
+                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                     localization.translate('Mobile: 9490657008'),
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
-    ),
-  ),
-
-              ],
+        ),
+      ),
+      
+      
+      
+      if (_message.isNotEmpty)
+        Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: _message.startsWith('Success') ? Colors.green[50] : Colors.red[50],
+        border: Border.all(
+          color: _message.startsWith('Success') ? Colors.green : Colors.red,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            _message.startsWith('Success') ? Icons.check_circle : Icons.error,
+            color: _message.startsWith('Success') ? Colors.green : Colors.red,
+          ),
+      
+      
+      
+      
+          const SizedBox(width: 10),
+      
+      
+          Expanded(
+            child: Text(
+              _message,
+              style: TextStyle(
+                color: _message.startsWith('Success') ? Colors.green[800] : Colors.red[800],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+        ),
+      
+                ],
+              ),
             ),
           ),
         ),
