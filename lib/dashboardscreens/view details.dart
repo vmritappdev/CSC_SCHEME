@@ -259,7 +259,7 @@ Future<void> verifyPaymentProcess() async {
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
      double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
    
 
     return SafeArea(

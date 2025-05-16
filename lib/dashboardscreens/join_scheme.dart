@@ -450,7 +450,13 @@ setState(() {
           _firstNameController.text = reg['f_name'] ?? '';
           _lastNameController.text = reg['l_name'] ?? '';
           _phoneController.text = reg['mobile_no'] ?? '';
-          dobController.text = reg['date_of_birth'] ?? '';
+         if (reg['date_of_birth'] != null && reg['date_of_birth'].isNotEmpty) {
+  DateTime parsedDate = DateTime.parse(reg['date_of_birth']);
+  dobController.text = DateFormat('dd-MM-yyyy').format(parsedDate);
+} else {
+  dobController.text = '';
+}
+
           _emailController.text = reg['email_id'] ?? '';
           doorNoController.text = reg['door_no'] ?? '';
           address1Controller.text = reg['address_line1'] ?? '';
@@ -462,6 +468,10 @@ setState(() {
           districtController.text = reg['disrict'] ?? '';
           adharController.text = reg['adhar_no'] ?? '';
           panController.text = reg['pan_no'] ?? '';
+
+
+
+
           referralController.text = reg['referral'] ?? '';
           bankNameController.text = reg['bank_name'] ?? '';
           holderNameController.text = reg['holder_name'] ?? '';
@@ -951,7 +961,7 @@ DateTime? selectedDate;
                               ),
                       Text(
                         //'Continue to Register',
-                        localization.translate("Customer Imformation"),
+                        localization.translate("Customer Information"),
                           style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
                               ),
                       const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
@@ -1138,6 +1148,7 @@ DateTime? selectedDate;
           _buildTextField1(
             controller: adharController,
             label: localization.translate("Aadhar Number*"), // Localized label
+            
             selectedImage: _adharImage, // Selected image for the field
             onPickImage: () => _pickImage(1), // Image picker callback
             maxLength: 12, // Adhar number should be 12 digits
@@ -1149,6 +1160,7 @@ DateTime? selectedDate;
           _buildTextField2(
             controller: panController,
             label: localization.translate("PAN Card Number*"),
+            
             selectedImage: _panImage,
             onPickImage: () => _pickImage(2),
             maxLength: 10,
@@ -2241,6 +2253,7 @@ Widget _buildTextField1({
                 controller: controller,
                 keyboardType: TextInputType.number,
                 maxLength: maxLength,
+                 readOnly: adharController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   counterText: "",
@@ -2287,21 +2300,23 @@ Widget _buildTextField1({
                       ? Image.file(selectedImage)
                       : Image.network(adharImage!, fit: BoxFit.cover),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
+              Positioned(
+  top: 10,
+  right: 10,
+  child: adharController.text.isEmpty
+      ? InkWell(
+          onTap: () {
+            Navigator.pop(context); // Close the dialog
+            onPickImage();          // Open picker options
+          },
+          child: const CircleAvatar(
+            backgroundColor: Colors.black54,
+            radius: 20,
+            child: Icon(Icons.edit, color: Colors.white, size: 20),
+          ),
+        )
+      : const SizedBox(), // If readOnly true, show nothing
+),
               ],
             ),
           );
@@ -2412,23 +2427,30 @@ Widget _buildTextField3({
                   borderRadius: BorderRadius.circular(12),
                   child: selectedImage != null
                       ? Image.file(selectedImage)
-                      : Image.network(adharImage!, fit: BoxFit.cover),
+                      : Image.network(nomineeimage!, fit: BoxFit.cover),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
+
+                
+          
+
+                
+              Positioned(
+  top: 10,
+  right: 10,
+  child: nomineeadharController.text.isEmpty
+      ? InkWell(
+          onTap: () {
+            Navigator.pop(context); // Close the dialog
+            onPickImage();          // Open picker options
+          },
+          child: const CircleAvatar(
+            backgroundColor: Colors.black54,
+            radius: 20,
+            child: Icon(Icons.edit, color: Colors.white, size: 20),
+          ),
+        )
+      : const SizedBox(), // If readOnly true, show nothing
+),
               ],
             ),
           );
@@ -2497,6 +2519,7 @@ Widget _buildTextField2({
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.characters,
                 maxLength: maxLength,
+                 readOnly: panController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   hintText: hintText,
@@ -2532,30 +2555,52 @@ Widget _buildTextField2({
             insetPadding: const EdgeInsets.all(10),
             backgroundColor: Colors.transparent,
             child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: selectedImage != null
-                      ? Image.file(selectedImage)
-                      : Image.network(panImage!, fit: BoxFit.cover),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+  children: [
+    // 👉 Your image widget here
+    ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: selectedImage != null
+          ? Image.file(selectedImage)
+          : Image.network(panImage!, fit: BoxFit.cover),
+    ),
+
+    // ❌ Close icon - Always show on top-left
+    Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
+    // ✏️ Edit icon - Only show if panController is empty
+    Positioned(
+      top: 10,
+      right: 10,
+      child: panController.text.isEmpty
+          ? InkWell(
+              onTap: () {
+                Navigator.pop(context); // Close dialog
+                onPickImage();          // Open image picker
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.black54,
+                radius: 20,
+                child: Icon(Icons.edit, color: Colors.white, size: 20),
+              ),
+            )
+          : const SizedBox(), // Hide if pan is filled
+    ),
+  ],
+),
+
           );
         },
       );

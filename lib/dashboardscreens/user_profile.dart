@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/editprofile/editscheme.dart';
+import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/faq_screen.dart';
 import 'package:csc/dashboardscreens/active_scheme.dart';
@@ -345,7 +347,7 @@ Future<void> fetchAndSaveImage() async {
       ),
       
       
-      
+      /*
       _buildButton(
         label: localization.translate("Change Join Scheme"), // Pass localized string
         icon: Icons.lock,
@@ -357,7 +359,7 @@ Future<void> fetchAndSaveImage() async {
         },
       ),
       
-      
+      */
       
       _buildButton(
         label: localization.translate("Help & Support"), // Pass localized string
@@ -406,7 +408,13 @@ Future<void> fetchAndSaveImage() async {
                 IconButton(
                   icon: const Icon(Icons.home, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                 
+                   Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(activescheme: Activescheme()),
+                    )
+                   );
                   },
                 ),
                 IconButton(

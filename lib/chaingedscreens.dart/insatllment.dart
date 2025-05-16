@@ -505,7 +505,7 @@ if (installment["payment_status"] == "Process")
 
             ),
 
-            if (dueDays != null && dueDays! < 0)
+            if (dueDays != null && dueDays! >= 60)
      Container(
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(vertical: 0),
@@ -584,7 +584,7 @@ if (installment["payment_status"] == "Process")
     backgroundColor: const Color.fromARGB(255, 9, 1, 45),
     padding: const EdgeInsets.symmetric(vertical: 14),
   ),
- onPressed: (installments[selectedInstallment]["status"] == "")
+ onPressed: (installments[selectedInstallment]["status"] == "" || installments[selectedInstallment]["status"] == "0")
     ? () async {
         // Step 1: Get amounts
         String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
