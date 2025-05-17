@@ -222,6 +222,7 @@ void _onResendOtp() {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         centerTitle: true,
         title: Column(

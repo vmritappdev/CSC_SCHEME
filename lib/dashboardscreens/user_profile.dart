@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/editprofile/editscheme.dart';
+import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/faq_screen.dart';
 import 'package:csc/dashboardscreens/active_scheme.dart';
@@ -289,7 +291,7 @@ Future<void> fetchAndSaveImage() async {
                   bottom: 0,
                   right: 0,
                   child: GestureDetector(
-                    onTap: _pickImage1,
+                    onTap: _pickImage,
                     child: const CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
@@ -345,7 +347,7 @@ Future<void> fetchAndSaveImage() async {
       ),
       
       
-      
+      /*
       _buildButton(
         label: localization.translate("Change Join Scheme"), // Pass localized string
         icon: Icons.lock,
@@ -357,7 +359,7 @@ Future<void> fetchAndSaveImage() async {
         },
       ),
       
-      
+      */
       
       _buildButton(
         label: localization.translate("Help & Support"), // Pass localized string
@@ -406,7 +408,13 @@ Future<void> fetchAndSaveImage() async {
                 IconButton(
                   icon: const Icon(Icons.home, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                 
+                   Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(activescheme: Activescheme()),
+                    )
+                   );
                   },
                 ),
                 IconButton(
@@ -520,6 +528,22 @@ Future<void> fetchAndSaveImage() async {
                       : FileImage(File(savedImageUrl)) as ImageProvider,
                 ),
               ),
+
+               Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
               Positioned(
                 top: 10,
                 right: 10,

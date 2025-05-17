@@ -303,7 +303,9 @@ Future<void> loadSchemes() async {
 
 String getDueText(String dueDate, String schemeStatus) {
   // First check scheme status
-  if (schemeStatus.toLowerCase() == "closed") {
+  if (schemeStatus.toLowerCase() == "ready") {
+    return "Ready To Sale";
+  }else if (schemeStatus.toLowerCase() == "closed") {
     return "Scheme Closed";
   } else if (schemeStatus.toLowerCase() == "suspended") {
     return "Scheme Suspend";
@@ -354,7 +356,9 @@ String getOverdueStatus(String dueDate) {
     currentDate.day,
   )).inDays;
 
-  if (difference < 0) {
+print("diff $difference");
+
+  if (difference < -60) {
     return "1"; // Overdue
   } else {
     return "0"; // Not overdue
@@ -366,6 +370,9 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
   final dueDateTime = DateTime.parse(dueDate);
 
   // Color based on scheme status
+   if (schemeStatus.toLowerCase() == "ready") {
+    return Colors.blue; // Closed Scheme
+  } 
   if (schemeStatus.toLowerCase() == "closed") {
     return Colors.red; // Closed Scheme
   } else if (schemeStatus.toLowerCase() == "suspended") {
@@ -478,10 +485,12 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
         
         
           buttonText1: localization.translate("View details"),
-         buttonText2: getOverdueStatus(schemeDetail.dueDate) == "1"
-            ? localization.translate("Payment Disabled")
-            : 'Pay Rs. ${schemeDetail.amount}',
-        
+         buttonText2: schemeDetail.schemeStatus == "READY"
+    ? localization.translate("Completed")
+    : getOverdueStatus(schemeDetail.dueDate) == "1"
+        ? localization.translate("Payment Disabled")
+        : 'Pay Rs. ${schemeDetail.amount}',
+
         
         
           dueText: getDueText(schemeDetail.dueDate, schemeDetail.schemeStatus),
@@ -784,60 +793,52 @@ double screenHeight = MediaQuery.of(context).size.height;
                   ),
                   const SizedBox(width: 8.0),
                   
-             Expanded(
+           Expanded(
   child: ElevatedButton(
-onPressed: () {
-  final status = (scheme_status ?? "").toLowerCase().trim();
-  final overdue = (over_due_status ?? "").toLowerCase().trim();
+    onPressed: () {
+      final status = (scheme_status ?? "").toLowerCase().trim();
+      final overdue = (over_due_status ?? "").toLowerCase().trim();
 
-  if (overdue == "over due") {
-    showPaymentAccessDisabledBottomSheet(context);
-  } else if (status == "closed") {
-    showClosedSchemeBottomSheet(context);
-  } else if (status == "suspend" || status == "suspended") {
-    showSuspendedSchemeBottomSheet(context);
-  } else if (status == "active") {
-    if (pay_status == "1") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InstallmentScreen(schemeId: schemeID),
-        ),
-      );
-    } // else do nothing (user not allowed)
-  }
-}
-,
-        
-    style:ButtonStyle(
-  backgroundColor: WidgetStateProperty.resolveWith<Color>(
-    (Set<WidgetState> states) {
-      final isOverDue = (over_due_status ?? "").toLowerCase().trim() == "over due";
-      final isClosed = scheme_status.toLowerCase().trim() == "closed";
-      final isActive = scheme_status.toLowerCase().trim() == "active";
-
-      if (isOverDue || isClosed) {
-        return const Color.fromRGBO(2, 5, 62, 1); // Dark blue
+      if (overdue == "over due") {
+        showPaymentAccessDisabledBottomSheet(context);
+      } else if (status == "closed") {
+        showClosedSchemeBottomSheet(context);
+      } else if (status == "suspend" || status == "suspended") {
+        showSuspendedSchemeBottomSheet(context);
+      } else if (status == "active" && pay_status == "1") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => InstallmentScreen(schemeId: schemeID),
+          ),
+        );
       }
-
-      if (isActive) {
-        if (pay_status == '') {
-          return  const Color.fromRGBO(2, 5, 62, 1); // Grey
-        } else {
-          return  const Color.fromARGB(255, 233, 231, 231); // Blue
-        }
-      }
-
-      return const Color.fromRGBO(2, 5, 62, 1); // Default dark blue
+      // if pay_status != "1", do nothing (button inactive)
     },
-  ),
-  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
-    ),
-  ),
-),
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (Set<WidgetState> states) {
+          final status = (scheme_status ?? "").toLowerCase().trim();
+          final overdue = (over_due_status ?? "").toLowerCase().trim();
+          final payAllowed = pay_status == "1";
 
+          final shouldEnableButton = 
+              (status == "active" && payAllowed) || // Navigate
+              overdue == "over due" ||              // Show bottom sheet
+              status == "closed" ||
+              status == "suspend" || status == "suspended" || status == "ready";
+             
+          return shouldEnableButton
+              ? const Color.fromRGBO(2, 5, 62, 1) // Dark blue
+              : const Color.fromARGB(255, 233, 231, 231); // Grey
+        },
+      ),
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
+    ),
     child: Text(
       buttonText2,
       style: GoogleFonts.lato(
@@ -848,6 +849,7 @@ onPressed: () {
     ),
   ),
 ),
+
 
 
                 ],

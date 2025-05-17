@@ -450,7 +450,13 @@ setState(() {
           _firstNameController.text = reg['f_name'] ?? '';
           _lastNameController.text = reg['l_name'] ?? '';
           _phoneController.text = reg['mobile_no'] ?? '';
-          dobController.text = reg['date_of_birth'] ?? '';
+         if (reg['date_of_birth'] != null && reg['date_of_birth'].isNotEmpty) {
+  DateTime parsedDate = DateTime.parse(reg['date_of_birth']);
+  dobController.text = DateFormat('dd-MM-yyyy').format(parsedDate);
+} else {
+  dobController.text = '';
+}
+
           _emailController.text = reg['email_id'] ?? '';
           doorNoController.text = reg['door_no'] ?? '';
           address1Controller.text = reg['address_line1'] ?? '';
@@ -462,6 +468,10 @@ setState(() {
           districtController.text = reg['disrict'] ?? '';
           adharController.text = reg['adhar_no'] ?? '';
           panController.text = reg['pan_no'] ?? '';
+
+
+
+
           referralController.text = reg['referral'] ?? '';
           bankNameController.text = reg['bank_name'] ?? '';
           holderNameController.text = reg['holder_name'] ?? '';
@@ -815,45 +825,49 @@ Future<void> submitForm() async {
 
 DateTime? selectedDate;
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(), // Limit date selection to today
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Colors.orange,
-              onPrimary: Colors.white,
-              surface: Colors.black,
-              onSurface: Colors.white,
-            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.black),
+ void _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: selectedDate ?? DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+    builder: (context, child) {
+      return Theme(
+        data: ThemeData.dark().copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: Colors.orange,
+            onPrimary: Colors.white,
+            surface: Colors.black,
+            onSurface: Colors.white,
           ),
-          child: child!,
-        );
-      },
-    );
+          dialogTheme: const DialogThemeData(backgroundColor: Colors.black),
+        ),
+        child: child!,
+      );
+    },
+  );
 
+  if (picked != null) {
+    if (_is18OrOlder(picked)) {
+      setState(() {
+        selectedDate = picked;
+        dobController.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
+    } else {
+      setState(() {
+        dobController.text = ''; // ❌ Clear the text field
+      });
 
-
-    if (picked != null && picked != selectedDate) {
-      if (_is18OrOlder(picked)) {
-        setState(() {
-          selectedDate = picked;
-          dobController.text = DateFormat('dd-MM-yyyy').format(selectedDate!);
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('You must be 18 years or older to select this date.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You must be 18 years or older to select this date.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+}
+
 
   bool _is18OrOlder(DateTime date) {
     DateTime today = DateTime.now();
@@ -951,7 +965,7 @@ DateTime? selectedDate;
                               ),
                       Text(
                         //'Continue to Register',
-                        localization.translate("Customer Imformation"),
+                        localization.translate("Customer Information"),
                           style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
                               ),
                       const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
@@ -1000,6 +1014,7 @@ DateTime? selectedDate;
           
           
                       // Date of Birth
+
                    _buildTextField(
             controller: dobController,
             label: localization.translate("Date of Birth*"),
@@ -1019,6 +1034,56 @@ DateTime? selectedDate;
             ),
           ),
           
+ /*
+           _buildTextField(
+  controller: dobController,
+  label: localization.translate("Date of Birth*"),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return localization.translate("Please enter Date of Birth");
+    }
+
+    try {
+      final enteredDate = DateTime.parse(value); // Expecting yyyy-MM-dd format
+      final today = DateTime.now();
+      final age = today.year - enteredDate.year -
+          ((today.month < enteredDate.month ||
+                  (today.month == enteredDate.month &&
+                      today.day < enteredDate.day))
+              ? 1
+              : 0);
+
+      if (age < 18) {
+        return localization.translate("Only users 18 years or older are allowed");
+      }
+    } catch (e) {
+      return localization.translate("Invalid Date of Birth");
+    }
+
+    return null;
+  },
+  readOnly: true,
+  suffixIcon: IconButton(
+    icon: const Icon(
+      Icons.calendar_today,
+      color: Color.fromRGBO(2, 5, 62, 1),
+    ),
+    onPressed: () => _selectDate(context),
+  ),
+),
+*/
+
+
+
+
+
+
+
+             
+
+
+
+
               buildGenderDropdown(),
           
           
@@ -1138,6 +1203,7 @@ DateTime? selectedDate;
           _buildTextField1(
             controller: adharController,
             label: localization.translate("Aadhar Number*"), // Localized label
+            
             selectedImage: _adharImage, // Selected image for the field
             onPickImage: () => _pickImage(1), // Image picker callback
             maxLength: 12, // Adhar number should be 12 digits
@@ -1149,6 +1215,7 @@ DateTime? selectedDate;
           _buildTextField2(
             controller: panController,
             label: localization.translate("PAN Card Number*"),
+            
             selectedImage: _panImage,
             onPickImage: () => _pickImage(2),
             maxLength: 10,
@@ -2241,6 +2308,7 @@ Widget _buildTextField1({
                 controller: controller,
                 keyboardType: TextInputType.number,
                 maxLength: maxLength,
+                 readOnly: adharController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   counterText: "",
@@ -2287,21 +2355,42 @@ Widget _buildTextField1({
                       ? Image.file(selectedImage)
                       : Image.network(adharImage!, fit: BoxFit.cover),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
+
+                 Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
+
+
+
+              Positioned(
+  top: 10,
+  right: 10,
+  child: adharController.text.isEmpty
+      ? InkWell(
+          onTap: () {
+            Navigator.pop(context); // Close the dialog
+            onPickImage();          // Open picker options
+          },
+          child: const CircleAvatar(
+            backgroundColor: Colors.black54,
+            radius: 20,
+            child: Icon(Icons.edit, color: Colors.white, size: 20),
+          ),
+        )
+      : const SizedBox(), // If readOnly true, show nothing
+),
               ],
             ),
           );
@@ -2380,7 +2469,7 @@ Widget _buildTextField3({
                   if (value == null || value.isEmpty) {
                     return localization.translate("Please enter nominee adhar number");
                   } else if (value.length != 12) {
-                    return localization.translate("Adhar number must be 12 digits");
+                    return localization.translate(" Nominee Adhar number must be 12 digits");
                   }
                   // Aadhaar image validation
                  
@@ -2398,7 +2487,7 @@ Widget _buildTextField3({
             const SizedBox(width: 8),
             GestureDetector(
   onTap: () {
-    if (selectedImage != null || (adharImage != null && adharImage!.isNotEmpty)) {
+    if (selectedImage != null || (nomineeimage != null && nomineeimage!.isNotEmpty)) {
       // Show image in full screen dialog with edit icon
       showDialog(
         context: context,
@@ -2412,23 +2501,44 @@ Widget _buildTextField3({
                   borderRadius: BorderRadius.circular(12),
                   child: selectedImage != null
                       ? Image.file(selectedImage)
-                      : Image.network(adharImage!, fit: BoxFit.cover),
+                      : Image.network(nomineeimage!, fit: BoxFit.cover),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
+
+                 Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
+          
+
+                
+  Positioned(
+  top: 10,
+  right: 10,
+  child:
+       InkWell(
+          onTap: () {
+            Navigator.pop(context); // Close the dialog
+            onPickImage();          // Open picker options
+          },
+          child: const CircleAvatar(
+            backgroundColor: Colors.black54,
+            radius: 20,
+            child: Icon(Icons.edit, color: Colors.white, size: 20),
+          ),
+        )
+      
+),
               ],
             ),
           );
@@ -2451,8 +2561,8 @@ Widget _buildTextField3({
           borderRadius: BorderRadius.circular(8),
           child: selectedImage != null
               ? Image.file(selectedImage, fit: BoxFit.cover)
-              : (adharImage != null && adharImage!.isNotEmpty)
-                  ? Image.network(adharImage!, fit: BoxFit.cover)
+              : (nomineeimage != null && nomineeimage!.isNotEmpty)
+                  ? Image.network(nomineeimage!, fit: BoxFit.cover)
                   : const Icon(Icons.image, color: Colors.grey),
         ),
       ),
@@ -2497,6 +2607,7 @@ Widget _buildTextField2({
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.characters,
                 maxLength: maxLength,
+                 readOnly: panController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   hintText: hintText,
@@ -2532,30 +2643,52 @@ Widget _buildTextField2({
             insetPadding: const EdgeInsets.all(10),
             backgroundColor: Colors.transparent,
             child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: selectedImage != null
-                      ? Image.file(selectedImage)
-                      : Image.network(panImage!, fit: BoxFit.cover),
-                ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context); // close the dialog
-                      onPickImage(); // open picker options
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.black54,
-                      radius: 20,
-                      child: Icon(Icons.edit, color: Colors.white, size: 20),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+  children: [
+    // 👉 Your image widget here
+    ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: selectedImage != null
+          ? Image.file(selectedImage)
+          : Image.network(panImage!, fit: BoxFit.cover),
+    ),
+
+    // ❌ Close icon - Always show on top-left
+    Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
+    // ✏️ Edit icon - Only show if panController is empty
+    Positioned(
+      top: 10,
+      right: 10,
+      child: panController.text.isEmpty
+          ? InkWell(
+              onTap: () {
+                Navigator.pop(context); // Close dialog
+                onPickImage();          // Open image picker
+              },
+              child: const CircleAvatar(
+                backgroundColor: Colors.black54,
+                radius: 20,
+                child: Icon(Icons.edit, color: Colors.white, size: 20),
+              ),
+            )
+          : const SizedBox(), // Hide if pan is filled
+    ),
+  ],
+),
+
           );
         },
       );

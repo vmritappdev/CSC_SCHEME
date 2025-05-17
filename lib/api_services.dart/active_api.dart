@@ -42,6 +42,7 @@ class ActiveSchemeService {
 
         final data = json.decode(response.body);
 
+ print("✅ Full Active Scheme Response: $data");
 
 
         if (data['response'] == 'success') {
