@@ -346,116 +346,125 @@ void _showErrorPopup() {
     double buttonHeight = screenHeight * 0.06;
       final localization = Provider.of<LocalizationProvider>(context);
 
-    return Scaffold(
-     
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(paddingAll),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: screenHeight * 0.08),
-
-
-
-               Align(
-                    alignment: Alignment.bottomLeft,
-                    child: BackButton(
-                      color:  const Color.fromARGB(255, 12, 2, 42),
-                      onPressed: () {
-                        Navigator.push(
-                          context, 
-                          MaterialPageRoute(
-                            builder: (context) => const TermsAndConditionsScreen(),
-                          )
-                        );
-                      },
+    return WillPopScope(
+       onWillPop: () async {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TermsAndConditionsScreen()),
+      );
+      return false; // Prevent default back action
+    },
+      child: Scaffold(
+       
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(paddingAll),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: screenHeight * 0.08),
+      
+      
+      
+                 Align(
+                      alignment: Alignment.bottomLeft,
+                      child: BackButton(
+                        color:  const Color.fromARGB(255, 12, 2, 42),
+                        onPressed: () {
+                          Navigator.push(
+                            context, 
+                            MaterialPageRoute(
+                              builder: (context) =>  TermsAndConditionsScreen(),
+                            )
+                          );
+                        },
+                      ),
                     ),
-                  ),
-
-                  
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                 
-                  Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
-                  SizedBox(width: screenWidth * 0.02),
-                  Text(
-                   localization.translate("CSC"),
-                    style: GoogleFonts.roboto(
-                      fontSize: fontSizeLarge,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 3, 21, 47),
+      
+                    
+      
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+      
+                   
+                    Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
+                    SizedBox(width: screenWidth * 0.02),
+                    Text(
+                     localization.translate("CSC"),
+                      style: GoogleFonts.roboto(
+                        fontSize: fontSizeLarge,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 3, 21, 47),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.015),
-              Text(
-                localization.translate("Welcome back to your CSC account!"),
-                style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-
-              _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
-              SizedBox(height: screenHeight * 0.025),
-              _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4),
-
-              GestureDetector(
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.015),
+                Text(
+                  localization.translate("Welcome back to your CSC account!"),
+                  style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
+                ),
+                SizedBox(height: screenHeight * 0.04),
+      
+                _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
+                SizedBox(height: screenHeight * 0.025),
+                _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4),
+      
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotScreen1(),
+                      )
+                    );
+                  },
+                  child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
+                              ),
+                ),
+      
+                SizedBox(height: screenHeight * 0.015),
+                if (errorMessage.isNotEmpty)
+                  Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
+      
+                SizedBox(height: screenHeight * 0.04),
+                _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+                SizedBox(height: screenHeight * 0.015),
+                _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+                   Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginOtpScreen(),
+          ),
+        );
+              
+                    }),
+      
+                SizedBox(height: screenHeight * 0.03),
+                Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                   SizedBox(height: screenHeight * 0.02),
+                GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:const Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
+                ),
                 onTap: () {
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => const ForgotScreen1(),
-                    )
-                  );
+                   Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>const CurvedImageScreen2(),
+          ),
+        );
                 },
-                child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
-                            ),
-              ),
-
-              SizedBox(height: screenHeight * 0.015),
-              if (errorMessage.isNotEmpty)
-                Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
-
-              SizedBox(height: screenHeight * 0.04),
-              _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
-              SizedBox(height: screenHeight * 0.015),
-              _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
-                 Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginOtp(),
-        ),
-      );
-            
-                  }),
-
-              SizedBox(height: screenHeight * 0.03),
-              Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-                 SizedBox(height: screenHeight * 0.02),
-              GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:const Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
-              ),
-              onTap: () {
-                 Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>const CurvedImageScreen2(),
-        ),
-      );
-              },
-              ),
-
-              SizedBox(height: screenHeight * 0.03),
-              const Divider(),
-              SizedBox(height: screenHeight * 0.015),
-             // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-            ],
+                ),
+      
+                SizedBox(height: screenHeight * 0.03),
+                const Divider(),
+                SizedBox(height: screenHeight * 0.015),
+               // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+              ],
+            ),
           ),
         ),
       ),

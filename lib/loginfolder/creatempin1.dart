@@ -232,10 +232,10 @@ void initState() {
                                 child: Text(
                                   
                                   errorMessage,
-                                  style: const TextStyle(color: Colors.red),
+                                  style: const TextStyle(color: Colors.red,fontSize: 13),
                                 ),
                               ),
-                            SizedBox(height: screenHeight * 0.09),
+                           // SizedBox(height: screenHeight * 0.09),
                             buildSubmitButton(localization),
                           ],
                         ),
@@ -279,25 +279,34 @@ void initState() {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () async {
-          if (mpin.isEmpty || confirmMpin.isEmpty) {
-            setState(() {
-              errorMessage = localization.translate('Please enter both MPIN and Confirm MPIN.');
-            });
-            return;
-          }
-          if (mpin != confirmMpin) {
-            setState(() {
-              errorMessage = localization.translate('MPINs do not match!');
-            });
-            return;
-          }
+  if (mpin.isEmpty || confirmMpin.isEmpty) {
+    setState(() {
+      errorMessage = localization.translate('Please enter both MPIN and Confirm MPIN.');
+    });
+    return;
+  }
 
-          bool success = await _submitMpinToServer(mpin, confirmMpin);
-          if (success) {
-            await _fetchAndSaveUserDetails();
-            _showCustomBottomSheet(context);
-          }
-        },
+  if (mpin.length != 4 || confirmMpin.length != 4) {
+    setState(() {
+      errorMessage = localization.translate('MPIN must be exactly 4 digits.');
+    });
+    return;
+  }
+
+  if (mpin != confirmMpin) {
+    setState(() {
+      errorMessage = localization.translate('MPINs do not match!');
+    });
+    return;
+  }
+
+  bool success = await _submitMpinToServer(mpin, confirmMpin);
+  if (success) {
+    await _fetchAndSaveUserDetails();
+    _showCustomBottomSheet(context);
+  }
+},
+
         child: Text(
           localization.translate('SUBMIT'),
           style: const TextStyle(
@@ -320,6 +329,8 @@ void initState() {
 }
 
 */
+
+                                           //  "$baseUrl/update_mpin.php";
 
   Future<bool> _submitMpinToServer(String mpin, String confirmMpin) async {
     const String phpUrl = "$baseUrl/update_mpin.php";

@@ -219,7 +219,7 @@ Future<bool> checkInternet() async {
           await saveUpdatedDetails();
 
           // Optionally, navigate to another screen after success
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 1), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)), // Replace with your actual next screen

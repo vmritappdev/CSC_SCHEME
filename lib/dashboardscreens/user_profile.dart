@@ -291,7 +291,7 @@ Future<void> fetchAndSaveImage() async {
                   bottom: 0,
                   right: 0,
                   child: GestureDetector(
-                    onTap: _pickImage1,
+                    onTap: _pickImage,
                     child: const CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
@@ -528,6 +528,22 @@ Future<void> fetchAndSaveImage() async {
                       : FileImage(File(savedImageUrl)) as ImageProvider,
                 ),
               ),
+
+               Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
               Positioned(
                 top: 10,
                 right: 10,

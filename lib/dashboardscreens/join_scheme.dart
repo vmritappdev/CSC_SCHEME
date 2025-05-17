@@ -825,45 +825,49 @@ Future<void> submitForm() async {
 
 DateTime? selectedDate;
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(), // Limit date selection to today
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Colors.orange,
-              onPrimary: Colors.white,
-              surface: Colors.black,
-              onSurface: Colors.white,
-            ), dialogTheme: const DialogThemeData(backgroundColor: Colors.black),
+ void _selectDate(BuildContext context) async {
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: selectedDate ?? DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+    builder: (context, child) {
+      return Theme(
+        data: ThemeData.dark().copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: Colors.orange,
+            onPrimary: Colors.white,
+            surface: Colors.black,
+            onSurface: Colors.white,
           ),
-          child: child!,
-        );
-      },
-    );
+          dialogTheme: const DialogThemeData(backgroundColor: Colors.black),
+        ),
+        child: child!,
+      );
+    },
+  );
 
+  if (picked != null) {
+    if (_is18OrOlder(picked)) {
+      setState(() {
+        selectedDate = picked;
+        dobController.text = DateFormat('dd-MM-yyyy').format(picked);
+      });
+    } else {
+      setState(() {
+        dobController.text = ''; // ❌ Clear the text field
+      });
 
-
-    if (picked != null && picked != selectedDate) {
-      if (_is18OrOlder(picked)) {
-        setState(() {
-          selectedDate = picked;
-          dobController.text = DateFormat('dd-MM-yyyy').format(selectedDate!);
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('You must be 18 years or older to select this date.'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You must be 18 years or older to select this date.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+}
+
 
   bool _is18OrOlder(DateTime date) {
     DateTime today = DateTime.now();
@@ -1010,6 +1014,7 @@ DateTime? selectedDate;
           
           
                       // Date of Birth
+
                    _buildTextField(
             controller: dobController,
             label: localization.translate("Date of Birth*"),
@@ -1029,6 +1034,56 @@ DateTime? selectedDate;
             ),
           ),
           
+ /*
+           _buildTextField(
+  controller: dobController,
+  label: localization.translate("Date of Birth*"),
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return localization.translate("Please enter Date of Birth");
+    }
+
+    try {
+      final enteredDate = DateTime.parse(value); // Expecting yyyy-MM-dd format
+      final today = DateTime.now();
+      final age = today.year - enteredDate.year -
+          ((today.month < enteredDate.month ||
+                  (today.month == enteredDate.month &&
+                      today.day < enteredDate.day))
+              ? 1
+              : 0);
+
+      if (age < 18) {
+        return localization.translate("Only users 18 years or older are allowed");
+      }
+    } catch (e) {
+      return localization.translate("Invalid Date of Birth");
+    }
+
+    return null;
+  },
+  readOnly: true,
+  suffixIcon: IconButton(
+    icon: const Icon(
+      Icons.calendar_today,
+      color: Color.fromRGBO(2, 5, 62, 1),
+    ),
+    onPressed: () => _selectDate(context),
+  ),
+),
+*/
+
+
+
+
+
+
+
+             
+
+
+
+
               buildGenderDropdown(),
           
           
@@ -2300,6 +2355,25 @@ Widget _buildTextField1({
                       ? Image.file(selectedImage)
                       : Image.network(adharImage!, fit: BoxFit.cover),
                 ),
+
+                 Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
+
+
+
               Positioned(
   top: 10,
   right: 10,
@@ -2395,7 +2469,7 @@ Widget _buildTextField3({
                   if (value == null || value.isEmpty) {
                     return localization.translate("Please enter nominee adhar number");
                   } else if (value.length != 12) {
-                    return localization.translate("Adhar number must be 12 digits");
+                    return localization.translate(" Nominee Adhar number must be 12 digits");
                   }
                   // Aadhaar image validation
                  
@@ -2413,7 +2487,7 @@ Widget _buildTextField3({
             const SizedBox(width: 8),
             GestureDetector(
   onTap: () {
-    if (selectedImage != null || (adharImage != null && adharImage!.isNotEmpty)) {
+    if (selectedImage != null || (nomineeimage != null && nomineeimage!.isNotEmpty)) {
       // Show image in full screen dialog with edit icon
       showDialog(
         context: context,
@@ -2430,15 +2504,29 @@ Widget _buildTextField3({
                       : Image.network(nomineeimage!, fit: BoxFit.cover),
                 ),
 
-                
+                 Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
           
 
                 
-              Positioned(
+  Positioned(
   top: 10,
   right: 10,
-  child: nomineeadharController.text.isEmpty
-      ? InkWell(
+  child:
+       InkWell(
           onTap: () {
             Navigator.pop(context); // Close the dialog
             onPickImage();          // Open picker options
@@ -2449,7 +2537,7 @@ Widget _buildTextField3({
             child: Icon(Icons.edit, color: Colors.white, size: 20),
           ),
         )
-      : const SizedBox(), // If readOnly true, show nothing
+      
 ),
               ],
             ),
@@ -2473,8 +2561,8 @@ Widget _buildTextField3({
           borderRadius: BorderRadius.circular(8),
           child: selectedImage != null
               ? Image.file(selectedImage, fit: BoxFit.cover)
-              : (adharImage != null && adharImage!.isNotEmpty)
-                  ? Image.network(adharImage!, fit: BoxFit.cover)
+              : (nomineeimage != null && nomineeimage!.isNotEmpty)
+                  ? Image.network(nomineeimage!, fit: BoxFit.cover)
                   : const Icon(Icons.image, color: Colors.grey),
         ),
       ),

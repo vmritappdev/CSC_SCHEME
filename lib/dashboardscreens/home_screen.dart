@@ -949,6 +949,9 @@ Future<void> closePopupAPI() async {
             ),
         ),
         
+
+
+        
         
             Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1133,10 +1136,85 @@ Future<void> closePopupAPI() async {
         },
           ),
         ),
+
+
+
+        /*
         
-        
-        
-              const SizedBox(height: 10),
+          Center(
+  child: verificationResponse == null || verificationResponse?.process == "complete"
+      ? const SizedBox.shrink()
+      : Container(
+          width: MediaQuery.of(context).size.width * 0.95,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          decoration: BoxDecoration(
+            color: Colors.yellow.shade100,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.orange),
+          ),
+          child: Row(
+            children: [
+              // Message
+              Expanded(
+                child: Text(
+                  verificationResponse?.process == "pending"
+                      ? "Transaction Pending"
+                      : "Your join scheme registration is still pending. Kindly complete your registration process.",
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.030,
+                    fontWeight: FontWeight.bold,
+                    color: verificationResponse?.process == "pending"
+                        ? Colors.orange
+                        : Colors.red,
+                  ),
+                ),
+              ),
+
+             // const SizedBox(width: 12),
+
+              // Continue Button
+              if (verificationResponse?.process == "pending" ||
+                  verificationResponse?.process == "incomplete")
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.04,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Scanner(
+                            activescheme: Activescheme(),
+                            rejectId: '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      localization.translate('continue'),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize:
+                            MediaQuery.of(context).size.width * 0.03,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+),
+
+       */ 
+             // const SizedBox(height: 10),
         
         
             ],
@@ -1435,95 +1513,97 @@ void showGoldBottomSheet(BuildContext context) async {
               isBottomSheetOpen = false;
               return true;
             },
-            child: FractionallySizedBox(
-              child: Container(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Gold Info Card
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(43, 49, 101, 1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/gif.gif',
-                                height: 60,
-                                width: 60,
-                              ),
-                              const SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  buildInfoRow(Icons.water_drop, localization.translate("24K Pure Gold")),
-                                  buildInfoRow(Icons.security, localization.translate("100% Safe Investment")),
-                                  buildInfoRow(Icons.sell, localization.translate("100% Wastage Free")),
-                                ],
-                              ),
-                            ],
+            child: SafeArea(
+              child: FractionallySizedBox(
+                child: Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Gold Info Card
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color.fromRGBO(43, 49, 101, 1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/gif.gif',
+                                  height: 60,
+                                  width: 60,
+                                ),
+                                const SizedBox(width: 20),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    buildInfoRow(Icons.water_drop, localization.translate("24K Pure Gold")),
+                                    buildInfoRow(Icons.security, localization.translate("100% Safe Investment")),
+                                    buildInfoRow(Icons.sell, localization.translate("100% Wastage Free")),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      // Scheme Details
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Column(
-                          children: schemeDetails.asMap().entries.map<Widget>((entry) {
-                            int index = entry.key;
-                            var scheme = entry.value;
-                            return Column(
-                              children: [
-                                AssetTile(
-                                  gifPath: 'assets/images/gif.gif',
-                                  title: "${localization.translate("Scheme")} ${index + 1}",
-                                  amount: "₹${scheme['paid_amount']}",
-                                  percentage: scheme['ms_no'],
-                                  balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
-                                  color: Colors.green,
-                                  value: 0.05,
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 0),
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => InstallmentScreen(schemeId: scheme['scheme_id']),
+                        // Scheme Details
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Column(
+                            children: schemeDetails.asMap().entries.map<Widget>((entry) {
+                              int index = entry.key;
+                              var scheme = entry.value;
+                              return Column(
+                                children: [
+                                  AssetTile(
+                                    gifPath: 'assets/images/gif.gif',
+                                    title: "${localization.translate("Scheme")} ${index + 1}",
+                                    amount: "₹${scheme['paid_amount']}",
+                                    percentage: scheme['ms_no'],
+                                    balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
+                                    color: Colors.green,
+                                    value: 0.05,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 0),
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
                                           ),
-                                        );
-                                      },
-                                      child: Text(
-                                        "${localization.translate("Pay")} ₹${scheme['amount']}",
-                                        style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => InstallmentScreen(schemeId: scheme['scheme_id']),
+                                            ),
+                                          );
+                                        },
+                                        child: Text(
+                                          "${localization.translate("Pay")} ₹${scheme['amount']}",
+                                          style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const Divider(),
-                              ],
-                            );
-                          }).toList(),
+                                  const Divider(),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
