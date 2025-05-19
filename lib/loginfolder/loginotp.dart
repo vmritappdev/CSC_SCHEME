@@ -353,7 +353,7 @@ void showError( String message) {
 
 
   Future<void> _fetchUserDetails() async {
-  const String apiUrl = "$baseUrl/get_reg_account_details.php";  // "https://vmrdemos.com/csc_scheme/get_reg_account_details.php"
+  String apiUrl = "$baseUrl/get_reg_account_details.php";  // "https://vmrdemos.com/csc_scheme/get_reg_account_details.php"
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();

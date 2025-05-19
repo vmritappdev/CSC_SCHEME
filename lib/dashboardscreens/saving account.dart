@@ -162,7 +162,7 @@ Future<bool> checkInternet() async {
     }
 
     
-  const String apiUrl = "$baseUrl/process_verification.php";
+  String apiUrl = "$baseUrl/process_verification.php";
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');

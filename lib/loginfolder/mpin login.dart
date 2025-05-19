@@ -295,7 +295,7 @@ Future<bool> checkInternet() async {
     const ErrorScreen();
       return false;
     }
-    const String phpUrl = "$baseUrl/mpin_verify.php";
+    String phpUrl = "$baseUrl/mpin_verify.php";
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');

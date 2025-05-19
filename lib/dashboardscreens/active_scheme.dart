@@ -151,7 +151,7 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/active_pop.php";   
+  String apiUrl = "$baseUrl/active_pop.php";   
 
   try {
     final response = await http.post(

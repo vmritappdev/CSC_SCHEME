@@ -433,16 +433,6 @@ void showCompletePopup(VerificationResponse response) {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
 Future<void> closePopupAPI() async {
   final url = Uri.parse("$baseUrl/close_pop.php"); //"https://vmrdemos.com/csc_scheme/close_pop.php"
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -493,7 +483,7 @@ Future<void> closePopupAPI() async {
   
 
   Future<void> fetchRates() async { 
-    const url = "$baseUrl/get_rate.php";    //"https://vmrdemos.com/csc_scheme/get_rate.php"
+    var url = "$baseUrl/get_rate.php";    //"https://vmrdemos.com/csc_scheme/get_rate.php"
 
      
 
@@ -1559,7 +1549,7 @@ void showGoldBottomSheet(BuildContext context) async {
     return;
   }
 
-  const url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
+  var url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
   final response = await http.post(
     Uri.parse(url),
     body: {'mobile_no': mobileNumber},

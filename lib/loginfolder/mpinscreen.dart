@@ -258,7 +258,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
 
  Future<bool> _submitMpinToServer() async {
    final localization = Provider.of<LocalizationProvider>(context,listen: false);
-  const String apiUrl = "$baseUrl/save_mpin.php";  // Your API URL
+  String apiUrl = "$baseUrl/save_mpin.php";  // Your API URL
 
   String mpin = _mpinController.text.trim();
   String confirmMpin = _confirmMpinController.text.trim();

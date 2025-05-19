@@ -5,7 +5,7 @@ import 'package:csc/utillity/constant.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Map<String, dynamic>>?> fetchInstallmentDetails(String mobileNumber, String schemeId) async {
-  const url = '$baseUrl/pay_due_details.php';  //'https://vmrdemos.com/csc_scheme/pay_due_details.php'
+  var url = '$baseUrl/pay_due_details.php';  //'https://vmrdemos.com/csc_scheme/pay_due_details.php'
 
   try {
     final response = await http.post(
@@ -35,7 +35,7 @@ Future<List<Map<String, dynamic>>?> fetchInstallmentDetails(String mobileNumber,
 
 // Fetch Balance and Due Days for a given installment
 Future<Map<String, dynamic>?> fetchBalanceAndDays(String schemeId, String month, String year) async {
-  const url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
+  var url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
 
   try {
     final response = await http.post(

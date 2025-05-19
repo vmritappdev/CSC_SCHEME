@@ -339,7 +339,7 @@ String schemeAmount = '';
 
 
   Future<void> fetchAmounts() async {
-  const String url = "$baseUrl/get_amount.php";
+  String url = "$baseUrl/get_amount.php";
   
   try {
     final response = await http.get(Uri.parse(url));

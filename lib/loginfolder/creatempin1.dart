@@ -86,7 +86,7 @@ void initState() {
 
 
   Future<void> _fetchAndSaveUserDetails() async {
-    const String apiUrl = "$baseUrl/get_reg_account_details.php";
+    String apiUrl = "$baseUrl/get_reg_account_details.php";
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');
@@ -333,7 +333,7 @@ void initState() {
                                            //  "$baseUrl/update_mpin.php";
 
   Future<bool> _submitMpinToServer(String mpin, String confirmMpin) async {
-    const String phpUrl = "$baseUrl/update_mpin.php";
+    String phpUrl = "$baseUrl/update_mpin.php";
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? mobileNumber = prefs.getString('phoneNumber');

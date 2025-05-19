@@ -216,7 +216,7 @@ Future<bool> checkInternet() async {
     }
 
 
-    const url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
+    var url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
 
     try {
       final response = await http.post(Uri.parse(url), body: {

@@ -166,7 +166,7 @@ Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/profile.php";
+  String apiUrl = "$baseUrl/profile.php";
 
   try {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -215,7 +215,7 @@ Future<void> fetchAndSaveImage() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
+  String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
 
   try {
     final response = await http.post(

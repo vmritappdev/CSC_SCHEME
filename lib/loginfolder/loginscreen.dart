@@ -107,7 +107,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   
 
 Future<void> _fetchUserDetails() async {
-  const String apiUrl = "$baseUrl/get_reg_account_details.php";  
+  String apiUrl = "$baseUrl/get_reg_account_details.php";  
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -175,7 +175,7 @@ Future<void> _fetchUserDetails() async {
     }
 
 
-    const String phpUrl = "$baseUrl/mpin_verify.php";
+    String phpUrl = "$baseUrl/mpin_verify.php";
     try {
       final response = await http.post(
         Uri.parse(phpUrl),
