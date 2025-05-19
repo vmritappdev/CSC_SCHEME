@@ -270,7 +270,7 @@ Color getStatusColor(String? status) {
               children: [
                 Text(
         isPaid
-        ? "${localization.translate("Paid on")} ${installment["month_year"]}"
+        ? "${localization.translate("Paid on")} ${installment["month_year1"]}"
         : installment["payment_status"] == "Process"
             ? "${localization.translate("Process")} ${installment["month_year"]}"
             : "${localization.translate("Pay before")} ${installment["month_year"]}",
@@ -392,6 +392,7 @@ Color getStatusColor(String? status) {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
       color: () {
+         print('📆 dueDays: $dueDays'); // Debug print here
         if (dueDays == null) return Colors.grey;
         if (dueDays! >= 0) {
           // Normal due - green color
@@ -585,7 +586,11 @@ Color getStatusColor(String? status) {
       backgroundColor: const Color.fromARGB(255, 9, 1, 45),
       padding: const EdgeInsets.symmetric(vertical: 14),
         ),
-       onPressed: (installments[selectedInstallment]["status"] == "" )
+
+        
+onPressed: (installments[selectedInstallment]["status"] == "1" && dueDays != null && dueDays! >= -60)
+
+       
       ? () async {
           // Step 1: Get amounts
           String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');

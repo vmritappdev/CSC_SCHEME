@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/registationfolder/langvages%20page.dart';
 
-import 'package:csc/registationfolder/langvages.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _navigateToNextScreen();
   }
+
+
+  
 
   /// Navigate to the appropriate screen based on isFirstTime flag
   void _navigateToNextScreen() async {
@@ -46,6 +49,11 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

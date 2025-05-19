@@ -9,12 +9,16 @@ Future<List<Map<String, dynamic>>?> fetchInstallmentDetails(String mobileNumber,
 
   try {
     final response = await http.post(
-      Uri.parse(url),
-      body: {
+    Uri.parse(url),
+    body: {
         'mobile_no': mobileNumber,
         'scheme_id': schemeId,
       },
     );
+
+
+     print('📬 Response Status Code: ${response.statusCode}');
+    print('📬 Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -45,6 +49,7 @@ Future<Map<String, dynamic>?> fetchBalanceAndDays(String schemeId, String month,
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print("Installment details fetched: $data");
       return {
         'balance_amount': double.tryParse(data['balance_amount'].toString()),
         'due_days': int.tryParse(data['days'].toString()),

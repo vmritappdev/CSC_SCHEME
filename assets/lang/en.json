@@ -18,9 +18,15 @@
   "Verify Number": "Verify Number",
   "registered_success": "Registered Successfully",
   "create_account": "Create Account",
-  "Email(Optinol)":"Email(Optinol)",
+  "Email(Optional)":"Email(Optinol)",
   "switch_language_prompt": "Do you want to switch to\nlanguageName?",
   "confirm_language_change":"Confirm Language Change",
+  "Resend OTP in":"Resend OTP in",
+  "Please enter a valid 10-digit mobile number":"Please enter a valid 10-digit mobile number",
+  "Invalid OTP":"Invalid OTP",
+  "OTP expired. Please resend.":"OTP expired. Please resend.",
+  "No records on this number":"No records on this number",
+  "Failed to send OTP":"Failed to send OTP",
   
   "Please enter a mobile number":"Please enter a mobile number",
   "enter_last_name": "Please enter your last name.",
@@ -84,7 +90,7 @@
 "PAN Card Number is required":"PAN Card Number is required",
 "Please upload an image":"Please upload an image",
   "SCHEME REGISTRATION": "SCHEME REGISTRATION",
-  "Customer Imformation": "Customer Imformation",
+  "Customer Information": "Customer Imformation",
   "Full Name (As per PAN CARD)": "Full Name (As per PAN CARD)",
   "Nominee Relationship*":"Nominee Relationship*",
   "Nominee Full Name":"Nominee Full Name*",
@@ -142,6 +148,21 @@
   "congratulations": "Congratulations!",
   "Nominee Adhar Number*": "Nominee Adhar Number*",
   "Please enter nominee adhar number":"Please enter nominee adhar number",
+
+  "Enter Nominee Relation":"Enter Nominee Relation",
+  "Please enter nominee relation":"Please enter nominee relation",
+  "Please select nominee Aadhar card image":"Please select nominee Aadhar card image",
+  "Please accept the Terms and Conditions to proceed.":"Please accept the Terms and Conditions to proceed.",
+  "Active Scheme":"Active Scheme",
+  "Verify":"Verify",
+  "⏰ OTP expired. Please resend a new OTP.":"⏰ OTP expired. Please resend a new OTP.",
+  "❌ Invalid OTP. Please try again.":"❌ Invalid OTP. Please try again.",
+  "Failed to create MPIN. Please try again.":"Failed to create MPIN. Please try again.",
+  "MPIN must be at least 4 digits":"MPIN must be at least 4 digits",
+  "MPIN and Confirm MPIN do not match":"MPIN and Confirm MPIN do not match",
+  "Mobile number not found. Please try again.":"Mobile number not found. Please try again.",
+  
+  
 
 
     "Please enter Date of Birth": "Please enter Date of Birth",

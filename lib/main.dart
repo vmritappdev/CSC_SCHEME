@@ -1,10 +1,10 @@
 
-import 'package:csc/chaingedscreens.dart/ussstock.dart';
-import 'package:csc/dainamicsizes.dart/refresh.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/localization/provider.dart';
+
 import 'package:csc/splash_screen.dart';
-import 'package:csc/upidetails/image.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

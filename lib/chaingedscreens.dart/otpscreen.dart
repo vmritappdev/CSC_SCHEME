@@ -9,6 +9,7 @@ import 'package:csc/utillity/check%20internet.dart';
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/registationfolder/create%20account.dart';
+import 'package:flutter/services.dart';
 
 
 import 'package:google_fonts/google_fonts.dart';
@@ -134,7 +135,7 @@ int timerSeconds = 30;
 void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
-   final localization = Provider.of<LocalizationProvider>(context);
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   showDialog(
     context: context,
@@ -207,10 +208,7 @@ void _showInvalidOTPDialog(String message) {
 
 
   Future<void> fetchOtpFromApi() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasInternet = await checkInternet();
-
-    if (!hasInternet) {
+     if (!await checkInternet()) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ErrorScreen()),
@@ -219,27 +217,24 @@ void _showInvalidOTPDialog(String message) {
     }
 
     setState(() {
-      isLoading = true;
+      _isLoading = true;
       isOtpMessageReceived = false;
     });
 
     final responseData = await fetchOtpFromApiHelper();
-
     if (responseData != null && responseData['otp'] != null) {
       setState(() {
         receivedOtp = responseData['otp'].toString();
-        isLoading = false;
-        isOtpSent = true;
+        otpReceivedTime = DateTime.now();
+        _isLoading = false;
         _isOtpVisible = true;
+        isOtpMessageReceived = true;
         _isResendAvailable = false;
         timerSeconds = 30;
-        isOtpMessageReceived = true;
       });
       _startResendTimer();
     } else {
-      setState(() {
-        isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -250,36 +245,106 @@ void _showInvalidOTPDialog(String message) {
 
   
 
-  void showProceedBottomSheet() {
-     final localization = Provider.of<LocalizationProvider>(context,listen: false);
+ void showProceedBottomSheet(BuildContext context) {
+  final localization = context.read<LocalizationProvider>();
+
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true, // 👈 Full Screen Support
-    isDismissible: false,
-    builder: (BuildContext context) {
-      return Container(
-        
-        width: double.infinity, // 👈 Full Width
-        padding: const EdgeInsets.all(20),
-        
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-             Text(
-             localization.translate("✅ OTP Verified!"),
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    isScrollControlled: true,
+    isDismissible: false,                 // ⬅︎ prevent tap‑away dismissal
+    backgroundColor: Colors.transparent,  // ⬅︎ let rounded corners stand out
+    builder: (context) {
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(0, -4),
+                  blurRadius: 16,
+                  color: Color(0x14000000), // subtle lift
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-             Text(localization.translate("Click 'I Have Proceed' to continue.")),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // Close Bottom Sheet
-                navigateToNextScreen();
-              },
-              child: Text(localization.translate("I Have Proceed"),style: GoogleFonts.lato(color: Colors.white),),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ✅ Success badge
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [Color.fromARGB(255, 16, 13, 72), Color.fromARGB(255, 16, 13, 72)],
+                    ),
+                  ),
+                  child: const Icon(Icons.check, size: 32, color: Colors.white),
+                ),
+                const SizedBox(height: 24),
+
+                // Headline
+                Text(
+                  localization.translate('OTP Verified!'),
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Subtitle
+                Text(
+                  localization.translate("Click 'I Have Proceed' to continue."),
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.lato(fontSize: 14, color: Colors.black87),
+                ),
+                const SizedBox(height: 32),
+
+                // Primary action
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context); // close sheet
+                      navigateToNextScreen();  // ⬅︎ your own method
+                    },
+                    child: Ink(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color.fromARGB(255, 16, 13, 72), Color.fromARGB(255, 16, 13, 72)],
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      child: Center(
+                        child: Text(
+                        localization.translate('Proceed'),
+                          style: GoogleFonts.lato(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
     },
@@ -295,114 +360,36 @@ void _showInvalidOTPDialog(String message) {
   }
 
 
-void checkOtp() {
-  String enteredOtp = otpControllers.map((e) => e.text).join();
 
-   if (enteredOtp.length < 6) {
-    // 🛑 6 డిజిట్స్ ఫిల్ అవ్వలేదు అంటే ఎంటర్ చేయలేదు అని అర్థం
+  
+
+void checkOtp() {
+  final enteredOtp = otpControllers.map((e) => e.text).join();
+  final now = DateTime.now();
+
+  if (enteredOtp.length < 6) {
     _showInvalidOTPDialog("Please enter valid 6 digits OTP");
+    otpControllers.forEach((controller) => controller.clear());
+    focusNodes.first.requestFocus();
     return;
   }
 
-   setState(() {
-      _isLoading = true;
-    });
-
-  // ✅ Step 3: Check if 10 mins are over
-  final now = DateTime.now();
-  final diffInMinutes = now.difference(otpReceivedTime).inMinutes;
-
- if (diffInMinutes >= 10) {
-  _showInvalidOTPDialog("OTP expired, please resend");
-  
-  // ✅ Clear OTP textfields
-  for (var controller in otpControllers) {
-    controller.clear();
+  if (now.difference(otpReceivedTime).inMinutes >= 10) {
+    _showInvalidOTPDialog("OTP expired, please resend");
+    otpControllers.forEach((controller) => controller.clear());
+    focusNodes.first.requestFocus();
+    return;
   }
-
-  // ✅ First field లో focus పెట్టండి
-  focusNodes.first.requestFocus();
-
-  return;
-}
-
 
   if (enteredOtp == receivedOtp) {
-    showProceedBottomSheet(); // ✅ బాటమ్ షీట్ చూపించాలి
- 
+    showProceedBottomSheet(context);
   } else {
-      showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return LayoutBuilder(
-        
-        builder: (context, constraints) {
-          double fontSize = constraints.maxWidth * 0.03; // Dynamic font size
-          fontSize = fontSize.clamp(12, 24); // Set min/max limits
-  final localization = Provider.of<LocalizationProvider>(context);
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-             // borderRadius: BorderRadius.circular(10),
-            ),
-            backgroundColor: Colors.white,
-            contentPadding: EdgeInsets.zero,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: constraints.maxWidth * 0.08, // Dynamic height
-                  width: constraints.maxWidth * 0.08,  // Dynamic width
-                  child: Image.asset(
-                    'assets/images/csc2.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    localization.translate('Please Enter Valid OTP'),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lato(
-                      fontSize: fontSize, // Dynamic font size
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Color.fromRGBO(2, 5, 62, 1),
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    
-                    },
-                    child: Text(
-                      localization.translate("OK"),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: fontSize * 0.8, // Adjusted button font size
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
+    _showInvalidOTPDialog("Incorrect OTP, please try again");
+    otpControllers.forEach((controller) => controller.clear());
+    focusNodes.first.requestFocus();
   }
 }
 
-   
 
   String formatTimer(int seconds) {
     final minutes = (seconds ~/ 60).toString().padLeft(2, '0');
@@ -432,14 +419,22 @@ void checkOtp() {
 void _onResendOtp() {
   if (_isResendAvailable) {
     setState(() {
-      _isResendAvailable = false; // Resend తర్వాత మళ్లీ టైమర్ రీసెట్ చేయాలి
-      timerSeconds = 30; // టైమర్ మళ్లీ 30 సెకన్లకి సెట్ చేయాలి
+      _isResendAvailable = false;
+      timerSeconds = 30;
+
+      // Clear all OTP input boxes
+      for (var controller in otpControllers) {
+        controller.clear();
+      }
+
+      // Remove keyboard focus
+      FocusScope.of(context).unfocus();
     });
-    fetchOtpFromApi(); // కొత్త OTP కోసం API కాల్
+
+    fetchOtpFromApi();
     startTimer();
   }
 }
-
 
   
 
@@ -452,10 +447,13 @@ void _onResendOtp() {
     return Scaffold(
         resizeToAvoidBottomInset: true,
        appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color.fromRGBO(3, 4, 22, 1),
         elevation: 0,
         automaticallyImplyLeading: false,
+        title: Text(localization.translate("OTP Verification"),
+        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
         leading: BackButton(
+          color: Colors.white,
           onPressed: (){
               Navigator.pushReplacement(
               context, 
@@ -474,18 +472,9 @@ void _onResendOtp() {
              
               children: [
             SizedBox(height: screenHeight * 0),  
-                  Image.asset('assets/images/otpauthenticate.jpg'),
+                 // Image.asset('assets/images/otpauthenticate.jpg'),
                   SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                    localization.translate("OTP Verification"),
-                      style: GoogleFonts.lato(
-                        fontSize: MediaQuery.of(context).size.height * 0.02,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                 
                   SizedBox(height: screenHeight * 0.01),
                RichText(
             text: TextSpan(
@@ -528,45 +517,57 @@ void _onResendOtp() {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           
-                  
-                            Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, (index) {
-              return SizedBox(
-          width: screenWidth * 0.11, // Slightly smaller width
-          height: 55, // Optional: fixed height for uniform shape
-          child: TextField(
-            controller: otpControllers[index],
-            focusNode: focusNodes[index],
-            enabled: isOtpMessageReceived,
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            style: const TextStyle(fontSize: 22),
-            decoration: InputDecoration(
-              counterText: '',
-              contentPadding: const EdgeInsets.symmetric(vertical: 12), // Reduce padding
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5), // Make it rounded
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: const BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  children: List.generate(6, (index) {
+    return SizedBox(
+      width: screenWidth * 0.11,
+      height: 55,
+      child: Focus(
+        onKey: (FocusNode node, RawKeyEvent event) {
+          if (event is RawKeyDownEvent &&
+              event.logicalKey == LogicalKeyboardKey.backspace) {
+            if (otpControllers[index].text.isEmpty && index > 0) {
+              FocusScope.of(context).requestFocus(focusNodes[index - 1]);
+              otpControllers[index - 1].clear();
+            }
+          }
+          return KeyEventResult.ignored;
+        },
+        child: TextField(
+          controller: otpControllers[index],
+          focusNode: focusNodes[index],
+          enabled: isOtpMessageReceived,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          maxLength: 1,
+          style: const TextStyle(fontSize: 22),
+          decoration: InputDecoration(
+            counterText: '',
+            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+            border: OutlineInputBorder(
+              
+              borderRadius: BorderRadius.circular(5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(
+                color: Color.fromRGBO(1, 2, 18, 1),
+                width: 2,
               ),
             ),
-            onChanged: (value) {
-              if (value.isNotEmpty && index < 5) {
-                FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-              }
-              if (value.isEmpty && index > 0) {
-                FocusScope.of(context).requestFocus(focusNodes[index - 1]);
-              }
-            },
           ),
-              );
-            }),
-          ),
-          
+          onChanged: (value) {
+            if (value.isNotEmpty && index < 5) {
+              FocusScope.of(context).requestFocus(focusNodes[index + 1]);
+            }
+          },
+        ),
+      ),
+    );
+  }),
+),
+
           /*
            if (isOtpComplete()) {
           checkOtp(); // Only if all fields are filled
@@ -623,28 +624,35 @@ void _onResendOtp() {
           
                    SizedBox(height: screenHeight * 0.02),
                    
-            Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-          _isResendAvailable
-              ? "${localization.translate("Didn't receive the OTP?")} "
-              : (timerSeconds == 1
-                  ? localization.translate("Resend in 1 second") 
-                  : localization.translate("Resend OTP in $timerSeconds seconds")),
-          style: const TextStyle(color: Colors.grey),
-              ),
-              if (_isResendAvailable)
-          TextButton(
-            onPressed: _onResendOtp,
-            child: Text(
-              localization.translate('Resend'),
-              style: const TextStyle(color: Color.fromRGBO(6, 8, 34, 1),fontWeight: FontWeight.bold),
-            ),
-          ),
-            ],
-          ),
-          
+
+
+                
+Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Text(
+      _isResendAvailable
+          ? "${localization.translate("Didn't receive the OTP?")} "
+          : "${localization.translate("Resend OTP in")} $timerSeconds ${localization.translate("seconds")}",
+      style: const TextStyle(color: Colors.grey),
+    ),
+    if (_isResendAvailable)
+      TextButton(
+        onPressed: _onResendOtp,
+      // onPressed: _isResendAvailable ? fetchOtpFromApi : null,
+        child: Text(
+          localization.translate('Resend'),
+          style: const TextStyle(
+              color: Color.fromRGBO(6, 8, 34, 1),
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+  ],
+),
+
+
+           
+ 
                   
                  
               ],
@@ -654,4 +662,7 @@ void _onResendOtp() {
       ),
     );
   }
+
+
+  
 }

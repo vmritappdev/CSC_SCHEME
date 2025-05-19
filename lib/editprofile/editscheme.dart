@@ -28,15 +28,15 @@ void main() {
           child: child!,
         );
       },
-      home: const Editscheme1(),
+      home: const Editscheme1(schemeId: '',),
     ),
   );
 }
 
 class Editscheme1 extends StatefulWidget {
-  //final String schemeId;
+  final String schemeId;
   const Editscheme1({
-    super.key,
+    super.key,required this.schemeId
     
   });
 
@@ -328,7 +328,7 @@ Future<void> fetchSchemeDetails() async {
   final url = Uri.parse('$baseUrl/get_scheme_details.php');
   final body = {
     'mobile_no': mobileNumber,
-    // 'scheme_id': widget.schemeId.toString(), // Uncomment if needed
+     'scheme_id': widget.schemeId.toString(), // Uncomment if needed
   };
 
   print("🌐 API URL Called: $url");
