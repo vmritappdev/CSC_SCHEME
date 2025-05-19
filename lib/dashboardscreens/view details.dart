@@ -9,6 +9,9 @@ import 'package:csc/chaingedscreens.dart/pd%20frecipit.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 
 import 'package:csc/dashboardscreens/closed_schemes.dart';
+import 'package:csc/editprofile/edit2.dart';
+import 'package:csc/editprofile/editscheme.dart';
+
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
@@ -363,9 +366,10 @@ Future<void> verifyPaymentProcess() async {
       SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
       
-
+   
       // Total Paid Amount Label
       Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             localization.translate("Total Paid Amount"),
@@ -374,6 +378,19 @@ Future<void> verifyPaymentProcess() async {
               fontWeight: FontWeight.bold
             ),
           ),
+
+
+          IconButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Editscheme(schemeId: widget.schemeId,),
+      ),
+    );
+  },
+  icon: Icon(Icons.edit, color: Colors.red),
+),
         ],
       ),
 
@@ -501,9 +518,10 @@ Future<void> verifyPaymentProcess() async {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    infoRow('Scheme No',regNo),
-                    infoRow('Total Installments',   '$totalInstallments'),
-                    infoRow('Paid Installments',    paidInstallments,),
+                    infoRow(localization.translate('Scheme No'),
+                    regNo),
+                    infoRow(localization.translate('Total Installments'),   '$totalInstallments'),
+                    infoRow(localization.translate('Paid Installments'),    paidInstallments,),
                   ],
                 ),
               ),

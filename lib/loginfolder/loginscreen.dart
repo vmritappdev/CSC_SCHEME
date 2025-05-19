@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/loginfolder/loginotp.dart';
+
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
@@ -447,17 +448,32 @@ void _showErrorPopup() {
                 SizedBox(height: screenHeight * 0.03),
                 Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
                    SizedBox(height: screenHeight * 0.02),
-                GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:const Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
-                ),
-                onTap: () {
-                   Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>const CurvedImageScreen2(),
-          ),
-        );
-                },
-                ),
+               Material(
+  color: Colors.transparent,
+  child: InkWell(
+    onTap: () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>  CurvedImageScreen2(),
+        ),
+      );
+    },
+    borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
+    child: Padding(
+      padding: const EdgeInsets.all(4.0), // Expands touch area
+      child: Text(
+        localization.translate("Register here"),
+        style: TextStyle(
+          color: const Color.fromARGB(255, 3, 21, 47),
+          fontSize: fontSizeSmall,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ),
+)
+,
       
                 SizedBox(height: screenHeight * 0.03),
                 const Divider(),

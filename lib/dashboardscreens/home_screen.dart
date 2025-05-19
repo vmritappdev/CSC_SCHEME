@@ -9,6 +9,7 @@ import 'package:csc/chaingedscreens.dart/insatllment.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/chaingedscreens.dart/installmentviewdetails.dart';
 import 'package:csc/dashboardscreens/notification.dart';
+import 'package:csc/editprofile/crearempin3.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/aboutscreen.dart';
@@ -855,7 +856,85 @@ Future<void> closePopupAPI() async {
         
           
         
-        Center(
+       Center(
+  child: (verificationResponse?.process == "pending" ||
+          verificationResponse?.process == "incomplete")
+      ? Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+          decoration: BoxDecoration(
+            color: verificationResponse?.process == "pending"
+                ? Colors.orange.shade50
+                : Colors.red.shade50,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: verificationResponse?.process == "pending"
+                  ? Colors.orange
+                  : Colors.red,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Text Message
+              Expanded(
+                child: Text(
+                  verificationResponse?.process == "pending"
+                      ? "Transaction is pending. Please complete it to proceed."
+                      : localization.translate(
+                          "Your join scheme registration is still pending. Kindly complete your registration process."),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.030,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+
+              //const SizedBox(width: 10),
+
+              // Button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8), // Small button
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Scanner(activescheme: Activescheme(), rejectId: ''),
+                    ),
+                  );
+                },
+                child: Text(
+                  localization.translate('continue'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: MediaQuery.of(context).size.width * 0.03,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      : const SizedBox.shrink(),
+),
+
+    
+        
+
+       /* 
+       Center(
           child: verificationResponse == null || verificationResponse?.process == "complete"
           ? const SizedBox.shrink() // No message displayed
           : Row(
@@ -948,10 +1027,8 @@ Future<void> closePopupAPI() async {
               ],
             ),
         ),
-        
 
-
-        
+     */
         
             Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1006,7 +1083,7 @@ Future<void> closePopupAPI() async {
         '$firstName $lastName',
         style: TextStyle(
           fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-          color: Colors.grey,
+          color: Colors.blue,fontWeight: FontWeight.bold
         ),
         textAlign: TextAlign.start, // Left align for natural reading flow
           ),
@@ -1125,7 +1202,7 @@ Future<void> closePopupAPI() async {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>const BrochureScreen(),
+                        builder: (context) => BrochureScreen(),
                       ),
                     );
                   });
@@ -1139,28 +1216,29 @@ Future<void> closePopupAPI() async {
 
 
 
-        /*
+       /* 
         
-          Center(
-  child: verificationResponse == null || verificationResponse?.process == "complete"
-      ? const SizedBox.shrink()
-      : Container(
-          width: MediaQuery.of(context).size.width * 0.95,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+      Center(
+  child: (verificationResponse?.process == "pending" ||
+          verificationResponse?.process == "incomplete")
+      ? Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.yellow.shade100,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.orange),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.orangeAccent),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Message
               Expanded(
                 child: Text(
                   verificationResponse?.process == "pending"
                       ? "Transaction Pending"
-                      : "Your join scheme registration is still pending. Kindly complete your registration process.",
+                      : localization.translate(
+                          "Your join scheme registration is still pending. Kindly complete your registration process."),
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.030,
                     fontWeight: FontWeight.bold,
@@ -1171,49 +1249,49 @@ Future<void> closePopupAPI() async {
                 ),
               ),
 
-             // const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
-              // Continue Button
-              if (verificationResponse?.process == "pending" ||
-                  verificationResponse?.process == "incomplete")
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
+              // Button
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.03,
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Scanner(
-                            activescheme: Activescheme(),
-                            rejectId: '',
-                          ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Scanner(
+                          activescheme: Activescheme(),
+                          rejectId: '',
                         ),
-                      );
-                    },
-                    child: Text(
-                      localization.translate('continue'),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize:
-                            MediaQuery.of(context).size.width * 0.03,
                       ),
+                    );
+                  },
+                  child: Text(
+                    localization.translate('continue'),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize:
+                          MediaQuery.of(context).size.width * 0.03,
                     ),
                   ),
                 ),
+              ),
             ],
           ),
-        ),
+        )
+      : const SizedBox.shrink(), // If not pending or incomplete, show nothing (no box)
 ),
 
-       */ 
+*/
+       
              // const SizedBox(height: 10),
         
         

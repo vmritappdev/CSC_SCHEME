@@ -33,6 +33,8 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
   bool _isOtpCorrect = false;
   bool _isOtpExpired = false;
   bool _isSendOtpDisabled = false;
+  final _pinFocusNode = FocusNode();      // optional – keeps keyboard open after clear
+
 
   int _timerSeconds = 30;
   String? receivedOtp;
@@ -40,6 +42,7 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
 
   Timer? _resendTimer;
   Timer? _otpExpireTimer;
+   int _otpExpireSeconds = 600; // 10 minutes
 
   @override
   void initState() {
@@ -139,10 +142,11 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
   }
 
   void _startOtpExpiryTimer() {
+      final localization = Provider.of<LocalizationProvider>(context,listen: false);
     _otpExpireTimer?.cancel();
     _otpExpireTimer = Timer(const Duration(minutes: 10), () {
       setState(() => _isOtpExpired = true);
-      _showInvalidOTPDialog("⏰ OTP expired. Please resend a new OTP.");
+      _showInvalidOTPDialog(localization.translate("⏰ OTP expired. Please resend a new OTP."));
     });
   }
 
@@ -153,18 +157,32 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
   }
 
   void _onVerifyOtp() {
-    if (_isOtpExpired) {
-      _showInvalidOTPDialog("⏰ OTP expired. Please resend a new OTP.");
-      return;
-    }
-    if (_isOtpCorrect) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CreateMpinScreen5()));
-    } else {
-      _showInvalidOTPDialog("❌ Invalid OTP. Please try again.");
-    }
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
+  if (_isOtpExpired) {
+    _controllerOtp.clear();            // ⬅️ clear Pinput
+    FocusScope.of(context).requestFocus(_pinFocusNode); // optional
+    _showInvalidOTPDialog(
+      localization.translate("⏰ OTP expired. Please resend a new OTP."),
+    );
+    return;
   }
 
+  if (_isOtpCorrect) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const CreateMpinScreen5()),
+    );
+  } else {
+    _controllerOtp.clear();            // ⬅️ clear Pinput
+    FocusScope.of(context).requestFocus(_pinFocusNode); // optional
+    _showInvalidOTPDialog(
+      localization.translate("❌ Invalid OTP. Please try again."),
+    );
+  }
+}
 void _onResendOtp() {
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
   if (_isResendAvailable) {
     setState(() {
       _isResendAvailable = false;
@@ -180,6 +198,7 @@ void _onResendOtp() {
 }
 
   void _showInvalidOTPDialog(String message) {
+      final localization = Provider.of<LocalizationProvider>(context,listen: false);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -233,66 +252,87 @@ void _onResendOtp() {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            Text(
-              localization.translate('If you want to change your MPIN, you need to verify your Mobile Number or Email ID.'),
-              style: GoogleFonts.roboto(color: Colors.grey[600]),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            TextFormField(
-              readOnly: true,
-              controller: _controllerMobileNumber,
-              decoration: const InputDecoration(
-                labelText: 'Mobile Number*',
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+        
+              Image.asset('assets/images/otp.4.jpg'),
+              const SizedBox(height: 10),
+              Text(
+                localization.translate('If you want to change your MPIN, you need to verify your Mobile Number or Email ID.'),
+                style: GoogleFonts.roboto(color: Colors.grey[600]),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 20),
-            if (_isOtpVisible) ...[
-              Pinput(
-                length: 6,
-                controller: _controllerOtp,
-                androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
-                autofocus: true,
-                defaultPinTheme: PinTheme(
-                  height: 50,
-                  width: 45,
-                  textStyle: const TextStyle(fontSize: 20, color: Colors.black),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 24),
+              TextFormField(
+                readOnly: true,
+                controller: _controllerMobileNumber,
+                decoration:  InputDecoration(
+                  labelText: localization.translate('Mobile Number'),
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (_isOtpVisible) ...[
+               Pinput(
+  length: 6,
+  controller: _controllerOtp,
+  androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
+  autofocus: true,
+  defaultPinTheme: PinTheme(
+    height: 50,
+    width: 45,
+    textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+    decoration: BoxDecoration(
+    //  color: Colors.green.shade50, // Light green background
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: const Color.fromARGB(255, 12, 4, 30)), // Default green border
+    ),
+  ),
+  focusedPinTheme: PinTheme(
+    height: 50,
+    width: 45,
+    textStyle: const TextStyle(fontSize: 20, color: Colors.black),
+    decoration: BoxDecoration(
+      //color: Colors.green.shade100, // Slightly darker on focus
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: const Color.fromARGB(255, 12, 4, 30), width: 2), // Green border on focus
+    ),
+  ),
+),
+
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _onVerifyOtp,
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+                    child:  Text(
+                      localization.translate("Verify"),
+                    style: TextStyle(color: Colors.white),),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _onVerifyOtp,
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-                  child: const Text("Verify",style: TextStyle(color: Colors.white),),
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (!_isResendAvailable)
-                Text("Resend OTP in $_timerSeconds sec", style: const TextStyle(color: Colors.grey)),
-              if (_isResendAvailable)
-                TextButton(onPressed: _onResendOtp, child: const Text("Resend OTP",style: TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),
-            ] else
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isSendOtpDisabled ? null : fetchOtpApi,
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-                  child: const Text("Send OTP",style: TextStyle(color: Colors.white),),
-                ),
-              )
-          ],
+                const SizedBox(height: 8),
+                if (!_isResendAvailable)
+                  Text("Resend OTP in $_timerSeconds sec", style: const TextStyle(color: Colors.grey)),
+                if (_isResendAvailable)
+                  TextButton(onPressed: _onResendOtp, child:  Text(localization.translate("Resend OTP"),
+                  style: TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),
+              ] else
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isSendOtpDisabled ? null : fetchOtpApi,
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+                    child:  Text(
+                     localization.translate("Send OTP"),
+                    style: TextStyle(color: Colors.white),),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );

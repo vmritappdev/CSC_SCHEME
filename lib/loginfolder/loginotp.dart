@@ -1,23 +1,21 @@
-// Full code for a smooth and secure Login OTP screen in Flutter using Pinput
-// Features:
-// ✅ Fast OTP delivery
-// ✅ 6-digit OTP validation
-// ✅ Error popup for wrong OTP
-// ✅ 10-min OTP expiry
-// ✅ Resend disables old OTP and clears fields
+
 
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:csc/dashboardscreens/home_screen.dart';
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
+import 'package:csc/loginfolder/mpinscreen.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginOtpScreen extends StatefulWidget {
@@ -39,15 +37,19 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   int _resendWaitSeconds = 30;
   bool canResend = false;
 
+  final _pinFocus = FocusNode();   // optional, keyboard open ఉన్నట్టే ఉంటుంది
+  
+
   @override
   void initState() {
     super.initState();
   }
 
   Future<void> verifyMobileNumber() async {
+     final localization = Provider.of<LocalizationProvider>(context, listen: false);
     String mobile = mobileController.text.trim();
     if (mobile.length != 10) {
-      showError("Please enter a valid 10-digit mobile number");
+      showError(localization.translate("Please enter a valid 10-digit mobile number"));
       return;
     }
 
@@ -63,7 +65,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
 
     setState(() => isLoading = true);
     final response = await http.post(
-      Uri.parse("https://vmrdemos.com/csc_scheme/mobile_verification.php"),
+     Uri.parse("$baseUrl/mobile_verification.php"),
       body: {'mobile_no': mobile},
     );
 
@@ -77,8 +79,9 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   }
 
  Future<void> sendOtp(String mobile) async {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
   final response = await http.post(
-    Uri.parse("https://vmrdemos.com/csc_scheme/otp.php"),
+    Uri.parse("$baseUrl/otp.php"),
     body: {'mobile_no': mobile},
   );
 
@@ -86,8 +89,8 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   if (response.statusCode == 200 && data['otp'] != null) {
     receivedOtp = data['otp'].toString();
 
-    await savePhoneNumber(mobile);
-    await _fetchUserDetails();
+   // await savePhoneNumber(mobile);
+   // await _fetchUserDetails();
 
     setState(() {
       isOtpSent = true;
@@ -98,7 +101,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
     startOtpTimer();
     startResendTimer();
   } else {
-    showError("Failed to send OTP");
+    showError(localization.translate("Failed to send OTP"));
   }
 }
 
@@ -127,32 +130,87 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   }
 
  Future<void> validateOtp() async {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
+  // 🔴 OTP expired
   if (_otpExpireSeconds <= 0 || receivedOtp == null) {
-    showError("OTP expired. Please resend.");
+    otpController.clear();                         // <-- clear
+    FocusScope.of(context).requestFocus(_pinFocus); // optional
+    showError(localization.translate("OTP expired. Please resend."));
     return;
   }
 
+  // 🟢 OTP correct
   if (otpController.text.trim() == receivedOtp) {
-    // ✅ OTP Verified – Navigate to HomeScreen
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true);
+    await savePhoneNumber(mobileController.text.trim());
+    await _fetchUserDetails();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
+      MaterialPageRoute(builder: (_) => CreateMpinScreen5()),
     );
   } else {
-    showError("Invalid OTP");
+    // ❌ OTP invalid
+    otpController.clear();                         // <-- clear
+    FocusScope.of(context).requestFocus(_pinFocus); // optional
+    showError(localization.translate("Invalid OTP"));
   }
 }
 
-  void showError(String message) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text("Error"),
-        content: Text(message),
-        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: Text("OK"))],
-      ),
-    );
-  }
+void showError( String message) {
+  double fontSize = MediaQuery.of(context).size.width * 0.03;
+  fontSize = fontSize.clamp(12, 24);
+
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: const RoundedRectangleBorder(),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                localization.translate(message),
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(2, 5, 62, 1),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  localization.translate("OK"),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
   Future<bool> hasInternet() async {
     var result = await Connectivity().checkConnectivity();
@@ -175,19 +233,24 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final localization = Provider.of<LocalizationProvider>(context);
     return WillPopScope(
        onWillPop: () async {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen1()),
+        (Route<dynamic> route) => false,
       );
       return false; // Prevent default back action
     },
       child: Scaffold(
-        appBar: AppBar(title: Text("Login with OTP"),
-        leading: BackButton(color: Colors.black,
+        appBar: AppBar(title: Text(
+         localization.translate("Login with OTP"),
+          style: TextStyle(color: Colors.white),),
+        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        leading: BackButton(color: Colors.white,
         onPressed: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context, 
             MaterialPageRoute(
               builder: (context) => LoginScreen1(),
@@ -197,57 +260,90 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
         ),
         ),
       
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              TextFormField(
-                
-                controller: mobileController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(labelText: "Mobile Number",counterText: ''),
-                maxLength: 10,
-              ),
-            SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-      onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: (isLoading || isOtpSent)
-            ? Colors.grey
-            : Theme.of(context).primaryColor,
-      ),
-      child: Text(
-        "Get OTP",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-        ),
-      ),
-      
-              if (isOtpSent) ...[
-                SizedBox(height: 20),
-                Pinput(
-                  length: 6,
-                  controller: otpController,
-                  onSubmitted: (_) => validateOtp(),
-                ),
-                TextButton(
-                  onPressed: canResend ? () => sendOtp(mobileController.text.trim()) : null,
-                  child: Text("Resend OTP in ${_resendWaitSeconds}s"),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: validateOtp,
-                    child: Text("Verify OTP",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+          
+          
+                Image.asset('assets/images/otp.4.jpg'),
+          
+                SizedBox(height: 20,),
+                TextFormField(
+                  
+                  controller: mobileController,
+                  keyboardType: TextInputType.phone,
+                  
+                  decoration: InputDecoration(labelText: 
+                  localization.translate("Mobile Number"),
+                  counterText: '',
+                  prefixIcon: Icon(Icons.phone_android)
                   ),
+                  maxLength: 10,
                 ),
-                Text("OTP expires in ${_otpExpireSeconds ~/ 60}:${(_otpExpireSeconds % 60).toString().padLeft(2, '0')}")
-              ]
-            ],
+          
+          
+                SizedBox(height: 20,),
+              SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+                onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
+                style: ElevatedButton.styleFrom(
+          backgroundColor: (isLoading || isOtpSent)
+              ? Colors.grey
+              : Theme.of(context).primaryColor,
+                ),
+                child: Text(
+         localization.translate("Get OTP"),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+                ),
+          ),
+                ),
+                
+                if (isOtpSent) ...[
+                  SizedBox(height: 20),
+
+
+                 Pinput(
+  length: 6,
+  controller: otpController,
+  focusNode: _pinFocus, 
+  onSubmitted: (_) => validateOtp(),
+  defaultPinTheme: PinTheme(
+    width: 56,
+    height: 56,
+    textStyle: TextStyle(fontSize: 20, color: Colors.black),
+    decoration: BoxDecoration(
+      border: Border.all(color: const Color.fromARGB(255, 9, 1, 34)),
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+),
+
+                  TextButton(
+                    onPressed: canResend ? () => sendOtp(mobileController.text.trim()) : null,
+                    child: Text(
+                  localization.translate('Resend OTP in').replaceAll('{seconds}', '$_resendWaitSeconds'),
+               ),
+
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: validateOtp,
+                      child: Text(
+                        localization.translate("Verify OTP"),
+                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                 // Text("OTP expires in ${_otpExpireSeconds ~/ 60}:${(_otpExpireSeconds % 60).toString().padLeft(2, '0')}")
+                ]
+              ],
+            ),
           ),
         ),
       ),

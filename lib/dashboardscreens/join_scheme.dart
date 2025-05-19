@@ -58,7 +58,8 @@ class _Jionscheme2State extends State<Jionscheme2> {
 
    late ScrollController _scrollController;
    bool isButtonVisible = true;
-
+   bool isAdharReadOnly = false;
+   bool isPanReadOnly = false;
    
  bool areNomineeFieldsValid({
     required String nomineeAadhar,
@@ -467,8 +468,10 @@ setState(() {
           stateController.text = reg['state'] ?? '';
           districtController.text = reg['disrict'] ?? '';
           adharController.text = reg['adhar_no'] ?? '';
+           isAdharReadOnly = adharController.text.isNotEmpty;
+      
           panController.text = reg['pan_no'] ?? '';
-
+         isPanReadOnly = panController.text.isNotEmpty;
 
 
 
@@ -968,7 +971,7 @@ DateTime? selectedDate;
                         localization.translate("Customer Information"),
                           style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
                               ),
-                      const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
+                     // const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
           
                       
                       Textamount(),
@@ -1034,47 +1037,6 @@ DateTime? selectedDate;
             ),
           ),
           
- /*
-           _buildTextField(
-  controller: dobController,
-  label: localization.translate("Date of Birth*"),
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return localization.translate("Please enter Date of Birth");
-    }
-
-    try {
-      final enteredDate = DateTime.parse(value); // Expecting yyyy-MM-dd format
-      final today = DateTime.now();
-      final age = today.year - enteredDate.year -
-          ((today.month < enteredDate.month ||
-                  (today.month == enteredDate.month &&
-                      today.day < enteredDate.day))
-              ? 1
-              : 0);
-
-      if (age < 18) {
-        return localization.translate("Only users 18 years or older are allowed");
-      }
-    } catch (e) {
-      return localization.translate("Invalid Date of Birth");
-    }
-
-    return null;
-  },
-  readOnly: true,
-  suffixIcon: IconButton(
-    icon: const Icon(
-      Icons.calendar_today,
-      color: Color.fromRGBO(2, 5, 62, 1),
-    ),
-    onPressed: () => _selectDate(context),
-  ),
-),
-*/
-
-
-
 
 
 
@@ -1967,31 +1929,44 @@ Widget buildRow4(){
   }
 
 
-  Future<void> getPincodeDetails(String pincode) async {
-  final details = await fetchPincodeDetails(pincode);
-   final localization = Provider.of<LocalizationProvider>(context);
-
-
-  if (details != null) {
-    setState(() {
-      districtController.text = details.district;
-      stateController.text = details.state;
-      cityController.text = details.city;
-      countryController.text = details.country;
-    });
-  } else {
-    setState(() {
-      districtController.clear();
-      stateController.clear();
-      cityController.clear();
-      countryController.clear();
-    });
-
-   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(localization.translate('Invalid pincode entered.'))),
+   Future<void> getPincodeDetails(String pincode) async {
+    final url = 'https://api.postalpincode.in/pincode/$pincode';
+    
+    try {
+      final response = await http.get(Uri.parse(url));
+      
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        
+        if (data[0]['Status'] == 'Success') {
+          setState(() {
+            districtController.text = data[0]['PostOffice'][0]['District'].toString().toUpperCase();
+            stateController.text = data[0]['PostOffice'][0]['State'].toString().toUpperCase();
+            cityController.text = data[0]['PostOffice'][0]['City'] ?? data[0]['PostOffice'][0]['District'].toString().toUpperCase(); // Use District as city if City is not found
+            countryController.text = "India".toString().toUpperCase(); // As it's India-based API, country is always India
+          });
+        } else {
+          // Handle error if pincode is not valid
+          setState(() {
+            districtController.clear();
+            stateController.clear();
+            cityController.clear();
+            countryController.clear();
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Invalid pincode entered.')),
           );
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      // Handle API call failure
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No internet connection. Please try again.')),
+      );
+    }
   }
-}
 
  Future<void> fetchBankDetails(String ifsc) async {
   final bankDetails = await fetchBankDetailsFromIFSC(ifsc);
@@ -2073,7 +2048,7 @@ void _onIfscChanged(String ifsc) {
           child: TextFormField(
             controller: otherController,
             decoration: InputDecoration(
-              labelText: "Enter Nominee Relation",
+              labelText: localization.translate("Enter Nominee Relation"),
               border: const OutlineInputBorder(),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
@@ -2196,7 +2171,7 @@ Widget _buildTextField4({
             height: 50,
             child: 
                TextField(
-                //readOnly: true,
+                readOnly: true,
                 textInputAction: TextInputAction.next,
                 controller: _firstNameController,
                  textCapitalization: TextCapitalization.words,
@@ -2232,7 +2207,7 @@ Widget _buildTextField4({
                 inputFormatters: [
     FilteringTextInputFormatter.deny(RegExp(r'[",]')), // Blocks " and ,
   ],
-               // readOnly: true,
+                readOnly: true,
                 textInputAction: TextInputAction.next,
                 controller: _lastNameController,
                  textCapitalization: TextCapitalization.words,
@@ -2286,11 +2261,11 @@ Widget _buildTextField1({
   required String label,
   required File? selectedImage,
   required VoidCallback onPickImage,
-   required bool isadhearRequired,
- // required String? Function(String?)? validator,
+  required bool isadhearRequired,
   int? maxLength,
 }) {
-    final localization = Provider.of<LocalizationProvider>(context);
+  final localization = Provider.of<LocalizationProvider>(context);
+
   return Padding(
     padding: const EdgeInsets.only(top: 5.0),
     child: Column(
@@ -2301,127 +2276,129 @@ Widget _buildTextField1({
             Expanded(
               flex: 7,
               child: TextFormField(
+                readOnly: isAdharReadOnly,
                 inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
+                  FilteringTextInputFormatter.deny(RegExp(r"[#&']")),
+                ],
                 controller: controller,
                 keyboardType: TextInputType.number,
                 maxLength: maxLength,
-                 readOnly: adharController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   counterText: "",
                   border: const OutlineInputBorder(),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
                   if (isadhearRequired) {
-                  // Aadhaar number validation
-                  if (value == null || value.isEmpty) {
-                    return localization.translate("Please enter Adhar number");
-                  } else if (value.length != 12) {
-                    return localization.translate("Adhar number must be 12 digits");
+                    if (value == null || value.isEmpty) {
+                      return localization.translate("Please enter Adhar number");
+                    } else if (value.length != 12) {
+                      return localization.translate("Adhar number must be 12 digits");
+                    } else if (!RegExp(r'^\d{12}$').hasMatch(value)) {
+                      return localization.translate("Adhar number must contain only digits");
+                    }
+
+                    if (selectedImage == null &&
+                        (adharImage == null || adharImage!.isEmpty)) {
+                      return localization.translate("Please select Aadhaar card image");
+                    }
+                  } else {
+                    if ((value != null && value.isNotEmpty) || selectedImage != null) {
+                      if (value!.length != 12) {
+                        return localization.translate("Adhar number must be 12 digits");
+                      } else if (!RegExp(r'^\d{12}$').hasMatch(value)) {
+                        return localization.translate("Adhar number must contain only digits");
+                      }
+                    }
                   }
-                  // Aadhaar image validation
-                  
-                }
-                 if (value == null || value.isEmpty) {
-                    return localization.translate("Please enter Adhar number");
-                  } else 
-                 if (selectedImage == null && (adharImage == null || adharImage!.isEmpty)) {
-                 return localization.translate("Please select Aadhaar card image");
-  }
                   return null;
                 },
               ),
             ),
             const SizedBox(width: 8),
-           GestureDetector(
-  onTap: () {
-    if (selectedImage != null || (adharImage != null && adharImage!.isNotEmpty)) {
-      // Show image in full screen dialog with edit icon
-      showDialog(
-        context: context,
-        builder: (_) {
-          return Dialog(
-            insetPadding: const EdgeInsets.all(10),
-            backgroundColor: Colors.transparent,
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: selectedImage != null
-                      ? Image.file(selectedImage)
-                      : Image.network(adharImage!, fit: BoxFit.cover),
-                ),
-
-                 Positioned(
-      top: 10,
-      left: 10,
-      child: InkWell(
-        onTap: () {
-          Navigator.pop(context); // Close the dialog
-        },
-        child: const CircleAvatar(
-          backgroundColor: Colors.black54,
-          radius: 20,
-          child: Icon(Icons.close, color: Colors.white, size: 20),
-        ),
-      ),
-    ),
-
-
-
-
-              Positioned(
-  top: 10,
-  right: 10,
-  child: adharController.text.isEmpty
-      ? InkWell(
-          onTap: () {
-            Navigator.pop(context); // Close the dialog
-            onPickImage();          // Open picker options
-          },
-          child: const CircleAvatar(
-            backgroundColor: Colors.black54,
-            radius: 20,
-            child: Icon(Icons.edit, color: Colors.white, size: 20),
-          ),
-        )
-      : const SizedBox(), // If readOnly true, show nothing
-),
-              ],
+            GestureDetector(
+              onTap: () {
+                // Show dialog only if image exists
+                if (selectedImage != null ||
+                    (adharImage != null && adharImage!.isNotEmpty)) {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return Dialog(
+                        insetPadding: const EdgeInsets.all(10),
+                        backgroundColor: Colors.transparent,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: selectedImage != null
+                                  ? Image.file(selectedImage!)
+                                  : Image.network(adharImage!, fit: BoxFit.cover),
+                            ),
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.black54,
+                                  radius: 20,
+                                  child: Icon(Icons.close,
+                                      color: Colors.white, size: 20),
+                                ),
+                              ),
+                            ),
+                            // Show edit only if image is NOT from API
+                            if (selectedImage != null)
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    onPickImage();
+                                  },
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black54,
+                                    radius: 20,
+                                    child:
+                                        Icon(Icons.edit, color: Colors.white, size: 20),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  // If no image at all, open picker
+                  onPickImage();
+                }
+              },
+              child: Stack(
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 245, 236, 236),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: selectedImage != null
+                          ? Image.file(selectedImage, fit: BoxFit.cover)
+                          : (adharImage != null && adharImage!.isNotEmpty)
+                              ? Image.network(adharImage!, fit: BoxFit.cover)
+                              : const Icon(Icons.image, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      );
-    } else {
-      onPickImage(); // no image yet, directly open picker
-    }
-  },
-  child: Stack(
-    children: [
-      Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 245, 236, 236),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: selectedImage != null
-              ? Image.file(selectedImage, fit: BoxFit.cover)
-              : (adharImage != null && adharImage!.isNotEmpty)
-                  ? Image.network(adharImage!, fit: BoxFit.cover)
-                  : const Icon(Icons.image, color: Colors.grey),
-        ),
-      ),
-    ],
-  ),
-),
-
           ],
         ),
       ],
@@ -2478,7 +2455,7 @@ Widget _buildTextField3({
                     return localization.translate("Please enter nominee adhar number");
                   } else
                 if (selectedImage == null && (nomineeimage == null || nomineeimage!.isEmpty)) {
-                 return localization.translate("pls select nominee adhar card image");
+                 return localization.translate("Please select nominee Aadhar card image");
                 }
                   return null;
                 },
@@ -2584,11 +2561,12 @@ Widget _buildTextField2({
   required String label,
   required File? selectedImage,
   required VoidCallback onPickImage,
-  required bool isPanRequired, // New param to control validation
+  required bool isPanRequired,
   int? maxLength,
   String? hintText,
 }) {
-   final localization = Provider.of<LocalizationProvider>(context);
+  final localization = Provider.of<LocalizationProvider>(context);
+
   return Padding(
     padding: const EdgeInsets.only(top: 5.0),
     child: Column(
@@ -2599,15 +2577,11 @@ Widget _buildTextField2({
             Expanded(
               flex: 7,
               child: TextFormField(
-                inputFormatters: [
-     FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
-// Blocks " and ,
-  ],
+                readOnly: isPanReadOnly,
                 controller: controller,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.characters,
                 maxLength: maxLength,
-                 readOnly: panController.text.isNotEmpty,
                 decoration: InputDecoration(
                   labelText: label,
                   hintText: hintText,
@@ -2616,115 +2590,116 @@ Widget _buildTextField2({
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
+                  final panRegex = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
+
                   if (isPanRequired) {
                     if (value == null || value.isEmpty) {
                       return localization.translate("Please enter PAN number");
-                    } else if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$').hasMatch(value)) {
-                      return localization.translate("Invalid PAN format ABCDE1234F");
-                    } else  if (selectedImage == null && (panImage == null || panImage!.isEmpty)) {
-                 return localization.translate("pls select pan card image");
-                }
+                    } else if (!panRegex.hasMatch(value)) {
+                      return localization.translate("Invalid PAN format (e.g., ABCDE1234F)");
+                    } else if (selectedImage == null &&
+                        (panImage == null || panImage!.isEmpty)) {
+                      return localization.translate("Please select PAN card image");
+                    }
+                  } else {
+                    if (value != null && value.isNotEmpty) {
+                      if (!panRegex.hasMatch(value)) {
+                        return localization.translate("Invalid PAN format (e.g., ABCDE1234F)");
+                      }
+                    }
                   }
 
-                  
                   return null;
                 },
               ),
             ),
             const SizedBox(width: 8),
-           GestureDetector(
-  onTap: () {
-    if (selectedImage != null || (panImage != null && panImage!.isNotEmpty)) {
-      // Show image in full screen dialog with edit icon
-      showDialog(
-        context: context,
-        builder: (_) {
-          return Dialog(
-            insetPadding: const EdgeInsets.all(10),
-            backgroundColor: Colors.transparent,
-            child: Stack(
-  children: [
-    // 👉 Your image widget here
-    ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: selectedImage != null
-          ? Image.file(selectedImage)
-          : Image.network(panImage!, fit: BoxFit.cover),
-    ),
-
-    // ❌ Close icon - Always show on top-left
-    Positioned(
-      top: 10,
-      left: 10,
-      child: InkWell(
-        onTap: () {
-          Navigator.pop(context); // Close the dialog
-        },
-        child: const CircleAvatar(
-          backgroundColor: Colors.black54,
-          radius: 20,
-          child: Icon(Icons.close, color: Colors.white, size: 20),
-        ),
-      ),
-    ),
-
-    // ✏️ Edit icon - Only show if panController is empty
-    Positioned(
-      top: 10,
-      right: 10,
-      child: panController.text.isEmpty
-          ? InkWell(
+            GestureDetector(
               onTap: () {
-                Navigator.pop(context); // Close dialog
-                onPickImage();          // Open image picker
+                // If image already exists from API or file, open viewer
+                if (selectedImage != null ||
+                    (panImage != null && panImage!.isNotEmpty)) {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return Dialog(
+                        insetPadding: const EdgeInsets.all(10),
+                        backgroundColor: Colors.transparent,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: selectedImage != null
+                                  ? Image.file(selectedImage!)
+                                  : Image.network(panImage!, fit: BoxFit.cover),
+                            ),
+                            Positioned(
+                              top: 10,
+                              left: 10,
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.black54,
+                                  radius: 20,
+                                  child: Icon(Icons.close,
+                                      color: Colors.white, size: 20),
+                                ),
+                              ),
+                            ),
+                            // Show edit icon only if selectedImage is NOT from API
+                            if (selectedImage != null)
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    onPickImage();
+                                  },
+                                  child: const CircleAvatar(
+                                    backgroundColor: Colors.black54,
+                                    radius: 20,
+                                    child: Icon(Icons.edit, color: Colors.white, size: 20),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  // If no image, open picker directly
+                  onPickImage();
+                }
               },
-              child: const CircleAvatar(
-                backgroundColor: Colors.black54,
-                radius: 20,
-                child: Icon(Icons.edit, color: Colors.white, size: 20),
+              child: Stack(
+                children: [
+                 Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 245, 236, 236),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                     child: ClipRRect(
+                     borderRadius: BorderRadius.circular(8),
+                      child: selectedImage != null
+                          ? Image.file(selectedImage, fit: BoxFit.cover)
+                          : (panImage != null && panImage!.isNotEmpty)
+                              ? Image.network(panImage!, fit: BoxFit.cover)
+                              : const Icon(Icons.image, color: Colors.grey),
+                    ),
+                  ),
+                ],
               ),
-            )
-          : const SizedBox(), // Hide if pan is filled
-    ),
-  ],
-),
-
-          );
-        },
-      );
-    } else {
-      onPickImage(); // no image yet, directly open picker
-    }
-  },
-  child: Stack(
-    children: [
-      Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 245, 236, 236),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: selectedImage != null
-              ? Image.file(selectedImage, fit: BoxFit.cover)
-              : (panImage != null && panImage!.isNotEmpty)
-                  ? Image.network(panImage!, fit: BoxFit.cover)
-                  : const Icon(Icons.image, color: Colors.grey),
-        ),
-      ),
-    ],
-  ),
-),
+            ),
           ],
         ),
       ],
     ),
   );
 }
-
-
 
 
 
