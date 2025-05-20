@@ -95,8 +95,8 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
           Image.asset(
             'assets/images/csc2.png',
             color: Colors.white,
-            height: screenHeight * 0.1,  // 10% of screen height for image
-            width: screenHeight * 0.1,   // 10% of screen height for width as well
+           // height: screenHeight * 0.1,  // 10% of screen height for image
+           // width: screenHeight * 0.1,   // 10% of screen height for width as well
             fit: BoxFit.fill,
           ),
           Text(

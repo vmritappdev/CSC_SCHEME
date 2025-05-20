@@ -193,7 +193,12 @@
   "MPIN must be at least 4 digits":"MPIN కనీసం 4 అంకెలు ఉండాలి",
   "MPIN and Confirm MPIN do not match":  "MPIN మరియు నిర్ధారించు MPIN సరిపోలడం లేదు",
   "Mobile number not found. Please try again.": "మొబైల్ నంబర్ కనపడలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.",
-
+  "Your Gold Scheme is Closed":"మీ బంగారు పథకం ముగిసింది",
+  "This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.":"ఈ పథకం విజయవంతంగా పూర్తైంది లేదా ముగించబడింది. ఇకపై చెల్లింపులు చేయలేరు. మరిన్ని వివరాలకు దయచేసి షాపును సంప్రదించండి లేదా కొత్త పథకాన్ని ప్రారంభించండి.",
+  "Your Gold Scheme is Suspended": "మీ బంగారు పథకం తాత్కాలికంగా నిలిపివేయబడింది",
+  "This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.":"ఈ పథకం ప్రస్తుతం తాత్కాలికంగా నిలిపివేయబడింది. కారణం తెలుసుకోవడానికి లేదా తిరిగి ప్రారంభించాలంటే దయచేసి షాపును సంప్రదించండి. సమస్య పరిష్కారమైన వరకు చెల్లింపులు నిలిపివేయబడ్డాయి.",
+   "Your Gold Scheme is Ready To Purchase":"మీ బంగారు పథకం కొనుగోలుకు సిద్ధంగా ఉంది",
+"This scheme is now ready for purchase. Visit the store to redeem.": "ఈ పథకం ఇప్పుడు కొనుగోలుకు సిద్ధంగా ఉంది. రిడీమ్ చేసేందుకు దయచేసి షాపు సందర్శించండి.",
   "Success!": "విజయం!",
   "Scheme Registration submitted successfully!": "యోజనా నమోదు విజయవంతంగా సమర్పించబడింది!",
   "Ok": "సరే",
@@ -216,6 +221,12 @@
 "Select Scheme ID":"పథకం ID ఎంచుకోండి",
 "Payment in Process":"చెల్లింపు ప్రాసెస్‌లో ఉంది",
 "Your payment is still being processed. Please wait.":"మీ చెల్లింపు ఇంకా ప్రాసెస్‌లో ఉంది. దయచేసి వేచిచూడండి.",
+
+"You must be 18 years or older to select this date.": "ఈ తేదీని ఎంచుకోవాలంటే మీరు కనీసం 18 సంవత్సరాలు లేదా అంతకంటే ఎక్కువ వయస్సు కలిగి ఉండాలి.",
+ "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}":"ధృవీకరణ కోడ్ పంపబడింది",
+ "OTP expired, please resend": "OTP గడువు ముగిసింది, దయచేసి మళ్లీ పంపించండి",
+"Incorrect OTP, please try again":"తప్పైన OTP, దయచేసి మళ్లీ ప్రయత్నించండి",
+"OTP Verified":"OTP ధృవీకరించబడింది",
 
 
 "Edit Profile Details":"ప్రొఫైల్ వివరాలను సవరించండి",
@@ -571,6 +582,21 @@
 "Mobile: 9490657008": "మొబైల్: 9490657008",
 "Resend in 1 second": "1 సెకనులో మళ్లీ పంపించండి",
 "Please enter valid OTP": "దయచేసి సరైన OTPని నమోదు చేయండి",
+
+
+"CSC Jewellery": "సి‌ఎస్‌సి జ్యువెల్లరీ",
+"Bill Summary": "బిల్ సరాంశం",
+"Product Details": "ఉత్పత్తి వివరాలు",
+"Product Name": "ఉత్పత్తి పేరు",
+"Gross Weight": "మొత్తం బరువు",
+"Stone":"Stone",
+"Net Weight": "నికర బరువు",
+"Billing Details": "బిల్లింగ్ వివరాలు",
+"Bill Amount":"బిల్ మొత్తం",
+"Cash Amount": "నగదు మొత్తం",
+"Bank Amount": "బ్యాంక్ మొత్తం",
+ "Total Amount": "మొత్తం మొత్తం",
+ "Download Sale Invoice":  "ఇన్వాయిస్‌ను డౌన్‌లోడ్",
 
 
 

@@ -33,7 +33,7 @@ import 'package:csc/upidetails/loding%20screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:marquee/marquee.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -65,6 +65,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  bool _backButtonPressedOnce = false;
 
    
  VerificationResponse? verificationResponse;
@@ -102,21 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _selectedIndex = 0);
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -573,9 +560,24 @@ Future<void> closePopupAPI() async {
 
     return WillPopScope(
        onWillPop: () async {
-      
-        SystemNavigator.pop();
-        return false; // Prevent further back navigation
+        if (_backButtonPressedOnce) {
+          // రెండవ click, app close చేయి
+          SystemNavigator.pop();
+          return true;
+        } else {
+          // మొదటి click, message చూపించు
+          _backButtonPressedOnce = true;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Press back again to exit')),
+          );
+
+          // Flag 2 సెకన్ల తర్వాత reset చేయి
+          Future.delayed(Duration(seconds: 2), () {
+            _backButtonPressedOnce = false;
+          });
+
+          return false; // app close కాకుండా వుండు
+        }
       },
       child: SafeArea(
         child: Scaffold(

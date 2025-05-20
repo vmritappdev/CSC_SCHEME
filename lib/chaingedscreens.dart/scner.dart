@@ -15,7 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -55,6 +55,7 @@ class _ScannerState extends State<Scanner> {
   bool _isChecked = false;
   String installmentAmount = '';
   String installmentLabel = '';
+  String installmentid = '';
 
    File? _selectedImage;
 
@@ -216,7 +217,7 @@ Future<bool> checkInternet() async {
     }
 
 
-    var url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
+    var url = '$baseUrl/get_installment.php';   
 
     try {
       final response = await http.post(Uri.parse(url), body: {
@@ -230,9 +231,13 @@ Future<bool> checkInternet() async {
         final data = json.decode(response.body);
 
         if (data['response'] == 'success' && data['status'] == 200) {
+           String regId = data['reg_id']?.toString() ?? '';
+      print('✅ Installment Reg ID: $regId'); // ✅ reg_id print here
           setState(() {
             installmentLabel = data['installment'] ?? 'No Installment';
-            installmentAmount = data['amount']?.toString() ?? '0.00';
+            installmentAmount = data['amount']?.toString() ?? '0.00'; 
+            installmentid =  data['schemeId']?.toString() ?? '';
+             print("✅ Installment ID: $installmentid");
           });
         }
       }
@@ -557,15 +562,22 @@ Column(
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.00),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              installmentLabel,
-              style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.04),
+        Row(
+          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+
+            Text(installmentid),
+            Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.00),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  installmentLabel,
+                  style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.04),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
 
 

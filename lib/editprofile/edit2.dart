@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/dashboardscreens/view%20details.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +26,13 @@ void main() {
       home: Editscheme(schemeId: ''),
     ),
   );
+}
+
+
+enum ImageType {
+  pan,
+  adhar,
+  nominee,
 }
 
 class Editscheme extends StatefulWidget {
@@ -65,15 +73,19 @@ final TextEditingController nomineeadharController = TextEditingController();
 final TextEditingController otherController = TextEditingController();
 final TextEditingController gendController = TextEditingController();
 
+bool isUnder18 = false;
+
   String? adharImage;
   String? panImage;
   String? nomineeImage;
+  String? nomineeimage;
   bool isLoading = true;
   List<String> relationships = ['Mother', 'Father', 'Brother', 'Sister', 'Wife', 'Husband','Other'];
 String? selectedRelationship;
 
 String? selectedGender;
 bool isOtherRelationVisible = false;
+
 
 
   @override
@@ -174,7 +186,7 @@ Future<bool> checkInternet() async {
     }
 
 
-  final url = Uri.parse('https://vmrdemos.com/csc_scheme/edit_reg_app.php');
+  final url = Uri.parse('$baseUrl/edit_reg_app.php');
 
   print("🔵 Sending data to API: $url");
   
@@ -268,7 +280,7 @@ Future<bool> checkInternet() async {
       return;
     }
 
-    final url = Uri.parse('https://vmrdemos.com/csc_scheme/get_scheme_details.php');
+    final url = Uri.parse('$baseUrl/get_scheme_details.php');
     try {
       final response = await http.post(url, body: {
         'mobile_no': mobileNumber,
@@ -487,8 +499,8 @@ double screenHeight = MediaQuery.of(context).size.height;
                          _buildTextField(stateController, localization.translate("State*")),
                     _buildTextField(districtController, localization.translate("District*")),
                       _buildTextField(cityController, localization.translate("City*")),  
-                    _buildDocumentRow(localization.translate("Adhar Number*"), adharController, adharImage, false),
-                      _buildDocumentRow(localization.translate("Pancard Card Number*"), panController, panImage, true),
+                    _buildDocumentRow(localization.translate("Adhar Number*"), adharController, adharImage,12, false),
+                      _buildDocumentRow(localization.translate("Pancard Card Number*"), panController, panImage,10, true),
                    
                      _buildTextField(referralController,localization.translate( "Referral Name/Number")),
 
@@ -522,10 +534,16 @@ double screenHeight = MediaQuery.of(context).size.height;
                      height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                    ),
                     _buildTextField(nomineeNameController, localization.translate("Nominee Full Name")),
+
+                    
+
+                    
                    _buildDocumentRow(
   localization.translate("Nominee Adhar Number*"),
   nomineeadharController,
   nomineeImage,
+  12,
+  
   true, // isPanCard
   readOnly: false, // 👈 ఇది కొత్త parameter
 ),
@@ -566,17 +584,23 @@ double screenHeight = MediaQuery.of(context).size.height;
     );
   }
 
-Widget _buildDocumentRow(
+_buildDocumentRow(
   String label,
   TextEditingController controller,
   String? imageUrl,
+  int? maxLength,
   bool isPanCard, {
-  bool readOnly = true, // default readOnly true
+  bool readOnly = true,
 }) {
   return Row(
     children: [
       Expanded(
-        child: _buildTextField(controller, label, readOnly: readOnly),
+        child: _buildTextField(
+          controller,
+          label,
+          readOnly: readOnly,
+          maxLength: maxLength, // ✅ Pass maxLength here
+        ),
       ),
       SizedBox(width: MediaQuery.of(context).size.width * 0.025),
       _buildImageWidget(imageUrl, isPanCard),
@@ -637,16 +661,21 @@ Widget _buildTextField(
 
 
 
-  Widget _buildDateField(TextEditingController controller, String label) {
+
+
+
+
+
+
+
+Widget _buildDateField(TextEditingController controller, String label) {
   return SizedBox(
-     height: MediaQuery.of(context).size.height * 0.06, // 6% of screen height
+    height: MediaQuery.of(context).size.height * 0.06,
     child: TextField(
       controller: controller,
       readOnly: true,
-      
       decoration: InputDecoration(
         labelText: label,
-        
         border: OutlineInputBorder(),
         suffixIcon: Icon(Icons.calendar_today),
       ),
@@ -657,12 +686,45 @@ Widget _buildTextField(
           firstDate: DateTime(1900),
           lastDate: DateTime.now(),
         );
-    
+
         if (pickedDate != null) {
-          String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
-          controller.text = formattedDate;
+          int age = _calculateAge(pickedDate);
+          if (age < 18) {
+            controller.clear();
+            _showUnderAgeSnackbar(); // 👈 Alert Message
+            setState(() {
+              isUnder18 = true; // 👈 use this to hide fields
+            });
+          } else {
+            String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
+            controller.text = formattedDate;
+            setState(() {
+              isUnder18 = false;
+            });
+          }
         }
       },
+    ),
+  );
+}
+
+int _calculateAge(DateTime birthDate) {
+  DateTime today = DateTime.now();
+  int age = today.year - birthDate.year;
+  if (today.month < birthDate.month ||
+      (today.month == birthDate.month && today.day < birthDate.day)) {
+    age--;
+  }
+  return age;
+}
+
+
+void _showUnderAgeSnackbar() {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("❌ Users under 18 years of age are not allowed."),
+      backgroundColor: Colors.red,
+      behavior: SnackBarBehavior.floating,
     ),
   );
 }
@@ -770,6 +832,7 @@ Widget genderDropdown(BuildContext context) {
     ),
   );
 }
+
 
 
 

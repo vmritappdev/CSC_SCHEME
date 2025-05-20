@@ -3,11 +3,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:csc/dashboardscreens/home_screen.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
-import 'package:csc/model/activescheme.dart';
+
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

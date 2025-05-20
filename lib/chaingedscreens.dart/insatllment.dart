@@ -159,7 +159,7 @@ void _selectFirstUnpaidInstallment() {
 
 
   Future<void> fetchBalanceAndDays(String schemeId, String month, String year) async {
-  var url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
+  var url = '$baseUrl/fetch_amount.php';  
 
   try {
     final response = await http.post(

@@ -161,9 +161,17 @@
   "MPIN must be at least 4 digits":"MPIN must be at least 4 digits",
   "MPIN and Confirm MPIN do not match":"MPIN and Confirm MPIN do not match",
   "Mobile number not found. Please try again.":"Mobile number not found. Please try again.",
-  
-  
-
+  "Your Gold Scheme is Closed":"Your Gold Scheme is Closed",
+  "This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.":"This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.",
+  "Your Gold Scheme is Suspended":"Your Gold Scheme is Suspended",
+  "This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.":"This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.",
+   "Your Gold Scheme is Ready To Purchase": "Your Gold Scheme is Ready To Purchase",
+   "This scheme is now ready for purchase. Visit the store to redeem.":"This scheme is now ready for purchase. Visit the store to redeem.",
+  "You must be 18 years or older to select this date.":"You must be 18 years or older to select this date.",
+   "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}": "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}",
+   "OTP expired, please resend":"OTP expired, please resend",
+   "Incorrect OTP, please try again":"Incorrect OTP, please try again",
+       "OTP Verified":"OTP Verified",
 
     "Please enter Date of Birth": "Please enter Date of Birth",
   "Please enter a valid email address": "Please enter a valid email address",
@@ -651,6 +659,23 @@
   "Payment will be credited to wallet": "Payment will be credited to wallet",
   "Important: Transfers from non-registered bank accounts will be refunded in 15 working days.": "Important: Transfers from non-registered bank accounts will be refunded in 15 working days.",
   "okay": "Okay",
+
+
+
+
+  "CSC Jewellery":"CSC Jewellery",
+  "Bill Summary":"Bill Summary",
+  "Product Details":"Product Details",
+  "Product Name":"Product Name",
+  "Gross Weight":"Gross Weight",
+  "Stone":"Stone",
+   "Net Weight": "Net Weight",
+   "Billing Details":"Billing Details",
+   "Bill Amount":"Bill Amount",
+   "Cash Amount":"Cash Amount",
+   "Bank Amount":"Bank Amount",
+    "Total Amount": "Total Amount",
+    "Download Sale Invoice":"Download Sale Invoice",
 
 
   "Payment Details": "Payment Details",

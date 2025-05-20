@@ -804,7 +804,7 @@ Future<void> submitForm() async {
       adharImage: _adharImage,
       panImage: _panImage,
       nomineeAdharImage: _nomineeadharImage,
-      baseUrl: baseUrl,
+     // baseUrl: baseUrl,
     );
 
     if (response != null) {
@@ -1020,10 +1020,10 @@ DateTime? selectedDate;
 
                    _buildTextField(
             controller: dobController,
-            label: localization.translate("Date of Birth*"),
+            label: ("Date of Birth*"),
             validator: (value) {
           if (value == null || value.isEmpty) {
-            return localization.translate("Please enter Date of Birth");
+            return ("Please enter Date of Birth");
           }
           return null;
             },
@@ -1056,7 +1056,7 @@ DateTime? selectedDate;
                     _buildTextField(
             controller: _emailController,
             label: localization.translate("Email ID(Optional)"),
-            readOnly: true,
+           // readOnly: true,
             prefixIcon: const Icon(Icons.email_outlined),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -2565,7 +2565,7 @@ Widget _buildTextField2({
   int? maxLength,
   String? hintText,
 }) {
-  final localization = Provider.of<LocalizationProvider>(context);
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   return Padding(
     padding: const EdgeInsets.only(top: 5.0),

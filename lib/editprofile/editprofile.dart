@@ -434,28 +434,40 @@ Future<bool> checkInternet() async {
     );
   }
 
-  Widget _buildEmailField() {
-      final localization = Provider.of<LocalizationProvider>(context);
-    return SizedBox(
-       // height: MediaQuery.of(context).size.height * 0.06, 
-      child: TextFormField(
-        inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
-        controller: _emailController,
-        decoration: InputDecoration(
-          labelText: localization.translate('Email'),
-          labelStyle: const TextStyle(color: Colors.black),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.grey),
-          ),
+ Widget _buildEmailField() {
+  final localization = Provider.of<LocalizationProvider>(context);
+  return SizedBox(
+    child: TextFormField(
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']")) // Blocks # & '
+      ],
+      controller: _emailController,
+      decoration: InputDecoration(
+        labelText: localization.translate('Email'),
+        labelStyle: const TextStyle(color: Colors.black),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
-        enabled: true,
       ),
-    );
-  }
+      enabled: true,
+      keyboardType: TextInputType.emailAddress,
+      autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation on typing
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter email';
+        }
+        // Regular expression for email validation
+        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+        if (!emailRegex.hasMatch(value)) {
+          return 'Please enter a valid email';
+        }
+        return null;
+      },
+    ),
+  );
+}
+
 
  Widget _buildPhoneNumberField() {
   final localization = Provider.of<LocalizationProvider>(context);
