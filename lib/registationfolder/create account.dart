@@ -412,14 +412,26 @@ Future<void> submitForm() async {
                   SizedBox(height: screenHeight * 0.02),
                   _buildPhoneField(),
                   SizedBox(height: screenHeight * 0.02),
+
+
                   buildTextFormField(
                     _controlleremail,
                     localization.translate("Email(Optional)"),
                     Icons.email_outlined,
                     TextInputType.emailAddress,
-                    (value) {
-                      return null;
-                    },
+                    
+                  (value) {
+  if (value == null || value.isEmpty) {
+    return null; // 
+  }
+  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  if (!emailRegex.hasMatch(value)) {
+    return 'Please enter a valid email'; // 
+  }
+  return null; // 
+},
+
+                    
                   ),
                   SizedBox(height: screenHeight * 0.02),
                 ],

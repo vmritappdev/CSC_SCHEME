@@ -35,6 +35,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:http/http.dart' as http;
@@ -66,13 +67,38 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+
+  final RefreshController _refreshController = RefreshController();
+
+void _onRefresh() async {
+  try {
+    loadUserDetails(); 
+    _loadButtonState();
+    fetchRates();
+    _fetchVerificationResponse();
+   
+  } catch (e) {
+    print("Error during refresh: $e");
+  } finally {
+    _refreshController.refreshCompleted();
+  }
+}
+
+  
+
   bool _backButtonPressedOnce = false;
+
+  
+
+DateTime? _lastBackPressTime;
 
    
  VerificationResponse? verificationResponse;
 
   int _selectedIndex = 0;
 
+
+  
   void _navigateTo(int index) {
   // Select the tab icon
   setState(() => _selectedIndex = index);
@@ -540,6 +566,8 @@ Future<void> closePopupAPI() async {
     });
   }
 
+  
+
 
 
   
@@ -549,7 +577,7 @@ Future<void> closePopupAPI() async {
   Widget build(BuildContext context) {
 
     
- final localization = Provider.of<LocalizationProvider>(context);
+ final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
  
     
@@ -557,28 +585,87 @@ Future<void> closePopupAPI() async {
     final double screenHeight = MediaQuery.of(context).size.height;
     const double padding = 2.0;
 
+    
+
 
     return WillPopScope(
-       onWillPop: () async {
-        if (_backButtonPressedOnce) {
-          // రెండవ click, app close చేయి
-          SystemNavigator.pop();
-          return true;
-        } else {
-          // మొదటి click, message చూపించు
-          _backButtonPressedOnce = true;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Press back again to exit')),
-          );
 
-          // Flag 2 సెకన్ల తర్వాత reset చేయి
-          Future.delayed(Duration(seconds: 2), () {
-            _backButtonPressedOnce = false;
-          });
+    onWillPop: () async {
+  bool shouldExit = await showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) => Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 10,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.exit_to_app, size: 50, color: Colors.redAccent),
+            SizedBox(height: 16),
+            Text(
+              "Exit App?",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+             localization.translate("Are you sure you want to exit the app?"),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 25),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.teal,
+                    side: BorderSide(color: Colors.teal),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: Text(
+                    localization.translate("No"),
+                   style: TextStyle(fontSize: 16)),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  ),
+                  child: Text(
+                   localization.translate("Yes"), 
+                  style: TextStyle(fontSize: 16)),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    ),
+  );
 
-          return false; // app close కాకుండా వుండు
-        }
-      },
+  if (shouldExit) {
+    SystemNavigator.pop();
+  }
+
+  return false;
+},
+
+
       child: SafeArea(
         child: Scaffold(
           drawer: const NavigationDrawerScreen(),
@@ -665,603 +752,260 @@ Future<void> closePopupAPI() async {
           ),
           body: 
           
-         Column(
-            children: [
-              
-                 Padding(
-            padding: EdgeInsets.only(bottom: screenHeight * 0.01),
-            child: SizedBox(
-            
-              width: double.infinity,
-              
-              child: CarouselSlider.builder(
-                itemCount: images.length,
-                options: CarouselOptions(
-                  height: screenHeight * 0.16,
-                  viewportFraction: 1.0,
-                  autoPlay: true,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: false,
-                  autoPlayAnimationDuration: const Duration(milliseconds: 700),
-                  onPageChanged: (index, reason) {
-                    setState(() => activeIndex = index);
-                  },
-                  autoPlayInterval: const Duration(seconds: 3),
-                ),
-                itemBuilder: (context, index, realIndex) {
-                  final image = images[index];
-                  return Container(
-                    
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                   
-                    ),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                         // borderRadius: BorderRadius.circular(5),
-                          child: Image.asset(
-                            image, 
-                            fit: BoxFit.cover,
-                       width: double.infinity,
-                       height: screenHeight * 0.6, 
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 90),
-                        
-                          child: Center(
-                          child: buildIndicator()
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+         SmartRefresher(
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+      
+            header: WaterDropHeader(
+            complete: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+              Icon(Icons.check, color: Colors.green),
+              SizedBox(width: 8),
+              Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+              ],
             ),
+            waterDropColor: const Color.fromARGB(255, 4, 2, 29),
           ),
-                 
+           child: Column(
+              children: [
                 
+                   Padding(
+              padding: EdgeInsets.only(bottom: screenHeight * 0.01),
+              child: SizedBox(
               
-        
-        
-             // SizedBox(height: 20,),
-        
-              
-        
-              Text(
-                //"Today's Gold Rate",
-               localization.translate("Today's Gold Rate"),
-                style:GoogleFonts.lato(
-                  color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
-                  
-                )
-                // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
-                 ),
-        
-            //  SizedBox(height: 10,),
-        
-             
-        
-              
-           Container(
-          padding: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
-        vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
-          ),
-          decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-          ),
-          child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            // Gold Rate Card
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
-                    vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
+                width: double.infinity,
+                
+                child: CarouselSlider.builder(
+                  itemCount: images.length,
+                  options: CarouselOptions(
+                    height: screenHeight * 0.16,
+                    viewportFraction: 1.0,
+                    autoPlay: true,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: false,
+                    autoPlayAnimationDuration: const Duration(milliseconds: 700),
+                    onPageChanged: (index, reason) {
+                      setState(() => activeIndex = index);
+                    },
+                    autoPlayInterval: const Duration(seconds: 3),
                   ),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(2, 5, 62, 1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-          "${localization.translate("Gold")} $goldRate",
-          style: GoogleFonts.lato(
-        color: Colors.white,
-        fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-        fontWeight: FontWeight.bold,
-          ),
-        ),
-        
-                ),
-                Positioned(
-                  left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                  top: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                    height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/go.png'),
-                        fit: BoxFit.cover,
+                  itemBuilder: (context, index, realIndex) {
+                    final image = images[index];
+                    return Container(
+                      
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                     
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
-            // Silver Rate Card
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
-                    vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(2, 5, 62, 1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                     "${localization.translate("Silver")} $silverRate",
-                   // "Silver $silverRate",
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                  top: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                    height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/silver.png'),
-                        fit: BoxFit.cover,
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                           // borderRadius: BorderRadius.circular(5),
+                            child: Image.asset(
+                              image, 
+                              fit: BoxFit.cover,
+                         width: double.infinity,
+                         height: screenHeight * 0.6, 
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 90),
+                          
+                            child: Center(
+                            child: buildIndicator()
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-          ),
-        ),
-        
-        
-         // SizedBox(height: 10),
-        
-          
-        
-       Center(
-  child: (verificationResponse?.process == "pending" ||
-          verificationResponse?.process == "incomplete")
-      ? Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          decoration: BoxDecoration(
-            color: verificationResponse?.process == "pending"
-                ? Colors.orange.shade50
-                : Colors.red.shade50,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: verificationResponse?.process == "pending"
-                  ? Colors.orange
-                  : Colors.red,
-              width: 1,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Text Message
-              Expanded(
-                child: Text(
-                  verificationResponse?.process == "pending"
-                      ? "Transaction is pending. Please complete it to proceed."
-                      : localization.translate(
-                          "Your join scheme registration is still pending. Kindly complete your registration process."),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.030,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+                    );
+                  },
                 ),
               ),
-
-              //const SizedBox(width: 10),
-
-              // Button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8), // Small button
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          Scanner(activescheme: Activescheme(), rejectId: ''),
+            ),
+                   
+                  
+                
+                   
+                   
+               // SizedBox(height: 20,),
+                   
+                
+                   
+                Text(
+                  //"Today's Gold Rate",
+                 localization.translate("Today's Gold Rate"),
+                  style:GoogleFonts.lato(
+                    color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                    
+                  )
+                  // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
+                   ),
+                   
+              //  SizedBox(height: 10,),
+                   
+               
+                   
+                
+             Container(
+            padding: EdgeInsets.symmetric(
+                   horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
+                   vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
+            ),
+            decoration: BoxDecoration(
+                   borderRadius: BorderRadius.circular(10),
+            ),
+            child: SingleChildScrollView(
+                   scrollDirection: Axis.horizontal,
+                   child: Row(
+            children: [
+              // Gold Rate Card
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
+                      vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
                     ),
-                  );
-                },
-                child: Text(
-                  localization.translate('continue'),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width * 0.03,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(2, 5, 62, 1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+            "${localization.translate("Gold")} $goldRate",
+            style: GoogleFonts.lato(
+                   color: Colors.white,
+                   fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                   fontWeight: FontWeight.bold,
+            ),
+                   ),
+                   
                   ),
-                ),
+                  Positioned(
+                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                    top: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/go.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
+              // Silver Rate Card
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
+                      vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(2, 5, 62, 1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                       "${localization.translate("Silver")} $silverRate",
+                     // "Silver $silverRate",
+                      style: GoogleFonts.lato(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                    top: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/silver.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-        )
-      : const SizedBox.shrink(),
-),
-
-    
-        
-
-       /* 
-       Center(
-          child: verificationResponse == null || verificationResponse?.process == "complete"
-          ? const SizedBox.shrink() // No message displayed
-          : Row(
+                   ),
+            ),
+                   ),
+                   
+                   
+           // SizedBox(height: 10),
+                   
+            
+                   
+                  Center(
+             child: (verificationResponse?.process == "pending" ||
+            verificationResponse?.process == "incomplete")
+                 ? Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            decoration: BoxDecoration(
+              color: verificationResponse?.process == "pending"
+                  ? Colors.orange.shade50
+                  : Colors.red.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: verificationResponse?.process == "pending"
+                    ? Colors.orange
+                    : Colors.red,
+                width: 1,
+              ),
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Message (Marquee Text)
+                // Text Message
                 Expanded(
-                  flex: 1,
-                  child: verificationResponse?.process == "pending"
-                      ? SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-                          child: Marquee(
-                            text: "Transaction Pending",
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font
-                              fontWeight: FontWeight.bold,
-                            ),
-                            scrollAxis: Axis.horizontal,
-                            blankSpace: 200,
-                            velocity: 50,
-                            pauseAfterRound: const Duration(seconds: 2),
-                            startPadding: 10,
-                          ),
-                        )
-                      : verificationResponse?.process == "incomplete"
-                          ? SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-                              child: Marquee(
-                                text: localization.translate("Your join scheme registration is still pending. Kindly complete your registration process."),
-                                style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.035, // Dynamic font
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red,
-                                ),
-                                scrollAxis: Axis.horizontal,
-                                blankSpace: 200,
-                                velocity: 50,
-                                pauseAfterRound: const Duration(seconds: 2),
-                                startPadding: 10,
-                              ),
-                            )
-                          : const SizedBox.shrink(), // Fallback for other conditions
-                ),
-        
-        
-        
-                
-                
-                // Button (Dynamic Display)
-                if (verificationResponse?.process == "pending" ||
-                    verificationResponse?.process == "incomplete")
-        
-        
-                    
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: MediaQuery.of(context).size.width * 0.05, // Dynamic padding
-                    ),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.04, // Dynamic height
-                      width: MediaQuery.of(context).size.width * 0.3, // Dynamic width
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context, 
-                            MaterialPageRoute(
-                              builder: (context) => Scanner(activescheme: Activescheme(),rejectId: '',),
-                            ),
-                          );
-                        },
-                        child: Text(
-                         localization.translate('continue'),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.width * 0.03, // Dynamic font size
-                          ),
-                        ),
-                      ),
+                  child: Text(
+                    verificationResponse?.process == "pending"
+                        ? "Transaction is pending. Please complete it to proceed."
+                        : localization.translate(
+                            "Your join scheme registration is still pending. Kindly complete your registration process."),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.030,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
-        
-                  
-              ],
-            ),
-        ),
-
-     */
-        
-            Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
-              ),
-              child: Text(
-                localization.translate("Welcome Back"),
-                style: GoogleFonts.lato(
-                  color: const Color.fromRGBO(43, 49, 101, 1),
-                  fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ),
-          ],
-        ),
-        
-        Padding(
-          padding: EdgeInsets.only(
-            right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
-          ),
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)),
-              );
-            },
-            child: Image.asset(
-              'assets/images/person1.png',
-              color: const Color.fromRGBO(2, 5, 62, 1),
-              height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-            ),
-          ),
-        ),
-          ],
-        ),
-        
-        
-               Container(
-          padding: EdgeInsets.only(
-        left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
-          ),
-          alignment: Alignment.bottomLeft, 
-          child: Text(
-        '$firstName $lastName',
-        style: TextStyle(
-          fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-          color: Colors.blue,fontWeight: FontWeight.bold
-        ),
-        textAlign: TextAlign.start, // Left align for natural reading flow
-          ),
-        ),
-        
-        
-        
-             // SizedBox(height: 20,),
-              
-          Expanded(
-          child: LayoutBuilder(
-        builder: (context, constraints) {
-          int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
-          double spacing = getSpacing(constraints.maxWidth);
-        
-          return GridView.count(
-            padding: const EdgeInsets.all(13),
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: spacing,
-            mainAxisSpacing: spacing,
-            children: [
-              _buildGridButton(
-                'assets/images/schme.png',
-                localization.translate("Join Scheme"),
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SavingsAccountScreen(),
-                    ),
-                  );
-                },
-           context),
-              _buildGridButton(
-                'assets/images/myschme.png',
-                localization.translate("My Scheme"),
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoadingScreen(),
-                    ),
-                  );
-        
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PaymentCard(),
-                      ),
-                    );
-                  });
-                },
-             context ),
-              _buildGridButton(
-                'assets/images/pay.png',
-                localization.translate("Quick Pay"),
-                () {
-                  showGoldBottomSheet(context);
-                },
-            context  ),
-              _buildGridButton(
-                'assets/images/customre.png',
-                localization.translate("Contact Us"),
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoadingScreen(),
-                    ),
-                  );
-        
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CustomerCare(),
-                      ),
-                    );
-                  });
-                },
-             context ),
-              _buildGridButton(
-                'assets/images/transation.png',
-                localization.translate("Transactions"),
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoadingScreen(),
-                    ),
-                  );
-        
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Transaction(),
-                      ),
-                    );
-                  });
-                },
-             context ),
-              _buildGridButton(
-                'assets/images/browser.png',
-                localization.translate('Brochure'),
-                () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoadingScreen(),
-                    ),
-                  );
-        
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BrochureScreen(),
-                      ),
-                    );
-                  });
-                },
-             context ),
-            ],
-          );
-        },
-          ),
-        ),
-
-
-
-       /* 
-        
-      Center(
-  child: (verificationResponse?.process == "pending" ||
-          verificationResponse?.process == "incomplete")
-      ? Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.yellow.shade100,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.orangeAccent),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Message
-              Expanded(
-                child: Text(
-                  verificationResponse?.process == "pending"
-                      ? "Transaction Pending"
-                      : localization.translate(
-                          "Your join scheme registration is still pending. Kindly complete your registration process."),
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.030,
-                    fontWeight: FontWeight.bold,
-                    color: verificationResponse?.process == "pending"
-                        ? Colors.orange
-                        : Colors.red,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 10),
-
-              // Button
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.03,
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: ElevatedButton(
+           
+                //const SizedBox(width: 10),
+           
+                // Button
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8), // Small button
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Scanner(
-                          activescheme: Activescheme(),
-                          rejectId: '',
-                        ),
+                        builder: (context) =>
+                            Scanner(activescheme: Activescheme(), rejectId: ''),
                       ),
                     );
                   },
@@ -1270,25 +1014,384 @@ Future<void> closePopupAPI() async {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize:
-                          MediaQuery.of(context).size.width * 0.03,
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
                     ),
+                  ),
+                ),
+              ],
+            ),
+                   )
+                 : const SizedBox.shrink(),
+           ),
+           
+               
+                   
+           
+                  /* 
+                  Center(
+            child: verificationResponse == null || verificationResponse?.process == "complete"
+            ? const SizedBox.shrink() // No message displayed
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Message (Marquee Text)
+                  Expanded(
+                    flex: 1,
+                    child: verificationResponse?.process == "pending"
+                        ? SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+                            child: Marquee(
+                              text: "Transaction Pending",
+                              style: TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font
+                                fontWeight: FontWeight.bold,
+                              ),
+                              scrollAxis: Axis.horizontal,
+                              blankSpace: 200,
+                              velocity: 50,
+                              pauseAfterRound: const Duration(seconds: 2),
+                              startPadding: 10,
+                            ),
+                          )
+                        : verificationResponse?.process == "incomplete"
+                            ? SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+                                child: Marquee(
+                                  text: localization.translate("Your join scheme registration is still pending. Kindly complete your registration process."),
+                                  style: TextStyle(
+                                    fontSize: MediaQuery.of(context).size.width * 0.035, // Dynamic font
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                  scrollAxis: Axis.horizontal,
+                                  blankSpace: 200,
+                                  velocity: 50,
+                                  pauseAfterRound: const Duration(seconds: 2),
+                                  startPadding: 10,
+                                ),
+                              )
+                            : const SizedBox.shrink(), // Fallback for other conditions
+                  ),
+                   
+                   
+                   
+                  
+                  
+                  // Button (Dynamic Display)
+                  if (verificationResponse?.process == "pending" ||
+                      verificationResponse?.process == "incomplete")
+                   
+                   
+                      
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.05, // Dynamic padding
+                      ),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.04, // Dynamic height
+                        width: MediaQuery.of(context).size.width * 0.3, // Dynamic width
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                                builder: (context) => Scanner(activescheme: Activescheme(),rejectId: '',),
+                              ),
+                            );
+                          },
+                          child: Text(
+                           localization.translate('continue'),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.width * 0.03, // Dynamic font size
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                   
+                    
+                ],
+              ),
+                   ),
+           
+                */
+                   
+              Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+                   Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
+                ),
+                child: Text(
+                  localization.translate("Welcome Back"),
+                  style: GoogleFonts.lato(
+                    color: const Color.fromRGBO(43, 49, 101, 1),
+                    fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
-          ),
-        )
-      : const SizedBox.shrink(), // If not pending or incomplete, show nothing (no box)
-),
-
-*/
-       
-             // const SizedBox(height: 10),
-        
-        
+                   ),
+                   
+                   Padding(
+            padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
+            ),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)),
+                );
+              },
+              child: Image.asset(
+                'assets/images/person1.png',
+                color: const Color.fromRGBO(2, 5, 62, 1),
+                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+              ),
+            ),
+                   ),
             ],
-          ),
+                   ),
+                   
+                   
+                 Container(
+            padding: EdgeInsets.only(
+                   left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
+            ),
+            alignment: Alignment.bottomLeft, 
+            child: Text(
+                   '$firstName $lastName',
+                   style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+            color: Colors.blue,fontWeight: FontWeight.bold
+                   ),
+                   textAlign: TextAlign.start, // Left align for natural reading flow
+            ),
+                   ),
+                   
+                   
+                   
+               // SizedBox(height: 20,),
+                
+            Expanded(
+            child: LayoutBuilder(
+                   builder: (context, constraints) {
+            int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
+            double spacing = getSpacing(constraints.maxWidth);
+                   
+            return GridView.count(
+              padding: const EdgeInsets.all(13),
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              children: [
+                _buildGridButton(
+                  'assets/images/schme.png',
+                  localization.translate("Join Scheme"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SavingsAccountScreen(),
+                      ),
+                    );
+                  },
+             context),
+                _buildGridButton(
+                  'assets/images/myschme.png',
+                  localization.translate("My Scheme"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PaymentCard(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/pay.png',
+                  localization.translate("Quick Pay"),
+                  () {
+                    showGoldBottomSheet(context);
+                  },
+              context  ),
+                _buildGridButton(
+                  'assets/images/customre.png',
+                  localization.translate("Contact Us"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CustomerCare(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/transation.png',
+                  localization.translate("Transactions"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Transaction(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/browser.png',
+                  localization.translate('Brochure'),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BrochureScreen(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+              ],
+            );
+                   },
+            ),
+                   ),
+           
+           
+           
+                  /* 
+                   
+                 Center(
+             child: (verificationResponse?.process == "pending" ||
+            verificationResponse?.process == "incomplete")
+                 ? Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.yellow.shade100,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.orangeAccent),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Message
+                Expanded(
+                  child: Text(
+                    verificationResponse?.process == "pending"
+                        ? "Transaction Pending"
+                        : localization.translate(
+                            "Your join scheme registration is still pending. Kindly complete your registration process."),
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.030,
+                      fontWeight: FontWeight.bold,
+                      color: verificationResponse?.process == "pending"
+                          ? Colors.orange
+                          : Colors.red,
+                    ),
+                  ),
+                ),
+           
+                const SizedBox(width: 10),
+           
+                // Button
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Scanner(
+                            activescheme: Activescheme(),
+                            rejectId: '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      localization.translate('continue'),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize:
+                            MediaQuery.of(context).size.width * 0.03,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+                   )
+                 : const SizedBox.shrink(), // If not pending or incomplete, show nothing (no box)
+           ),
+           
+           */
+                  
+               // const SizedBox(height: 10),
+                   
+                   
+              ],
+            ),
+         ),
         
          bottomNavigationBar: Container(
           decoration: BoxDecoration(

@@ -255,6 +255,19 @@ Future<void> fetchAndSaveImage() async {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          automaticallyImplyLeading: false,
+          leading: BackButton(color: Colors.white,
+          onPressed: () {
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(activescheme: Activescheme()),
+
+              )
+            );
+          },
+          ),
+          
           title: Text(
           localization.translate("PROFILE DETAILS"),
             style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),

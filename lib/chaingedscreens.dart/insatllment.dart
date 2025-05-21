@@ -173,6 +173,7 @@ void _selectFirstUnpaidInstallment() {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+       print('API Response: $data');
       if (data['status'] == 200) {
         setState(() {
           balanceAmount = double.tryParse(data['balance_amount'].toString());
@@ -199,7 +200,7 @@ Color getStatusColor(String? status) {
 
   @override
   Widget build(BuildContext context) {
-   final localization = Provider.of<LocalizationProvider>(context);
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -385,9 +386,10 @@ Color getStatusColor(String? status) {
             ),
              Text(
             localization.translate('Pay Installment'),
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
             const SizedBox(width: 10),
+            
            Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
@@ -411,11 +413,12 @@ Color getStatusColor(String? status) {
         if (dueDays == 1) return localization.translate('DUE TOMORROW');
         if (dueDays! > 1) return 'DUE IN $dueDays DAYS';
         
-        return 'OVERDUE BY ${dueDays?.abs()} DAYS';
+       // return 'OVERDUE BY ${dueDays?.abs()} DAYS';
+       return '${localization.translate("OVERDUE BY")} ${dueDays?.abs()} ${localization.translate("DAYS")}';
        }(),
       style: const TextStyle(
       color: Colors.white,
-        fontSize: 12,
+        fontSize: 9,
         fontWeight: FontWeight.w500,
       ),
         ),
@@ -439,7 +442,7 @@ Color getStatusColor(String? status) {
             ),
              Text(
             localization.translate( 'Pay any amount') ,
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
           ],
         ),
@@ -592,6 +595,7 @@ onPressed: (installments[selectedInstallment]["status"] == "1" && dueDays != nul
 
        
       ? () async {
+         print("Due Days: $dueDays");
           // Step 1: Get amounts
           String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '');
           int enteredAmount = rawAmount.isNotEmpty ? double.parse(rawAmount).toInt() : 0;

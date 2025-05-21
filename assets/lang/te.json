@@ -598,6 +598,22 @@
  "Total Amount": "మొత్తం మొత్తం",
  "Download Sale Invoice":  "ఇన్వాయిస్‌ను డౌన్‌లోడ్",
 
+ "Payment Rejected":"చెల్లింపు తిరస్కరించబడింది",
+ "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"దురదృష్టవశాత్తు, మీ చెల్లింపును ప్రాసెస్ చేయలేకపోయాం. దయచేసి మీ చెల్లింపు వివరాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
+ "Retry Payment": "చెల్లింపును మళ్లీ ప్రయత్నించండి",
+ "Go to Home": "హోమ్‌కు వెళ్ళండి",
+ "Press back again to exit":"నిష్క్రమించడానికి మళ్లీ బ్యాక్ నొక్కండి",
+ "Are you sure you want to exit the app?": "మీరు ఖచ్చితంగా యాప్ నుండి బయటికి వెళ్లాలనుకుంటున్నారా?",
+ "Yes":"అవును",
+ "No":"కాదు",
+ "Exit App?":"యాప్ నుంచి నిష్క్రమించాలా?",
+ "Payment Successful": "చెల్లింపు విజయవంతం",
+ "Reason for Rejection":"తిరస్కరణకు కారణం",
+ "The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008": "మీరు అందించిన చెల్లింపు వివరాలు మా ఖాతాకు జమైనట్లు ధృవీకరించలేకపోయాము. దయచేసి మీ లావాదేవీ స్థితిని మరోసారి తనిఖీ చేసి, సరైన వివరాలను సమర్పించినట్లుగా నిర్ధారించండి. మరింత సమాచారం లేదా వివరణ కోసం, దయచేసి CSC Jewellers నిర్వాహకులను సంప్రదించండి. సంప్రదించండి: 94906 57008",
+ "OVERDUE BY":"కాలం ముగిసింది",
+"DUE TOMORROW": "ఈ రోజు బకాయి",
+"DAYS" : "రోజులు",
+"Search is available only in English":"శోధన కేవలం ఆంగ్లంలో మాత్రమే అందుబాటులో ఉంది",
 
 
 "✅ OTP Verified!": "✅ OTP ధృవీకరించబడింది!",

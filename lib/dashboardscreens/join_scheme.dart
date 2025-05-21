@@ -891,7 +891,7 @@ DateTime? selectedDate;
    
 
 
-  final localization = Provider.of<LocalizationProvider>(context);
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   
 
@@ -1020,10 +1020,10 @@ DateTime? selectedDate;
 
                    _buildTextField(
             controller: dobController,
-            label: ("Date of Birth*"),
+            label: (localization.translate("Date of Birth*")),
             validator: (value) {
           if (value == null || value.isEmpty) {
-            return ("Please enter Date of Birth");
+            return (localization.translate("Please enter Date of Birth"));
           }
           return null;
             },
@@ -1107,6 +1107,7 @@ DateTime? selectedDate;
                   
                     _buildTextField(
                        keyboardType: TextInputType.number,
+                       maxLength: 6,
                       onChanged: (value) {
                   if (value.length == 6) {
                     getPincodeDetails(value); // Trigger the API call when 6-digit pincode is entered
@@ -2072,6 +2073,7 @@ void _onIfscChanged(String ifsc) {
 
 
 Widget _buildTextField({
+  
   required TextEditingController controller,
   required String label,
   TextInputType? keyboardType,
@@ -2082,6 +2084,7 @@ Widget _buildTextField({
   String? Function(String?)? validator,
   void Function(String)? onChanged, // Add a validator parameter
 }) {
+  
   return Padding(
     padding: const EdgeInsets.only(bottom:  10.0),
     child: TextFormField(

@@ -78,8 +78,12 @@ bool isUnder18 = false;
   String? adharImage;
   String? panImage;
   String? nomineeImage;
-  String? nomineeimage;
+ // String? nomineeimage;
   bool isLoading = true;
+    File? _image;
+
+  final ImagePicker _picker = ImagePicker();
+
   List<String> relationships = ['Mother', 'Father', 'Brother', 'Sister', 'Wife', 'Husband','Other'];
 String? selectedRelationship;
 
@@ -219,9 +223,25 @@ Future<bool> checkInternet() async {
     'pan_no': panController.text,
     'scheme_type': 'Gold',
     'nominee_adhar': nomineeadharController.text,
-     'otherRelationship': otherController.text,
-     'gender': selectedGender ?? '' ,
+    'otherRelationship': otherController.text,
+    'gender': selectedGender ?? '' ,
   };
+
+
+
+    panImage = (body['pan_image'] != null && body['pan_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${body['pan_image']}'
+              : '';
+
+          adharImage = (body['adhar_image'] != null && body['adhar_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${body['adhar_image']}'
+              : '';
+
+          nomineeImage = (body['nominee_adhar_image'] != null &&
+                  body['nominee_adhar_image']?.isNotEmpty == true)
+              ? '$baseUrl/images/${body['nominee_image']}'
+              : '';
+
 
   print("📤 Request Body: $body");
 
@@ -538,16 +558,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                     
 
                     
-                   _buildDocumentRow(
-  localization.translate("Nominee Adhar Number*"),
-  nomineeadharController,
-  nomineeImage,
-  12,
-  
-  true, // isPanCard
-  readOnly: false, // 👈 ఇది కొత్త parameter
-),
-
+                  buildnominee(),
 
                     //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
 
@@ -835,7 +846,90 @@ Widget genderDropdown(BuildContext context) {
 
 
 
+Future<void> _pickImage1(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Wrap(
+        children: [
+          ListTile(
+            leading: Icon(Icons.camera_alt),
+            title: Text("Camera"),
+            onTap: () {
+              Navigator.pop(context);
+              _pickImage1(ImageSource.camera);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.photo_library),
+            title: Text("Gallery"),
+            onTap: () {
+              Navigator.pop(context);
+              _pickImage1(ImageSource.gallery );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
 
- 
+
+
+
+Widget buildnominee() {
+  return Row(
+    children: [
+      Expanded(
+        child: TextField(
+          maxLength: 12,
+          controller: nomineeadharController,
+          decoration: InputDecoration(
+            counterText: '',
+            labelText: 'Nominee Adhar Number',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+      SizedBox(width: 5),
+      GestureDetector(
+        onTap: _showImageSourceOptions,
+        child: Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(1),
+          ),
+          child: _image != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.file(
+                    _image!,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : (nomineeImage != null && nomineeImage!.isNotEmpty)
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        nomineeImage!,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Icon(Icons.add_a_photo),
+        ),
+      ),
+    ],
+  );
+}
+
 }

@@ -54,9 +54,27 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
   String mpin = '';
   String confirmMpin = '';
   String errorMessage = '';
+   String? savedMobileNumber; // ✅ Add this
+
 
 final TextEditingController _mpinController = TextEditingController();
 final TextEditingController _confirmMpinController = TextEditingController();
+
+
+Future<void> _loadSavedMobileNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? number = prefs.getString('phoneNumber');
+    setState(() {
+      savedMobileNumber = number;
+    });
+    print("✅ Saved mobile number in CreateMpinScreen5: $savedMobileNumber");
+  }
+
+  @override
+  void initState() {
+  super.initState();
+  _loadSavedMobileNumber(); // ✅ Load mobile number on start
+  }
 
 
 

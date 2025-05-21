@@ -1,8 +1,10 @@
 
 import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PaymentRejectedScreen extends StatefulWidget {
    final String rejectId;
@@ -19,13 +21,15 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
+       final localization = Provider.of<LocalizationProvider>(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.redAccent,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Payment Rejected",
+         localization.translate("Payment Rejected"),
           style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
         ),
         leading: const BackButton(color: Colors.white),
@@ -44,7 +48,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
             SizedBox(height: screenHeight * 0.03),
             // Main Message
             Text(
-              "Payment Rejected!",
+             localization.translate("Payment Rejected"),
               style: TextStyle(
                 fontSize: screenWidth * 0.06,
                 fontWeight: FontWeight.bold,
@@ -54,7 +58,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
             SizedBox(height: screenHeight * 0.02),
             // Subtext for explanation
             Text(
-              "Unfortunately, your payment could not be processed. Please check your payment details and try again.",
+           localization.translate("Unfortunately, your payment could not be processed. Please check your payment details and try again."),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black54),
             ),
@@ -80,7 +84,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
                 minimumSize: Size(double.infinity, screenHeight * 0.06),
               ),
               child: Text(
-                "Retry Payment",
+               localization.translate("Retry Payment"),
                 style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.045),
               ),
             ),
@@ -104,7 +108,7 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
                 minimumSize: Size(double.infinity, screenHeight * 0.06),
               ),
               child: Text(
-                "Go to Home",
+           localization.translate("Go to Home"),
                 style: TextStyle(color: Colors.redAccent, fontSize: screenWidth * 0.045),
               ),
             ),

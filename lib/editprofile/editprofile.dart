@@ -439,11 +439,11 @@ Future<bool> checkInternet() async {
   return SizedBox(
     child: TextFormField(
       inputFormatters: [
-        FilteringTextInputFormatter.deny(RegExp(r"[#&']")) // Blocks # & '
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']")), // Blocks # & '
       ],
       controller: _emailController,
       decoration: InputDecoration(
-        labelText: localization.translate('Email'),
+        labelText: localization.translate('Email (Optional)'),
         labelStyle: const TextStyle(color: Colors.black),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
@@ -452,17 +452,16 @@ Future<bool> checkInternet() async {
       ),
       enabled: true,
       keyboardType: TextInputType.emailAddress,
-      autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation on typing
+      autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter email';
+        if (value == null || value.trim().isEmpty) {
+          return null; // Optional, so no error on empty
         }
-        // Regular expression for email validation
         final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(value)) {
+        if (!emailRegex.hasMatch(value.trim())) {
           return 'Please enter a valid email';
         }
-        return null;
+        return null; // Valid email
       },
     ),
   );

@@ -678,6 +678,25 @@
     "Download Sale Invoice":"Download Sale Invoice",
 
 
+    "Payment Rejected":"Payment Rejected",
+    "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"Unfortunately, your payment could not be processed. Please check your payment details and try again.",
+    "Retry Payment":"Retry Payment",
+    "Go to Home":"Go to Home",
+    "Press back again to exit":"Press back again to exit",
+    "Are you sure you want to exit the app?":"Are you sure you want to exit the app?",
+    "Yes":"Yes",
+    "No":"No",
+    "Exit App?":"Exit App?",
+    "Payment Successful":"Payment Successful",
+    "Reason for Rejection":"Reason for Rejection",
+    "The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008":"The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008",
+    "OVERDUE BY":"OVERDUE BY",
+    "DUE TOMORROW":"DUE TOMORROW",
+    "DAYS" :"DAYS" ,
+    "Search is available only in English":"Search is available only in English",
+    
+
+
   "Payment Details": "Payment Details",
   "Payment Type": "Payment Type",
   "UPI": "UPI",

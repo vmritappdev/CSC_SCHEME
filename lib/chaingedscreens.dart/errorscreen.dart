@@ -6,9 +6,9 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ Pure white background
-      appBar: AppBar(
-        backgroundColor: Colors.white, // ✅ Pure white AppBar
+    backgroundColor: Colors.white, // ✅ Pure white background
+    appBar: AppBar(
+    backgroundColor: Colors.white, // ✅ Pure white AppBar
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
