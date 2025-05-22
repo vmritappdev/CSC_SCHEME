@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 
 import 'package:csc/api_services.dart/installment_api.dart';
@@ -59,13 +60,20 @@ final TextEditingController _amountController = TextEditingController(text: '');
  String formatAmount(String value) {
   try {
     final formatter = NumberFormat('#,##0', 'en_IN');
-    String rawAmount = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-    return formatter.format(int.parse(value.replaceAll(',', '')));
-  } catch (_) {
+    // Only remove commas and spaces, keep decimal point
+    final cleaned = value.replaceAll(',', '').trim();
+
+    final number = double.tryParse(cleaned);
+    if (number == null) return '0';
+
+    return formatter.format(number);
+  } catch (e) {
     return value;
   }
 }
+
+
 
 
 
@@ -112,27 +120,27 @@ Future<void> _fetchInstallmentDetails() async {
 
 // This method selects the first unpaid installment and fetches the balance and due days
 void _selectFirstUnpaidInstallment() {
-  setState(() {
-    selectedInstallment = -1;
-  });
-
   for (int i = 0; i < installments.length; i++) {
     if (installments[i]["payment_status"] != "Paid") {
       setState(() {
         selectedInstallment = i;
       });
 
-      // Fetch extra data for selected installment
       fetchBalanceAndDays(
         widget.schemeId,
         installments[i]["month"].toString(),
         installments[i]["year"].toString(),
       ).then((extraData) {
-
+        // handle if needed
       });
-      break;
+      return; // Stop after finding first unpaid
     }
   }
+
+  // If all are paid
+  setState(() {
+    selectedInstallment = -1;
+  });
 }
 
 
@@ -177,8 +185,9 @@ void _selectFirstUnpaidInstallment() {
       if (data['status'] == 200) {
         setState(() {
           balanceAmount = double.tryParse(data['balance_amount'].toString());
+
           dueDays = int.tryParse(data['days'].toString());
-           paidAmount = double.tryParse(data['paid_amount'].toString());
+          paidAmount = double.tryParse(data['paid_amount'].toString());
         });
       }
     } else {
@@ -218,7 +227,7 @@ Color getStatusColor(String? status) {
               style: const TextStyle(fontSize: 16)),
               const SizedBox(height: 10),
               Expanded(
-                child: isLoading
+                child: isLoading || selectedInstallment == -1
                     ? Center(child: Image.asset('assets/images/gif.gif',height: 100,width: 100,)) // Loader
                     : ListView.builder(
         itemCount: installments.length,
@@ -441,7 +450,7 @@ Color getStatusColor(String? status) {
               activeColor: const Color(0xFF2B004B),
             ),
              Text(
-            localization.translate( 'Pay any amount') ,
+            localization.translate( 'Pay any amount'),
               style: TextStyle(fontSize: 14),
             ),
           ],
@@ -509,72 +518,118 @@ Color getStatusColor(String? status) {
       )
       
               ),
+
+
+
+              
+
+
+              
       
-              if (dueDays != null && dueDays! >= 60)
-       Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(vertical: 0),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF3E0),
-                        border: Border.all(color: const Color(0xFFFF9800), width: 1.5),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.orange.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child:  Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
-                              SizedBox(width: 8),
-                              Text(
-                               localization.translate('Payment Access Disabled'),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFFEF6C00),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                           localization.translate('You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Color(0xFF5D4037),
-                              height: 1.4,
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
-                              SizedBox(width: 6),
-                              Text(
-                               localization.translate('Admin Contact: 94906 57008'),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFBF360C),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-              if (installments.isNotEmpty &&
-                  selectedInstallment != -1 &&
-                  installments[selectedInstallment]["payment_status"] != "Paid")
+Column(
+  children: [
+    // First Condition: dueDays < -60
+    if (dueDays != null && dueDays! < -60)
+      Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 0),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF3E0),
+          border: Border.all(color: const Color(0xFFFF9800), width: 1.5),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withOpacity(0.2),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
+                SizedBox(width: 8),
+                Text(
+                  localization.translate('Payment Access Disabled'),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFEF6C00),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              localization.translate(
+                  'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
+              style: TextStyle(
+                fontSize: 11,
+                color: Color(0xFF5D4037),
+                height: 1.4,
+              ),
+            ),
+            SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
+                SizedBox(width: 6),
+                Text(
+                  localization.translate('Admin Contact: 94906 57008'),
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFFBF360C),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+
+    // Second Condition: count > 0
+   if (selectedInstallment >= 0 &&
+    selectedInstallment < installments.length &&
+    int.tryParse(installments[selectedInstallment]['count'].toString()) != null &&
+    int.parse(installments[selectedInstallment]['count'].toString()) > 0)
+  Container(
+    margin: const EdgeInsets.only(top: 12),
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: Colors.blue.shade50,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.blueAccent),
+    ),
+    child: Row(
+      children: [
+        Icon(Icons.info_outline, size: 16, color: Colors.blueAccent),
+        SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            localization.translate(
+              'Admin will accept or reject your previous payment. You can proceed with the next payment only after that.',
+            ),
+            style: TextStyle(fontSize: 11, color: Colors.blue.shade900),
+          ),
+        ),
+      ],
+    ),
+  ),
+
+  ],
+),
+
+
+                    
+             if (installments.isNotEmpty &&
+    selectedInstallment != -1 &&
+     installments.length > selectedInstallment &&
+    installments[selectedInstallment]["payment_status"] != "Paid")
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -694,8 +749,13 @@ onPressed: (installments[selectedInstallment]["status"] == "1" && dueDays != nul
       int installmentAmount = double.parse(installments[selectedInstallment]["amount"].toString()).toInt();
       int balAmount = balanceAmount?.toInt() ?? 0;
       String paymentStatus = installments[selectedInstallment]["payment_status"].toString();
+     String countStr = installments[selectedInstallment]['count'].toString();
+      int count = int.tryParse(countStr) ?? 0;
       
       String finalAmount;
+
+
+      
       
       // Custom entered amount (Pay Any Amount)
       if (selectedOption == 'any' && rawAmount.isNotEmpty) {

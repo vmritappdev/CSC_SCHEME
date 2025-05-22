@@ -97,6 +97,7 @@ Future<void> loadImagePath() async {
 
   // Function to pick image from Gallery or Camera
 Future<void> _pickImage() async {
+  
   final choice = await showDialog<int>(
     context: context,
     builder: (context) {

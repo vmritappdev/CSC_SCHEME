@@ -496,12 +496,15 @@ double screenHeight = MediaQuery.of(context).size.height;
                      height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
                    ),
                   //  _buildTextField(dobController, localization.translate("Date of Birth*")),
+
                    _buildDateField(dobController, localization.translate("Date of Birth*")),
 
                    SizedBox(
                      height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                    ),
-                     _buildTextField(emailController, localization.translate("Email ID(Optional)")),
+
+
+                    _buildEmailField(),
 
                       SizedBox(
                      height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
@@ -773,6 +776,39 @@ Widget _buildNomineeRelationshipDropdown() {
   }
 
 
+Widget _buildEmailField() {
+  final localization = Provider.of<LocalizationProvider>(context);
+  return SizedBox(
+    child: TextFormField(
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']")), // Blocks # & '
+      ],
+      controller: emailController,
+      decoration: InputDecoration(
+        labelText: localization.translate("Email ID(Optional)"),
+        labelStyle: const TextStyle(color: Colors.black),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+      ),
+      enabled: true,
+      keyboardType: TextInputType.emailAddress,
+      autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation
+     validator: (value) {
+  if (value == null || value.trim().isEmpty) {
+    return null; // Optional field, empty is allowed
+  }
+  final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+  if (!emailRegex.hasMatch(value.trim())) {
+    return 'Please enter a valid email';
+  }
+  return null; // Valid email
+},
+
+    ),
+  );
+}
 
 
 

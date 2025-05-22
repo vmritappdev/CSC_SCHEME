@@ -420,15 +420,15 @@ Future<void> submitForm() async {
                     Icons.email_outlined,
                     TextInputType.emailAddress,
                     
-                  (value) {
+                 (value) {
   if (value == null || value.isEmpty) {
-    return null; // 
+    return null; // Optional field, so allow empty
   }
-  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
   if (!emailRegex.hasMatch(value)) {
-    return 'Please enter a valid email'; // 
+    return 'Please enter a valid email'; // Invalid format
   }
-  return null; // 
+  return null; // Valid email
 },
 
                     
@@ -492,6 +492,12 @@ Future<void> submitForm() async {
       ),
     );
   }
+
+
+
+
+
+
 
   // Build text form field method
   Widget buildTextFormField(

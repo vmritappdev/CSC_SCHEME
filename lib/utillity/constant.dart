@@ -3,14 +3,14 @@
 //PROD URL
 //const String baseUrl = "https://cscjewellers.com/nellore/scheme";
 
-  //import 'package:csc/config/app_config.dart';
+  import 'package:csc/config/app_config.dart';
 
- // var config = AppConfig.instance;
+  var config = AppConfig.instance;
 
 // Dev URL
- const String baseUrl = "https://vmrdemos.com/csc_scheme";
+ //const String baseUrl = "https://vmrdemos.com/csc_scheme";
 
- //String baseUrl = config.baseUrl;
+ String baseUrl = config.baseUrl;
 
 
 

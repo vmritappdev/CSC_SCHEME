@@ -453,16 +453,17 @@ Future<bool> checkInternet() async {
       enabled: true,
       keyboardType: TextInputType.emailAddress,
       autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return null; // Optional, so no error on empty
-        }
-        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(value.trim())) {
-          return 'Please enter a valid email';
-        }
-        return null; // Valid email
-      },
+     validator: (value) {
+  if (value == null || value.trim().isEmpty) {
+    return null; // Optional field, empty is allowed
+  }
+  final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+  if (!emailRegex.hasMatch(value.trim())) {
+    return 'Please enter a valid email';
+  }
+  return null; // Valid email
+},
+
     ),
   );
 }

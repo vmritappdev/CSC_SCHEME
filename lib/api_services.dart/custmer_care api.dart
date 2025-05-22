@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:csc/utillity/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ApiService {
-  final String baseUrl = 'https://vmrdemos.com/csc_scheme';
+  //final String baseUrl = 'https://vmrdemos.com/csc_scheme';
 
   Future<bool> checkInternet() async {
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -37,7 +38,10 @@ class ApiService {
         body: data,
       );
 
+      
+
       if (response.statusCode == 200) {
+         print('📦 API Response Body: ${response.body}');
         return json.decode(response.body);
       } else {
         return {'response': 'error', 'message': 'Failed to load data. Status code: ${response.statusCode}'};

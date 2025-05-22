@@ -365,24 +365,23 @@ Future<void> _fetchVerificationResponse() async {
 
 
 void showCompletePopup(VerificationResponse response) {
-  if (_popupShown) return; // Ensure only one popup at a time
+  if (_popupShown) return;
 
-  _popupShown = true; // Set flag immediately to avoid duplicates
+  _popupShown = true;
 
   showDialog(
     context: context,
-    barrierDismissible: false, // Prevent closing by tapping outside
+    barrierDismissible: false,
     builder: (BuildContext context) {
-      return WillPopScope( // Prevent back button dismissal
+      return WillPopScope(
         onWillPop: () async => false,
         child: AlertDialog(
           backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), 
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           title: Row(
             children: [
               Image.asset('assets/images/csc2.png', height: 40, width: 40),
               const SizedBox(width: 10),
-
               Text(
                 Provider.of<LocalizationProvider>(context, listen: false)
                     .translate("Payment Status"),
@@ -398,7 +397,7 @@ void showCompletePopup(VerificationResponse response) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // View Details Button
+                // View Details
                 SizedBox(
                   width: 150,
                   child: ElevatedButton(
@@ -416,14 +415,17 @@ void showCompletePopup(VerificationResponse response) {
                     ),
                   ),
                 ),
-                // OK Button
+                // OK
                 ElevatedButton(
-                  onPressed: () async {
-                    Navigator.of(context, rootNavigator: true).pop(); // Close the popup
-                    await closePopupAPI(); // Call API if needed
-                    Future.delayed(const Duration(milliseconds: 200), () {
-                      _popupShown = false; // Ensure popup flag resets after close
-                    });
+                  onPressed: () {
+                    // 1. Close popup
+                    Navigator.of(context, rootNavigator: true).pop();
+
+                    // 2. Immediately reset flag
+                    _popupShown = false;
+
+                    // 3. Call close API separately
+                    closePopupAPI();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
@@ -441,10 +443,10 @@ void showCompletePopup(VerificationResponse response) {
       );
     },
   ).then((_) {
-    // Ensure popup flag resets if closed unexpectedly
-    _popupShown = false;
+    _popupShown = false; // backup reset (in case)
   });
 }
+
 
 Future<void> closePopupAPI() async {
   final url = Uri.parse("$baseUrl/close_pop.php"); //"https://vmrdemos.com/csc_scheme/close_pop.php"

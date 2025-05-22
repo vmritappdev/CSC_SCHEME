@@ -231,8 +231,7 @@ Future<bool> checkInternet() async {
         final data = json.decode(response.body);
 
         if (data['response'] == 'success' && data['status'] == 200) {
-           String regId = data['reg_id']?.toString() ?? '';
-      print('✅ Installment Reg ID: $regId'); // ✅ reg_id print here
+         
           setState(() {
             installmentLabel = data['installment'] ?? 'No Installment';
             installmentAmount = data['amount']?.toString() ?? '0.00'; 
@@ -534,41 +533,43 @@ Column(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-               localization.translate('Scheme Amount'),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth * 0.045,
-                ),
+              Column(
+                children: [
+                  Text(
+                   localization.translate('Scheme Amount'),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.045,
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.only(right: screenWidth * 0.090),
+                    child: Text(installmentid),
+                  ),
+                ],
               ),
-             Text(
-  ': Rs. ${widget.activescheme.amountRs.isNotEmpty == true
-      ? widget.activescheme.amountRs
-      : widget.activescheme.balanceAmount.isNotEmpty == true
-          ? widget.activescheme.balanceAmount
-          : widget.activescheme.installmentAmount.isNotEmpty == true
-              ? widget.activescheme.installmentAmount
-              : installmentAmount}', // Use fetched value finally
-  style: TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: screenWidth * 0.045,
-  ),
-),
+             Column(
+               children: [
+                 Text(
+                   ': Rs. ${widget.activescheme.amountRs.isNotEmpty == true
+                       ? widget.activescheme.amountRs
+                       : widget.activescheme.balanceAmount.isNotEmpty == true
+                           ? widget.activescheme.balanceAmount
+                           : widget.activescheme.installmentAmount.isNotEmpty == true
+                  ? widget.activescheme.installmentAmount
+                  : installmentAmount}', // Use fetched value finally
+                   style: TextStyle(
+                     color: Colors.black,
+                     fontWeight: FontWeight.bold,
+                     fontSize: screenWidth * 0.045,
+                   ),
+                 ),
 
 
-
-            ],
-          ),
-        ),
-        Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-
-            Text(installmentid),
-            Padding(
-              padding: EdgeInsets.only(left: screenWidth * 0.00),
+                   Padding(
+            padding: EdgeInsets.only(left: screenWidth * 0.00),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -577,8 +578,21 @@ Column(
                 ),
               ),
             ),
-          ],
+               ],
+             ),
+
+
+
+
+
+
+            ],
+          ),
         ),
+        
+
+
+        
 
 
        
@@ -638,6 +652,45 @@ String _getSchemeAmount() {
     return '0';
   }
 }
+
+
+
+// Reusable UPI detail row
+Widget buildUpiRow(String label, String value, {VoidCallback? onCopy}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.35,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(color: Colors.black87),
+                ),
+              ),
+              if (onCopy != null)
+                IconButton(
+                  icon: const Icon(Icons.copy, size: 18, color: Colors.teal),
+                  onPressed: onCopy,
+                ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
 
 }

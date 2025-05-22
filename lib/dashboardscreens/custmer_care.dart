@@ -61,6 +61,7 @@ class _CustomerCareState extends State<CustomerCare> {
     super.initState();
     loadUserDetails();
     requestCallPermission();
+    
   }
 
 
@@ -314,7 +315,13 @@ Future<void> requestCallPermission() async {
                           const Color.fromRGBO(2, 5, 62, 1),
                         ),
                       ),
-                      onPressed: submitForm,
+                     // onPressed: submitForm,
+                     onPressed: () async {
+  print('📍 Submit button tapped');
+  await submitForm();
+},
+
+                      
                       child: Text(
                         localization.translate('SUBMIT'),
                         style: GoogleFonts.roboto(
