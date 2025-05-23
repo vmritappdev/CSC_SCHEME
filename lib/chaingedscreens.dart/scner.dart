@@ -12,6 +12,7 @@ import 'package:csc/upidetails/payment%20page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
@@ -95,7 +96,7 @@ class _ScannerState extends State<Scanner> {
     final newFile = await _selectedImage!.copy(newFilePath);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Image saved to: ${newFile.path}")),
+    SnackBar(content: Text("Image saved to: ${newFile.path}")),
     );
   }
 
@@ -235,7 +236,7 @@ Future<bool> checkInternet() async {
           setState(() {
             installmentLabel = data['installment'] ?? 'No Installment';
             installmentAmount = data['amount']?.toString() ?? '0.00'; 
-            installmentid =  data['schemeId']?.toString() ?? '';
+            installmentid =  data['schemeNo']?.toString() ?? '';
              print("✅ Installment ID: $installmentid");
           });
         }
@@ -466,7 +467,7 @@ Column(
         const Text('A/C Holder:', style: TextStyle(fontWeight: FontWeight.w500)),
         Row(
           children: [
-            const Text('Chinni Srinivasulu Chetty Jewellers',style: TextStyle(fontSize: 12),),
+            Text('Chinni Srinivasulu Chetty Jewellers',style: TextStyle(fontSize: 12.sp),),
             IconButton(
               onPressed: () {
                 Clipboard.setData(const ClipboardData(text: 'Chinni Srinivasulu Chetty Jewellers'));

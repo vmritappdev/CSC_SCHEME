@@ -15,6 +15,7 @@ import 'package:csc/editprofile/editscheme.dart';
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -155,7 +156,7 @@ Future<void> verifyPaymentProcess() async {
 
     print("📱 Mobile Number for API: $mobileNumber");
 
-    final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
+    final url = Uri.parse('$baseUrl/payment_process_verification.php');
 
     try {
       final response = await http.post(
@@ -380,17 +381,7 @@ Future<void> verifyPaymentProcess() async {
           ),
 
 
-          IconButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Editscheme(schemeId: widget.schemeId,),
-      ),
-    );
-  },
-  icon: Icon(Icons.edit, color: Colors.red),
-),
+        
         ],
       ),
 
@@ -494,21 +485,35 @@ Future<void> verifyPaymentProcess() async {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.person, color: Colors.blue),
-                        const SizedBox(width: 8),
-  Text(
-            capitalizeEachWord(name), // Capitalize each word
-            style: GoogleFonts.lato(
-              color: const Color.fromRGBO(2, 5, 67, 1),
-              fontWeight: FontWeight.bold,
-              fontSize: 14 * MediaQuery.of(context).textScaleFactor,
-            ),
+                  Row(
+  children: [
+    const Icon(Icons.person, color: Colors.blue),
+    const SizedBox(width: 8),
+    Expanded(
+      child: Text(
+        capitalizeEachWord(name), // Capitalize each word
+        style: GoogleFonts.lato(
+          color: const Color.fromRGBO(2, 5, 67, 1),
+          fontWeight: FontWeight.bold,
+          fontSize: 14 * MediaQuery.of(context).textScaleFactor,
+        ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    IconButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Editscheme(schemeId: widget.schemeId),
           ),
+        );
+      },
+      icon: const Icon(Icons.edit, color: Colors.red),
+    ),
+  ],
+),
 
-                      ],
-                    ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -624,7 +629,7 @@ switch (status) {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04), // 4% of screen width
     
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -666,7 +671,7 @@ switch (status) {
                     amountRs: amount,
                     month: month,
                     year: year,
-                    payId: payId
+                    schemeID: id,
                     
                   ),
                   rejectId: payId,

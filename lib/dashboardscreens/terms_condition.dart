@@ -60,7 +60,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
     return SafeArea(
       child: WillPopScope(
-         onWillPop: () async {
+        onWillPop: () async {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen1()),

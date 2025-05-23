@@ -72,14 +72,14 @@ class _PaymentRejectedScreenState extends State<PaymentRejectedScreen> {
                   builder: (context) => Scanner(activescheme: Activescheme(
                     
                   ),rejectId: widget.rejectId,),
-                )
+                ),
               );
-              //  Navigator.pop(context); // Go back to previous screen
+             
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8),
                 ),
                 minimumSize: Size(double.infinity, screenHeight * 0.06),
               ),

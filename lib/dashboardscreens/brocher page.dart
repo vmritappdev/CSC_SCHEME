@@ -1,16 +1,22 @@
+import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class BrochureScreen extends StatelessWidget {
+class BrochureScreen extends StatefulWidget {
   const BrochureScreen({super.key});
 
   // → తెరవాల్సిన URL
-  static const brochureUrl = 'https://vmrdemos.com/csc_scheme/csc_logo.jpeg';
+  static const brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
 
+  @override
+  State<BrochureScreen> createState() => _BrochureScreenState();
+}
+
+class _BrochureScreenState extends State<BrochureScreen> {
   // URL launch helper
   Future<void> _openBrochureUrl(BuildContext context) async {
-    print('🔗 Button clicked → launching $brochureUrl');
-    final uri = Uri.parse(brochureUrl);
+    print('🔗 Button clicked → launching ${BrochureScreen.brochureUrl}');
+    final uri = Uri.parse(BrochureScreen.brochureUrl);
 
     try {
       final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);

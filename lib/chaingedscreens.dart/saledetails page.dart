@@ -28,7 +28,8 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
    String? sqlQuery = '';
 
-   
+    static const brochureUrl = '$baseUrl/sale_print_api.php';
+
 
    bool isLoading = false;
 
@@ -240,20 +241,9 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
 Center(
   child: ElevatedButton.icon(
-    onPressed: () async {
-      final Uri url = Uri.parse('$baseUrl/sale_print.php?id=${widget.saleId}');
-      final bool launched = await launchUrl(
-        url,
-        mode: LaunchMode.inAppWebView, // 👈 try this mode
-      );
-      if (!launched) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not launch download link')),
-        );
-      }
-    },
+    onPressed: () => _openBrochureUrl(context, widget.saleId), // 👈 Pass saleId here
     icon: const Icon(Icons.download),
-    label:  Text(localization.translate('Download Sale Invoice')),
+    label: Text(localization.translate('Download Sale Invoice')),
     style: ElevatedButton.styleFrom(
       backgroundColor: const Color(0xFF0A0E21),
       foregroundColor: Colors.white,
@@ -271,6 +261,29 @@ Center(
       ),
     );
   }
+
+
+Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
+  final uri = Uri.parse('$baseUrl/sale_print.php?id=$saleId');
+  print('🔗 Launching brochure URL: $uri');
+
+  try {
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch download link')),
+      );
+    }
+  } catch (e) {
+    print('[x] Error launching URL: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error opening URL: $e')),
+    );
+  }
+}
 
   Widget _buildSectionTitle(String title, bool isSmallScreen) {
     return Text(

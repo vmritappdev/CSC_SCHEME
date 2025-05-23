@@ -346,12 +346,12 @@ Future<bool> checkInternet() async {
                Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => PaymentRejectedScreen(rejectId: id,)), // Rejection screen
-               );
-               return; // Stop further execution
+          );
+          return; // Stop further execution
           }
                
           if (processStatus == "1") {
-               Navigator.push(
+          Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const PaymentVerificationScreen(id: '',)),
                );

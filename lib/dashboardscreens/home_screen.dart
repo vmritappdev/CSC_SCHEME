@@ -8,6 +8,7 @@ import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/insatllment.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/chaingedscreens.dart/installmentviewdetails.dart';
+import 'package:csc/dashboardscreens/custmer_status.dart';
 import 'package:csc/dashboardscreens/notification.dart';
 import 'package:csc/editprofile/crearempin3.dart';
 import 'package:csc/utillity/check%20internet.dart';
@@ -604,7 +605,7 @@ Future<void> closePopupAPI() async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.exit_to_app, size: 50, color: Colors.redAccent),
+           Image.asset('assets/images/csc2.png',height: 50,width: 50,color: const Color.fromARGB(255, 11, 2, 35),),
             SizedBox(height: 16),
             Text(
               "Exit App?",
@@ -1309,7 +1310,46 @@ Future<void> closePopupAPI() async {
                    },
             ),
                    ),
+
+                 //  SizedBox(height: 20,),
+
+                // GoldCardList(),
            
+
+  Container(
+  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  decoration: BoxDecoration(
+    border: Border.all(color: Colors.orange, width: 1.5),  
+    borderRadius: BorderRadius.circular(10),                
+    color: Colors.orange.shade50,                           
+  ),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        "📢   Overdue customers must pay today",
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.orange.shade900,
+        ),
+      ),
+
+
+      
+
+      Icon(Icons.clear,color: Colors.red,)
+    ],
+  ),
+),
+
+
+//SizedBox(height: 10,),
+
+                //GoldCardList(),
+
+              
+                  
            
            
                   /* 
