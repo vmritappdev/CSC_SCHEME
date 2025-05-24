@@ -366,9 +366,7 @@ Future<void> _fetchVerificationResponse() async {
 
 
 void showCompletePopup(VerificationResponse response) {
-  if (_popupShown) return;
-
-  _popupShown = true;
+  if (_popupShown || !mounted) return;
 
   showDialog(
     context: context,
@@ -377,8 +375,8 @@ void showCompletePopup(VerificationResponse response) {
       return WillPopScope(
         onWillPop: () async => false,
         child: AlertDialog(
-          backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          backgroundColor: Colors.white,
           title: Row(
             children: [
               Image.asset('assets/images/csc2.png', height: 40, width: 40),
@@ -398,43 +396,27 @@ void showCompletePopup(VerificationResponse response) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // View Details
-                SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PaymentCard()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    ),
-                    child: Text(
-                      Provider.of<LocalizationProvider>(context, listen: false).translate("View Details"),
-                      style: GoogleFonts.lato(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ),
-                ),
-                // OK
                 ElevatedButton(
                   onPressed: () {
-                    // 1. Close popup
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentCard()));
+                  },
+                  child: Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
                     Navigator.of(context, rootNavigator: true).pop();
-
-                    // 2. Immediately reset flag
+                    await Future.delayed(Duration(milliseconds: 100));
                     _popupShown = false;
-
-                    // 3. Call close API separately
                     closePopupAPI();
                   },
+                  child: Text("OK", style: TextStyle(fontSize: 14,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: Text(
-                    Provider.of<LocalizationProvider>(context, listen: false).translate("OK"),
-                    style: GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ],
@@ -444,7 +426,7 @@ void showCompletePopup(VerificationResponse response) {
       );
     },
   ).then((_) {
-    _popupShown = false; // backup reset (in case)
+    _popupShown = false;
   });
 }
 
@@ -605,12 +587,21 @@ Future<void> closePopupAPI() async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-           Image.asset('assets/images/csc2.png',height: 50,width: 50,color: const Color.fromARGB(255, 11, 2, 35),),
+          Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [Color.fromARGB(255, 13, 14, 70), Color.fromARGB(255, 33, 15, 76)],
+                    ),
+                  ),
+                  child: Image.asset('assets/images/csc2.png',height: 50,width: 50,color: Colors.white,)
+                ),
             SizedBox(height: 16),
             Text(
-              "Exit App?",
+              localization.translate("Exit App?"),
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
@@ -1162,7 +1153,7 @@ Future<void> closePopupAPI() async {
               },
               child: Image.asset(
                 'assets/images/person1.png',
-                color: const Color.fromRGBO(2, 5, 62, 1),
+                color: const Color.fromARGB(255, 3, 4, 19),
                 height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
               ),
             ),
@@ -1180,7 +1171,7 @@ Future<void> closePopupAPI() async {
                    '$firstName $lastName',
                    style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-            color: Colors.blue,fontWeight: FontWeight.bold
+            color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
                    ),
                    textAlign: TextAlign.start, // Left align for natural reading flow
             ),

@@ -43,9 +43,13 @@ class ActiveSchemeService {
         final data = json.decode(response.body);
 
  print("✅ Full Active Scheme Response: $data");
+ 
 
 
         if (data['response'] == 'success') {
+          print("✅ Full Active Scheme Response: ${data['active_schemes']}");
+  print("🔴 Full Closed Scheme Response: ${data['closed_schemes']}");
+  print("🟡 Full Suspended Scheme Response: ${data['suspended_schemes']}");
           final activeSchemes = (data['active_schemes'] as List)
           .map((e) => SchemeDetailsNew.fromJson(e))
           .toList();

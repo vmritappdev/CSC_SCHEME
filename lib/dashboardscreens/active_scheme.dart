@@ -57,9 +57,11 @@ class _PaymentCardState extends State<PaymentCard> {
 
    bool showDialogFlag = false;
 
+   
+
    bool isMyScreenCalled = false; // Add this at the top of your StatefulWidget class.
 
-String overdue = "no";
+ String overdue = "no";
  bool isButtonActive = false; // Track if button is clicked
 
  final ActiveSchemeService _service = ActiveSchemeService();
@@ -302,8 +304,10 @@ Future<void> loadSchemes() async {
  
 
 String getDueText(String dueDate, String schemeStatus) {
+
   // First check scheme status
   if (schemeStatus.toLowerCase() == "ready") {
+    
     return "Ready To Purchase";
   }else if (schemeStatus.toLowerCase() == "closed") {
     return "Scheme Closed";
@@ -476,12 +480,25 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
             localization.translate("Short Term - Great Benefits"),
           ],
           iconWidget: const Icon(Icons.check, color: Colors.green),
-          amount: localization.translate("Rs. ${schemeDetail.amount}"),
-           dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
-            ? getOverdueStatus(schemeDetail.dueDate) == "1"
-          ? "" // Don't show anything if overdue
-          : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
-            : "",
+
+  amount: localization.translate(
+  "Rs. ${['ready', "closed", 'suspended'].contains(schemeDetail.schemeStatus.toLowerCase()) 
+      ? schemeDetail.paid_amount 
+      : schemeDetail.amount}"
+),
+
+
+
+
+          dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
+    ? schemeDetail.schemeStatus.toLowerCase() == "ready"
+        ? localization.translate(
+            "Redeem your jewellery within ${schemeDetail.days} days")
+        : getOverdueStatus(schemeDetail.dueDate) == "1"
+            ? "" 
+            : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
+    : "",
+
         
         
           buttonText1: localization.translate("View details"),
@@ -504,7 +521,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
           name: schemeDetail.name,
           scheme_status: schemeDetail.schemeStatus,
           over_due_status: schemeDetail.overdue,
-          buttonText3: ('')
+          buttonText3: schemeDetail.paid_amount,
         );
             },
           ),

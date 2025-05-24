@@ -97,15 +97,17 @@ Future<void> loadImagePath() async {
 
   // Function to pick image from Gallery or Camera
 Future<void> _pickImage() async {
+
+  
   
   final choice = await showDialog<int>(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: const Text("Choose Option"),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
-          TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
+      title: const Text("Choose Option"),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
+        TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
         ],
       );
     },
