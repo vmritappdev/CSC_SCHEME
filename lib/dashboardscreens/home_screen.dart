@@ -1,4 +1,5 @@
- import 'dart:convert';
+ import 'dart:async';
+import 'dart:convert';
 
 
 
@@ -8,9 +9,9 @@ import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/insatllment.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/chaingedscreens.dart/installmentviewdetails.dart';
-import 'package:csc/dashboardscreens/custmer_status.dart';
+
 import 'package:csc/dashboardscreens/notification.dart';
-import 'package:csc/editprofile/crearempin3.dart';
+
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/aboutscreen.dart';
@@ -76,6 +77,7 @@ void _onRefresh() async {
     loadUserDetails(); 
     _loadButtonState();
     fetchRates();
+    _fetchNotificationCount();
     _fetchVerificationResponse();
    
   } catch (e) {
@@ -85,7 +87,8 @@ void _onRefresh() async {
   }
 }
 
-  
+  int _notificationCount = 0;  // initially 100 messages
+
 
   bool _backButtonPressedOnce = false;
 
@@ -104,7 +107,7 @@ DateTime? _lastBackPressTime;
   // Select the tab icon
   setState(() => _selectedIndex = index);
 
-  // Don't navigate if it's Home (index 0)
+  // Don'totficationavigate if it's Home (index 0)
   if (index == 0) return;
 
   Widget screen;
@@ -131,6 +134,35 @@ DateTime? _lastBackPressTime;
     setState(() => _selectedIndex = 0);
   });
 }
+
+
+
+
+ Future<void> _fetchNotificationCount() async {
+    final url = Uri.parse("$baseUrl/notifications.php");
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? mobileNumber = prefs.getString('phoneNumber');
+    try {
+      final response = await http.post(url, body: {
+        "mobile_no": mobileNumber,
+      });
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        if (jsonData['response'] == 'success') {
+          final count = int.tryParse(jsonData['count'].toString()) ?? 0;
+
+          
+          setState(() {
+            _notificationCount = count;
+          });
+        }
+      }
+    } catch (e) {
+      print("❌ Error fetching notification count: $e");
+    }
+  }
+
 
 
 
@@ -245,13 +277,16 @@ Future<String?> getMobileNumber() async {
 
 bool _popupShown = false; // To track if popup is already shown
 
-
+Timer? _notificationTimer;
 void _startPolling() {
   if (!_isPolling) return; // ✅ Stop if polling is off
 
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
       await _fetchVerificationResponse();
+       _notificationTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+    _fetchNotificationCount();
+  });
     
       _startPolling(); // Continue polling
     }
@@ -462,10 +497,15 @@ Future<void> closePopupAPI() async {
     _loadButtonState();
     fetchRates();
     _fetchVerificationResponse();
+    _fetchNotificationCount();
     
   _startPolling();
   
-  
+    @override
+void dispose() {
+  _notificationTimer?.cancel(); // Important to avoid memory leaks
+  super.dispose();
+}
     
     //closePopupAPI();
     
@@ -481,7 +521,7 @@ Future<void> closePopupAPI() async {
   
 
   Future<void> fetchRates() async { 
-    var url = "$baseUrl/get_rate.php";    //"https://vmrdemos.com/csc_scheme/get_rate.php"
+    var url = "$baseUrl/get_rate.php";    
 
      
 
@@ -576,81 +616,68 @@ Future<void> closePopupAPI() async {
     return WillPopScope(
 
     onWillPop: () async {
-  bool shouldExit = await showDialog(
-    barrierDismissible: false,
-    context: context,
-    builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 10,
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-          Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Color.fromARGB(255, 13, 14, 70), Color.fromARGB(255, 33, 15, 76)],
-                    ),
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
                   ),
-                  child: Image.asset('assets/images/csc2.png',height: 50,width: 50,color: Colors.white,)
                 ),
-            SizedBox(height: 16),
-            Text(
-              localization.translate("Exit App?"),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
               ),
-            ),
-            SizedBox(height: 10),
-            Text(
-             localization.translate("Are you sure you want to exit the app?"),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-            ),
-            SizedBox(height: 25),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.teal,
-                    side: BorderSide(color: Colors.teal),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
                   ),
-                  child: Text(
-                    localization.translate("No"),
-                   style: TextStyle(fontSize: 16)),
                 ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  ),
-                  child: Text(
-                   localization.translate("Yes"), 
-                  style: TextStyle(fontSize: 16)),
-                ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     ),
-  );
+  ),
+);
 
   if (shouldExit) {
     SystemNavigator.pop();
@@ -707,12 +734,13 @@ Future<void> closePopupAPI() async {
             height: MediaQuery.of(context).size.width * 0.08,  // Dynamic height based on screen width
             width: MediaQuery.of(context).size.width * 0.08,   // Dynamic width based on screen width
             decoration: BoxDecoration(
-        color: Colors.black, 
-        borderRadius: BorderRadius.circular(5),
+         color: Colors.blueGrey, 
+         borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
         child: Text(
-          Provider.of<LocalizationProvider>(context).languageCode,  // Show selected language code
+          'EN',
+         // Provider.of<LocalizationProvider>(context).languageCode,  // Show selected language code
           style: TextStyle(
             color: Colors.white,
             fontSize: MediaQuery.of(context).size.width * 0.05,  // Dynamic font size based on screen width
@@ -725,20 +753,52 @@ Future<void> closePopupAPI() async {
         
           SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Dynamic spacing
         
-         IconButton(
-              icon: Icon(
-                Icons.notifications,
-                color: Colors.white,
-                size: MediaQuery.of(context).size.width * 0.07,
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const NotificationScreen()),
-                );
-              },
+ GestureDetector(
+  onTap: () async {
+    final updatedUnreadCount = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationScreen()),
+    );
+
+    setState(() {
+      _notificationCount = updatedUnreadCount ?? 0;
+    });
+  },
+  child: Stack(
+    children: [
+      Icon(
+        Icons.notifications,
+        color: Colors.white,
+        size: MediaQuery.of(context).size.width * 0.07,
+      ),
+      if (_notificationCount > 0)
+        Positioned(
+          right: 6,
+          top: 6,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(12),
             ),
-        
+            constraints: const BoxConstraints(
+              minWidth: 22,
+            ),
+            child: Text(
+              _notificationCount > 99 ? '99+' : '$_notificationCount',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+    ],
+  ),
+),
+
+
           SizedBox(width: MediaQuery.of(context).size.width * 0.03), // Dynamic spacing
         ],
         
@@ -1302,11 +1362,9 @@ Future<void> closePopupAPI() async {
             ),
                    ),
 
-                 //  SizedBox(height: 20,),
 
-                // GoldCardList(),
            
-
+/*
   Container(
   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
   decoration: BoxDecoration(
@@ -1326,7 +1384,7 @@ Future<void> closePopupAPI() async {
         ),
       ),
 
-
+  
       
 
       Icon(Icons.clear,color: Colors.red,)
@@ -1334,92 +1392,8 @@ Future<void> closePopupAPI() async {
   ),
 ),
 
+*/
 
-//SizedBox(height: 10,),
-
-                //GoldCardList(),
-
-              
-                  
-           
-           
-                  /* 
-                   
-                 Center(
-             child: (verificationResponse?.process == "pending" ||
-            verificationResponse?.process == "incomplete")
-                 ? Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.yellow.shade100,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orangeAccent),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Message
-                Expanded(
-                  child: Text(
-                    verificationResponse?.process == "pending"
-                        ? "Transaction Pending"
-                        : localization.translate(
-                            "Your join scheme registration is still pending. Kindly complete your registration process."),
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.030,
-                      fontWeight: FontWeight.bold,
-                      color: verificationResponse?.process == "pending"
-                          ? Colors.orange
-                          : Colors.red,
-                    ),
-                  ),
-                ),
-           
-                const SizedBox(width: 10),
-           
-                // Button
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Scanner(
-                            activescheme: Activescheme(),
-                            rejectId: '',
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      localization.translate('continue'),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize:
-                            MediaQuery.of(context).size.width * 0.03,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-                   )
-                 : const SizedBox.shrink(), // If not pending or incomplete, show nothing (no box)
-           ),
-           
-           */
-                  
-               // const SizedBox(height: 10),
                    
                    
               ],
@@ -1444,7 +1418,7 @@ Future<void> closePopupAPI() async {
             label = localization.translate('Home');
             break;
           case 1:
-            imagePath = 'assets/images/inof.png';
+            imagePath = 'assets/images/info.png';
             label = localization.translate('About');
             break;
           case 2:

@@ -1,21 +1,24 @@
 class NotificationItem {
-  final String type;
   final String title;
   final String description;
-  final DateTime time;
+  final String date;
+  final String time;
   bool isRead;
-  final String?  imagePath;
-  final String? status;
-  final DateTime? expiry;
 
   NotificationItem({
-    required this.type,
     required this.title,
     required this.description,
+    required this.date,
     required this.time,
     this.isRead = false,
-    this. imagePath,
-    this.status,
-    this.expiry,
   });
+
+  factory NotificationItem.fromJson(Map<String, dynamic> json) {
+    return NotificationItem(
+      title: json['head'] ?? 'No Title',
+      description: json['matter'] ?? '',
+      date: json['date'] ?? 'N/A',
+      time: json['time'] ?? 'N/A',
+    );
+  }
 }

@@ -678,6 +678,16 @@
     "Download Sale Invoice":"Download Sale Invoice",
 
 
+
+    "Something went wrong!":"Something went wrong!",
+    "Please try again later.":"Please try again later.",
+    "Retry":"Retry",
+    "CSC App:":"CSC App",
+    "Are you sure do you want to exit?":"Are you sure do you want to exit?",
+    "CANCEL":"CANCEL",
+    "EXIT":"EXIT",
+
+
     "Payment Rejected":"Payment Rejected",
     "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"Unfortunately, your payment could not be processed. Please check your payment details and try again.",
     "Retry Payment":"Retry Payment",

@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,73 +96,113 @@ Future<void> loadImagePath() async {
 
 
 
-  // Function to pick image from Gallery or Camera
-Future<void> _pickImage() async {
+
+
 
   
-  
+  //File? _imageFile;
+
+Future<void> _pickImage() async {
   final choice = await showDialog<int>(
     context: context,
     builder: (context) {
       return AlertDialog(
-      title: const Text("Choose Option"),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
-        TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
-        ],
+        title: Text("Choose Option"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text("Gallery"),
+              onTap: () => Navigator.of(context).pop(1),
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text("Camera"),
+              onTap: () => Navigator.of(context).pop(2),
+            ),
+          ],
+        ),
       );
     },
   );
 
   if (choice == null) return;
 
-  XFile? pickedFile;
-  if (choice == 1) {
-    pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  } else if (choice == 2) {
-    pickedFile = await _picker.pickImage(source: ImageSource.camera);
+  final ImageSource source =
+      (choice == 1) ? ImageSource.gallery : ImageSource.camera;
+
+  // ✅ Permission Handling
+  Permission permission;
+  if (source == ImageSource.camera) {
+    permission = Permission.camera;
+  } else {
+    if (Platform.isAndroid) {
+      permission = Permission.photos; // Android 13+ support
+    } else {
+      permission = Permission.photos; // iOS
+    }
   }
 
-  if (pickedFile != null) {
-    // 👇 Show loader immediately
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
-    );
+  final status = await permission.request();
 
-    try {
-      // 👇 Upload image and handle path
+  if (!status.isGranted) {
+    Fluttertoast.showToast(
+      msg: "${permission.toString()} permission denied",
+      backgroundColor: Colors.red,
+    );
+    return;
+  }
+
+  try {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+
+    if (pickedFile != null) {
       File newImage = File(pickedFile.path);
+
+      // ✅ Show Loader
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Color.fromRGBO(2, 6, 67, 1),
+            ),
+          ),
+        ),
+      );
+
+      // Simulate upload/save
+      await Future.delayed(Duration(seconds: 1));
+
       setState(() {
         _image = newImage;
-        savedImageUrl = pickedFile!.path;
+        savedImageUrl = pickedFile.path;
       });
 
-      // Save image path and upload to server
-      await saveImagePath(pickedFile.path);
-      await updateProfileDetails(phoneNumber, newImage);
+      await saveImagePath(pickedFile.path); // Save locally
+      await updateProfileDetails(phoneNumber, newImage); // Upload to server
 
-      // 👇 Hide loader quickly after upload
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close loader
 
-      // 👇 Success message
       Fluttertoast.showToast(
-        msg: "Image uploaded successfully!",
+        msg: "Image updated successfully!",
         backgroundColor: Colors.green,
       );
-    } catch (e) {
-      // 👇 Hide loader quickly if error occurs
-      Navigator.of(context).pop();
-
-      // 👇 Error message
+    } else {
       Fluttertoast.showToast(
-        msg: "Failed to upload image!",
-        backgroundColor: Colors.red,
+        msg: "No image selected.",
+        backgroundColor: Colors.orange,
       );
     }
-  } else {
-    print("No image selected.");
+  } catch (e) {
+    Navigator.of(context).pop(); // Close loader if error
+    Fluttertoast.showToast(
+      msg: "Failed to pick image.",
+      backgroundColor: Colors.red,
+    );
   }
 }
 
@@ -307,7 +348,7 @@ Future<void> fetchAndSaveImage() async {
                   bottom: 0,
                   right: 0,
                   child: GestureDetector(
-                    onTap: _pickImage,
+                    onTap: () => _pickImage(),
                     child: const CircleAvatar(
                       radius: 16,
                       backgroundColor: Colors.white,
@@ -526,7 +567,7 @@ Future<void> fetchAndSaveImage() async {
 
   void _viewImage(BuildContext context) {
     if (savedImageUrl.isEmpty) {
-      _pickImage();
+     _pickImage();
       return;
     }
     showDialog(
@@ -566,7 +607,7 @@ Future<void> fetchAndSaveImage() async {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
-                    _pickImage();
+                 _pickImage();
                   },
                   child: const CircleAvatar(
                     backgroundColor: Colors.white,

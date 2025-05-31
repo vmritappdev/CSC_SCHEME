@@ -598,6 +598,16 @@
  "Total Amount": "మొత్తం మొత్తం",
  "Download Sale Invoice":  "ఇన్వాయిస్‌ను డౌన్‌లోడ్",
 
+
+
+ "Something went wrong!": "ఏదో తప్పు జరిగింది!",
+ "Please try again later.": "దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.",
+ "Retry": "ప్రయత్నించండి",
+ "CSC App": "సీఎస్‌సి యాప్",
+ "Are you sure do you want to exit?": "మీరు ఖచ్చితంగా యాప్ నుండి బయటికి వెళ్లాలనుకుంటున్నారా?",
+ "CANCEL": "రద్దు చేయండి",
+ "EXIT": "నిష్క్రమించండి",
+
  "Payment Rejected":"చెల్లింపు తిరస్కరించబడింది",
  "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"దురదృష్టవశాత్తు, మీ చెల్లింపును ప్రాసెస్ చేయలేకపోయాం. దయచేసి మీ చెల్లింపు వివరాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",
  "Retry Payment": "చెల్లింపును మళ్లీ ప్రయత్నించండి",

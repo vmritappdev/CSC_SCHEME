@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -163,6 +163,20 @@ Future<void> submitForm() async {
       _message = responseData['response'] == 'success'
           ? 'Success: ${responseData['message']}'
           : 'Error: ${responseData['faild']}';
+    });
+
+
+    if (responseData['response'] == 'success') {
+
+      _descriptionController.clear();
+      // Form reset cheyyali ante:
+      
+    }
+
+     Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _message = '';
+      });
     });
   }
 }

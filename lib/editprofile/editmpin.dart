@@ -33,7 +33,9 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
   bool _isOtpCorrect = false;
   bool _isOtpExpired = false;
   bool _isSendOtpDisabled = false;
-  final _pinFocusNode = FocusNode();      // optional – keeps keyboard open after clear
+  final _pinFocusNode = FocusNode(); 
+  
+       // optional – keeps keyboard open after clear
 
 
   int _timerSeconds = 30;
@@ -276,31 +278,42 @@ void _onResendOtp() {
               ),
               const SizedBox(height: 20),
               if (_isOtpVisible) ...[
-               Pinput(
-  length: 6,
+              TextFormField(
   controller: _controllerOtp,
-  androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
-  autofocus: true,
-  defaultPinTheme: PinTheme(
-    height: 50,
-    width: 45,
-    textStyle: const TextStyle(fontSize: 20, color: Colors.black),
-    decoration: BoxDecoration(
-    //  color: Colors.green.shade50, // Light green background
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: const Color.fromARGB(255, 12, 4, 30)), // Default green border
+  keyboardType: TextInputType.number,
+  maxLength: 6,
+  autofillHints: const [AutofillHints.oneTimeCode],
+   textAlign: TextAlign.center,
+  decoration: InputDecoration(
+    isDense: true,
+    //labelText: 'Enter OTP',labelStyle: TextStyle(fontSize: 14),
+    counterText: '',
+    hintText: 'Enter  OTP',hintStyle: TextStyle(fontSize: 12,letterSpacing: 32),
+    
+    contentPadding: const EdgeInsets.symmetric(vertical: 15, ),
+    border: OutlineInputBorder(
+      
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(
+        color: Color.fromARGB(255, 12, 4, 30),
+        width: 1,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: const BorderSide(
+        color: Color.fromARGB(255, 12, 4, 30),
+        width: 2,
+      ),
     ),
   ),
-  focusedPinTheme: PinTheme(
-    height: 50,
-    width: 45,
-    textStyle: const TextStyle(fontSize: 20, color: Colors.black),
-    decoration: BoxDecoration(
-      //color: Colors.green.shade100, // Slightly darker on focus
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: const Color.fromARGB(255, 12, 4, 30), width: 2), // Green border on focus
-    ),
-  ),
+  style: const TextStyle(fontSize: 20, color: Colors.black),
+  onChanged: (value) {
+    if (value.length == 6) {
+      print("OTP entered: $value");
+      // Trigger your OTP verification or open bottom sheet here
+    }
+  },
 ),
 
                 const SizedBox(height: 16),

@@ -1,10 +1,13 @@
+import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ErrorScreen extends StatelessWidget {
   const ErrorScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localization = Provider.of<LocalizationProvider>(context);
     return Scaffold(
     backgroundColor: Colors.white, // ✅ Pure white background
     appBar: AppBar(
@@ -27,8 +30,8 @@ class ErrorScreen extends StatelessWidget {
                 height: 200,
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Something went wrong!',
+               Text(
+               localization.translate('Something went wrong!'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -36,8 +39,8 @@ class ErrorScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Please try again later.',
+               Text(
+              localization.translate('Please try again later.'),
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -59,10 +62,10 @@ class ErrorScreen extends StatelessWidget {
 
                     Navigator.pop(context); // ✅ Go back to the previous screen
                   },
-                  child: const Text(
-                    'Retry',
+                  child:  Text(
+                   localization.translate('Retry'),
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       color: Colors.white, // ✅ Text color white
                     ),
                   ),

@@ -2293,31 +2293,26 @@ Widget _buildTextField1({
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                validator: (value) {
-                  if (isadhearRequired) {
-                    if (value == null || value.isEmpty) {
-                      return localization.translate("Please enter Adhar number");
-                    } else if (value.length != 12) {
-                      return localization.translate("Adhar number must be 12 digits");
-                    } else if (!RegExp(r'^\d{12}$').hasMatch(value)) {
-                      return localization.translate("Adhar number must contain only digits");
-                    }
-
-                    if (selectedImage == null &&
-                        (adharImage == null || adharImage!.isEmpty)) {
-                      return localization.translate("Please select Aadhaar card image");
-                    }
-                  } else {
-                    if ((value != null && value.isNotEmpty) || selectedImage != null) {
-                      if (value!.length != 12) {
-                        return localization.translate("Adhar number must be 12 digits");
-                      } else if (!RegExp(r'^\d{12}$').hasMatch(value)) {
-                        return localization.translate("Adhar number must contain only digits");
-                      }
-                    }
+                 validator: (value) {
+              if (isnomineeadhearRequired) {
+                  // Aadhaar number validation
+                  if (value == null || value.isEmpty) {
+                    return localization.translate("Please enter  adhar number");
+                  } else if (value.length != 12) {
+                    return localization.translate(" Nominee Adhar  must be 12 digits");
                   }
+                  // Aadhaar image validation
+                 
+                  }
+                  if (value == null || value.isEmpty) {
+                    return localization.translate("Please enter  adhar number");
+                  } else
+                if (selectedImage == null && (adharImage == null || adharImage!.isEmpty)) {
+                 return localization.translate("Please select  Aadhar card image");
+                }
                   return null;
                 },
+
               ),
             ),
             const SizedBox(width: 8),
@@ -2587,7 +2582,7 @@ Widget _buildTextField2({
                 maxLength: maxLength,
                 decoration: InputDecoration(
                   labelText: label,
-                  hintText: hintText,
+                  hintText: hintText,hintStyle: TextStyle(fontSize: 10),
                   counterText: "",
                   border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),

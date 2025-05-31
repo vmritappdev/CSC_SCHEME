@@ -24,21 +24,21 @@ void main() {
           child: child!,
         );
       },
-      home: const InstallmentScreen(schemeId: ''),
+      home: const InstallmentScreen2(schemeId: ''),
     ),
   );
 }
 
-class InstallmentScreen extends StatefulWidget {
+class InstallmentScreen2 extends StatefulWidget {
   final String schemeId;
 
-  const InstallmentScreen({super.key, required this.schemeId});
+  const InstallmentScreen2({super.key, required this.schemeId});
 
   @override
-  _InstallmentScreenState createState() => _InstallmentScreenState();
+  _InstallmentScreen2State createState() => _InstallmentScreen2State();
 }
 
-class _InstallmentScreenState extends State<InstallmentScreen> {
+class _InstallmentScreen2State extends State<InstallmentScreen2> {
   int selectedInstallment = -1; // First unpaid installment index
   List<Map<String, dynamic>> installments = [];
   bool isLoading = true; // Loader flag
@@ -238,7 +238,21 @@ Color getStatusColor(String? status) {
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
-        
+          child: SmartRefresher(
+            controller: _refreshController,
+        onRefresh: _onRefresh,
+
+          header: WaterDropHeader(
+          complete: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Icon(Icons.check, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+            ],
+          ),
+         waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+        ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -818,7 +832,7 @@ Color getStatusColor(String? status) {
                   ),
               ],
             ),
-          
+          ),
         ),
       ),
     );

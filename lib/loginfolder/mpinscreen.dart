@@ -254,13 +254,18 @@ Future<void> _submitForm(LocalizationProvider localization) async {
     return;
   }
 
-  if (currentMpin != currentConfirmMpin) {
-    setState(() {
-      errorMessage = localization.translate('MPINs do not match!');
-    });
-    _showErrorPopup(localization.translate('MPINs do not match!'));
-    return;
-  }
+ if (currentMpin != currentConfirmMpin) {
+  setState(() {
+    errorMessage = localization.translate('MPINs do not match!');
+    _mpinController.clear();
+    _confirmMpinController.clear();
+    mpin = '';
+    confirmMpin = '';
+  });
+  _showErrorPopup(localization.translate('MPINs do not match!'));
+  return;
+}
+
 
   mpin = currentMpin; // update class variable if needed
   confirmMpin = currentConfirmMpin;
@@ -380,10 +385,10 @@ Future<void> _submitForm(LocalizationProvider localization) async {
               children: [
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: constraints.maxWidth * 0.08, // Dynamic height
-                  width: constraints.maxWidth * 0.08,  // Dynamic width
+                  height: constraints.maxWidth * 0.09, // Dynamic height
+                  width: constraints.maxWidth * 0.09,  // Dynamic width
                   child: Lottie.asset(
-                    'assets/images/suc.json',
+                    'assets/images/suc2.json',
                     fit: BoxFit.cover,
                   ),
                 ),

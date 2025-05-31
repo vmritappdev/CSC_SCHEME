@@ -227,12 +227,17 @@ String processTimer(String remaingtimer) {
            leading: BackButton(
             color: Colors.white,
             onPressed: () {
-              Navigator.push(
+             
+
+             
+              Navigator.pushReplacement(
                 context, 
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(activescheme: Activescheme()),
                 )
               );
+
+              
             },
            ),
             backgroundColor: const Color.fromRGBO(43, 49, 101, 1),

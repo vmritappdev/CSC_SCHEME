@@ -6,7 +6,7 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinput/pinput.dart';
+
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -203,6 +203,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
       // ✅ Check for expiry (10 mins)
       if (otpReceivedTime != null && DateTime.now().difference(otpReceivedTime!).inMinutes >= 10) {
         _showErrorPopup("⌛OTP timer over, please resend");
+          _controllerOtp.clear(); // ❌ Clear OTP field
         setState(() {
           _isVerifyEnabled = false;
         });
@@ -214,6 +215,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
         _navigateToNextScreen();
       } else {
         _showErrorPopup("Invalid OTP");
+          _controllerOtp.clear(); // ❌ Clear OTP field
         setState(() {
           _isVerifyEnabled = false;
         });
@@ -284,13 +286,34 @@ class _ForgotScreenState extends State<ForgotScreen> {
               if (_isOtpVisible) ...[
                 const SizedBox(height: 20),
       
-                Pinput(
-                  controller: _controllerOtp,
-                  length: 6,
-                  onChanged: (pin) {
-                    _checkOtpMatch();
-                  },
-                ),
+               TextFormField(
+  controller: _controllerOtp,
+  keyboardType: TextInputType.number,
+  maxLength: 6,
+//  autofillHints: const [AutofillHints.oneTimeCode],
+  textAlign: TextAlign.center,
+  style: const TextStyle(fontSize: 20, color: Colors.black),
+  decoration: InputDecoration(
+    hintText: 'Enter OTP',hintStyle: TextStyle(fontSize: 14,letterSpacing: 32),
+   //labelText: 'Enter oTP',
+    counterText: '',
+    isDense: true,
+   // contentPadding: const EdgeInsets.symmetric(vertical: 15),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: Color.fromARGB(255, 9, 1, 34)),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(color: Color.fromARGB(255, 9, 1, 34), width: 2),
+    ),
+  ),
+  onChanged: (value) {
+    if (value.length == 6) {
+      _checkOtpMatch(); // same function as Pinput
+    }
+  },
+),
                 const SizedBox(height: 20),
       
                 Row(

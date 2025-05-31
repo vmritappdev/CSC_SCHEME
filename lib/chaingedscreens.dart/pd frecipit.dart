@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,10 +30,17 @@ class ReceiptPDFGenerator {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 200) {
+
+          final rawDate = data['date'];
+    final parsedDate = DateTime.tryParse(rawDate ?? '');
+    final formattedDate = parsedDate != null
+        ? DateFormat('dd MMM yyyy').format(parsedDate) // eg. 29 May 2025
+        : rawDate;
           return {
             'amount': data['amount'] ?? "Unknown",
             'payment_type': data['payment_type'] ?? "Unknown",
-            'date': data['date'] ?? "Unknown",
+            //'date': data['date'] ?? "Unknown",
+            'date': formattedDate, // ✅ formatted date here
             'scheme': data['scheme'] ?? "Unknown",
             'time': data['time'] ?? "Unknown",
             'transaction_no': data['transaction_no'] ?? "Unknown",
@@ -61,7 +69,7 @@ class ReceiptPDFGenerator {
   Future<void> generatePDF(BuildContext context) async {
     final pdf = pw.Document();
     final logo = pw.MemoryImage(
-      (await rootBundle.load('assets/images/cs.png')).buffer.asUint8List(),
+      (await rootBundle.load('assets/images/csc2.png')).buffer.asUint8List(),
     );
 
     final data = await fetchReceiptDetails();

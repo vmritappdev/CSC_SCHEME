@@ -308,22 +308,42 @@ void showError( String message) {
                   SizedBox(height: 20),
 
 
-                 Pinput(
-  length: 6,
+             TextFormField(
   controller: otpController,
-  focusNode: _pinFocus, 
-  onSubmitted: (_) => validateOtp(),
-  defaultPinTheme: PinTheme(
-    width: 56,
-    height: 56,
-    textStyle: TextStyle(fontSize: 20, color: Colors.black),
-    decoration: BoxDecoration(
-      border: Border.all(color: const Color.fromARGB(255, 9, 1, 34)),
-      borderRadius: BorderRadius.circular(8),
+  focusNode: _pinFocus,
+  keyboardType: TextInputType.number,
+  maxLength: 6,
+  autofillHints: const [AutofillHints.oneTimeCode],
+  
+   style: TextStyle(
+      fontSize: 18,
+      letterSpacing: 32, // for spaced digits look
+      fontWeight: FontWeight.bold,
     ),
-  ),
+  textAlign: TextAlign.center, // Center the OTP digits
+    decoration: InputDecoration(
+      counterText: '',
+      hintText: 'Enter OTP',
+      hintStyle: TextStyle(letterSpacing: 2,fontSize: 13),
+      contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(
+          color: Color.fromRGBO(2, 5, 67, 1),
+          width: 2,
+        ),
+      ),
+    ),
+  onChanged: (value) {
+    if (value.length == 6) {
+      validateOtp(); // Call your OTP validation function
+    }
+  },
+  onFieldSubmitted: (_) => validateOtp(),
 ),
-
                   TextButton(
                     onPressed: canResend ? () => sendOtp(mobileController.text.trim()) : null,
                     child: Text(

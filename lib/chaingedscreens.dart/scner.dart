@@ -270,6 +270,8 @@ Future<bool> checkInternet() async {
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
     final localization = Provider.of<LocalizationProvider>(context);
+    double labelWidth = screenWidth * 0.3; // ఉదాహరణకు 30% స్క్రీన్ వెడల్పు
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -332,162 +334,25 @@ Future<bool> checkInternet() async {
               SizedBox(height: screenHeight * 0.02),
 
           
-    const Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-                'UPI Details',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.teal,
-                ),
-              ),
-    ),
-            const SizedBox(height: 8),
-
-             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('UPI ID:', style: TextStyle(fontWeight: FontWeight.w500)),
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 45),
-                      child: Text('Chinnipavan-2@okhdfcbank'),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Clipboard.setData(const ClipboardData(text: 'Chinnipavan-2@okhdfcbank'));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('UPI ID copied')),
-                        );
-                      },
-                      icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const Text(
-      'Bank Details',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-        color: Colors.teal,
-      ),
-    ),
-   // const SizedBox(height: 8),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('Bank Name:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 130),
-              child: Text('HDFC Bank',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'HDFC Bank'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bank Name copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-  //  const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('Account No:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 95),
-              child: Text('50200103097351',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: '50200103097351'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account number copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-   // const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('IFSC Code:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 115),
-              child: Text('HDFC0002043',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'HDFC0002043'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('IFSC Code copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-   // const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('A/C Holder:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            Text('Chinni Srinivasulu Chetty Jewellers',style: TextStyle(fontSize: 12.sp),),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'Chinni Srinivasulu Chetty Jewellers'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account Holder copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-
-      SizedBox(height: screenHeight * 0.01),
-
    
-  ],
-),
+            
+
+            _buildDetailCard(
+          title: 'UPI Details',
+          entries: [
+            _buildCopyRow('UPI ID:', 'Chinnipavan-2@okhdfcbank', context,MediaQuery.of(context).size.width),
+          ],
+        ),
+
+_buildDetailCard(
+          title: 'Bank Details',
+          entries: [
+            _buildCopyRow('Bank Name:', 'HDFC Bank', context,MediaQuery.of(context).size.width),
+            _buildCopyRow('Account No:', '50200103097351', context,MediaQuery.of(context).size.width),
+            _buildCopyRow('IFSC Code:', 'HDFC0002043', context,MediaQuery.of(context).size.width),
+            _buildCopyRow('A/C Holder:', 'Chinni Srinivasulu Chetty Jewellers', context,MediaQuery.of(context).size.width),
+          ],
+        ),
 
 
 
@@ -515,6 +380,7 @@ Column(
           ),
         ),
       ),
+
     );
   }
 
@@ -541,7 +407,7 @@ Column(
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.045,
+                      fontSize: screenWidth * 0.040,
                     ),
                   ),
 
@@ -564,7 +430,7 @@ Column(
                    style: TextStyle(
                      color: Colors.black,
                      fontWeight: FontWeight.bold,
-                     fontSize: screenWidth * 0.045,
+                     fontSize: screenWidth * 0.040,
                    ),
                  ),
 
@@ -575,7 +441,7 @@ Column(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   installmentLabel,
-                  style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.04),
+                  style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.03),
                 ),
               ),
             ),
@@ -694,4 +560,78 @@ Widget buildUpiRow(String label, String value, {VoidCallback? onCopy}) {
 
 
 
+Widget _buildDetailCard({required String title, required List<Widget> entries}) {
+  return Card(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: GoogleFonts.lato(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              )),
+          const SizedBox(height: 8),
+          ...entries,
+        ],
+      ),
+    ),
+  );
 }
+
+Widget _buildCopyRow(String label, String value, BuildContext context,double screenWidth) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0), // కొంచెం పైకే దిగువకు gap
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center, // text vertical alignment center
+      children: [
+        SizedBox(
+         width: screenWidth * 0.3, // మీకు తగినట్టు adjust చేయండి
+          child: Text(
+            label,
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            value,
+            style: GoogleFonts.lato(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: value));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$label copied')),
+            );
+          },
+          icon: const Icon(Icons.copy, size: 14, color: Colors.teal),
+        ),
+      ],
+    ),
+  );
+}
+
+
+}
+   
+
+
+
+
+   

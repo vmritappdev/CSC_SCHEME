@@ -15,6 +15,7 @@ import 'package:csc/editprofile/editscheme.dart';
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/upidetails/payment%20verify.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
@@ -56,8 +57,8 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   final RefreshController _refreshController = RefreshController();
 
    void _onRefresh() async {
-  await fetchData(); // Wait for fresh data
-  _refreshController.refreshCompleted(); // Then complete refresh
+  await fetchData(); 
+  _refreshController.refreshCompleted(); 
 }
 
    //String mobile_number = "Loading...";
@@ -80,7 +81,7 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   List accountDetails = [];
   String message = "";
 
-   bool isNoRecordsFound = false; // Add this flag to track if no records are found.
+  bool isNoRecordsFound = false; // Add this flag to track if no records are found.
 
  // bool isMyScreenCalled = false; // Add this at the top of your StatefulWidget class.
   
@@ -270,7 +271,13 @@ Future<void> verifyPaymentProcess() async {
       child: Scaffold(
        // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.white),
+          //iconTheme: const IconThemeData(color: Colors.white),
+          leading: BackButton(
+            color: Colors.white,
+            onPressed: () {
+                Navigator.pop(context);
+            },
+          ),
           backgroundColor: headerBackgroundColor,
           centerTitle: true,
           title: Text(
@@ -648,71 +655,80 @@ switch (status) {
     ),
     
       
-    GestureDetector(
-    onTap: paymentStatusText == "Pay" 
-     // onTap: paymentStatusText == localization.translate("pay") // Compare with the localized string
-        ? () {
-            // Fetch required details from accountDetails
-            if (accountDetails.isNotEmpty) {
-              final String amount = accountDetails[0]['amount'] ?? '0'; // Assuming you want the first record
-              final String id = accountDetails[0]['id'] ?? '';
-              final String month = accountDetails[0]['month'] ?? '';
-              final String year = accountDetails[0]['year'] ?? '';
-              final String payId = accountDetails[0]['pay_id'] ?? ''; // Fetch the pay_id
-    
-              // Print the fetched details for verification
-              print("Reject clicked: Amount: $amount, ID: $id, Month: $month, Year: $year, Pay ID: $payid");
-    
-              // Pass the details to the next screen using arguments
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Scanner(activescheme: Activescheme(
-                    amountRs: amount,
-                    month: month,
-                    year: year,
-                    schemeID: id,
-                    
-                  ),
-                  rejectId: payId,
-                  ),
-    
-    
-                ),
-              );
-            } else {
-              print("No account details available");
-            }
-          }
-        : null, // For other statuses, no action will be triggered
-    child: Container(
-      padding: EdgeInsets.symmetric(
-        vertical: MediaQuery.of(context).size.height * 0.005,
-        horizontal: MediaQuery.of(context).size.width * 0.02,
-      ),
-      decoration: BoxDecoration(
-        color: paymentStatusText == "pay" ? Colors.green : paymentStatusColor, // Dynamic color
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            paymentStatusIcon,
+GestureDetector(
+  onTap: () {
+    Navigator.pop(context);
+    if (paymentStatusText == "Pay") {
+      if (accountDetails.isNotEmpty) {
+        final String amount = accountDetails[0]['amount'] ?? '0';
+        final String id = accountDetails[0]['id'] ?? '';
+        final String month = accountDetails[0]['month'] ?? '';
+        final String year = accountDetails[0]['year'] ?? '';
+        final String payId = accountDetails[0]['pay_id'] ?? '';
+
+        print("Pay clicked: Amount: $amount, ID: $id, Month: $month, Year: $year, Pay ID: $payId");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Scanner(
+              activescheme: Activescheme(
+                amountRs: amount,
+                month: month,
+                year: year,
+                schemeID: id,
+              ),
+              rejectId: payId,
+            ),
+          ),
+        );
+      } else {
+        print("No account details available");
+      }
+    } else if (paymentStatusText == "Process") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentVerificationScreen(id: payid),
+        ),
+      );
+    }
+  },
+  child: Container(
+    padding: EdgeInsets.symmetric(
+      vertical: MediaQuery.of(context).size.height * 0.005,
+      horizontal: MediaQuery.of(context).size.width * 0.02,
+    ),
+    decoration: BoxDecoration(
+      color: paymentStatusText == "Pay"
+          ? Colors.green
+          : paymentStatusText == "Process"
+              ? Colors.orange
+              : paymentStatusColor, // Fallback color
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          paymentStatusIcon,
+          color: Colors.white,
+          size: 12 * MediaQuery.of(context).textScaleFactor,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Text(
+          paymentStatusText,
+          style: GoogleFonts.lato(
             color: Colors.white,
-            size: 12 * MediaQuery.of(context).textScaleFactor,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
           ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-          Text(
-            paymentStatusText, // Dynamic status text
-            style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 12),
-          ),
-        ],
-      ),
-    
-    
+        ),
+      ],
     ),
-    ),
+  ),
+),
+
     
     ],
     ),
