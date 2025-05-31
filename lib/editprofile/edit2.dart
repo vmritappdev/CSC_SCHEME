@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/timezone.dart';
 
 void main() {
   runApp(
@@ -375,15 +376,15 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
           regId = details['reg_id'] ?? 'N/A';
 
            panImage = (details['pan_image'] != null && details['pan_image'].isNotEmpty)
-      ? 'https://vmrdemos.com/csc_scheme/images/${details['pan_image']}'
+      ? '$baseUrl/images/${details['pan_image']}'
       : '';
 
   adharImage = (details['adhar_image'] != null && details['adhar_image'].isNotEmpty)
-      ? 'https://vmrdemos.com/csc_scheme/images/${details['adhar_image']}'
+      ? '$baseUrl/images/${details['adhar_image']}'
       : '';
 
       nomineeImage = (details['nominee_adhar_image'] != null && details['nominee_adhar_image'].isNotEmpty)
-  ? 'https://vmrdemos.com/csc_scheme/images/${details['nominee_adhar_image']}'
+  ? '$baseUrl/images/${details['nominee_adhar_image']}'
   : '';
 
           });
@@ -468,7 +469,8 @@ double screenHeight = MediaQuery.of(context).size.height;
                   
                   
                   
-                      Align(child: Text('Edit Custmer Information',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
+                      Align(child: Text(localization.translate("Edit Customer Information"),
+                      style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
                       alignment: Alignment.bottomLeft,
                       ),
                   
@@ -477,17 +479,19 @@ double screenHeight = MediaQuery.of(context).size.height;
                   
                       Row(
                         children: [
-                          Text(
-                                "Scheme Amount: $schemeAmount",
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-                              ),
+                         Text(
+  "${localization.translate("Scheme Amount")} ₹$schemeAmount",
+  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+),
+
                   
                               SizedBox(width: 15,),
                   
-                               Text(
-                        "Scheme No: $regId",
-                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-                      ),
+                              Text(
+  "${localization.translate("Scheme No")} $regId",
+  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+),
+
                         ],
                       ),
                   
@@ -505,7 +509,13 @@ double screenHeight = MediaQuery.of(context).size.height;
                      ),
                     //  _buildTextField(dobController, localization.translate("Date of Birth*")),
                   
-                     _buildDateField(dobController, localization.translate("Date of Birth*"),isRequired: true),
+                   _buildDateField(
+  dobController,
+  localization.translate("Date of Birth*"),
+  isRequired: true,
+  errorMessage: localization.translate("Please select date of birth"),
+),
+
                   
                      SizedBox(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
@@ -526,14 +536,55 @@ double screenHeight = MediaQuery.of(context).size.height;
                          SizedBox(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                      ),
-                      _buildTextField(doorNoController, localization.translate("Door No*",),isRequired: true),
-                       _buildTextField(address1Controller, localization.translate("Address Line 1*"),isRequired: true),
+_buildTextField(
+  doorNoController,
+  localization.translate("Door No*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter Door Number"),
+),
+
+                      _buildTextField(
+  address1Controller,
+  localization.translate("Address Line 1*"),
+  isRequired: true,
+  errorMessage: localization.translate("Please enter Address Line 1"),
+),
+
                       _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
-                          _buildTextField(pincodeController, localization.translate("Pincode*"),isRequired: true),
-                           _buildTextField(countryController, localization.translate("Country*"),isRequired: true),
-                           _buildTextField(stateController, localization.translate("State*"),isRequired: true),
-                      _buildTextField(districtController, localization.translate("District*"),isRequired: true),
-                        _buildTextField(cityController, localization.translate("City*"),isRequired: true),  
+                          _buildTextField(
+  pincodeController,
+  localization.translate("Pincode*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter Pincode"),
+),
+
+                          _buildTextField(
+  countryController,
+  localization.translate("Country*"),
+  isRequired: true,
+  errorMessage: localization.translate("Please enter country"),
+),
+
+_buildTextField(
+  stateController,
+  localization.translate("State*"),
+  isRequired: true,
+  errorMessage: localization.translate("Please enter state"),  // add this line
+),
+                     _buildTextField(
+  districtController,
+  localization.translate("District*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter district"),
+),
+
+                        _buildTextField(
+  cityController,
+  localization.translate("City*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter city"),
+),
+
                       _buildDocumentRow(localization.translate("Adhar Number*"), adharController, adharImage,12, false,),
                         _buildDocumentRow(localization.translate("Pancard Card Number*"), panController, panImage,10, true),
                      
@@ -550,11 +601,41 @@ double screenHeight = MediaQuery.of(context).size.height;
                          SizedBox(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                      ),
-                      _buildTextField(bankNameController, localization.translate("Bank Name*"),isRequired: true),
-                         _buildTextField(holderName, localization.translate("Bank Account Holder Name*"),isRequired: true),
-                      _buildTextField(accountNoController, localization.translate("Bank Account No*"),isRequired: true),
-                      _buildTextField(ifscCodeController, localization.translate("IFSC Code"),isRequired: true),
-                      _buildTextField(branchLocationController, localization.translate("Branch Location*"),isRequired: true),
+                     _buildTextField(
+  bankNameController,
+  localization.translate("Bank Name*"),
+  isRequired: true,
+  errorMessage: localization.translate("Please enter bank name"),
+),
+
+_buildTextField(
+  holderName,
+  localization.translate("Bank Account Holder Name*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter account holder name"),
+),
+
+_buildTextField(
+  accountNoController,
+  localization.translate("Bank Account No*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter account number"),
+),
+
+_buildTextField(
+  ifscCodeController,
+  localization.translate("IFSC Code"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter IFSC code"),
+),
+
+_buildTextField(
+  branchLocationController,
+  localization.translate("Branch Location*"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter branch location"),
+),
+
                      
                   
                            SizedBox(
@@ -568,7 +649,13 @@ double screenHeight = MediaQuery.of(context).size.height;
                          SizedBox(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                      ),
-                      _buildTextField(nomineeNameController, localization.translate("Nominee Full Name"),isRequired: true),
+_buildTextField(
+  nomineeNameController,
+  localization.translate("Nominee Full Name"),
+    isRequired: true,
+  errorMessage: localization.translate("Please enter nominee full name"),
+),
+
                   
                       
                   
@@ -614,7 +701,7 @@ double screenHeight = MediaQuery.of(context).size.height;
     await updateSchemeDetails();
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Please fix errors before saving.")),
+      SnackBar(content: Text(localization.translate("Please fill in all the mandatory fields."))),
     );
   }
 },
@@ -731,7 +818,10 @@ Widget _buildTextField(
   int? maxLength,
   TextInputType keyboardType = TextInputType.text,
   bool isRequired = false,
+  String? errorMessage, // 👈 New parameter
 }) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
   return Padding(
     padding: EdgeInsets.symmetric(
       vertical: MediaQuery.of(context).size.height * 0.01,
@@ -741,28 +831,26 @@ Widget _buildTextField(
       child: TextFormField(
         controller: controller,
         textCapitalization: TextCapitalization.words,
-         inputFormatters: [
-        FilteringTextInputFormatter.deny(RegExp(r"[#&']")), // Blocks # & '
-      ],
+        inputFormatters: [
+          FilteringTextInputFormatter.deny(RegExp(r"[#&']")),
+        ],
         readOnly: readOnly,
         maxLength: maxLength,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          labelText: label,labelStyle: TextStyle(fontSize: 12),
+          labelText: label,
+          labelStyle: TextStyle(fontSize: 12),
           counterText: '',
           border: OutlineInputBorder(),
           filled: readOnly,
           fillColor: readOnly ? Colors.grey.shade200 : null,
         ),
-      validator: (value) {
-  if (isRequired && (value == null || value.trim().isEmpty)) {
-    return '$label is required';
-  }
-  // ఇక numeric-only లేదా length validation లేకుండా ఈ ఫీల్డ్ ఓకే
-  
-  return null;
-},
-
+        validator: (value) {
+          if (isRequired && (value == null || value.trim().isEmpty)) {
+            return errorMessage; // 👈 Show custom message
+          }
+          return null;
+        },
       ),
     ),
   );
@@ -774,29 +862,34 @@ Widget _buildTextField(
 
 
 
-
-
-Widget _buildDateField(TextEditingController controller, String label, {bool isRequired = false}) {
+Widget _buildDateField(
+  TextEditingController controller,
+  String label, {
+  bool isRequired = false,
+  String? errorMessage,   // 👈 add this
+}) {
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
   return Padding(
-     padding: EdgeInsets.symmetric(
+    padding: EdgeInsets.symmetric(
       vertical: MediaQuery.of(context).size.height * 0.01,
     ),
     child: SizedBox(
-       height: MediaQuery.of(context).size.height * 0.08,
+      height: MediaQuery.of(context).size.height * 0.08,
       child: TextFormField(
         controller: controller,
         readOnly: true,
         decoration: InputDecoration(
-          labelText: label,labelStyle: TextStyle(fontSize: 12),
+          labelText: label,
+          labelStyle: TextStyle(fontSize: 12),
           border: OutlineInputBorder(),
           suffixIcon: Icon(Icons.calendar_today),
         ),
         validator: (value) {
           if (isRequired && (value == null || value.trim().isEmpty)) {
-            return '$label is required';
+            return errorMessage;  // 👈 use errorMessage if provided
           }
           if (isUnder18) {
-            return 'You must be at least 18 years old';
+            return localization.translate('You must be at least 18 years old');
           }
           return null;
         },
@@ -807,14 +900,14 @@ Widget _buildDateField(TextEditingController controller, String label, {bool isR
             firstDate: DateTime(1900),
             lastDate: DateTime.now(),
           );
-    
+
           if (pickedDate != null) {
             int age = _calculateAge(pickedDate);
             if (age < 18) {
               controller.clear();
-              _showUnderAgeSnackbar(); // 👈 Alert Message
+              _showUnderAgeSnackbar();
               setState(() {
-                isUnder18 = true; // 👈 use this to hide fields
+                isUnder18 = true;
               });
             } else {
               String formattedDate = DateFormat('dd-MM-yyyy').format(pickedDate);
@@ -842,9 +935,12 @@ int _calculateAge(DateTime birthDate) {
 
 
 void _showUnderAgeSnackbar() {
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text("❌ Users under 18 years of age are not allowed."),
+      content: Text(
+        localization.translate("❌ Users under 18 years of age are not allowed."),
+      ),
       backgroundColor: Colors.red,
       behavior: SnackBarBehavior.floating,
     ),
@@ -915,7 +1011,7 @@ Widget _buildEmailField() {
   }
   final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
   if (!emailRegex.hasMatch(value.trim())) {
-    return 'Please enter a valid email';
+    return localization.translate("Please enter a valid email address");
   }
   return null; // Valid email
 },
@@ -1066,9 +1162,9 @@ Widget buildnominee() {
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return 'Please enter Nominee Aadhaar Number';
+                return localization.translate('Please enter nominee Aadhaar number');
               } else if (value.length != 12) {
-                return 'Aadhaar number must be 12 digits';
+                return localization.translate('Aadhaar number must be 12 digits');
               }
               return null;
             },
@@ -1076,6 +1172,7 @@ Widget buildnominee() {
         ),
       ),
       SizedBox(width: 5),
+
       GestureDetector(
         onTap: () {
           if (_image != null || (nomineeImage != null && nomineeImage!.isNotEmpty)) {

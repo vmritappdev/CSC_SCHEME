@@ -1364,35 +1364,6 @@ localization.translate('CSC App'),
 
 
            
-/*
-  Container(
-  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.orange, width: 1.5),  
-    borderRadius: BorderRadius.circular(10),                
-    color: Colors.orange.shade50,                           
-  ),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        "📢   Overdue customers must pay today",
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.orange.shade900,
-        ),
-      ),
-
-  
-      
-
-      Icon(Icons.clear,color: Colors.red,)
-    ],
-  ),
-),
-
-*/
 
                    
                    

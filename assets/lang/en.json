@@ -686,6 +686,39 @@
     "Are you sure do you want to exit?":"Are you sure do you want to exit?",
     "CANCEL":"CANCEL",
     "EXIT":"EXIT",
+    "Edit Customer Information":"Edit Customer Information",
+
+
+ "Please enter custom relationship": "Please enter custom relationship",
+ "Please select gender":"Please select gender",
+ "Please select nominee relationship":"Please select nominee relationship",
+ "❌ Users under 18 years of age are not allowed.":"❌ Users under 18 years of age are not allowed.",
+ "You must be at least 18 years old":"You must be at least 18 years old",
+ "Please enter nominee full name": "Please enter nominee full name",
+ "Please enter branch location": "Please enter branch location",
+ "Please enter IFSC code": "Please enter IFSC code",
+ "Please enter account number": "Please enter account number",
+ "Please enter account holder name": "Please enter account holder name",
+ "Please enter bank name": "Please enter bank name",
+ "Please enter city": "Please enter city",
+ "Please enter district": "Please enter district",
+ "Please enter state": "Please enter state",
+ "Please enter country": "Please enter country",
+ "Please enter Pincode": "Please enter Pincode",
+ "Please enter Address Line 1": "Please enter Address Line 1",
+ "Please enter Door Number": "Please enter Door Number",
+ "Please select date of birth": "Please select date of birth",
+ "Nominee Adhar Number": "Nominee Adhar Number",
+ "Brochure Details":"Brochure Details",
+ "Gold Saving Scheme":"Gold Saving Scheme",
+ "Save gold every month and get exclusive benefits!":"Save gold every month and get exclusive benefits!",
+ "Open Brochure":"Open Brochure",
+ 
+
+
+
+
+    
 
 
     "Payment Rejected":"Payment Rejected",

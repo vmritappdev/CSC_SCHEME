@@ -44,8 +44,70 @@ class _LoginPageState extends State<LoginPage> {
   bool _isBiometricAvailable = false;
   final bool _isPinVisible = false;
 
+  String firstName = '';
+String lastName = '';
+
+
   final List<String> _enteredMpin = [];
 final String correctMpin = "1234"; // Example correct MPIN
+
+
+ Future<void> _fetchUserDetails() async {
+  String apiUrl = "$baseUrl/get_reg_account_details.php";
+
+  try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload(); // Ensures latest data is fetched
+
+    String? mobileNumber = prefs.getString('userPhoneNumber');
+
+    if (mobileNumber == null || mobileNumber.length != 10) {
+      print("❌ Mobile Number not found in SharedPreferences");
+      return;
+    }
+
+    print("📤 Sending Mobile Number to API: $mobileNumber");
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: {'mobile_no': mobileNumber},
+    );
+
+    print("📥 API Response Status: ${response.statusCode}");
+    print("📥 API Response Body: ${response.body}");
+
+    final jsonResponse = json.decode(response.body);
+
+    if (jsonResponse['status'] == 200) {
+      var userDetails = jsonResponse['account_details'][0];
+
+      String fetchedFirstName = userDetails['f_name']?.trim() ?? "";
+      String fetchedLastName = userDetails['l_name']?.trim() ?? "";
+      String fetchedPhone = userDetails['mobile_no']?.trim() ?? "";
+      String fetchedEmail = userDetails['email_id']?.trim() ?? "";
+
+      // Save to SharedPreferences
+      await prefs.setString('firstName', fetchedFirstName);
+      await prefs.setString('lastName', fetchedLastName);
+      await prefs.setString('phoneNumber', fetchedPhone);
+      await prefs.setString('email', fetchedEmail);
+
+      print("✅ Saved: $fetchedFirstName $fetchedLastName");
+
+      // ✅ Update UI state variables
+      setState(() {
+        firstName = fetchedFirstName;
+        lastName = fetchedLastName;
+      });
+
+    } else {
+      print("❌ Failed to fetch user details: ${jsonResponse['message']}");
+    }
+  } catch (e) {
+    print("❌ Error fetching user details: $e");
+  }
+}
 
 
   @override
@@ -54,6 +116,7 @@ final String correctMpin = "1234"; // Example correct MPIN
     _checkBiometricAvailability();
     WidgetsBinding.instance.addPostFrameCallback((_) {
      _authenticateUser();
+     _fetchUserDetails();
   });
     
   }
@@ -363,14 +426,19 @@ Widget build(BuildContext context) {
       child:Column(
   children: [
     SizedBox(height: screenHeight * 0.09),
+
+
+
     Text(
-      'Welcome Back!',
-      style: GoogleFonts.poppins(
-        fontSize: screenWidth * 0.065,
-        fontWeight: FontWeight.bold,
-        color: const Color(0xFF02053E),
-      ),
-    ),
+  'Hi, $firstName $lastName!',
+  style: GoogleFonts.poppins(
+    fontSize: screenWidth * 0.04,
+    fontWeight: FontWeight.bold,
+    color: const Color(0xFF02053E),
+  ),
+),
+
+    
     SizedBox(height: screenHeight * 0.01),
     Text(
       'Enter your 4-digit MPIN',
@@ -550,4 +618,14 @@ Widget build(BuildContext context) {
     ),
   );
 }
+
+
+
+
+
+
+
+
+
+
 }

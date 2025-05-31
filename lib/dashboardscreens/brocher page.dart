@@ -1,5 +1,7 @@
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BrochureScreen extends StatefulWidget {
@@ -38,9 +40,11 @@ class _BrochureScreenState extends State<BrochureScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Brochure Details',style: TextStyle(color: Colors.white,),),
+        title:  Text(localization.translate('Brochure Details')
+          ,style: TextStyle(color: Colors.white,),),
         backgroundColor: const Color(0xFF0C021D),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -61,8 +65,8 @@ class _BrochureScreenState extends State<BrochureScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Gold Saving Scheme',
+             Text(
+             localization.translate('Gold Saving Scheme'),
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -70,8 +74,8 @@ class _BrochureScreenState extends State<BrochureScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Save gold every month and get exclusive benefits!',
+             Text(
+              localization.translate('Save gold every month and get exclusive benefits!'),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
            // const Spacer(),
@@ -80,7 +84,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.open_in_new,color: Colors.white,),
-                label: const Text('Open Brochure',style: TextStyle(color: Colors.white,),),
+                label:  Text(localization.translate('Open Brochure'),style: TextStyle(color: Colors.white,),),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0C021D),
                   padding:

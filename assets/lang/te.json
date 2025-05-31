@@ -600,6 +600,38 @@
 
 
 
+
+
+
+"Please enter custom relationship": "దయచేసి ఇతర సంబంధాన్ని నమోదు చేయండి",
+"Please select gender": "దయచేసి లింగాన్ని ఎంచుకోండి",
+"Please select nominee relationship": "దయచేసి నామినీ సంబంధాన్ని ఎంచుకోండి",
+"❌ Users under 18 years of age are not allowed.": "❌ 18 సంవత్సరాల కంటే తక్కువ వయస్సు ఉన్న వినియోగదారులకు అనుమతి లేదు.",
+
+"You must be at least 18 years old": "మీరు కనీసం 18 సంవత్సరాల వయస్సు కలిగి ఉండాలి.",
+"Please enter nominee full name": "దయచేసి నామినీ పూర్తి పేరు నమోదు చేయండి",
+"Please enter branch location": "దయచేసి బ్రాంచ్ స్థానం నమోదు చేయండి",
+"Please enter IFSC code": "దయచేసి IFSC కోడ్ నమోదు చేయండి",
+"Please enter account number": "దయచేసి ఖాతా సంఖ్య నమోదు చేయండి",
+"Please enter account holder name": "దయచేసి ఖాతాదారు పేరు నమోదు చేయండి",
+"Please enter bank name": "దయచేసి బ్యాంక్ పేరు నమోదు చేయండి",
+"Please enter city": "దయచేసి నగరం నమోదు చేయండి",
+"Please enter district": "దయచేసి జిల్లా నమోదు చేయండి",
+"Please enter country": "దయచేసి దేశం నమోదు చేయండి",
+"Please enter Pincode": "దయచేసి పిన్ కోడ్ నమోదు చేయండి",
+"Please enter Address Line 1": "దయచేసి చిరునామా లైన్ 1 నమోదు చేయండి",
+"Please enter Door Number": "దయచేసి డోర్ నంబర్ నమోదు చేయండి",
+"Please select date of birth": "దయచేసి పుట్టిన తేదీని ఎంచుకోండి",
+"Please enter state": "దయచేసి రాష్ట్రాన్ని నమోదు చేయండి",
+"Nominee Adhar Number": "నామినీ ఆధార్ సంఖ్య",
+"Brochure Details": "బ్రోచర్ వివరాలు",
+"Gold Saving Scheme": "బంగారు సేవింగ్ స్కీమ్",
+"Save gold every month and get exclusive benefits!": "ప్రతి నెల బంగారం సేవ్ చేయండి మరియు ప్రత్యేక ప్రయోజనాలను పొందండి!",
+"Open Brochure": "బ్రోచర్ తెరవండి",
+
+
+
+
  "Something went wrong!": "ఏదో తప్పు జరిగింది!",
  "Please try again later.": "దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.",
  "Retry": "ప్రయత్నించండి",
@@ -607,6 +639,7 @@
  "Are you sure do you want to exit?": "మీరు ఖచ్చితంగా యాప్ నుండి బయటికి వెళ్లాలనుకుంటున్నారా?",
  "CANCEL": "రద్దు చేయండి",
  "EXIT": "నిష్క్రమించండి",
+ "Edit Customer Information": "కస్టమర్ సమాచారాన్ని సవరించండి",
 
  "Payment Rejected":"చెల్లింపు తిరస్కరించబడింది",
  "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"దురదృష్టవశాత్తు, మీ చెల్లింపును ప్రాసెస్ చేయలేకపోయాం. దయచేసి మీ చెల్లింపు వివరాలను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి.",

@@ -750,7 +750,7 @@ double screenHeight = MediaQuery.of(context).size.height;
   style: GoogleFonts.lato(
     color: const Color.fromRGBO(2, 5, 67, 1),
     fontWeight: FontWeight.bold,
-    fontSize: 12 * MediaQuery.of(context).textScaleFactor,
+    fontSize: 10 * MediaQuery.of(context).textScaleFactor,
   ),
 ),
 
