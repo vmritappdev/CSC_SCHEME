@@ -161,42 +161,39 @@ Future<void> _fetchUserDetails() async {
 
 
   // 🔹 MPIN వెరిఫై చేసే Function
-  Future<bool> _submitMpinToServer(String mpin, String mobileNumber) async {
-
-     bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      
-
+Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumber) async {
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
     Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
-  );
-      return false;
-    }
+      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+    );
+    return {'success': false, 'reason': 'NO_INTERNET'};
+  }
 
+  String phpUrl = "$baseUrl/mpin_verify.php";
+  try {
+    final response = await http.post(
+      Uri.parse(phpUrl),
+      body: {'mpin': mpin, 'mobile_no': mobileNumber},
+    );
 
-    String phpUrl = "$baseUrl/mpin_verify.php";
-    try {
-      final response = await http.post(
-        Uri.parse(phpUrl),
-        body: {'mpin': mpin, 'mobile_no': mobileNumber},
-      );
-
-
-        print("Response Status: ${response.statusCode}");
+    print("Response Status: ${response.statusCode}");
     print("Response Body: ${response.body}");
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        return jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
-
-        
-      }
-      return false;
-    } catch (e) {
-      return false;
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      bool success = jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
+      String reason = jsonResponse['login1'] ?? 'UNKNOWN';
+      return {'success': success, 'reason': reason};
     }
+
+    return {'success': false, 'reason': 'SERVER_ERROR'};
+  } catch (e) {
+    return {'success': false, 'reason': 'EXCEPTION'};
   }
+}
+
 
 void _verifyMpin() async {
   String mpin = mpinController.text.trim();
@@ -207,12 +204,11 @@ void _verifyMpin() async {
   if (!hasInternet) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ErrorScreen()), // Error screen for no internet
+      MaterialPageRoute(builder: (context) => const ErrorScreen()),
     );
     return;
   }
 
-  // Mobile Number Validation
   if (mobileNumber.isEmpty || mobileNumber.length != 10) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
@@ -220,7 +216,6 @@ void _verifyMpin() async {
     return;
   }
 
-  // MPIN Validation
   if (mpin.isEmpty || mpin.length != 4) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
@@ -228,25 +223,20 @@ void _verifyMpin() async {
     return;
   }
 
-  // Show Loader (Lottie animation, for example)
   showLoaderDialog(context);
 
-  // Submit MPIN and Mobile Number to Server
-  bool isValid = await _submitMpinToServer(mpin, mobileNumber);
+  // 👉 Submit & get both success and reason
+  Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
+  bool isValid = result['success'];
+  String reason = result['reason'];
 
-  // Hide Loader after validation
-  Navigator.pop(context); // This will hide the loader
+  Navigator.pop(context);
 
   if (isValid) {
-    // Save Mobile Number to SharedPreferences
     await savePhoneNumber(mobileNumber);
-
-    // Fetch User Details
     await _fetchUserDetails();
-
-    // Navigate to HomeScreen
-    await Future.delayed(const Duration(milliseconds: 300)); // Allow saving to complete
-    await loadPhoneNumber(); // Ensure it loads correctly
+    await Future.delayed(const Duration(milliseconds: 300));
+    await loadPhoneNumber();
 
     Navigator.pushReplacement(
       context,
@@ -255,8 +245,8 @@ void _verifyMpin() async {
       ),
     );
   } else {
-    // Show error popup if MPIN/Number is incorrect
-    _showErrorPopup();
+    // 👉 Show reason-specific popup
+    _showErrorPopup(reason);
   }
 }
 
@@ -265,12 +255,22 @@ void _verifyMpin() async {
 // Declare a FocusNode for the mobile number field
 FocusNode phoneFocusNode = FocusNode();
 
-void _showErrorPopup() {
+void _showErrorPopup(String reason) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  String errorMsg;
+
+  if (reason == 'MPIN') {
+    errorMsg = localization.translate("The MPIN you entered is incorrect. Please try again.");
+  } else if (reason == 'MOBILE_NO') {
+    errorMsg = localization.translate("We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.");
+  } else {
+    errorMsg = localization.translate("");
+  }
+
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      final localization = Provider.of<LocalizationProvider>(context);
       return AlertDialog(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
@@ -278,17 +278,15 @@ void _showErrorPopup() {
         backgroundColor: Colors.white,
         contentPadding: EdgeInsets.zero,
         content: Column(
-        mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 15),
-            // 🔴 Icon Added
             const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
             const SizedBox(height: 10),
-            // 📄 Message
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                localization.translate("We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again."),
+                errorMsg,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.lato(
                   fontSize: 15,
@@ -298,22 +296,19 @@ void _showErrorPopup() {
               ),
             ),
             const SizedBox(height: 20),
-            // 🔘 OK Button
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-              color: Color.fromRGBO(2, 5, 62, 1),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                color: Color.fromRGBO(2, 5, 62, 1),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               ),
               child: TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  phoneController.clear();  // Clear the mobile number field
-                  mpinController.clear();  // Clear the MPIN field
-                  setState(() {});           // Refresh the UI
-                  
-                  // Focus the phone number field after closing the popup
-                  FocusScope.of(context).requestFocus(phoneFocusNode);  // Focus on the phone field
+                  phoneController.clear();
+                  mpinController.clear();
+                  setState(() {});
+                  FocusScope.of(context).requestFocus(phoneFocusNode);
                 },
                 child: Text(
                   localization.translate("OK"),
@@ -331,6 +326,7 @@ void _showErrorPopup() {
     },
   );
 }
+
 
 
   // title: Text("Login Failed"),
@@ -418,7 +414,7 @@ void _showErrorPopup() {
                     Navigator.pushReplacement(
                       context, 
                       MaterialPageRoute(
-                        builder: (context) => const ForgotScreen1(),
+                        builder: (context) => LoginOtpScreen(),
                       )
                     );
                   },

@@ -344,13 +344,16 @@ void showError( String message) {
   },
   onFieldSubmitted: (_) => validateOtp(),
 ),
-                  TextButton(
-                    onPressed: canResend ? () => sendOtp(mobileController.text.trim()) : null,
-                    child: Text(
-                  localization.translate('Resend OTP in').replaceAll('{seconds}', '$_resendWaitSeconds'),
-               ),
+                TextButton(
+  onPressed: canResend ? () => sendOtp(mobileController.text.trim()) : null,
+  child: Text(
+    canResend ? 'Resend OTP' : 'Resend OTP in $_resendWaitSeconds s',
+    style: TextStyle(
+      color: canResend ? Colors.blue : Colors.grey,
+    ),
+  ),
+),
 
-                  ),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(

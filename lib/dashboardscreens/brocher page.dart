@@ -57,7 +57,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
-                  'assets/images/gold.jpg',
+                  'assets/images/haram.jpg',
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/loginfolder/loginotp.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
@@ -487,7 +488,7 @@ Widget build(BuildContext context) {
       onPressed: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const ForgotScreen()),
+          MaterialPageRoute(builder: (context) => ForgotScreen()),
         );
       },
       child: Text(

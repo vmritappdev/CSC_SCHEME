@@ -28,7 +28,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
         ChangeNotifierProvider<LocalizationProvider>(
-          create: (_) => LocalizationProvider(),
+        create: (_) => LocalizationProvider(),
         ),
       ],
       child: const MyApp(),

@@ -286,19 +286,22 @@ class _ForgotScreenState extends State<ForgotScreen> {
               if (_isOtpVisible) ...[
                 const SizedBox(height: 20),
       
-               TextFormField(
+TextFormField(
   controller: _controllerOtp,
   keyboardType: TextInputType.number,
   maxLength: 6,
-//  autofillHints: const [AutofillHints.oneTimeCode],
   textAlign: TextAlign.center,
-  style: const TextStyle(fontSize: 20, color: Colors.black),
+  style: const TextStyle(
+    fontSize: 20,
+    color: Colors.black,
+    letterSpacing: 29, // 👉 ఇది actual input spacing కి
+  ),
   decoration: InputDecoration(
-    hintText: 'Enter OTP',hintStyle: TextStyle(fontSize: 14,letterSpacing: 32),
-   //labelText: 'Enter oTP',
+    hintText: 'Enter OTP',
+    hintStyle: const TextStyle(fontSize: 11, letterSpacing: 10), // optional
     counterText: '',
     isDense: true,
-   // contentPadding: const EdgeInsets.symmetric(vertical: 15),
+    contentPadding: const EdgeInsets.symmetric(vertical: 15),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
       borderSide: const BorderSide(color: Color.fromARGB(255, 9, 1, 34)),
@@ -310,10 +313,11 @@ class _ForgotScreenState extends State<ForgotScreen> {
   ),
   onChanged: (value) {
     if (value.length == 6) {
-      _checkOtpMatch(); // same function as Pinput
+      _checkOtpMatch(); // OTP చెక్ చేయడం
     }
   },
 ),
+
                 const SizedBox(height: 20),
       
                 Row(

@@ -16,6 +16,7 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -547,56 +548,61 @@ Future<void> submitForm() async {
     );
   }
 
-   Widget _buildPhoneField() {
-     final localization = Provider.of<LocalizationProvider>(context, listen: true);
-  return Padding(
-     padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: TextFormField(
-       inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+  Widget _buildPhoneField() {
+  final localization = Provider.of<LocalizationProvider>(context, listen: true);
+  String? phoneNumber;
 
-  ],
-      textInputAction: TextInputAction.next,
-      controller: phoneController,
-      keyboardType: TextInputType.phone,
-      maxLength: 10, // Ensures only 10 digits can be entered
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
-        labelText:localization.translate("Mobile Number"),
-      //  labelStyle: const TextStyle(color: Colors.black),
-       labelStyle: GoogleFonts.lato(
-            textStyle: const TextStyle(fontSize: 15, color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
-          ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-        prefixIcon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/flag.png",
-                height: 20,
-              ),
-              const SizedBox(width: 6),
-              const Text("+91", style: TextStyle(fontWeight: FontWeight.bold,color: Color.fromRGBO(43, 49, 101, 1),)),
-              const SizedBox(width: 6),
-            ],
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
-        ),
-        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
-        counterText: "", // Hides the default character count indicator
-      ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: FormField<String>(
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (phoneNumber == null || phoneNumber!.isEmpty) {
           return localization.translate("Please enter a mobile number");
-        } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
-          return "Enter a valid 10-digit mobile number";
+        } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(phoneNumber!)) {
+          return localization.translate("Enter a valid 10-digit mobile number");
         }
         return null;
+      },
+      builder: (FormFieldState<String> field) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IntlPhoneField(
+              controller: phoneController,
+              initialCountryCode: 'IN',
+              decoration: InputDecoration(
+                labelText: localization.translate("Mobile Number"),
+                labelStyle: GoogleFonts.lato(
+                textStyle: const TextStyle(
+                  fontSize: 15,
+                  color: Color.fromRGBO(43, 49, 101, 1),
+                  fontWeight: FontWeight.bold,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 18, 5, 93),
+                  width: 2,
+                  ),
+                ),
+                floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                counterText: "",
+                contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
+                errorText: field.errorText,
+              ),
+              dropdownIcon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+              dropdownIconPosition: IconPosition.trailing,
+              onChanged: (phone) {
+                phoneNumber = phone.number;
+                field.didChange(phone.number); // Update FormField state
+              },
+            ),
+          ],
+        );
       },
     ),
   );

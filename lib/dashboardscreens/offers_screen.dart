@@ -39,50 +39,94 @@ class GoldShopOffersScreen extends StatelessWidget {
 
     final List<Offer> offers = [
       Offer(
-        imagePath: 'assets/images/jewe2.jpg',
+        imagePath: 'assets/images/csc image 3.jpg',
         title: localization.translate("Gold Necklace"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/nack.jpg',
-        title: localization.translate("Gold Ring"),
+        imagePath: 'assets/images/gold-rings.jpg',
+        title: localization.translate("Gold Rings"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold1.jpg',
+        imagePath: 'assets/images/ear-rings.jpg',
         title: localization.translate("Gold Earrings"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/nack1.jpg',
-        title: localization.translate("Gold Bracelet"),
+        imagePath: 'assets/images/csc1.jpg',
+        title: localization.translate("Gold Long Chain"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/jewe.jpg',
+        imagePath: 'assets/images/haram.jpg',
         title: localization.translate("Gold Pendant"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/jewe2.jpg',
+        imagePath: 'assets/images/necklace_1.jpg',
         title: localization.translate("Gold Chain"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold3.jpg',
+        imagePath: 'assets/images/temple-jewellery.jpg',
         title: localization.translate("Gold Set"),
         originalPrice: "",
         discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold2.jpg',
-        title: localization.translate("Gold Cufflinks"),
+        imagePath: 'assets/images/Mangalasutra_s.jpg',
+        title: localization.translate("Gold Mangalasutra"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+            Offer(
+        imagePath: 'assets/images/Vaddanam.jpg',
+        title: localization.translate("Gold Vaddanam"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+                  Offer(
+        imagePath: 'assets/images/vanki.jpg',
+        title: localization.translate("Gold Vanki"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+
+       Offer(
+        imagePath: 'assets/images/cho24l11370_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+       Offer(
+        imagePath: 'assets/images/cho24l12204_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+
+       Offer(
+        imagePath: 'assets/images/cho24l19245_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+             Offer(
+        imagePath: 'assets/images/cho24l19401_1.png',
+        title: localization.translate("Gold Earrings"),
         originalPrice: "",
         discountedPrice: "",
       ),

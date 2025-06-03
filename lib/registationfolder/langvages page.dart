@@ -173,7 +173,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2> {
               height: size.height * 0.20,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color.fromARGB(255, 2, 9, 17), Color.fromARGB(255, 2, 9, 17)],
+                  colors: [Color.fromRGBO(2, 5, 67, 1), Color.fromRGBO(2, 5, 67, 1)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -281,14 +281,10 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2> {
                                   child: Container(
                                     padding: EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                    //  color: Colors.white,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(
-                                      Icons.check,
-                                      color: lang["color"][0],
-                                      size: 20,
-                                    ),
+                                   
                                   ),
                                 ),
                             ],
@@ -304,7 +300,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2> {
               padding: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color.fromARGB(255, 2, 9, 17), Color.fromARGB(255, 2, 9, 17),],
+                  colors: [Color.fromRGBO(2, 5, 67, 1), Color.fromRGBO(2, 5, 67, 1)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),

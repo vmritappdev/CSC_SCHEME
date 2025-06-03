@@ -99,7 +99,7 @@ Future<String?> _getPhoneNumber() async {
               fontSize: fontSize,
             ),
           ),
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
         ),
         body: Column(
           children: [
@@ -164,7 +164,7 @@ Future<String?> _getPhoneNumber() async {
                                 child: Icon(
                                   Icons.check_circle,
                                   color: Colors.white,
-                                  size: fontSize * 1.5,
+                                  size: fontSize * 1.4,
                                 ),
                               ),
                           ],

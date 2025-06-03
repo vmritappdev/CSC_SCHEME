@@ -18,7 +18,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
     final isSmall = MediaQuery.of(context).size.width < 600;
-      final localization = Provider.of<LocalizationProvider>(context, listen: false);
+    final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -37,17 +37,18 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           ),
         ),
       ),
-      body: ListView(
+       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
-          Text(
+          
+        Text(
            localization.translate("CHINNI SRINIVASULU CHETTY JEWELLERS"),
-            textAlign: TextAlign.center,
+           textAlign: TextAlign.center,
             style: GoogleFonts.lato(
-              fontSize: 15,
-              color: Colors.teal[700],
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
+            fontSize: 15,
+            color: Colors.teal[700],
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
             ),
           ),
           const SizedBox(height: 4),

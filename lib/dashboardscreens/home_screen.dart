@@ -1,8 +1,10 @@
  import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -11,6 +13,7 @@ import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/chaingedscreens.dart/installmentviewdetails.dart';
 
 import 'package:csc/dashboardscreens/notification.dart';
+import 'package:csc/dashboardscreens/profile2.dart';
 
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
@@ -89,6 +92,9 @@ void _onRefresh() async {
 
   int _notificationCount = 0;  // initially 100 messages
 
+int _previousNotificationCount = 0; // store last known count
+  
+
 
   bool _backButtonPressedOnce = false;
 
@@ -152,9 +158,16 @@ DateTime? _lastBackPressTime;
         if (jsonData['response'] == 'success') {
           final count = int.tryParse(jsonData['count'].toString()) ?? 0;
 
+           // ✅ Play sound if count increased
+        if (count > _previousNotificationCount) {
+          final player = AudioPlayer();
+          await player.play(AssetSource('sounds/notifications.wav'));
+        }
+
           
           setState(() {
-            _notificationCount = count;
+             _notificationCount = count;
+          _previousNotificationCount = count; // update after setting
           });
         }
       }
@@ -173,8 +186,8 @@ DateTime? _lastBackPressTime;
    final bool _isPopupShown = false; 
 
     final List<String> images = [
-    'assets/images/jewe.jpg',
     'assets/images/jewe2.jpg',
+    'assets/images/jewe.jpg',
     'assets/images/gold1.jpg',
     'assets/images/jewe2.jpg',
   ];
@@ -681,6 +694,8 @@ localization.translate('CSC App'),
 
   if (shouldExit) {
     SystemNavigator.pop();
+
+    
   }
 
   return false;
@@ -731,27 +746,49 @@ localization.translate('CSC App'),
             _showLanguagePopup(context, localization);
           },
           child: Container(
-            height: MediaQuery.of(context).size.width * 0.08,  // Dynamic height based on screen width
-            width: MediaQuery.of(context).size.width * 0.08,   // Dynamic width based on screen width
+           // height: MediaQuery.of(context).size.width * 0.08,  // Dynamic height based on screen width
+           // width: MediaQuery.of(context).size.width * 0.08,   // Dynamic width based on screen width
             decoration: BoxDecoration(
-         color: Colors.blueGrey, 
-         borderRadius: BorderRadius.circular(5),
+         //color: Colors.blueGrey, 
+         //borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
-        child: Text(
-          'EN',
-         // Provider.of<LocalizationProvider>(context).languageCode,  // Show selected language code
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: MediaQuery.of(context).size.width * 0.05,  // Dynamic font size based on screen width
-          ),
+        child: Container(
+  //padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  decoration: BoxDecoration(
+    //color: Colors.blue, // Background color
+    border: Border.all(
+      color: const Color.fromARGB(255, 148, 147, 147), // Border color
+      width: 1.5,          // Border width
+    ),
+    borderRadius: BorderRadius.circular(8), // Rounded corners
+  ),
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(
+        Icons.language, // Language or globe icon
+        color: Colors.white,
+        size: MediaQuery.of(context).size.width * 0.05,
+      ),
+      SizedBox(width: 4), // Spacing between icon and text
+      Text(
+        'EN', // or use Provider.of<LocalizationProvider>(context).languageCode
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: MediaQuery.of(context).size.width * 0.05,
         ),
+      ),
+    ],
+  ),
+)
+
             ),
           ),
         ),
         
         
-          SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Dynamic spacing
+        SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Dynamic spacing
         
  GestureDetector(
   onTap: () async {
@@ -765,37 +802,43 @@ localization.translate('CSC App'),
     });
   },
   child: Stack(
-    children: [
-      Icon(
-        Icons.notifications,
-        color: Colors.white,
-        size: MediaQuery.of(context).size.width * 0.07,
-      ),
-      if (_notificationCount > 0)
-        Positioned(
-          right: 6,
-          top: 6,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            constraints: const BoxConstraints(
-              minWidth: 22,
-            ),
+  clipBehavior: Clip.none, // 👈 overflow badge ni chupinchadaniki
+  children: [
+    Icon(
+      Icons.notifications,
+      color: Colors.white,
+      size: MediaQuery.of(context).size.width * 0.07,
+    ),
+    if (_notificationCount > 0)
+      Positioned(
+        top: -9, // 👈 bell icon pai adjust cheyyadam
+        right: -4, // 👈 slight outside ki shift cheyyadam
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: const BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.circle,
+          ),
+          constraints: const BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child: Center(
             child: Text(
               _notificationCount > 99 ? '99+' : '$_notificationCount',
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
           ),
         ),
-    ],
-  ),
+      ),
+  ],
+)
+
 ),
 
 
@@ -1081,102 +1124,6 @@ localization.translate('CSC App'),
                
                    
            
-                  /* 
-                  Center(
-            child: verificationResponse == null || verificationResponse?.process == "complete"
-            ? const SizedBox.shrink() // No message displayed
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Message (Marquee Text)
-                  Expanded(
-                    flex: 1,
-                    child: verificationResponse?.process == "pending"
-                        ? SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-                            child: Marquee(
-                              text: "Transaction Pending",
-                              style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font
-                                fontWeight: FontWeight.bold,
-                              ),
-                              scrollAxis: Axis.horizontal,
-                              blankSpace: 200,
-                              velocity: 50,
-                              pauseAfterRound: const Duration(seconds: 2),
-                              startPadding: 10,
-                            ),
-                          )
-                        : verificationResponse?.process == "incomplete"
-                            ? SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-                                child: Marquee(
-                                  text: localization.translate("Your join scheme registration is still pending. Kindly complete your registration process."),
-                                  style: TextStyle(
-                                    fontSize: MediaQuery.of(context).size.width * 0.035, // Dynamic font
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.red,
-                                  ),
-                                  scrollAxis: Axis.horizontal,
-                                  blankSpace: 200,
-                                  velocity: 50,
-                                  pauseAfterRound: const Duration(seconds: 2),
-                                  startPadding: 10,
-                                ),
-                              )
-                            : const SizedBox.shrink(), // Fallback for other conditions
-                  ),
-                   
-                   
-                   
-                  
-                  
-                  // Button (Dynamic Display)
-                  if (verificationResponse?.process == "pending" ||
-                      verificationResponse?.process == "incomplete")
-                   
-                   
-                      
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: MediaQuery.of(context).size.width * 0.05, // Dynamic padding
-                      ),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04, // Dynamic height
-                        width: MediaQuery.of(context).size.width * 0.3, // Dynamic width
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(
-                                builder: (context) => Scanner(activescheme: Activescheme(),rejectId: '',),
-                              ),
-                            );
-                          },
-                          child: Text(
-                           localization.translate('continue'),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: MediaQuery.of(context).size.width * 0.03, // Dynamic font size
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                   
-                    
-                ],
-              ),
-                   ),
-           
-                */
                    
               Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1208,7 +1155,7 @@ localization.translate('CSC App'),
               onTap: () {
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)),
+                  MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
                 );
               },
               child: Image.asset(
@@ -1224,16 +1171,16 @@ localization.translate('CSC App'),
                    
                  Container(
             padding: EdgeInsets.only(
-                   left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
+              left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
             ),
             alignment: Alignment.bottomLeft, 
             child: Text(
-                   '$firstName $lastName',
-                   style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-            color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
+              '$firstName $lastName',
+              style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+              color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
                    ),
-                   textAlign: TextAlign.start, // Left align for natural reading flow
+                  textAlign: TextAlign.start, // Left align for natural reading flow
             ),
                    ),
                    
@@ -1977,26 +1924,38 @@ void showCustomDialog(BuildContext context, String message) {
       return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Select Language',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Select Language',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _languageOption(context, localization, 'English', 'en', true),
+                  _languageOption(context, localization, 'తెలుగు', 'te', true),
+                  _languageOption(context, localization, 'हिंदी', 'hi', false),
+                  _languageOption(context, localization, 'தமிழ்', 'ta', false),
+                ],
               ),
-              const SizedBox(height: 16),
-              _languageOption(context, localization, 'English', 'en', true),
-              _languageOption(context, localization, 'తెలుగు', 'te', true),
-              _languageOption(context, localization, 'हिंदी', 'hi', false),
-              _languageOption(context, localization, 'தமிழ்', 'ta', false),
-            ],
-          ),
+            ),
+            Positioned(
+              right: 8,
+              top: 8,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(), // Popup close action
+                child: const Icon(Icons.clear, size: 24, color: Colors.black),
+              ),
+            ),
+          ],
         ),
       );
     },
