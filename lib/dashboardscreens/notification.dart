@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/notification.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -88,21 +90,23 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
-          'Notifications (${notifications.where((n) => !n.isRead).length})',
-          style: const TextStyle(color: Colors.white),
-        ),
+  '${localization.translate("Notifications")} (${notifications.where((n) => !n.isRead).length})',
+  style: const TextStyle(color: Colors.white),
+),
+
         backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : notifications.isEmpty
-              ? const Center(
+              ?  Center(
                   child: Text(
-                    "No new notifications",
+                   localization.translate("No new notifications"),
                     style: TextStyle(fontSize: 16, color: Colors.red),
                   ),
                 )

@@ -829,6 +829,7 @@ Future<void> submitForm() async {
 DateTime? selectedDate;
 
  void _selectDate(BuildContext context) async {
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
   final DateTime? picked = await showDatePicker(
     context: context,
     initialDate: selectedDate ?? DateTime.now(),
@@ -862,8 +863,8 @@ DateTime? selectedDate;
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You must be 18 years or older to select this date.'),
+         SnackBar(
+          content: Text(localization.translate('You must be 18 years or older to select this date.'),style: TextStyle(fontSize: 10),),
           backgroundColor: Colors.red,
         ),
       );
@@ -2297,18 +2298,18 @@ Widget _buildTextField1({
               if (isnomineeadhearRequired) {
                   // Aadhaar number validation
                   if (value == null || value.isEmpty) {
-                    return localization.translate("Please enter  adhar number");
+                    return localization.translate("Please enter your adhar number");
                   } else if (value.length != 12) {
-                    return localization.translate(" Nominee Adhar  must be 12 digits");
+                    return localization.translate(" Adhar  must be 12 digits");
                   }
                   // Aadhaar image validation
                  
                   }
                   if (value == null || value.isEmpty) {
-                    return localization.translate("Please enter  adhar number");
+                    return localization.translate("Please enter your adhar number");
                   } else
                 if (selectedImage == null && (adharImage == null || adharImage!.isEmpty)) {
-                 return localization.translate("Please select  Aadhar card image");
+                 return localization.translate("Please select Aadhaar card image");
                 }
                   return null;
                 },

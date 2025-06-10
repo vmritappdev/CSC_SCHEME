@@ -189,6 +189,7 @@ Future<bool> checkInternet() async {
 
 
   Future<void> updateSchemeDetails() async {
+        final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
@@ -265,7 +266,8 @@ Future<bool> checkInternet() async {
       if (data['status'] == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           
-          SnackBar(content: Text("✅ Scheme updated successfully!",style: GoogleFonts.lato(color: Colors.white),),backgroundColor: Color.fromRGBO(2, 5, 62, 1),),
+          SnackBar(content: Text(localization.translate("✅ Scheme updated successfully!"),
+          style: GoogleFonts.lato(color: Colors.white),),backgroundColor: Color.fromRGBO(2, 5, 62, 1),),
         );
 
         Future.delayed(Duration(seconds: 2), () {
@@ -581,12 +583,12 @@ _buildTextField(
                         _buildTextField(
   cityController,
   localization.translate("City*"),
-    isRequired: true,
+  isRequired: true,
   errorMessage: localization.translate("Please enter city"),
 ),
 
-                      _buildDocumentRow(localization.translate("Adhar Number*"), adharController, adharImage,12, false,),
-                        _buildDocumentRow(localization.translate("Pancard Card Number*"), panController, panImage,10, true),
+                      _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage,12, false,),
+                        _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage,10, true),
                      
                        _buildTextField(referralController,localization.translate( "Referral Name/Number")),
                   
@@ -652,7 +654,7 @@ _buildTextField(
 _buildTextField(
   nomineeNameController,
   localization.translate("Nominee Full Name"),
-    isRequired: true,
+    isRequired:false,
   errorMessage: localization.translate("Please enter nominee full name"),
 ),
 

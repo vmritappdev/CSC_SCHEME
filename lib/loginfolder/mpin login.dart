@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/loginotp.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
@@ -9,7 +10,9 @@ import 'package:csc/loginfolder/forgot%20screen.dart';
 import 'package:csc/model/activescheme.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:local_auth/local_auth.dart';
@@ -156,6 +159,8 @@ final String correctMpin = "1234"; // Example correct MPIN
   }
 
 void _validatePin() async {
+      final localization = Provider.of<LocalizationProvider>(context,listen: false);
+
   setState(() {
     _isSuccess = false;
     _isError = false;
@@ -182,7 +187,7 @@ void _validatePin() async {
   } else {
     setState(() {
       _isError = true;
-      errorMessage = 'Invalid MPIN. Please try again.';
+      errorMessage = localization.translate('Invalid MPIN. Please try again.');
       _pin = ''; // wrong ayite pin clear cheyyadam
     });
   }
@@ -417,50 +422,209 @@ Future<bool> checkInternet() async {
 Widget build(BuildContext context) {
   double screenWidth = MediaQuery.of(context).size.width;
   double screenHeight = MediaQuery.of(context).size.height;
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
   double fontSize = screenWidth * 0.045;
   double iconSize = screenWidth * 0.12;
   double buttonSize = screenWidth * 0.18;
 
-  return Scaffold(
-    backgroundColor: const Color(0xFFF5F7FA), // Light elegant background
-    body: SingleChildScrollView(
-      child:Column(
-  children: [
-    SizedBox(height: screenHeight * 0.09),
-
-
-
-    Text(
-  'Hi, $firstName $lastName!',
-  style: GoogleFonts.poppins(
-    fontSize: screenWidth * 0.04,
-    fontWeight: FontWeight.bold,
-    color: const Color(0xFF02053E),
-  ),
-),
-
-    
-    SizedBox(height: screenHeight * 0.01),
-    Text(
-      'Enter your 4-digit MPIN',
-      style: GoogleFonts.poppins(
-        fontSize: fontSize,
-        color: Colors.black87,
+  return WillPopScope(
+    onWillPop: () async {
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     ),
-    SizedBox(height: screenHeight * 0.02),
+  ),
+);
 
-    // MPIN box row
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(4, (index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
-          width: screenWidth * 0.14,
-          height: screenWidth * 0.14,
+ if (shouldExit) {
+ SystemNavigator.pop();
+
+    
+  }
+
+  return false;
+},
+
+    child: Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA), // Light elegant background
+      body: SingleChildScrollView(
+        child:Column(
+    children: [
+      SizedBox(height: screenHeight * 0.09),
+    
+    
+    
+      Text(
+    '${localization.translate("Hi")}, $firstName $lastName!',
+    style: GoogleFonts.poppins(
+      fontSize: screenWidth * 0.04,
+      fontWeight: FontWeight.bold,
+      color: const Color(0xFF02053E),
+    ),
+    ),
+    
+      
+      SizedBox(height: screenHeight * 0.01),
+      Text(
+      localization.translate('Enter your 4-digit MPIN'),
+        style: GoogleFonts.poppins(
+          fontSize: fontSize,
+          color: Colors.black87,
+        ),
+      ),
+      SizedBox(height: screenHeight * 0.02),
+    
+      // MPIN box row
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(4, (index) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+            width: screenWidth * 0.14,
+            height: screenWidth * 0.14,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade300,
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              _pin.length > index ? '●' : '',
+              style: GoogleFonts.poppins(
+                fontSize: screenWidth * 0.08,
+                color: const Color(0xFF02053E),
+              ),
+            ),
+          );
+        }),
+      ),
+    
+      SizedBox(height: screenHeight * 0.01),
+    
+      // Forgot MPIN button
+      TextButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ForgotScreen()),
+          );
+        },
+        child: Text(
+         localization.translate('Forgot MPIN?'),
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF0077B6),
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    
+    
+      Text(
+                        errorMessage,
+                        style: GoogleFonts.poppins(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+    
+      //SizedBox(height: screenHeight * 0.02),
+    
+      // --- ICON + ERROR Message Space Reserve ---
+      Column(
+        children: [
+          // Success/Error Icon
+          SizedBox(
+            height: iconSize, // Always reserve space for icon
+            child: Center(
+              child: _isSuccess
+                  ? Icon(Icons.check_circle, color: Colors.green, size: iconSize)
+                 
+                      : const SizedBox.shrink(),
+            ),
+          ),
+    
+          //SizedBox(height: screenHeight * 0.01),
+    
+          // Error message text
+        
+        ],
+      ),
+      // --- END of ICON + ERROR space ---
+    
+    //  SizedBox(height: screenHeight * 0.03),
+    
+      // Fingerprint
+      GestureDetector(
+        onTap: _authenticateWithFingerprint,
+        child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.shade300,
@@ -469,153 +633,70 @@ Widget build(BuildContext context) {
               ),
             ],
           ),
-          alignment: Alignment.center,
-          child: Text(
-            _pin.length > index ? '●' : '',
-            style: GoogleFonts.poppins(
-              fontSize: screenWidth * 0.08,
-              color: const Color(0xFF02053E),
-            ),
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          child: Icon(
+            Icons.fingerprint,
+            size: screenWidth * 0.14,
+            color: const Color(0xFF02053E),
           ),
-        );
-      }),
-    ),
-
-    SizedBox(height: screenHeight * 0.01),
-
-    // Forgot MPIN button
-    TextButton(
-      onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ForgotScreen()),
-        );
-      },
-      child: Text(
-        'Forgot MPIN?',
-        style: GoogleFonts.poppins(
-          color: const Color(0xFF0077B6),
-          fontSize: fontSize,
-          fontWeight: FontWeight.w600,
         ),
       ),
-    ),
-
-
-    Text(
-                      errorMessage,
-                      style: GoogleFonts.poppins(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12
+    
+      SizedBox(height: screenHeight * 0.01),
+    
+      // Keypad
+      Column(
+        children: [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['0', '⌫']].map((row) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: row.map((number) {
+              return GestureDetector(
+                onTap: () => number == '⌫' ? _onDelete() : _onKeyTap(number),
+    
+                 onLongPress: () {
+      if (number == '⌫') {
+        setState(() {
+          _pin = ''; // full MPIN clear
+        });
+      }
+    },
+                
+                child: Container(
+                  margin: EdgeInsets.all(screenWidth * 0.025),
+                  width: buttonSize,
+                  height: buttonSize,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                      textAlign: TextAlign.center,
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    number,
+                    style: GoogleFonts.poppins(
+                      fontSize: screenWidth * 0.07,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF02053E),
                     ),
-
-    //SizedBox(height: screenHeight * 0.02),
-
-    // --- ICON + ERROR Message Space Reserve ---
-    Column(
-      children: [
-        // Success/Error Icon
-        SizedBox(
-          height: iconSize, // Always reserve space for icon
-          child: Center(
-            child: _isSuccess
-                ? Icon(Icons.check_circle, color: Colors.green, size: iconSize)
-               
-                    : const SizedBox.shrink(),
-          ),
-        ),
-
-        //SizedBox(height: screenHeight * 0.01),
-
-        // Error message text
-      
-      ],
-    ),
-    // --- END of ICON + ERROR space ---
-
-  //  SizedBox(height: screenHeight * 0.03),
-
-    // Fingerprint
-    GestureDetector(
-      onTap: _authenticateWithFingerprint,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.all(screenWidth * 0.04),
-        child: Icon(
-          Icons.fingerprint,
-          size: screenWidth * 0.14,
-          color: const Color(0xFF02053E),
-        ),
-      ),
-    ),
-
-    SizedBox(height: screenHeight * 0.01),
-
-    // Keypad
-    Column(
-      children: [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['0', '⌫']].map((row) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: row.map((number) {
-            return GestureDetector(
-              onTap: () => number == '⌫' ? _onDelete() : _onKeyTap(number),
-
-               onLongPress: () {
-    if (number == '⌫') {
-      setState(() {
-        _pin = ''; // full MPIN clear
-      });
-    }
-  },
-              
-              child: Container(
-                margin: EdgeInsets.all(screenWidth * 0.025),
-                width: buttonSize,
-                height: buttonSize,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  number,
-                  style: GoogleFonts.poppins(
-                    fontSize: screenWidth * 0.07,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF02053E),
                   ),
                 ),
-              ),
-            );
-          }).toList(),
-        );
-      }).toList(),
-    ),
-
-    SizedBox(height: screenHeight * 0.05),
-  ],
-)
-
+              );
+            }).toList(),
+          );
+        }).toList(),
+      ),
+    
+      SizedBox(height: screenHeight * 0.05),
+    ],
+    )
+    
+      ),
     ),
   );
 }

@@ -268,13 +268,15 @@ Future<void> requestCallPermission() async {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
+                        return localization.translate('Please enter your name');
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: padding),
                   buildLabel(localization.translate('Mobile Number*'), fontSize),
+
+
                   TextFormField(
                     readOnly: true,
                     controller: _phoneController,
@@ -286,7 +288,7 @@ Future<void> requestCallPermission() async {
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your mobile number';
+                        return localization.translate('Please enter your mobile number');
                       } else if (value.length != 10) {
                         return 'Please enter a valid 10-digit mobile number';
                       }
@@ -308,7 +310,7 @@ Future<void> requestCallPermission() async {
                     ),
                     validator: (value) {
       if (value == null || value.trim().isEmpty) {
-        return localization.translate('pls enter discription');
+        return localization.translate("Please enter description");
       }
       return null;
         },

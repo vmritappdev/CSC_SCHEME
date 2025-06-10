@@ -290,18 +290,19 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void checkOtp() {
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
     final enteredOtp = otpController.text.trim();
     final now = DateTime.now();
 
     if (enteredOtp.length < 6) {
-      _showInvalidOTPDialog("Please enter valid 6 digits OTP");
+      _showInvalidOTPDialog(localization.translate("Please enter valid 6 digits OTP"));
       otpController.clear();
       FocusScope.of(context).requestFocus(FocusNode());
       return;
     }
 
     if (now.difference(otpReceivedTime).inMinutes >= 10) {
-      _showInvalidOTPDialog("OTP expired, please resend");
+      _showInvalidOTPDialog(localization.translate("OTP expired, please resend"));
       otpController.clear();
       return;
     }
@@ -309,7 +310,7 @@ class _OtpScreenState extends State<OtpScreen> {
     if (enteredOtp == receivedOtp) {
       showProceedBottomSheet(context);
     } else {
-      _showInvalidOTPDialog("Incorrect OTP, please try again");
+      _showInvalidOTPDialog(localization.translate("Incorrect OTP, please try again"));
       otpController.clear();
     }
   }
@@ -378,17 +379,16 @@ class _OtpScreenState extends State<OtpScreen> {
             child: Column(
               children: [
                 SizedBox(height: screenHeight * 0.02),
-                RichText(
-                  text: TextSpan(
-                    text: localization.translate(
-                      "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}",
-                    ),
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: screenHeight * 0.02,
-                    ),
-                  ),
-                ),
+               RichText(
+  text: TextSpan(
+    text: "${localization.translate("Verification Code Sent to")} +${maskPhoneNumber(phoneNumber)}",
+    style: GoogleFonts.poppins(
+      color: Colors.black,
+      fontSize: screenHeight * 0.02,
+    ),
+  ),
+),
+
                 SizedBox(height: screenHeight * 0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -432,7 +432,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     style: const TextStyle(fontSize: 13, letterSpacing: 20),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: 'Enter OTP',
+                      hintText: localization.translate('Enter OTP'),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(

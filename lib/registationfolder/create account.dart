@@ -104,6 +104,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
    void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   showDialog(
     context: context,
@@ -124,7 +125,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
               child: Text(
-                message,
+               // message,
+                 localization.translate("Sorry, the mobile number has already been used. Please provide a different mobile number."),
                 style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
                 textAlign: TextAlign.center,
               ),
@@ -140,7 +142,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "OK",
+                 localization.translate("OK"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenWidth * 0.045, // Dynamic Button Font Size
@@ -160,6 +162,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
 
   // Submit form and send data to API
   void showErrorDialog(String message) {
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -177,7 +181,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             ],
           ),
           content: Text(
-            message,
+           // message,
+         localization.translate("Sorry, the mobile number has already been used. Please provide a different mobile number."),
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
@@ -194,8 +199,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    "OK",
+                  child:  Text(
+                   localization.translate("OK"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -548,17 +553,16 @@ Future<void> submitForm() async {
     );
   }
 
-  Widget _buildPhoneField() {
+ Widget _buildPhoneField() {
   final localization = Provider.of<LocalizationProvider>(context, listen: true);
-  String? phoneNumber;
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 20),
     child: FormField<String>(
       validator: (value) {
-        if (phoneNumber == null || phoneNumber!.isEmpty) {
+        if (value == null || value.isEmpty) {
           return localization.translate("Please enter a mobile number");
-        } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(phoneNumber!)) {
+        } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
           return localization.translate("Enter a valid 10-digit mobile number");
         }
         return null;
@@ -573,20 +577,20 @@ Future<void> submitForm() async {
               decoration: InputDecoration(
                 labelText: localization.translate("Mobile Number"),
                 labelStyle: GoogleFonts.lato(
-                textStyle: const TextStyle(
-                  fontSize: 15,
-                  color: Color.fromRGBO(43, 49, 101, 1),
-                  fontWeight: FontWeight.bold,
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    color: Color.fromRGBO(43, 49, 101, 1),
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
                   borderSide: const BorderSide(
-                  color: Color.fromARGB(255, 18, 5, 93),
-                  width: 2,
+                    color: Color.fromARGB(255, 18, 5, 93),
+                    width: 2,
                   ),
                 ),
                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
@@ -597,8 +601,7 @@ Future<void> submitForm() async {
               dropdownIcon: const Icon(Icons.arrow_drop_down, color: Colors.black),
               dropdownIconPosition: IconPosition.trailing,
               onChanged: (phone) {
-                phoneNumber = phone.number;
-                field.didChange(phone.number); // Update FormField state
+                field.didChange(phone.number); // ✅ update correct value for validator
               },
             ),
           ],
@@ -607,7 +610,6 @@ Future<void> submitForm() async {
     ),
   );
 }
-
 
 
 

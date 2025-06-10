@@ -66,9 +66,7 @@ class _PaymentCardState extends State<PaymentCard> {
 
  final ActiveSchemeService _service = ActiveSchemeService();
 
- bool _popupShown = false; // To track if popup is already shown
- bool _isPolling = true; // Flag to control polling
-//bool _isPollingStarted = false;
+ 
 
   @override
   void initState() {

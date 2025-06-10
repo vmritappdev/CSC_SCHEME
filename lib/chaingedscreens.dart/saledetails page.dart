@@ -1,9 +1,12 @@
 import 'dart:convert'; // Add this import for json.decode
+
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/constant.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,6 +36,10 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
    bool isLoading = false;
 
+   
+
+
+ 
  
   @override
   void initState() {
@@ -160,6 +167,8 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                           color: const Color(0xFF0A0E21),
                           size: isSmallScreen ? 24 : 28),
                       const SizedBox(width: 10),
+
+
                       Text(
                        localization.translate('Bill Summary'),
                         style: GoogleFonts.playfairDisplay(
@@ -177,13 +186,13 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   SizedBox(height: isSmallScreen ? 12 : 16),
                   _buildDetailRow(localization.translate('Product Name'), productName, isSmallScreen),
                   _buildDivider(),
-                     _buildDetailRow(localization.translate('Gross Weight'), grossWeight, isSmallScreen),
+                    _buildDetailRow(localization.translate('Gross Weight'), grossWeight, isSmallScreen),
                        _buildDivider(),
                      _buildDetailRow(localization.translate('Stone'), stone, isSmallScreen), 
                        _buildDivider(),   
                   _buildDetailRow(localization.translate('Net Weight'), netWeight, isSmallScreen),
                   _buildDivider(),
-                 // _buildDetailRow('Gross Weight', grossWeight, isSmallScreen),
+                 
 
                   SizedBox(height: isSmallScreen ? 16 : 24),
                   _buildSectionDivider(),
@@ -284,6 +293,8 @@ Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
     );
   }
 }
+
+
 
   Widget _buildSectionTitle(String title, bool isSmallScreen) {
     return Text(

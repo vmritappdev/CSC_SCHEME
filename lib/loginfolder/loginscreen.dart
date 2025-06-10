@@ -41,8 +41,6 @@ String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చ�
 
 
 
-
-
 Future<void> _checkSavedPhoneNumber() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.reload(); // Ensure the latest data is fetched
@@ -341,141 +339,209 @@ void _showErrorPopup(String reason) {
     double fontSizeSmall = screenHeight * 0.02;
     double inputFieldHeight = screenHeight * 0.07;
     double buttonHeight = screenHeight * 0.06;
-      final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
     return WillPopScope(
-       onWillPop: () async {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const TermsAndConditionsScreen()),
-      );
-      return false; // Prevent default back action
-    },
-      child: Scaffold(
-       
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(paddingAll),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: screenHeight * 0.08),
-      
-      
-      
-                 Align(
-                      alignment: Alignment.bottomLeft,
-                      child: BackButton(
-                        color:  const Color.fromARGB(255, 12, 2, 42),
-                        onPressed: () {
-                          Navigator.push(
-                            context, 
-                            MaterialPageRoute(
-                              builder: (context) =>  TermsAndConditionsScreen(),
-                            )
-                          );
-                        },
-                      ),
-                    ),
-      
-                    
-      
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-      
-                   
-                    Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
-                    SizedBox(width: screenWidth * 0.02),
-                    Text(
-                     localization.translate("CSC"),
-                      style: GoogleFonts.roboto(
-                        fontSize: fontSizeLarge,
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 3, 21, 47),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: screenHeight * 0.015),
-                Text(
-                  localization.translate("Welcome back to your CSC account!"),
-                  style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
-                ),
-                SizedBox(height: screenHeight * 0.04),
-      
-                _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
-                SizedBox(height: screenHeight * 0.025),
-                _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4),
-      
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => LoginOtpScreen(),
-                      )
-                    );
-                  },
-                  child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
-                              ),
-                ),
-      
-                SizedBox(height: screenHeight * 0.015),
-                if (errorMessage.isNotEmpty)
-                  Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
-      
-                SizedBox(height: screenHeight * 0.04),
-                _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
-                SizedBox(height: screenHeight * 0.015),
-                _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
-                   Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginOtpScreen(),
-          ),
-        );
-              
-                    }),
-      
-                SizedBox(height: screenHeight * 0.03),
-                Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-                   SizedBox(height: screenHeight * 0.02),
-               Material(
-  color: Colors.transparent,
-  child: InkWell(
-    onTap: () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>  CurvedImageScreen2(),
-        ),
-      );
-    },
-    borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
+  onWillPop: () async {
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
     child: Padding(
-      padding: const EdgeInsets.all(4.0), // Expands touch area
-      child: Text(
-        localization.translate("Register here"),
-        style: TextStyle(
-          color: const Color.fromARGB(255, 3, 21, 47),
-          fontSize: fontSizeSmall,
-          fontWeight: FontWeight.bold,
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     ),
   ),
-)
-,
-      
-                SizedBox(height: screenHeight * 0.03),
-                const Divider(),
-                SizedBox(height: screenHeight * 0.015),
-               // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-              ],
+);
+
+  if (shouldExit) {
+    SystemNavigator.pop();
+
+    
+  }
+
+  return false;
+},
+
+      child: SafeArea(
+        child: Scaffold(
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(paddingAll),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.08),
+        
+        
+        
+                   Align(
+                        alignment: Alignment.bottomLeft,
+                        child: BackButton(
+                          color:  const Color.fromARGB(255, 12, 2, 42),
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                              builder: (context) =>  TermsAndConditionsScreen(),
+                              )
+                            );
+                          },
+                        ),
+                      ),
+        
+                      
+        
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+        
+                     
+                      Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
+                      SizedBox(width: screenWidth * 0.02),
+                      Text(
+                       localization.translate("CSC"),
+                        style: GoogleFonts.roboto(
+                          fontSize: fontSizeLarge,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 3, 21, 47),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * 0.015),
+                  Text(
+                    localization.translate("Welcome back to your CSC account!"),
+                    style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+        
+                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
+                  SizedBox(height: screenHeight * 0.025),
+                  _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
+        
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => LoginOtpScreen(),
+                        )
+                      );
+                    },
+                    child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
+                                ),
+                  ),
+        
+                  SizedBox(height: screenHeight * 0.015),
+                  if (errorMessage.isNotEmpty)
+                    Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
+        
+                  SizedBox(height: screenHeight * 0.04),
+                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+                  SizedBox(height: screenHeight * 0.015),
+                  _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+                     Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginOtpScreen(),
+            ),
+          );
+                
+                      }),
+        
+                  SizedBox(height: screenHeight * 0.03),
+                  Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                     SizedBox(height: screenHeight * 0.02),
+                 Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  CurvedImageScreen2(),
+          ),
+        );
+            },
+            borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
+            child: Padding(
+        padding: const EdgeInsets.all(4.0), // Expands touch area
+        child: Text(
+          localization.translate("Register here"),
+          style: TextStyle(
+            color: const Color.fromARGB(255, 3, 21, 47),
+            fontSize: fontSizeSmall,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+            ),
+          ),
+        )
+        ,
+        
+                  SizedBox(height: screenHeight * 0.03),
+                  const Divider(),
+                  SizedBox(height: screenHeight * 0.015),
+                 // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                ],
+              ),
             ),
           ),
         ),
@@ -492,42 +558,44 @@ Widget _buildTextField(
   double fieldHeight, {
   bool obscureText = false,
   int? maxLength,
+  bool isMPINField = false, // ✅ Add this flag
 }) {
   return SizedBox(
     height: fieldHeight,
     child: TextField(
-              inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+      ],
       controller: controller,
-      obscureText: label == "MPIN" ? _isObscured : obscureText, // 🔹 MPIN Visibility Toggle
-      keyboardType: label == "Mobile Number" ? TextInputType.phone : TextInputType.number,
+      obscureText: isMPINField ? _isObscured : obscureText,
+      keyboardType: label == "Mobile Number"
+          ? TextInputType.phone
+          : TextInputType.number,
       maxLength: maxLength,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47)),
-        suffixIcon: label == "MPIN"
+        suffixIcon: isMPINField
             ? IconButton(
-                icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility),
+                icon: Icon(
+                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                ),
                 onPressed: () {
                   setState(() {
-                    _isObscured = !_isObscured; // 🔹 Click చేస్తే టోగుల్ అవుతుంది
+                    _isObscured = !_isObscured;
                   });
                 },
               )
             : null,
-        labelText: label, // 🔹 hintText Badulu labelText
-       // filled: true,
-        //fillColor: Colors.grey[200],
+        labelText: label,
         counterText: "",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-        //  borderSide: BorderSide.none,
         ),
       ),
     ),
   );
 }
+
 
   Widget _buildButton(String text, Color bgColor, Color textColor, double buttonHeight, VoidCallback onPressed) {
     return SizedBox(

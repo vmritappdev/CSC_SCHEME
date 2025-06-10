@@ -31,12 +31,14 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         title: Text(
          localization.translate("About Us"),
           style: GoogleFonts.cinzel(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
           ),
         ),
       ),
+
+      
        body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [

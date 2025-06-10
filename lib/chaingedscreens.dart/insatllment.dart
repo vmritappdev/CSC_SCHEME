@@ -107,8 +107,7 @@ TextEditingController _amountController = TextEditingController(text: '');
 
   
 
-  // Fetch installment details from API
- // This method calls fetchInstallmentDetails, updates UI based on response, and selects the first unpaid installment
+
 Future<void> _fetchInstallmentDetails() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
@@ -136,7 +135,7 @@ Future<void> _fetchInstallmentDetails() async {
   });
 }
 
-// This method selects the first unpaid installment and fetches the balance and due days
+
 void _selectFirstUnpaidInstallment() {
   for (int i = 0; i < installments.length; i++) {
     if (installments[i]["payment_status"] != "Paid") {
@@ -254,7 +253,7 @@ Color getStatusColor(String? status) {
                   final installment = installments[index];
                   bool isPaid = installment["payment_status"] == "Paid";
                   
-                  // ✅ Show only Paid and First unpaid
+                  
                   if (!isPaid && index != selectedInstallment) {
                     return const SizedBox.shrink(); // ❌ Skip this one
                   }
@@ -383,7 +382,7 @@ Color getStatusColor(String? status) {
                   
                   const SizedBox(height: 20,),
                   
-                  // ✅ Extra line only for unpaid + selected card
+                
                     if (!isPaid && index == selectedInstallment)
                     Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,7 +454,7 @@ Color getStatusColor(String? status) {
             ],
                     ),
                   
-                    // Pay any amount
+                    
                     Row(
             children: [
               Radio(
@@ -487,15 +486,15 @@ Color getStatusColor(String? status) {
                          final digits = value.replaceAll(RegExp('[^0-9]'), '');
                          final formatted = formatAmount(digits); // ₹1,000 type format
                        
-                         // Avoid infinite loop
+                         
                          if (formatted != _amountController.text) {
                            final oldSelection = _amountController.selection;
                            final newLengthDiff = formatted.length - _amountController.text.length;
                        
-                           // This won't cause shaking
+                           
                           _amountController.text = formatted;
                        
-                           // Try to preserve cursor position
+
                            int newOffset = oldSelection.baseOffset + newLengthDiff;
                            if (newOffset > formatted.length) newOffset = formatted.length;
                            _amountController.selection = TextSelection.collapsed(offset: newOffset);
@@ -531,7 +530,7 @@ Color getStatusColor(String? status) {
                   
             const SizedBox(height: 6),
                   
-            // ✅ Paid & Balance Amount Row
+           
                      
                     ],
                   

@@ -376,9 +376,9 @@ Future<void> _fetchPayDetails(String id) async {
                     isExpanded: true,
                     items: [
                       // 'All' option
-                      const DropdownMenuItem<String>(
+                       DropdownMenuItem<String>(
                         value: 'all',
-                        child: Text('All'),
+                        child: Text(localization.translate('All')),
                       ),
                       // Scheme options
                       ...schemes.map((scheme) {

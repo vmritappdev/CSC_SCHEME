@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -284,30 +285,22 @@ void _onResendOtp() {
   maxLength: 6,
   autofillHints: const [AutofillHints.oneTimeCode],
    textAlign: TextAlign.center,
-  decoration: InputDecoration(
-    isDense: true,
-    //labelText: 'Enter OTP',labelStyle: TextStyle(fontSize: 14),
-    counterText: '',
-    hintText: 'Enter  OTP',hintStyle: TextStyle(fontSize: 12,letterSpacing: 32),
-    
-    contentPadding: const EdgeInsets.symmetric(vertical: 15, ),
-    border: OutlineInputBorder(
-      
-      borderRadius: BorderRadius.circular(5),
-      borderSide: const BorderSide(
-        color: Color.fromARGB(255, 12, 4, 30),
-        width: 1,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(5),
-      borderSide: const BorderSide(
-        color: Color.fromARGB(255, 12, 4, 30),
-        width: 2,
-      ),
-    ),
-  ),
-  style: const TextStyle(fontSize: 20, color: Colors.black),
+  inputFormatters: [
+                      LengthLimitingTextInputFormatter(6),
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    style: const TextStyle(fontSize: 13, letterSpacing: 20),
+                    decoration: InputDecoration(
+                      counterText: '',
+                      hintText: localization.translate('Enter OTP'),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
+                      ),
+                    ),
+ 
   onChanged: (value) {
     if (value.length == 6) {
       print("OTP entered: $value");
@@ -329,7 +322,7 @@ void _onResendOtp() {
                 ),
                 const SizedBox(height: 8),
                 if (!_isResendAvailable)
-                  Text("Resend OTP in $_timerSeconds sec", style: const TextStyle(color: Colors.grey)),
+                  Text("${localization.translate("Resend OTP in")} $_timerSeconds ${localization.translate("seconds")}"),
                 if (_isResendAvailable)
                   TextButton(onPressed: _onResendOtp, child:  Text(localization.translate("Resend OTP"),
                   style: TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),

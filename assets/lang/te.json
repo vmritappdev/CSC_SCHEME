@@ -265,10 +265,11 @@
 "2nd_installment": "2వ వాయిదా",
 "3rd_installment": "3వ వాయిదా",
 "th_installment": "వ వాయిదా",
+"Upload Screenshot (Required)": "స్క్రీన్‌షాట్ అప్‌లోడ్ చేయండి (అవసరం)",
+"Please fill the image": "దయచేసి చిత్రం జోడించండి",
 
 
-
-  "Transaction Number": "లావాదేవీ నంబర్*",
+  "Transaction Number": "లావాదేవీ నంబర్",
   "Kindly upload the payment slip or a screenshot below for verification of your payment.": "మీ చెల్లింపును ధృవీకరించడానికి చెల్లింపు స్లిప్ లేదా స్క్రీన్‌షాట్‌ను దిగువన అప్‌లోడ్ చేయండి.",
   "Tap to Upload Screenshot": "స్క్రీన్‌షాట్ అప్‌లోడ్ చేయడానికి ట్యాప్ చేయండి",
   "Please fill the Transaction Number.": "దయచేసి లావాదేవీ నంబర్‌ను నమోదు చేయండి.",
@@ -634,6 +635,15 @@
 "Gold Vanki": "బంగారు వంకి",
 "Gold Rings": "బంగారు ఉంగరాలు",
 "Gold Long Chain": "బంగారు పొడవు గొలుసు",
+"Verification Code Sent to":"ధృవీకరణ కోడ్ పంపించబడింది",
+"Please enter valid 6 digits OTP": "దయచేసి చెల్లుబాటు అయ్యే 6 అంకెల OTP నమోదు చేయండి",
+
+
+
+ "Sorry, the mobile number has already been used. Please provide a different mobile number.":"క్షమించండి, ఈ మొబైల్ నంబర్ ఇప్పటికే ఉపయోగించబడింది. దయచేసి మరో మొబైల్ నంబర్ ఇవ్వండి.",
+
+
+"We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.": "మీ MPIN లేదా మొబైల్ నంబర్‌ను ధృవీకరించలేకపోయాము. దయచేసి మళ్లీ తనిఖీ చేసి ప్రయత్నించండి.",
 
 
 
@@ -669,6 +679,29 @@
 "Click 'I Have Proceed' to continue.":  "'నేను కొనసాగుతున్నాను' క్లిక్ చేసి కొనసాగించండి.",
 "I Have Proceed":"నేను కొనసాగుతున్నాను",
 "Resend OTP in $timerSeconds seconds":  "$timerSeconds సెకన్లలో OTPని మళ్లీ పంపించండి",
+
+"otp_sent_to": "+{number} కు ధృవీకరణ కోడ్ పంపించబడింది",
+
+"OTP Verified!":"ఓటీపీ ధృవీకరించబడింది!",
+"Update Successful": "అప్డేట్ విజయవంతంగా పూర్తైంది",
+ "❌This mobile number is already registered.":"❌ఈ మొబైల్ నంబర్ ఇప్పటికే నమోదైంది.",
+ "Download Brochure":"బ్రోచర్‌ను డౌన్‌లోడ్ చేయండి",
+ "All": "అన్నీ",
+ "Please enter description": "దయచేసి వివరణను నమోదు చేయండి",
+ "Please enter your name": "దయచేసి మీ పేరు నమోదు చేయండి",
+  "Please enter your adhar number": "దయచేసి మీ ఆధార్ నంబర్ నమోదు చేయండి",
+  "No new notifications": "కొత్త నోటిఫికేషన్లు లేవు",
+  "Notifications": "నోటిఫికేషన్లు",
+  "Terms & Policies": "నియమాలు & విధానాలు",
+  "No Records On This Number": "ఈ నంబరుతో ఎలాంటి రికార్డులు లేవు",
+  "✅ Verify OTP": "✅ ఓటీపీని నిర్ధారించండి",
+  "Hi": "హాయ్",
+  "Enter your 4-digit MPIN":  "మీ 4 అంకెల MPIN నమోదు చేయండి",
+  "Invalid MPIN. Please try again.": "చెల్లని MPIN. దయచేసి మళ్ళీ ప్రయత్నించండి.",
+  "CHINNI SRINIVSSULU JEWELLERS":"చిన్ని శ్రీనివస్సులు జ్యువెలర్స్",
+  "Account No": "ఖాతా సంఖ్య",
+  "IFSC Code":"IFSC కోడ్",
+  "A/C Holder":"ఖాతా హోల్డర్",
 
 
 

@@ -10,7 +10,7 @@ import 'package:csc/chaingedscreens.dart/scner.dart';
 
 import 'package:csc/dashboardscreens/closed_schemes.dart';
 import 'package:csc/editprofile/edit2.dart';
-import 'package:csc/editprofile/editscheme.dart';
+
 
 
 import 'package:csc/localization/localizationpro.dart';
@@ -522,18 +522,19 @@ Future<void> verifyPaymentProcess() async {
 ),
 
                     const SizedBox(height: 8),
+
                     Row(
                       children: [
-                        const Icon(Icons.phone, color: Colors.green),
-                        const SizedBox(width: 8),
-                        Text(phone, style: const TextStyle(fontSize: 15)),
+                      const Icon(Icons.phone, color: Colors.green),
+                      const SizedBox(width: 8),
+                      Text(phone, style: const TextStyle(fontSize: 15)),
                       ],
                     ),
                     const SizedBox(height: 12),
                     infoRow(localization.translate('Scheme No'),
                     regNo),
-                    infoRow(localization.translate('Total Installments'),   '$totalInstallments'),
-                    infoRow(localization.translate('Paid Installments'),    paidInstallments,),
+                    infoRow(localization.translate('Total Installments'),'$totalInstallments'),
+                    infoRow(localization.translate('Paid Installments'), paidInstallments,),
                   ],
                 ),
               ),
@@ -558,8 +559,8 @@ Future<void> verifyPaymentProcess() async {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(value, style: const TextStyle(color: Colors.black54)),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(value, style: const TextStyle(color: Colors.black54)),
         ],
       ),
     );
@@ -578,7 +579,7 @@ Widget _buildTransactionCard({
   required String paymentStatus,
   required BuildContext context,
 }) {
-  var localization = Provider.of<LocalizationProvider>(context);
+  var localization = Provider.of<LocalizationProvider>(context,listen: false);
   double screenWidth = MediaQuery.of(context).size.width;
 double screenHeight = MediaQuery.of(context).size.height;
 
@@ -657,8 +658,8 @@ switch (status) {
       
 GestureDetector(
   onTap: () {
-    Navigator.pop(context);
-    if (paymentStatusText == "Pay") {
+   // Navigator.pop(context);
+    if (status == "2") {
       if (accountDetails.isNotEmpty) {
         final String amount = accountDetails[0]['amount'] ?? '0';
         final String id = accountDetails[0]['id'] ?? '';
@@ -685,7 +686,7 @@ GestureDetector(
       } else {
         print("No account details available");
       }
-    } else if (paymentStatusText == "Process") {
+    } else if (status == "0") {
       Navigator.push(
         context,
         MaterialPageRoute(

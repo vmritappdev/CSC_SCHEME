@@ -1,6 +1,6 @@
  import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+
 
 
 
@@ -13,7 +13,7 @@ import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/chaingedscreens.dart/installmentviewdetails.dart';
 
 import 'package:csc/dashboardscreens/notification.dart';
-import 'package:csc/dashboardscreens/profile2.dart';
+
 
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
@@ -50,8 +50,8 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
-          child: child!,
+        data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+        child: child!,
         );
       },
       home:HomeScreen(activescheme: Activescheme()),
@@ -62,9 +62,9 @@ void main() {
 
 
 class HomeScreen extends StatefulWidget {
-   final Activescheme activescheme;
+final Activescheme activescheme;
 
-   const HomeScreen({super.key, required this.activescheme});
+const HomeScreen({super.key, required this.activescheme});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState(); 
@@ -73,7 +73,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
 
-  final RefreshController _refreshController = RefreshController();
+final RefreshController _refreshController = RefreshController();
 
 void _onRefresh() async {
   try {
@@ -96,11 +96,7 @@ int _previousNotificationCount = 0; // store last known count
   
 
 
-  bool _backButtonPressedOnce = false;
-
-  
-
-DateTime? _lastBackPressTime;
+ 
 
    
  VerificationResponse? verificationResponse;
@@ -113,7 +109,7 @@ DateTime? _lastBackPressTime;
   // Select the tab icon
   setState(() => _selectedIndex = index);
 
-  // Don'totficationavigate if it's Home (index 0)
+  
   if (index == 0) return;
 
   Widget screen;
@@ -144,38 +140,46 @@ DateTime? _lastBackPressTime;
 
 
 
- Future<void> _fetchNotificationCount() async {
-    final url = Uri.parse("$baseUrl/notifications.php");
-     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? mobileNumber = prefs.getString('phoneNumber');
-    try {
-      final response = await http.post(url, body: {
-        "mobile_no": mobileNumber,
-      });
+Future<void> _fetchNotificationCount() async {
+  final url = Uri.parse("$baseUrl/notifications.php");
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? mobileNumber = prefs.getString('phoneNumber');
 
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        if (jsonData['response'] == 'success') {
-          final count = int.tryParse(jsonData['count'].toString()) ?? 0;
+  try {
+    final response = await http
+        .post(
+          url,
+          body: {
+            "mobile_no": mobileNumber,
+          },
+        )
+        .timeout(Duration(seconds: 10)); // 👈 timeout added here
 
-           // ✅ Play sound if count increased
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData['response'] == 'success') {
+        final count = int.tryParse(jsonData['count'].toString()) ?? 0;
+
+        // ✅ Play sound if count increased
         if (count > _previousNotificationCount) {
           final player = AudioPlayer();
           await player.play(AssetSource('sounds/notifications.wav'));
         }
 
-          
-          setState(() {
-             _notificationCount = count;
+        setState(() {
+          _notificationCount = count;
           _previousNotificationCount = count; // update after setting
-          });
-        }
+        });
       }
-    } catch (e) {
-      print("❌ Error fetching notification count: $e");
+    } else {
+      print("❌ Server returned error: ${response.statusCode}");
     }
+  } on TimeoutException catch (_) {
+    print("⏱️ Request timed out after 10 seconds");
+  } catch (e) {
+     print("❌ Error fetching notification count: $e");
   }
-
+}
 
 
 
@@ -456,8 +460,8 @@ void showCompletePopup(VerificationResponse response) {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    Navigator.of(context, rootNavigator: true).pop();
-                    await Future.delayed(Duration(milliseconds: 100));
+                  Navigator.of(context, rootNavigator: true).pop();
+                  await Future.delayed(Duration(milliseconds: 100));
                     _popupShown = false;
                     closePopupAPI();
                   },

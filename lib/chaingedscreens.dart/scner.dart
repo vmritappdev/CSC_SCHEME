@@ -269,7 +269,7 @@ Future<bool> checkInternet() async {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
     double labelWidth = screenWidth * 0.3; // ఉదాహరణకు 30% స్క్రీన్ వెడల్పు
 
 
@@ -337,22 +337,49 @@ Future<bool> checkInternet() async {
    
             
 
-            _buildDetailCard(
-          title: 'UPI Details',
-          entries: [
-            _buildCopyRow('UPI ID:', 'Chinnipavan-2@okhdfcbank', context,MediaQuery.of(context).size.width),
-          ],
-        ),
+           _buildDetailCard(
+  title: localization.translate('UPI Details'),
+  entries: [
+    _buildCopyRow(
+      '${localization.translate('UPI ID')}:',
+      'Chinnipavan-2@okhdfcbank',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+  ],
+),
+
 
 _buildDetailCard(
-          title: 'Bank Details',
-          entries: [
-            _buildCopyRow('Bank Name:', 'HDFC Bank', context,MediaQuery.of(context).size.width),
-            _buildCopyRow('Account No:', '50200103097351', context,MediaQuery.of(context).size.width),
-            _buildCopyRow('IFSC Code:', 'HDFC0002043', context,MediaQuery.of(context).size.width),
-            _buildCopyRow('A/C Holder:', 'Chinni Srinivasulu Chetty Jewellers', context,MediaQuery.of(context).size.width),
-          ],
-        ),
+  title: localization.translate('Bank Details'),
+  entries: [
+    _buildCopyRow(
+      localization.translate('Bank Name') + ':',
+      'HDFC Bank',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('Account No') + ':',
+      '50200103097351',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('IFSC Code') + ':',
+      'HDFC0002043',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('A/C Holder') + ':',
+      'Chinni Srinivasulu Chetty Jewellers',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+  ],
+),
+
 
 
 
@@ -412,7 +439,7 @@ _buildDetailCard(
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(right: screenWidth * 0.090),
+                    padding: EdgeInsets.only(right: screenWidth * 0.030),
                     child: Text(installmentid),
                   ),
                 ],
@@ -561,6 +588,7 @@ Widget buildUpiRow(String label, String value, {VoidCallback? onCopy}) {
 
 
 Widget _buildDetailCard({required String title, required List<Widget> entries}) {
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
   return Card(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 2,
@@ -584,6 +612,7 @@ Widget _buildDetailCard({required String title, required List<Widget> entries}) 
 }
 
 Widget _buildCopyRow(String label, String value, BuildContext context,double screenWidth) {
+   final localization = Provider.of<LocalizationProvider>(context);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 0), // కొంచెం పైకే దిగువకు gap
     child: Row(

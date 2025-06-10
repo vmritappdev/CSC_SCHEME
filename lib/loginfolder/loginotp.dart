@@ -73,7 +73,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
     if (data['login'] == 'SUCCESS') {
       await sendOtp(mobile);
     } else {
-      showError("No Recods On This Number");
+      showError(localization.translate("No Records On This Number"));
     }
     setState(() => isLoading = false);
   }
@@ -323,7 +323,7 @@ void showError( String message) {
   textAlign: TextAlign.center, // Center the OTP digits
     decoration: InputDecoration(
       counterText: '',
-      hintText: 'Enter OTP',
+      hintText: localization.translate('Enter OTP'),
       hintStyle: TextStyle(letterSpacing: 2,fontSize: 13),
       contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       border: OutlineInputBorder(

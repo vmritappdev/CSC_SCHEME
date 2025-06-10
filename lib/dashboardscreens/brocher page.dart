@@ -1,13 +1,16 @@
+import 'dart:io';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class BrochureScreen extends StatefulWidget {
   const BrochureScreen({super.key});
 
-  // → తెరవాల్సిన URL
   static const brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
 
   @override
@@ -15,44 +18,80 @@ class BrochureScreen extends StatefulWidget {
 }
 
 class _BrochureScreenState extends State<BrochureScreen> {
-  // URL launch helper
-  Future<void> _openBrochureUrl(BuildContext context) async {
-    print('🔗 Button clicked → launching ${BrochureScreen.brochureUrl}');
-    final uri = Uri.parse(BrochureScreen.brochureUrl);
+  bool isDownloading = false;
 
+  Future<void> _downloadBrochure(BuildContext context) async {
+    setState(() {
+      isDownloading = true;
+    });
     try {
-      final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-      if (ok) {
-        print('[✔] URL launched successfully');
-      } else {
-        print('[x] Could not launch');
+      // Step 1: Permissions
+      if (Platform.isAndroid) {
+        if (await Permission.manageExternalStorage.request().isDenied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Storage permission denied')),
+          );
+          setState(() {
+            isDownloading = false;
+          });
+          return;
+        }
+      }
+
+      // Step 2: Get proper Downloads folder
+      final List<Directory>? extDirs = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      final Directory? downloadsDir = extDirs?.first;
+
+      if (downloadsDir == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open link')),
+          const SnackBar(content: Text('Unable to get downloads directory')),
+        );
+        setState(() {
+          isDownloading = false;
+        });
+        return;
+      }
+
+      // Step 3: Download
+      final filePath = '${downloadsDir.path}/CSC_SCHEME_BROUCHER.pdf';
+      final dio = Dio();
+      final response = await dio.download(BrochureScreen.brochureUrl, filePath);
+
+      if (response.statusCode == 200) {
+        await OpenFile.open(filePath);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Download failed')),
         );
       }
     } catch (e) {
-      print('[x] launchUrl error: $e');
+      print('Download error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error opening URL: $e')),
+        SnackBar(content: Text('Download failed: $e')),
       );
+    } finally {
+      setState(() {
+        isDownloading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-     final localization = Provider.of<LocalizationProvider>(context,listen: false);
+       final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
-        title:  Text(localization.translate('Brochure Details')
-          ,style: TextStyle(color: Colors.white,),),
-        backgroundColor: const Color(0xFF0C021D),
         iconTheme: const IconThemeData(color: Colors.white),
+        title:  Text(localization.translate('Brochure'),
+        style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color(0xFF0C021D),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -78,22 +117,32 @@ class _BrochureScreenState extends State<BrochureScreen> {
               localization.translate('Save gold every month and get exclusive benefits!'),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
-           // const Spacer(),
 
-           SizedBox(height: 50,),
+            SizedBox(height: 50,),
             Center(
+
+
+
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.open_in_new,color: Colors.white,),
-                label:  Text(localization.translate('Open Brochure'),style: TextStyle(color: Colors.white,),),
+                icon: isDownloading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 8, 1, 75)),
+                        ),
+                      )
+                    : const Icon(Icons.download, color: Colors.white),
+                label:  Text(
+                 localization.translate('Download Brochure'),
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: isDownloading ? null : () => _downloadBrochure(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0C021D),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 ),
-                onPressed: () => _openBrochureUrl(context),
               ),
             ),
           ],
@@ -101,4 +150,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
       ),
     );
   }
+
+
+  
 }

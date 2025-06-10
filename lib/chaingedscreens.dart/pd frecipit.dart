@@ -12,7 +12,7 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class ReceiptPDFGenerator {
   final String payId;
-  static const PdfColor textColor = PdfColor.fromInt(0xCC000000); // 0xCC = 80% opacity
+  static const PdfColor textColor = PdfColor.fromInt(0xCC000000);
 
 
   ReceiptPDFGenerator({required this.payId});
@@ -100,7 +100,7 @@ class ReceiptPDFGenerator {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                /// Premium Header with Watermark Effect
+                
                 pw.Stack(
                   children: [
                     pw.Positioned(
@@ -143,7 +143,7 @@ class ReceiptPDFGenerator {
 
                 pw.SizedBox(height: 16),
 
-                /// Company Info with Elegant Styling
+                
                 pw.Container(
                   padding: const pw.EdgeInsets.all(12),
                   decoration: pw.BoxDecoration(
@@ -153,7 +153,7 @@ class ReceiptPDFGenerator {
                       pw.BoxShadow(
                         color: PdfColors.grey300,
                         blurRadius: 2,
-                       // offset: pw.Offset(0, 1),
+                       
                       )
                     ],
                     border: pw.Border.all(color: PdfColors.grey200, width: 0.5),
@@ -177,7 +177,7 @@ class ReceiptPDFGenerator {
 
                 pw.SizedBox(height: 24),
 
-                /// Receipt Title with Decorative Elements
+               
                 pw.Stack(
                   children: [
                     pw.Positioned.fill(
@@ -208,7 +208,7 @@ class ReceiptPDFGenerator {
                 
                 pw.SizedBox(height: 24),
 
-                /// Receipt Details in Elegant Layout
+               
                 pw.Container(
                   padding: const pw.EdgeInsets.all(16),
                   decoration: pw.BoxDecoration(
@@ -218,7 +218,7 @@ class ReceiptPDFGenerator {
                       pw.BoxShadow(
                         color: PdfColors.grey200,
                         blurRadius: 3,
-                       // offset: pw.Offset(0, 2),
+                      
                       )
                     ],
                   ),
@@ -236,7 +236,7 @@ class ReceiptPDFGenerator {
                       _premiumDivider(),
                       _premiumEntryRow("Receipt No.", data['receipt_no']!),
                       _premiumDivider(),
-                     // _premiumEntryRow("Amount", "₹${data['amount']}!", true, ),
+                     
                       _premiumEntryRow("Amount", data['amount']!),
                       
                       _premiumDivider(),
@@ -247,13 +247,13 @@ class ReceiptPDFGenerator {
 
                 pw.SizedBox(height: 32),
 
-                /// Signature Area with Thank You Note
+                
                 pw.Container(
   width: double.infinity,
   padding: const pw.EdgeInsets.symmetric(vertical: 10),
   child: pw.Column(
     children: [
-      // Background color only for "Thank you" text
+      
       pw.Container(
          color: primaryColor,// Background color for "Thank you"
         padding: const pw.EdgeInsets.symmetric(vertical: 10),
@@ -266,7 +266,7 @@ class ReceiptPDFGenerator {
         ),
       ),
       pw.SizedBox(height: 10),
-      // "Authorized Signature" without background color, right aligned
+     
       pw.Align(
         alignment: pw.Alignment.centerRight,
         child: pw.Text(
@@ -299,7 +299,7 @@ class ReceiptPDFGenerator {
       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // Label with fixed width
+       
         pw.Container(
           width: 130, // same for all labels
           child: pw.Text(
@@ -313,7 +313,7 @@ class ReceiptPDFGenerator {
           ),
         ),
 
-        // Value with fixed width, also left-aligned
+        
         pw.Container(
           width: 130, // same width as labels, but on right side
           child: pw.Text(

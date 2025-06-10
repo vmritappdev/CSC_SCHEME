@@ -200,21 +200,60 @@
   "UPI ID": "UPI ID",
 
 
+"Verification Code Sent to":"Verification Code Sent to",
+  "Sorry, the mobile number has already been used. Please provide a different mobile number.":"Sorry, the mobile number has already been used. Please provide a different mobile number.",
+ "Please enter valid 6 digits OTP":"Please enter valid 6 digits OTP",
+ "otp_sent_to": "Verification Code Sent to +{number}",
+ "OTP Verified!":"OTP Verified!",
+ "Update Successful":"Update Successful",
+ "❌This mobile number is already registered.":"❌This mobile number is already registered.",
+ "Download Brochure":"Download Brochure",
+ "All":"All",
+ "Please enter description":"Please enter description",
+ "Please enter your name":"Please enter your name",
+ "Please enter your adhar number": "Please enter your adhar number",
+ "No new notifications":"No new notifications",
+ "Notifications":"Notifications",
+ "Terms & Policies":"Terms & Policies",
+ "No Records On This Number":"No Records On This Number",
+ "✅ Verify OTP":"✅ Verify OTP",
+ "Hi":"Hi",
+ "Enter your 4-digit MPIN":"Enter your 4-digit MPIN",
+ "Invalid MPIN. Please try again.":"Invalid MPIN. Please try again.",
+ "CHINNI SRINIVSSULU JEWELLERS":"CHINNI SRINIVSSULU JEWELLERS",
+ "Account No":"Account No",
+ "IFSC Code":"IFSC Code",
+ "A/C Holder":"A/C Holder",
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
   "Advance Gold Purchase":"Advance Gold Purchase",
   "100% V.A. Free on Items up to 18% Wastage":"100% V.A. Free on Items up to 18% Wastage",
    "Flexible Monthly Investment": "Flexible Monthly Investment",
    "Short Term - Great Benefits":"Short Term - Great Benefits",
    
-
+   "We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.":"We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.",
 
 
   "LogOut":"LogOut",
   "Quick Pay":"Quick Pay",
+  "Upload Screenshot (Required)":"Upload Screenshot (Required)",
+  "Please fill the image":"Please fill the image",
   
   "I Have Paid": "I Have Paid",
   "I have successfully made the payment to the provided UPI details.": "I have successfully made the payment to the provided UPI details.",
   
-  "Transaction Number": "Transaction Number*",
+  "Transaction Number": "Transaction Number",
   "Kindly upload the payment slip or a screenshot below for verification of your payment.": "Kindly upload the payment slip or a screenshot below for verification of your payment.",
   "Tap to Upload Screenshot": "Tap to Upload Screenshot",
   "Please fill the Transaction Number.": "Please fill the Transaction Number.",

@@ -1,5 +1,6 @@
 
 import 'package:csc/loginfolder/loginscreen.dart';
+import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -67,7 +68,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  localization.translate(message),
+                  localization.translate("No Records On This Number"),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
                 ),
@@ -236,6 +237,8 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final localization = Provider.of<LocalizationProvider>(context,listen: false);
+
     return WillPopScope(
       onWillPop: () async {
       Navigator.pushReplacement(
@@ -245,14 +248,31 @@ class _ForgotScreenState extends State<ForgotScreen> {
       return false; // Prevent default back action
     },
       child: Scaffold(
+        
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               const SizedBox(height: 80),
+
+           Align(
+            alignment: Alignment.bottomLeft,
+             child: IconButton(
+               onPressed: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(), )
+                );
+                // Navigator.pop(context); // ← బాగా ఉపయోగపడుతుంది back navigation కి
+               },
+               icon: Icon(Icons.arrow_forward), // ← Left side arrow icon
+             ),
+           ),
+
               Image.asset('assets/images/csc2.png', height: 90),
-              const Text(
-                'CSCJEWELLERYS',
+               Text(
+               localization.translate('CSCJEWELLERYS'),
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
               ),
               const SizedBox(height: 40),
@@ -267,7 +287,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   counterText: '',
-                  hintText: "Mobile Number*",
+                  hintText: localization.translate("Mobile Number*"),
                   prefixIcon: const Icon(Icons.phone),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                 ),
@@ -279,7 +299,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
                   onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
-                  child: const Text("Verify Mobile Number", style: TextStyle(color: Colors.white)),
+                  child:  Text(localization.translate("Verify Mobile Number"), style: TextStyle(color: Colors.white)),
                 ),
               ),
       
@@ -297,7 +317,7 @@ TextFormField(
     letterSpacing: 29, // 👉 ఇది actual input spacing కి
   ),
   decoration: InputDecoration(
-    hintText: 'Enter OTP',
+    hintText: localization.translate('Enter OTP'),
     hintStyle: const TextStyle(fontSize: 11, letterSpacing: 10), // optional
     counterText: '',
     isDense: true,
@@ -324,8 +344,9 @@ TextFormField(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(_isResendAvailable
-                        ? "Didn't receive the OTP?"
-                        : "Resend OTP in $_timerSeconds seconds"),
+                        ? localization.translate("Didn't receive the OTP?")
+                        :  "${localization.translate("Resend OTP in")} $_timerSeconds ${localization.translate("seconds")}"
+                        ),
                     if (_isResendAvailable)
                       TextButton(
                         onPressed: fetchOtpApi,
@@ -339,7 +360,7 @@ TextFormField(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: _isVerifyEnabled ? _checkOtpMatch : null,
-                    child: const Text("✅ Verify OTP", style: TextStyle(color: Colors.white)),
+                    child:  Text(localization.translate("✅ Verify OTP"), style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
