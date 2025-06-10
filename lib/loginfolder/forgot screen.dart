@@ -2,6 +2,7 @@
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
+import 'package:csc/registationfolder/create%20account.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(
@@ -44,6 +46,32 @@ class _ForgotScreenState extends State<ForgotScreen> {
   String receivedOtp = "";
   DateTime? otpReceivedTime; // ✅ OTP timestamp
 
+   String phoneNumber = '';
+
+   bool showNewNumberBox = true; // initial state
+
+  Future<void> loadUserDetails() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      
+      _controllerMobileNumber.text = prefs.getString('phoneNumber') ?? '';
+      
+    });
+  }
+
+
+@override
+  void initState() {
+    super.initState();
+    loadUserDetails();
+      
+  }
+
+
+
+
+
+  
   @override
   void dispose() {
     _controllerMobileNumber.dispose();
@@ -77,7 +105,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                color: Color.fromRGBO(2, 5, 62, 1),
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -107,6 +135,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
     setState(() {
       isVerifyButtonDisabled = true;
+      showNewNumberBox = false; // hide the box
     });
 
     String mobileNumber = _controllerMobileNumber.text.trim();
@@ -228,6 +257,18 @@ class _ForgotScreenState extends State<ForgotScreen> {
     }
   }
 
+
+  Future<void> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear(); 
+  Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => const LoginScreen1()), 
+     // (route) => false, // Remove all previous routes
+      );
+  }
+
+
   void _navigateToNextScreen() {
     Navigator.push(
       context,
@@ -239,15 +280,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
   Widget build(BuildContext context) {
      final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
-    return WillPopScope(
-      onWillPop: () async {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen1()),
-      );
-      return false; // Prevent default back action
-    },
-      child: Scaffold(
+    return  Scaffold(
         
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -278,30 +311,83 @@ class _ForgotScreenState extends State<ForgotScreen> {
               const SizedBox(height: 40),
       
               TextFormField(
-                        inputFormatters: [
+              inputFormatters: [
       FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
        // Blocks " and ,
         ],
-                maxLength: 10,
-                controller: _controllerMobileNumber,
+               maxLength: 10,
+               readOnly: true,
+               controller: _controllerMobileNumber,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  counterText: '',
+                counterText: '',
                   hintText: localization.translate("Mobile Number*"),
                   prefixIcon: const Icon(Icons.phone),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                 ),
               ),
+
+
+
               const SizedBox(height: 20),
-      
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-                  onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
-                  child:  Text(localization.translate("Verify Mobile Number"), style: TextStyle(color: Colors.white)),
-                ),
-              ),
+
+
+
+
+            SizedBox(
+    width: double.infinity,
+   child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+    onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
+    child: Text(
+    localization.translate("Verify Mobile Number"),
+      style: const TextStyle(color: Colors.white),
+    ),
+  ),
+),
+
+const SizedBox(height: 20),
+
+// Show this only if `showNewNumberBox` is true
+  if (showNewNumberBox)
+  GestureDetector(
+    onTap: () {
+   logout();
+    },
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE3F2FD),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color.fromARGB(255, 1, 16, 42), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 2, 16, 41).withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.phone_android, color: Color.fromARGB(255, 2, 20, 36)),
+          const SizedBox(width: 8),
+          Text(
+            localization.translate('New Mobile Number Register Here'),
+            style: const TextStyle(
+              color: Color.fromARGB(255, 2, 29, 51),
+              fontWeight: FontWeight.bold,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    ),
+  )
+,
       
               if (_isOtpVisible) ...[
                 const SizedBox(height: 20),
@@ -367,7 +453,7 @@ TextFormField(
             ],
           ),
         ),
-      ),
+      
     );
   }
 }

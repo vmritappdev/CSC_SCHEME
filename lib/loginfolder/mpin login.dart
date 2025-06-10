@@ -476,9 +476,9 @@ localization.translate('CSC App'),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
-                 localization.translate('EXIT'),
+                localization.translate('EXIT'),
                   style: TextStyle(
-                    fontSize: 13,
+                  fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
                   ),

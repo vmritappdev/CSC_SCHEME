@@ -592,7 +592,8 @@
  "Resend OTP in $timerSeconds seconds":"Resend OTP in $timerSeconds seconds",
  "We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.":"We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.",
 
-
+"New Mobile Number Register Here":"New Mobile Number Register Here",
+"Resend OTP":"Resend OTP",
     
       "Terms & Conditions": "Terms & Conditions",
       "Hello 👋": "Hello 👋",

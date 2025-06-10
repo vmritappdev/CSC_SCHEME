@@ -51,14 +51,14 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
   }
 
 
-  Future<void> logout() async {
+Future<void> logout() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear(); 
   Navigator.push(
   context,
   MaterialPageRoute(builder: (context) => const LoginScreen1()), 
      // (route) => false, // Remove all previous routes
-    );
+      );
   }
 
   

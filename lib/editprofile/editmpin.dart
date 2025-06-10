@@ -1,4 +1,4 @@
-// Full updated Flutter code with smooth OTP handling, validation, timer, and user experience improvements
+
 
 import 'dart:async';
 import 'dart:convert';
@@ -8,7 +8,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinput/pinput.dart';
+
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +25,7 @@ class EditMPINScreen extends StatefulWidget {
   State<EditMPINScreen> createState() => _EditMPINScreenState();
 }
 
-class _EditMPINScreenState extends State<EditMPINScreen> {
+  class _EditMPINScreenState extends State<EditMPINScreen> {
   final TextEditingController _controllerMobileNumber = TextEditingController();
   final TextEditingController _controllerOtp = TextEditingController();
 
@@ -36,7 +36,7 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
   bool _isSendOtpDisabled = false;
   final _pinFocusNode = FocusNode(); 
   
-       // optional – keeps keyboard open after clear
+    
 
 
   int _timerSeconds = 30;
@@ -45,7 +45,7 @@ class _EditMPINScreenState extends State<EditMPINScreen> {
 
   Timer? _resendTimer;
   Timer? _otpExpireTimer;
-   int _otpExpireSeconds = 600; // 10 minutes
+  int _otpExpireSeconds = 600; // 10 minutes
 
   @override
   void initState() {
@@ -240,7 +240,7 @@ void _onResendOtp() {
 
   @override
   Widget build(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -292,7 +292,7 @@ void _onResendOtp() {
                     style: const TextStyle(fontSize: 13, letterSpacing: 20),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: localization.translate('Enter OTP'),
+                      hintText: localization.translate('Enter OTP'),hintStyle: TextStyle(letterSpacing: 10),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(
