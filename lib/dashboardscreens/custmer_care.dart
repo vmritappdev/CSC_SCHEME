@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -61,6 +61,7 @@ class _CustomerCareState extends State<CustomerCare> {
     super.initState();
     loadUserDetails();
     requestCallPermission();
+    
   }
 
 
@@ -163,6 +164,20 @@ Future<void> submitForm() async {
           ? 'Success: ${responseData['message']}'
           : 'Error: ${responseData['faild']}';
     });
+
+
+    if (responseData['response'] == 'success') {
+
+      _descriptionController.clear();
+      // Form reset cheyyali ante:
+      
+    }
+
+     Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _message = '';
+      });
+    });
   }
 }
 
@@ -241,7 +256,7 @@ Future<void> requestCallPermission() async {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: padding),
+                  //SizedBox(height: padding),
                   buildLabel(localization.translate('Name*'), fontSize),
                   TextFormField(
                     
@@ -253,13 +268,15 @@ Future<void> requestCallPermission() async {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
+                        return localization.translate('Please enter your name');
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: padding),
                   buildLabel(localization.translate('Mobile Number*'), fontSize),
+
+
                   TextFormField(
                     readOnly: true,
                     controller: _phoneController,
@@ -271,7 +288,7 @@ Future<void> requestCallPermission() async {
                     keyboardType: TextInputType.phone,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your mobile number';
+                        return localization.translate('Please enter your mobile number');
                       } else if (value.length != 10) {
                         return 'Please enter a valid 10-digit mobile number';
                       }
@@ -293,7 +310,7 @@ Future<void> requestCallPermission() async {
                     ),
                     validator: (value) {
       if (value == null || value.trim().isEmpty) {
-        return localization.translate('pls enter discription');
+        return localization.translate("Please enter description");
       }
       return null;
         },
@@ -314,7 +331,13 @@ Future<void> requestCallPermission() async {
                           const Color.fromRGBO(2, 5, 62, 1),
                         ),
                       ),
-                      onPressed: submitForm,
+                     // onPressed: submitForm,
+                     onPressed: () async {
+  print('📍 Submit button tapped');
+  await submitForm();
+},
+
+                      
                       child: Text(
                         localization.translate('SUBMIT'),
                         style: GoogleFonts.roboto(

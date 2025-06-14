@@ -12,10 +12,11 @@ import 'package:csc/upidetails/payment%20page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
+
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -55,6 +56,7 @@ class _ScannerState extends State<Scanner> {
   bool _isChecked = false;
   String installmentAmount = '';
   String installmentLabel = '';
+  String installmentid = '';
 
    File? _selectedImage;
 
@@ -94,7 +96,7 @@ class _ScannerState extends State<Scanner> {
     final newFile = await _selectedImage!.copy(newFilePath);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Image saved to: ${newFile.path}")),
+    SnackBar(content: Text("Image saved to: ${newFile.path}")),
     );
   }
 
@@ -216,7 +218,7 @@ Future<bool> checkInternet() async {
     }
 
 
-    const url = '$baseUrl/get_installment.php';   //'https://vmrdemos.com/csc_scheme/get_installment.php'
+    var url = '$baseUrl/get_installment.php';   
 
     try {
       final response = await http.post(Uri.parse(url), body: {
@@ -230,9 +232,12 @@ Future<bool> checkInternet() async {
         final data = json.decode(response.body);
 
         if (data['response'] == 'success' && data['status'] == 200) {
+         
           setState(() {
             installmentLabel = data['installment'] ?? 'No Installment';
-            installmentAmount = data['amount']?.toString() ?? '0.00';
+            installmentAmount = data['amount']?.toString() ?? '0.00'; 
+            installmentid =  data['schemeNo']?.toString() ?? '';
+             print("✅ Installment ID: $installmentid");
           });
         }
       }
@@ -264,7 +269,9 @@ Future<bool> checkInternet() async {
     final Size screenSize = MediaQuery.of(context).size;
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
+    double labelWidth = screenWidth * 0.3; // ఉదాహరణకు 30% స్క్రీన్ వెడల్పు
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -327,162 +334,52 @@ Future<bool> checkInternet() async {
               SizedBox(height: screenHeight * 0.02),
 
           
-    const Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-                'UPI Details',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.teal,
-                ),
-              ),
-    ),
-            const SizedBox(height: 8),
-
-             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('UPI ID:', style: TextStyle(fontWeight: FontWeight.w500)),
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(right: 45),
-                      child: Text('Chinnipavan-2@okhdfcbank'),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Clipboard.setData(const ClipboardData(text: 'Chinnipavan-2@okhdfcbank'));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('UPI ID copied')),
-                        );
-                      },
-                      icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-
-
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const Text(
-      'Bank Details',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-        color: Colors.teal,
-      ),
-    ),
-   // const SizedBox(height: 8),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('Bank Name:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 130),
-              child: Text('HDFC Bank',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'HDFC Bank'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Bank Name copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-  //  const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('Account No:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 95),
-              child: Text('50200103097351',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: '50200103097351'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account number copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-   // const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('IFSC Code:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(right: 115),
-              child: Text('HDFC0002043',style: TextStyle(fontSize: 12)),
-            ),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'HDFC0002043'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('IFSC Code copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-   // const SizedBox(height: 6),
-
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('A/C Holder:', style: TextStyle(fontWeight: FontWeight.w500)),
-        Row(
-          children: [
-            const Text('Chinni Srinivasulu Chetty Jewellers',style: TextStyle(fontSize: 12),),
-            IconButton(
-              onPressed: () {
-                Clipboard.setData(const ClipboardData(text: 'Chinni Srinivasulu Chetty Jewellers'));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Account Holder copied')),
-                );
-              },
-              icon: const Icon(Icons.copy, size: 13, color: Colors.teal),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-
-      SizedBox(height: screenHeight * 0.01),
-
    
+            
+
+           _buildDetailCard(
+  title: localization.translate('UPI Details'),
+  entries: [
+    _buildCopyRow(
+      '${localization.translate('UPI ID')}:',
+      'Chinnipavan-2@okhdfcbank',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
   ],
 ),
+
+
+_buildDetailCard(
+  title: localization.translate('Bank Details'),
+  entries: [
+    _buildCopyRow(
+      localization.translate('Bank Name') + ':',
+      'HDFC Bank',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('Account No') + ':',
+      '50200103097351',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('IFSC Code') + ':',
+      'HDFC0002043',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+    _buildCopyRow(
+      localization.translate('A/C Holder') + ':',
+      'Chinni Srinivasulu Chetty Jewellers',
+      context,
+      MediaQuery.of(context).size.width,
+    ),
+  ],
+),
+
 
 
 
@@ -510,6 +407,7 @@ Column(
           ),
         ),
       ),
+
     );
   }
 
@@ -529,44 +427,66 @@ Column(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-               localization.translate('Scheme Amount'),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth * 0.045,
+              Column(
+                children: [
+                  Text(
+                   localization.translate('Scheme Amount'),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.040,
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.only(right: screenWidth * 0.030),
+                    child: Text(installmentid),
+                  ),
+                ],
+              ),
+             Column(
+               children: [
+                 Text(
+                   ': Rs. ${widget.activescheme.amountRs.isNotEmpty == true
+                       ? widget.activescheme.amountRs
+                       : widget.activescheme.balanceAmount.isNotEmpty == true
+                           ? widget.activescheme.balanceAmount
+                           : widget.activescheme.installmentAmount.isNotEmpty == true
+                  ? widget.activescheme.installmentAmount
+                  : installmentAmount}', // Use fetched value finally
+                   style: TextStyle(
+                     color: Colors.black,
+                     fontWeight: FontWeight.bold,
+                     fontSize: screenWidth * 0.040,
+                   ),
+                 ),
+
+
+                   Padding(
+            padding: EdgeInsets.only(left: screenWidth * 0.00),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  installmentLabel,
+                  style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.03),
                 ),
               ),
-             Text(
-  ': Rs. ${widget.activescheme.amountRs.isNotEmpty == true
-      ? widget.activescheme.amountRs
-      : widget.activescheme.balanceAmount.isNotEmpty == true
-          ? widget.activescheme.balanceAmount
-          : widget.activescheme.installmentAmount.isNotEmpty == true
-              ? widget.activescheme.installmentAmount
-              : installmentAmount}', // Use fetched value finally
-  style: TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: screenWidth * 0.045,
-  ),
-),
+            ),
+               ],
+             ),
+
+
+
 
 
 
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.00),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              installmentLabel,
-              style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: screenWidth * 0.04),
-            ),
-          ),
-        ),
+        
+
+
+        
 
 
        
@@ -628,4 +548,119 @@ String _getSchemeAmount() {
 }
 
 
+
+// Reusable UPI detail row
+Widget buildUpiRow(String label, String value, {VoidCallback? onCopy}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.35,
+          child: Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(color: Colors.black87),
+                ),
+              ),
+              if (onCopy != null)
+                IconButton(
+                  icon: const Icon(Icons.copy, size: 18, color: Colors.teal),
+                  onPressed: onCopy,
+                ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
+
+
+
+Widget _buildDetailCard({required String title, required List<Widget> entries}) {
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
+  return Card(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    elevation: 2,
+    child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: GoogleFonts.lato(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              )),
+          const SizedBox(height: 8),
+          ...entries,
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildCopyRow(String label, String value, BuildContext context,double screenWidth) {
+   final localization = Provider.of<LocalizationProvider>(context);
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 0), // కొంచెం పైకే దిగువకు gap
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center, // text vertical alignment center
+      children: [
+        SizedBox(
+         width: screenWidth * 0.3, // మీకు తగినట్టు adjust చేయండి
+          child: Text(
+            label,
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            value,
+            style: GoogleFonts.lato(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: value));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$label copied')),
+            );
+          },
+          icon: const Icon(Icons.copy, size: 14, color: Colors.teal),
+        ),
+      ],
+    ),
+  );
+}
+
+
+}
+   
+
+
+
+
+   

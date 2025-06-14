@@ -219,7 +219,7 @@ Future<bool> checkInternet() async {
           await saveUpdatedDetails();
 
           // Optionally, navigate to another screen after success
-          Future.delayed(const Duration(seconds: 2), () {
+          Future.delayed(const Duration(seconds: 1), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '',)), // Replace with your actual next screen
@@ -406,7 +406,7 @@ Future<bool> checkInternet() async {
 
   Widget _buildTextField(String label, TextEditingController controller, {bool isRequired = true}) {
     return SizedBox(
-     height: MediaQuery.of(context).size.height * 0.06,  // 5% of the screen height
+    // height: MediaQuery.of(context).size.height * 0.06,  // 5% of the screen height
 
       child: TextFormField(
         inputFormatters: [
@@ -434,33 +434,45 @@ Future<bool> checkInternet() async {
     );
   }
 
-  Widget _buildEmailField() {
-      final localization = Provider.of<LocalizationProvider>(context);
-    return SizedBox(
-        height: MediaQuery.of(context).size.height * 0.06, 
-      child: TextFormField(
-        inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
-        controller: _emailController,
-        decoration: InputDecoration(
-          labelText: localization.translate('Email'),
-          labelStyle: const TextStyle(color: Colors.black),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Colors.grey),
-          ),
+ Widget _buildEmailField() {
+  final localization = Provider.of<LocalizationProvider>(context);
+  return SizedBox(
+    child: TextFormField(
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']")), // Blocks # & '
+      ],
+      controller: _emailController,
+      decoration: InputDecoration(
+        labelText: localization.translate('Email (Optional)'),
+        labelStyle: const TextStyle(color: Colors.black),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
-        enabled: true,
       ),
-    );
+      enabled: true,
+      keyboardType: TextInputType.emailAddress,
+      autovalidateMode: AutovalidateMode.onUserInteraction, // auto validation
+     validator: (value) {
+  if (value == null || value.trim().isEmpty) {
+    return null; // Optional field, empty is allowed
   }
+  final emailRegex = RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+  if (!emailRegex.hasMatch(value.trim())) {
+    return 'Please enter a valid email';
+  }
+  return null; // Valid email
+},
+
+    ),
+  );
+}
+
 
  Widget _buildPhoneNumberField() {
   final localization = Provider.of<LocalizationProvider>(context);
   return SizedBox(
-    height: MediaQuery.of(context).size.height * 0.06,
+   // height: MediaQuery.of(context).size.height * 0.06,
     child: TextFormField(
       
       readOnly: true,
@@ -496,7 +508,9 @@ Future<bool> checkInternet() async {
           ),
         ),
         labelStyle: const TextStyle(color: Colors.black),
-        contentPadding: const EdgeInsets.fromLTRB(8, 12, 12, 12), // Adjust padding for text inside the field
+        contentPadding: const EdgeInsets.fromLTRB(8, 12, 12, 12),
+        fillColor: Colors.grey.shade200,
+        filled: true, // Adjust padding for text inside the field
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: Colors.grey),

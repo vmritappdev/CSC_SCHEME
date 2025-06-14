@@ -59,14 +59,20 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     final textStyle = GoogleFonts.lato(fontSize: screenWidth * 0.04, color: Colors.white70);
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xFF02053E),
-        body: SafeArea(
-          child: Column(
-            children: [
-              _buildTopSection(localization, titleStyle, textStyle, screenHeight, screenWidth),
-              _buildTermsSection(localization, screenHeight, screenWidth),
-            ],
+      child: WillPopScope(
+        onWillPop: () async {
+
+      return false; // Prevent default back action
+    },
+        child: Scaffold(
+          backgroundColor: const Color(0xFF02053E),
+          body: SafeArea(
+            child: Column(
+              children: [
+                _buildTopSection(localization, titleStyle, textStyle, screenHeight, screenWidth),
+                _buildTermsSection(localization, screenHeight, screenWidth),
+              ],
+            ),
           ),
         ),
       ),

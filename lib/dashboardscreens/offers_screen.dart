@@ -28,7 +28,7 @@ class GoldShopOffersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -39,52 +39,96 @@ class GoldShopOffersScreen extends StatelessWidget {
 
     final List<Offer> offers = [
       Offer(
-        imagePath: 'assets/images/jewe2.jpg',
+        imagePath: 'assets/images/csc image 3.jpg',
         title: localization.translate("Gold Necklace"),
-        originalPrice: "\$600",
-        discountedPrice: "\$500",
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/nack.jpg',
-        title: localization.translate("Gold Ring"),
-        originalPrice: "\$300",
-        discountedPrice: "\$250",
+        imagePath: 'assets/images/gold-rings.jpg',
+        title: localization.translate("Gold Rings"),
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold1.jpg',
+        imagePath: 'assets/images/ear-rings.jpg',
         title: localization.translate("Gold Earrings"),
-        originalPrice: "\$400",
-        discountedPrice: "\$350",
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/nack1.jpg',
-        title: localization.translate("Gold Bracelet"),
-        originalPrice: "\$200",
-        discountedPrice: "\$150",
+        imagePath: 'assets/images/csc1.jpg',
+        title: localization.translate("Gold Long Chain"),
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/jewe.jpg',
+        imagePath: 'assets/images/haram.jpg',
         title: localization.translate("Gold Pendant"),
-        originalPrice: "\$250",
-        discountedPrice: "\$200",
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/jewe2.jpg',
+        imagePath: 'assets/images/necklace_1.jpg',
         title: localization.translate("Gold Chain"),
-        originalPrice: "\$700",
-        discountedPrice: "\$600",
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold3.jpg',
+        imagePath: 'assets/images/temple-jewellery.jpg',
         title: localization.translate("Gold Set"),
-        originalPrice: "\$800",
-        discountedPrice: "\$700",
+        originalPrice: "",
+        discountedPrice: "",
       ),
       Offer(
-        imagePath: 'assets/images/gold2.jpg',
-        title: localization.translate("Gold Cufflinks"),
-        originalPrice: "\$150",
-        discountedPrice: "\$120",
+        imagePath: 'assets/images/Mangalasutra_s.jpg',
+        title: localization.translate("Gold Mangalasutra"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+            Offer(
+        imagePath: 'assets/images/Vaddanam.jpg',
+        title: localization.translate("Gold Vaddanam"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+                  Offer(
+        imagePath: 'assets/images/vanki.jpg',
+        title: localization.translate("Gold Vanki"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+
+       Offer(
+        imagePath: 'assets/images/cho24l11370_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+       Offer(
+        imagePath: 'assets/images/cho24l12204_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+
+       Offer(
+        imagePath: 'assets/images/cho24l19245_1.jpg',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
+      ),
+
+             Offer(
+        imagePath: 'assets/images/cho24l19401_1.png',
+        title: localization.translate("Gold Earrings"),
+        originalPrice: "",
+        discountedPrice: "",
       ),
     ];
 
@@ -105,72 +149,89 @@ class GoldShopOffersScreen extends StatelessWidget {
         ),
         body: Padding(
           padding: EdgeInsets.all(screenWidth * 0.02),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
-              crossAxisSpacing: screenWidth * 0.02,
-              mainAxisSpacing: screenHeight * 0.02,
-              childAspectRatio: gridItemWidth / gridItemHeight, 
-            ),
-            itemCount: offers.length,
-            itemBuilder: (context, index) {
-              final offer = offers[index];
-              return Card(
-                elevation: 4,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        offer.imagePath,
-                        fit: BoxFit.cover,
-                        height: imageHeight,
-                        width: double.infinity,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(screenWidth * 0.02),
-                      child: Text(
-                        offer.title,
-                        style: GoogleFonts.roboto(
-                          fontWeight: FontWeight.bold,
-                          fontSize: fontSize * 0.9,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            children: [
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
+                    crossAxisSpacing: screenWidth * 0.02,
+                    mainAxisSpacing: screenHeight * 0.02,
+                    childAspectRatio: gridItemWidth / gridItemHeight, 
+                  ),
+                  itemCount: offers.length,
+                  itemBuilder: (context, index) {
+                    final offer = offers[index];
+                    return Card(
+                      elevation: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            offer.originalPrice,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: fontSize * 0.8,
-                              decoration: TextDecoration.lineThrough,
+                          Expanded(
+                            child: Image.asset(
+                              offer.imagePath,
+                              fit: BoxFit.cover,
+                              height: imageHeight,
+                              width: double.infinity,
                             ),
                           ),
-                          Text(
-                            offer.discountedPrice,
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: fontSize * 0.9,
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.02),
+                            child: Text(
+                              offer.title,
+                              style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.bold,
+                                fontSize: fontSize * 0.9,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  offer.originalPrice,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: fontSize * 0.8,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                                Text(
+                                  offer.discountedPrice,
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSize * 0.9,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01),
+                
+                
+                          
                         ],
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.01),
-                  ],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+
+
+
+              SizedBox(height: screenHeight * 0.05),
+            ],
           ),
         ),
+
+
+
+        
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(
@@ -219,6 +280,9 @@ class GoldShopOffersScreen extends StatelessWidget {
                     );
                   },
                 ),
+
+
+                
               ],
             ),
           ),

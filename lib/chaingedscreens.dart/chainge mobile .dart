@@ -43,7 +43,7 @@ class _MobileScreenState extends State<MobileScreen> {
 
 Future<void> sendMobileChangeRequest() async {
   if (!context.mounted) return;
-
+ final localization = Provider.of<LocalizationProvider>(context,listen: false);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String mobileNumber = prefs.getString('phoneNumber') ?? "";
 
@@ -82,7 +82,7 @@ Future<void> sendMobileChangeRequest() async {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(responseData['message'] ?? "Update Successful"),
+          content: Text(responseData['message'] ?? localization.translate("Update Successful")),
           duration: const Duration(seconds: 1),
         ),
       );
@@ -92,7 +92,7 @@ Future<void> sendMobileChangeRequest() async {
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const OtpScreen()),
+          MaterialPageRoute(builder: (context) =>  OtpScreen()),
         );
       }
     }
@@ -109,6 +109,7 @@ Future<void> sendMobileChangeRequest() async {
  void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   showDialog(
     context: context,
@@ -129,7 +130,8 @@ Future<void> sendMobileChangeRequest() async {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
               child: Text(
-                message,
+              //  message,
+             localization.translate('❌This mobile number is already registered.') ,
                 style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
                 textAlign: TextAlign.center,
               ),
@@ -145,7 +147,7 @@ Future<void> sendMobileChangeRequest() async {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "OK",
+               localization.translate("OK"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenWidth * 0.045, // Dynamic Button Font Size
@@ -187,10 +189,11 @@ Future<bool> checkInternet() async {
 
 
 Future<void> verifyMobileNumber() async {
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
   String newMobileNumber = _controller.text.trim();
 
   if (newMobileNumber.isEmpty || newMobileNumber.length != 10) {
-    _showInvalidOTPDialog("Please enter a valid 10-digit mobile number.");
+    _showInvalidOTPDialog(localization.translate("Please enter a valid 10-digit mobile number"));
     return;
   }
 
@@ -208,7 +211,7 @@ Future<void> verifyMobileNumber() async {
 
   try {
     final response = await http.post(
-      Uri.parse('$baseUrl/mobile_verification.php'),//'https://vmrdemos.com/csc_scheme/mobile_verification.php'
+      Uri.parse('$baseUrl/mobile_verification.php'),
       body: {'mobile_no': newMobileNumber},
     );
 
@@ -237,7 +240,7 @@ Future<void> verifyMobileNumber() async {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
- final localization = Provider.of<LocalizationProvider>(context);
+ final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(

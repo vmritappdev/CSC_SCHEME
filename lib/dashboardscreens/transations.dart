@@ -248,7 +248,7 @@ Future<void> _fetchPayDetails(String id) async {
 
   @override
   Widget build(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
     
 
@@ -376,9 +376,9 @@ Future<void> _fetchPayDetails(String id) async {
                     isExpanded: true,
                     items: [
                       // 'All' option
-                      const DropdownMenuItem<String>(
+                       DropdownMenuItem<String>(
                         value: 'all',
-                        child: Text('All'),
+                        child: Text(localization.translate('All')),
                       ),
                       // Scheme options
                       ...schemes.map((scheme) {
@@ -552,6 +552,7 @@ Future<void> _fetchPayDetails(String id) async {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
+                          
                           "₹${NumberFormat('#,##0.00', 'en_IN').format(amount.abs())}",
                           style: TextStyle(
                 fontSize: MediaQuery.of(context).size.width * 0.03,
@@ -626,7 +627,7 @@ Future<void> _fetchPayDetails(String id) async {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Reason for Rejection',
+                      localization.translate('Reason for Rejection'),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -645,7 +646,7 @@ Future<void> _fetchPayDetails(String id) async {
                         ),
                       ),
                       child: Text(
-                        'The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008',
+                       localization.translate('The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008'),
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.03,
                           color: const Color.fromRGBO(2, 6, 67, 1),
@@ -939,6 +940,7 @@ Future<void> _fetchPayDetails(String id) async {
 
 
 String getOrdinalSuffix(int number) {
+  
   if (number % 10 == 1 && number != 11) {
     return '${number}st';
   } else if (number % 10 == 2 && number != 12) {
@@ -953,6 +955,7 @@ String getOrdinalSuffix(int number) {
 
 
 IconData getStatusIcon(String status) {
+ 
   switch (status.toLowerCase()) {
     case 'processing':
       return Icons.hourglass_top;

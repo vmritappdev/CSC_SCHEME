@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 
+import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/editprofile/editscheme.dart';
+import 'package:csc/loginfolder/loginscreen.dart';
+import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/faq_screen.dart';
 import 'package:csc/dashboardscreens/active_scheme.dart';
@@ -14,6 +17,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final ImagePicker _picker = ImagePicker(); // ImagePicker instance
 
    String firstName = "";
+    String lastName = "";
     String phoneNumber = '';
     String savedImageUrl = ''; // Variable to hold the saved image URL
 
@@ -54,8 +59,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       firstName = prefs.getString('firstName') ?? "";
       phoneNumber = prefs.getString('phoneNumber') ?? ""; // Default if not found
-      
+      lastName = prefs.getString('lastName') ?? "";
     });
+  }
+
+
+
+     Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear all stored data
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen1()), // Replace with your main app entry point
+      //(route) => false, // Remove all previous routes
+    );
   }
 
    @override
@@ -93,70 +110,113 @@ Future<void> loadImagePath() async {
 
 
 
-  // Function to pick image from Gallery or Camera
+
+
+
+  
+  //File? _imageFile;
+
 Future<void> _pickImage() async {
   final choice = await showDialog<int>(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: const Text("Choose Option"),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
-          TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
-        ],
+        title: Text("Choose Option"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text("Gallery"),
+              onTap: () => Navigator.of(context).pop(1),
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text("Camera"),
+              onTap: () => Navigator.of(context).pop(2),
+            ),
+          ],
+        ),
       );
     },
   );
 
   if (choice == null) return;
 
-  XFile? pickedFile;
-  if (choice == 1) {
-    pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  } else if (choice == 2) {
-    pickedFile = await _picker.pickImage(source: ImageSource.camera);
+  final ImageSource source =
+      (choice == 1) ? ImageSource.gallery : ImageSource.camera;
+
+  // ✅ Permission Handling
+  Permission permission;
+  if (source == ImageSource.camera) {
+    permission = Permission.camera;
+  } else {
+    if (Platform.isAndroid) {
+      permission = Permission.photos; // Android 13+ support
+    } else {
+      permission = Permission.photos; // iOS
+    }
   }
 
-  if (pickedFile != null) {
-    // 👇 Show loader immediately
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
-    );
+  final status = await permission.request();
 
-    try {
-      // 👇 Upload image and handle path
+  if (!status.isGranted) {
+    Fluttertoast.showToast(
+      msg: "${permission.toString()} permission denied",
+      backgroundColor: Colors.red,
+    );
+    return;
+  }
+
+  try {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+
+    if (pickedFile != null) {
       File newImage = File(pickedFile.path);
+
+      // ✅ Show Loader
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => Dialog(
+          backgroundColor: Colors.transparent,
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Color.fromRGBO(2, 6, 67, 1),
+            ),
+          ),
+        ),
+      );
+
+      // Simulate upload/save
+      await Future.delayed(Duration(seconds: 1));
+
       setState(() {
         _image = newImage;
-        savedImageUrl = pickedFile!.path;
+        savedImageUrl = pickedFile.path;
       });
 
-      // Save image path and upload to server
-      await saveImagePath(pickedFile.path);
-      await updateProfileDetails(phoneNumber, newImage);
+      await saveImagePath(pickedFile.path); // Save locally
+      await updateProfileDetails(phoneNumber, newImage); // Upload to server
 
-      // 👇 Hide loader quickly after upload
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close loader
 
-      // 👇 Success message
       Fluttertoast.showToast(
-        msg: "Image uploaded successfully!",
+        msg: "Image updated successfully!",
         backgroundColor: Colors.green,
       );
-    } catch (e) {
-      // 👇 Hide loader quickly if error occurs
-      Navigator.of(context).pop();
-
-      // 👇 Error message
+    } else {
       Fluttertoast.showToast(
-        msg: "Failed to upload image!",
-        backgroundColor: Colors.red,
+        msg: "No image selected.",
+        backgroundColor: Colors.orange,
       );
     }
-  } else {
-    print("No image selected.");
+  } catch (e) {
+    Navigator.of(context).pop(); // Close loader if error
+    Fluttertoast.showToast(
+      msg: "Failed to pick image.",
+      backgroundColor: Colors.red,
+    );
   }
 }
 
@@ -164,7 +224,7 @@ Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/profile.php";
+  String apiUrl = "$baseUrl/profile.php";
 
   try {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -213,7 +273,7 @@ Future<void> fetchAndSaveImage() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
+  String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
 
   try {
     final response = await http.post(
@@ -247,178 +307,257 @@ Future<void> fetchAndSaveImage() async {
 
   @override
   Widget build(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-          localization.translate("PROFILE DETAILS"),
-            style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-        ),
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 50),
-              Stack(
-                children: [
-                 Positioned(
-        child: Stack(
+    return WillPopScope(
+       onWillPop: () async {
+//Navigator.pop(context);
+      return false; // Prevent default back action
+    },
+      child: SafeArea(
+        child: Scaffold(
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Column(
               children: [
-                GestureDetector(
-                  onTap: () => _viewImage(context),
-                  child: CircleAvatar(
-                    radius: 60,
-                    backgroundColor: Colors.grey[300],
-                    backgroundImage: savedImageUrl.isNotEmpty
-                        ? (savedImageUrl.startsWith('http')
-                            ? NetworkImage(savedImageUrl)
-                            : FileImage(File(savedImageUrl))) as ImageProvider
-                        : null,
-                    child: savedImageUrl.isEmpty
-                        ? Icon(Icons.person, size: 50, color: Colors.grey[600])
-                        : null,
+                 Container(
+        width: double.infinity,
+        color: Color.fromRGBO(2, 5, 67, 1),
+        padding: const EdgeInsets.fromLTRB(16, 40, 16, 24), // Top padding increased
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Back Button
+       BackButton(
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous screen
+          },
+        ),
+      
+        const SizedBox(height: 20), // Gap between back button and profile
+      
+        // Row with avatar and name/phone
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Avatar with camera icon
+           Stack(
+                  children: [
+                   Positioned(
+          child: Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () => _viewImage(context),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage: savedImageUrl.isNotEmpty
+                          ? (savedImageUrl.startsWith('http')
+                              ? NetworkImage(savedImageUrl)
+                              : FileImage(File(savedImageUrl))) as ImageProvider
+                          : null,
+                      child: savedImageUrl.isEmpty
+                          ? Icon(Icons.person, size: 50, color: Colors.grey[600])
+                          : null,
+                    ),
                   ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: _pickImage1,
-                    child: const CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 16,
-                        color: Color.fromRGBO(2, 5, 62, 1),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => _pickImage(),
+                      child: const CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 16,
+                          color: Color.fromRGBO(2, 5, 62, 1),
+                        ),
                       ),
                     ),
+                  ),
+                ],
+              ),
+        ),
+        
+                  ],
+                ),
+            const SizedBox(width: 16),
+            // Name and number
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '$firstName',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+      
+                      Text(
+                      '$lastName',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '91+ $phoneNumber',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
+          ],
+        ),
+      ],
+        ),
       ),
+                const SizedBox(height: 16),
+                
+                const SizedBox(height: 20),
+        
+                // Navigation Buttons
+               _buildButton(
+          label: localization.translate("Change Profile"), // Pass localized string here
+          icon: Icons.person,
+          onPressed: () {
+        // Navigate to Edit Profile Screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+        );
+          },
+        ),
+        _buildButton(
+          label: localization.translate("Change Mpin"), // Pass localized string
+          icon: Icons.lock,
+          onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const EditMPINScreen()),
+        );
+          },
+        ),
+        
+        
       
+        
+        _buildButton(
+          label: localization.translate("Help & Support"), // Pass localized string
+          icon: Icons.help,
+          onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FAQScreen()),
+        );
+          },
+        ),
+        
+                const SizedBox(height: 40),
+      
+      
+      
+      
+                  InkWell(
+            onTap: () {
+            logout();
+              print("User logged out");
+              // Example:
+              // SharedPreferences prefs = await SharedPreferences.getInstance();
+              // await prefs.clear();
+              // Navigator.pushReplacement(...);
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children:  [
+                Icon(Icons.power_settings_new, size: 20, color: Colors.red),
+                SizedBox(width: 8),
+                Text(localization.translate("Logout"), 
+                style: TextStyle(fontSize: 16, color: Colors.red)),
+              ],
+            ),
+             Text(
+               localization.translate("Terms & Policies"),
+              textAlign: TextAlign.right,
+              style: TextStyle(fontSize: 12, color: Colors.teal),
+            ),
+          ],
+              ),
+            ),
+          ),
+        
+                
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              // Handle logout action
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PaymentCard(),
+                ) 
+              ); // Redirect or logout functionality
+            },
+            label: Text(
+              localization.translate("My Scheme"),
+              style: const TextStyle(color: Colors.white),
+            ),
+           // icon: Icon(Icons.logout, color: Colors.white),
+            backgroundColor: Colors.red,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomAppBar(
+            color: const Color.fromRGBO(2, 5, 62, 1),
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.home, color: Colors.white),
+                    onPressed: () {
+                   
+                     Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(activescheme: Activescheme()),
+                      )
+                     );
+                    },
+                  ),
+                  IconButton(
+                    icon:Image.asset('assets/images/faq.png',width: 30,height: 30,color: Colors.white,),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const FAQScreen()),
+                      );
+                    },
+                  ),
                 ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                localization.translate(firstName),
-                style: const TextStyle(
-                  color: Color.fromRGBO(2, 5, 62, 1),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                localization.translate(phoneNumber),
-                style: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1),),
-              ),
-              const SizedBox(height: 20),
-      
-              // Navigation Buttons
-             _buildButton(
-        label: localization.translate("Change Profile"), // Pass localized string here
-        icon: Icons.person,
-        onPressed: () {
-      // Navigate to Edit Profile Screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-      );
-        },
-      ),
-      _buildButton(
-        label: localization.translate("Change Mpin"), // Pass localized string
-        icon: Icons.lock,
-        onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const EditMPINScreen()),
-      );
-        },
-      ),
-      
-      
-      
-      _buildButton(
-        label: localization.translate("Change Join Scheme"), // Pass localized string
-        icon: Icons.lock,
-        onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Editscheme1()),
-      );
-        },
-      ),
-      
-      
-      
-      _buildButton(
-        label: localization.translate("Help & Support"), // Pass localized string
-        icon: Icons.help,
-        onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const FAQScreen()),
-      );
-        },
-      ),
-      
-              const SizedBox(height: 20),
-      
-              
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            // Handle logout action
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PaymentCard(),
-              ) 
-            ); // Redirect or logout functionality
-          },
-          label: Text(
-            localization.translate("My Scheme"),
-            style: const TextStyle(color: Colors.white),
-          ),
-         // icon: Icon(Icons.logout, color: Colors.white),
-          backgroundColor: Colors.red,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          color: const Color.fromRGBO(2, 5, 62, 1),
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 8.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.home, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                IconButton(
-                  icon:Image.asset('assets/images/faq.png',width: 30,height: 30,color: Colors.white,),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const FAQScreen()),
-                    );
-                  },
-                ),
-              ],
             ),
           ),
         ),
@@ -502,7 +641,7 @@ Future<void> fetchAndSaveImage() async {
 
   void _viewImage(BuildContext context) {
     if (savedImageUrl.isEmpty) {
-      _pickImage();
+     _pickImage();
       return;
     }
     showDialog(
@@ -520,13 +659,29 @@ Future<void> fetchAndSaveImage() async {
                       : FileImage(File(savedImageUrl)) as ImageProvider,
                 ),
               ),
+
+               Positioned(
+      top: 10,
+      left: 10,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context); // Close the dialog
+        },
+        child: const CircleAvatar(
+          backgroundColor: Colors.black54,
+          radius: 20,
+          child: Icon(Icons.close, color: Colors.white, size: 20),
+        ),
+      ),
+    ),
+
               Positioned(
                 top: 10,
                 right: 10,
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
-                    _pickImage();
+                 _pickImage();
                   },
                   child: const CircleAvatar(
                     backgroundColor: Colors.white,
@@ -542,3 +697,52 @@ Future<void> fetchAndSaveImage() async {
   }
 
 }
+
+
+/*
+
+ const SizedBox(height: 50),
+              Stack(
+                children: [
+                 Positioned(
+        child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () => _viewImage(context),
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: savedImageUrl.isNotEmpty
+                        ? (savedImageUrl.startsWith('http')
+                            ? NetworkImage(savedImageUrl)
+                            : FileImage(File(savedImageUrl))) as ImageProvider
+                        : null,
+                    child: savedImageUrl.isEmpty
+                        ? Icon(Icons.person, size: 50, color: Colors.grey[600])
+                        : null,
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => _pickImage(),
+                    child: const CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.camera_alt,
+                        size: 16,
+                        color: Color.fromRGBO(2, 5, 62, 1),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      ),
+      
+                ],
+              ),
+
+              */

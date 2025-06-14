@@ -18,9 +18,15 @@
   "Verify Number": "Verify Number",
   "registered_success": "Registered Successfully",
   "create_account": "Create Account",
-  "Email(Optinol)":"Email(Optinol)",
+  "Email(Optional)":"Email(Optinol)",
   "switch_language_prompt": "Do you want to switch to\nlanguageName?",
   "confirm_language_change":"Confirm Language Change",
+  "Resend OTP in":"Resend OTP in",
+  "Please enter a valid 10-digit mobile number":"Please enter a valid 10-digit mobile number",
+  "Invalid OTP":"Invalid OTP",
+  "OTP expired. Please resend.":"OTP expired. Please resend.",
+  "No records on this number":"No records on this number",
+  "Failed to send OTP":"Failed to send OTP",
   
   "Please enter a mobile number":"Please enter a mobile number",
   "enter_last_name": "Please enter your last name.",
@@ -84,7 +90,7 @@
 "PAN Card Number is required":"PAN Card Number is required",
 "Please upload an image":"Please upload an image",
   "SCHEME REGISTRATION": "SCHEME REGISTRATION",
-  "Customer Imformation": "Customer Imformation",
+  "Customer Information": "Customer Imformation",
   "Full Name (As per PAN CARD)": "Full Name (As per PAN CARD)",
   "Nominee Relationship*":"Nominee Relationship*",
   "Nominee Full Name":"Nominee Full Name*",
@@ -143,6 +149,29 @@
   "Nominee Adhar Number*": "Nominee Adhar Number*",
   "Please enter nominee adhar number":"Please enter nominee adhar number",
 
+  "Enter Nominee Relation":"Enter Nominee Relation",
+  "Please enter nominee relation":"Please enter nominee relation",
+  "Please select nominee Aadhar card image":"Please select nominee Aadhar card image",
+  "Please accept the Terms and Conditions to proceed.":"Please accept the Terms and Conditions to proceed.",
+  "Active Scheme":"Active Scheme",
+  "Verify":"Verify",
+  "⏰ OTP expired. Please resend a new OTP.":"⏰ OTP expired. Please resend a new OTP.",
+  "❌ Invalid OTP. Please try again.":"❌ Invalid OTP. Please try again.",
+  "Failed to create MPIN. Please try again.":"Failed to create MPIN. Please try again.",
+  "MPIN must be at least 4 digits":"MPIN must be at least 4 digits",
+  "MPIN and Confirm MPIN do not match":"MPIN and Confirm MPIN do not match",
+  "Mobile number not found. Please try again.":"Mobile number not found. Please try again.",
+  "Your Gold Scheme is Closed":"Your Gold Scheme is Closed",
+  "This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.":"This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.",
+  "Your Gold Scheme is Suspended":"Your Gold Scheme is Suspended",
+  "This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.":"This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.",
+   "Your Gold Scheme is Ready To Purchase": "Your Gold Scheme is Ready To Purchase",
+   "This scheme is now ready for purchase. Visit the store to redeem.":"This scheme is now ready for purchase. Visit the store to redeem.",
+  "You must be 18 years or older to select this date.":"You must be 18 years or older to select this date.",
+   "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}": "Verification Code Sent to +${maskPhoneNumber(phoneNumber)}",
+   "OTP expired, please resend":"OTP expired, please resend",
+   "Incorrect OTP, please try again":"Incorrect OTP, please try again",
+       "OTP Verified":"OTP Verified",
 
     "Please enter Date of Birth": "Please enter Date of Birth",
   "Please enter a valid email address": "Please enter a valid email address",
@@ -171,21 +200,60 @@
   "UPI ID": "UPI ID",
 
 
+"Verification Code Sent to":"Verification Code Sent to",
+  "Sorry, the mobile number has already been used. Please provide a different mobile number.":"Sorry, the mobile number has already been used. Please provide a different mobile number.",
+ "Please enter valid 6 digits OTP":"Please enter valid 6 digits OTP",
+ "otp_sent_to": "Verification Code Sent to +{number}",
+ "OTP Verified!":"OTP Verified!",
+ "Update Successful":"Update Successful",
+ "❌This mobile number is already registered.":"❌This mobile number is already registered.",
+ "Download Brochure":"Download Brochure",
+ "All":"All",
+ "Please enter description":"Please enter description",
+ "Please enter your name":"Please enter your name",
+ "Please enter your adhar number": "Please enter your adhar number",
+ "No new notifications":"No new notifications",
+ "Notifications":"Notifications",
+ "Terms & Policies":"Terms & Policies",
+ "No Records On This Number":"No Records On This Number",
+ "✅ Verify OTP":"✅ Verify OTP",
+ "Hi":"Hi",
+ "Enter your 4-digit MPIN":"Enter your 4-digit MPIN",
+ "Invalid MPIN. Please try again.":"Invalid MPIN. Please try again.",
+ "CHINNI SRINIVSSULU JEWELLERS":"CHINNI SRINIVSSULU JEWELLERS",
+ "Account No":"Account No",
+ "IFSC Code":"IFSC Code",
+ "A/C Holder":"A/C Holder",
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
   "Advance Gold Purchase":"Advance Gold Purchase",
   "100% V.A. Free on Items up to 18% Wastage":"100% V.A. Free on Items up to 18% Wastage",
    "Flexible Monthly Investment": "Flexible Monthly Investment",
    "Short Term - Great Benefits":"Short Term - Great Benefits",
    
-
+   "We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.":"We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.",
 
 
   "LogOut":"LogOut",
   "Quick Pay":"Quick Pay",
+  "Upload Screenshot (Required)":"Upload Screenshot (Required)",
+  "Please fill the image":"Please fill the image",
   
   "I Have Paid": "I Have Paid",
   "I have successfully made the payment to the provided UPI details.": "I have successfully made the payment to the provided UPI details.",
   
-  "Transaction Number": "Transaction Number*",
+  "Transaction Number": "Transaction Number",
   "Kindly upload the payment slip or a screenshot below for verification of your payment.": "Kindly upload the payment slip or a screenshot below for verification of your payment.",
   "Tap to Upload Screenshot": "Tap to Upload Screenshot",
   "Please fill the Transaction Number.": "Please fill the Transaction Number.",
@@ -524,7 +592,8 @@
  "Resend OTP in $timerSeconds seconds":"Resend OTP in $timerSeconds seconds",
  "We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.":"We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again.",
 
-
+"New Mobile Number Register Here":"New Mobile Number Register Here",
+"Resend OTP":"Resend OTP",
     
       "Terms & Conditions": "Terms & Conditions",
       "Hello 👋": "Hello 👋",
@@ -630,6 +699,91 @@
   "Payment will be credited to wallet": "Payment will be credited to wallet",
   "Important: Transfers from non-registered bank accounts will be refunded in 15 working days.": "Important: Transfers from non-registered bank accounts will be refunded in 15 working days.",
   "okay": "Okay",
+
+
+
+
+  "CSC Jewellery":"CSC Jewellery",
+  "Bill Summary":"Bill Summary",
+  "Product Details":"Product Details",
+  "Product Name":"Product Name",
+  "Gross Weight":"Gross Weight",
+  "Stone":"Stone",
+   "Net Weight": "Net Weight",
+   "Billing Details":"Billing Details",
+   "Bill Amount":"Bill Amount",
+   "Cash Amount":"Cash Amount",
+   "Bank Amount":"Bank Amount",
+    "Total Amount": "Total Amount",
+    "Download Sale Invoice":"Download Sale Invoice",
+
+
+
+    "Something went wrong!":"Something went wrong!",
+    "Please try again later.":"Please try again later.",
+    "Retry":"Retry",
+    "CSC App:":"CSC App",
+    "Are you sure do you want to exit?":"Are you sure do you want to exit?",
+    "CANCEL":"CANCEL",
+    "EXIT":"EXIT",
+    "Edit Customer Information":"Edit Customer Information",
+
+
+ "Please enter custom relationship": "Please enter custom relationship",
+ "Please select gender":"Please select gender",
+ "Please select nominee relationship":"Please select nominee relationship",
+ "❌ Users under 18 years of age are not allowed.":"❌ Users under 18 years of age are not allowed.",
+ "You must be at least 18 years old":"You must be at least 18 years old",
+ "Please enter nominee full name": "Please enter nominee full name",
+ "Please enter branch location": "Please enter branch location",
+ "Please enter IFSC code": "Please enter IFSC code",
+ "Please enter account number": "Please enter account number",
+ "Please enter account holder name": "Please enter account holder name",
+ "Please enter bank name": "Please enter bank name",
+ "Please enter city": "Please enter city",
+ "Please enter district": "Please enter district",
+ "Please enter state": "Please enter state",
+ "Please enter country": "Please enter country",
+ "Please enter Pincode": "Please enter Pincode",
+ "Please enter Address Line 1": "Please enter Address Line 1",
+ "Please enter Door Number": "Please enter Door Number",
+ "Please select date of birth": "Please select date of birth",
+ "Nominee Adhar Number": "Nominee Adhar Number",
+ "Brochure Details":"Brochure Details",
+ "Gold Saving Scheme":"Gold Saving Scheme",
+ "Save gold every month and get exclusive benefits!":"Save gold every month and get exclusive benefits!",
+ "Open Brochure":"Open Brochure",
+ "The MPIN you entered is incorrect. Please try again.": "The MPIN you entered is incorrect. Please try again.",
+ "Gold Mangalasutra": "Gold Mangalasutra",
+ "Gold Vaddanam": "Gold Vaddanam",
+"Gold Vanki": "Gold Vanki",
+"Gold Rings": "Gold Rings",
+"Gold Long Chain": "Gold Long Chain",
+
+
+
+
+    
+
+
+    "Payment Rejected":"Payment Rejected",
+    "Unfortunately, your payment could not be processed. Please check your payment details and try again.":"Unfortunately, your payment could not be processed. Please check your payment details and try again.",
+    "Retry Payment":"Retry Payment",
+    "Go to Home":"Go to Home",
+    "Press back again to exit":"Press back again to exit",
+    "Are you sure you want to exit the app?":"Are you sure you want to exit the app?",
+    "Yes":"Yes",
+    "No":"No",
+    "Exit App?":"Exit App?",
+    "Payment Successful":"Payment Successful",
+    "Reason for Rejection":"Reason for Rejection",
+    "The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008":"The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008",
+    "OVERDUE BY":"OVERDUE BY",
+    "DUE TOMORROW":"DUE TOMORROW",
+    "DAYS" :"DAYS" ,
+    "Search is available only in English":"Search is available only in English",
+    "Admin will accept or reject your previous payment. You can proceed with the next payment only after that.":"Admin will accept or reject your previous payment. You can proceed with the next payment only after that.",
+    
 
 
   "Payment Details": "Payment Details",

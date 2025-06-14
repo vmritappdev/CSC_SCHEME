@@ -1,8 +1,13 @@
 import 'dart:convert'; // Add this import for json.decode
+
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/constant.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BillSummaryScreen extends StatefulWidget {
@@ -26,10 +31,15 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
    String? sqlQuery = '';
 
-   
+    static const brochureUrl = '$baseUrl/sale_print_api.php';
+
 
    bool isLoading = false;
 
+   
+
+
+ 
  
   @override
   void initState() {
@@ -96,6 +106,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.width < 350;
+     final localization = Provider.of<LocalizationProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F7), // Premium light background
@@ -105,7 +116,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
         centerTitle: true,
         elevation: 0,
         title: Text(
-          'CSC Jewellery',
+          localization.translate('CSC Jewellery'),
           style: GoogleFonts.playfairDisplay(
             color: Colors.white,
             fontSize: isSmallScreen ? 18 : 22,
@@ -156,8 +167,10 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                           color: const Color(0xFF0A0E21),
                           size: isSmallScreen ? 24 : 28),
                       const SizedBox(width: 10),
+
+
                       Text(
-                        'Bill Summary',
+                       localization.translate('Bill Summary'),
                         style: GoogleFonts.playfairDisplay(
                           fontSize: isSmallScreen ? 24 : 14,
                           fontWeight: FontWeight.w700,
@@ -169,32 +182,32 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   SizedBox(height: isSmallScreen ? 12 : 20),
 
                   // Product Details Section
-                  _buildSectionTitle('Product Details', isSmallScreen),
+                  _buildSectionTitle(localization.translate('Product Details'), isSmallScreen),
                   SizedBox(height: isSmallScreen ? 12 : 16),
-                  _buildDetailRow('Product Name', productName, isSmallScreen),
+                  _buildDetailRow(localization.translate('Product Name'), productName, isSmallScreen),
                   _buildDivider(),
-                     _buildDetailRow('Gross Weight', grossWeight, isSmallScreen),
+                    _buildDetailRow(localization.translate('Gross Weight'), grossWeight, isSmallScreen),
                        _buildDivider(),
-                     _buildDetailRow('Stone', stone, isSmallScreen), 
+                     _buildDetailRow(localization.translate('Stone'), stone, isSmallScreen), 
                        _buildDivider(),   
-                  _buildDetailRow('Net Weight', netWeight, isSmallScreen),
+                  _buildDetailRow(localization.translate('Net Weight'), netWeight, isSmallScreen),
                   _buildDivider(),
-                 // _buildDetailRow('Gross Weight', grossWeight, isSmallScreen),
+                 
 
                   SizedBox(height: isSmallScreen ? 16 : 24),
                   _buildSectionDivider(),
                   SizedBox(height: isSmallScreen ? 16 : 24),
 
                   // Billing Details Section
-                  _buildSectionTitle('Billing Details', isSmallScreen),
+                  _buildSectionTitle(localization.translate('Billing Details'), isSmallScreen),
                   SizedBox(height: isSmallScreen ? 12 : 16),
-                  _buildDetailRow('Bill Amount', '₹${billAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
+                  _buildDetailRow(localization.translate('Bill Amount'),'₹${billAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
                   _buildDivider(),
-                  _buildDetailRow('Scheme Amount', '₹${schemeAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
+                  _buildDetailRow(localization.translate('Scheme Amount'), '₹${schemeAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
                   _buildDivider(),
-                  _buildDetailRow('Cash Amount', '₹${cashAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
+                  _buildDetailRow(localization.translate('Cash Amount'), '₹${cashAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
                   _buildDivider(),
-                  _buildDetailRow('Bank Amount', '₹${bankAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
+                  _buildDetailRow(localization.translate('Bank Amount'), '₹${bankAmount.toStringAsFixed(2)}', isSmallScreen, isAmount: true),
 
                   SizedBox(height: isSmallScreen ? 20 : 30),
 
@@ -209,7 +222,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Total Amount',
+                         localization.translate('Total Amount'),
                           style: GoogleFonts.lato(
                             fontSize: isSmallScreen ? 13 : 13,
                             fontWeight: FontWeight.w800,
@@ -237,20 +250,9 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
 Center(
   child: ElevatedButton.icon(
-    onPressed: () async {
-      final Uri url = Uri.parse('$baseUrl/sale_print.php?id=${widget.saleId}');
-      final bool launched = await launchUrl(
-        url,
-        mode: LaunchMode.inAppWebView, // 👈 try this mode
-      );
-      if (!launched) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not launch download link')),
-        );
-      }
-    },
+    onPressed: () => _openBrochureUrl(context, widget.saleId), // 👈 Pass saleId here
     icon: const Icon(Icons.download),
-    label: const Text('Download Sale Invoice'),
+    label: Text(localization.translate('Download Sale Invoice')),
     style: ElevatedButton.styleFrom(
       backgroundColor: const Color(0xFF0A0E21),
       foregroundColor: Colors.white,
@@ -269,6 +271,31 @@ Center(
     );
   }
 
+
+Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
+  final uri = Uri.parse('$baseUrl/sale_print.php?id=$saleId');
+  print('🔗 Launching brochure URL: $uri');
+
+  try {
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!launched) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not launch download link')),
+      );
+    }
+  } catch (e) {
+    print('[x] Error launching URL: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error opening URL: $e')),
+    );
+  }
+}
+
+
+
   Widget _buildSectionTitle(String title, bool isSmallScreen) {
     return Text(
       title,
@@ -281,6 +308,7 @@ Center(
   }
 
   Widget _buildDetailRow(String label, String value, bool isSmallScreen, {bool isAmount = false}) {
+      final localization = Provider.of<LocalizationProvider>(context);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 6 : 8),
       child: Row(

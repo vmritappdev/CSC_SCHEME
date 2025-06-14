@@ -558,10 +558,10 @@ double screenWidth = MediaQuery.of(context).size.width;
   ),
 ),
 if (_showImageError)
-  const Padding(
+   Padding(
     padding: EdgeInsets.only(top: 5),
     child: Text(
-      "Please fill the image",
+    localization.translate("Please fill the image") ,
       style: TextStyle(color: Colors.red, fontSize: 13),
     ),
   ),
@@ -578,7 +578,7 @@ if (_showImageError)
   decoration:  InputDecoration(
     
    // labelText: localization.translate("Transaction Number"),
-   labelText: 'Transaction Number',
+   labelText:localization.translate('Transaction Number'),
     labelStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: screenWidth * 0.035), // Label text
     border: const OutlineInputBorder(),
     contentPadding: EdgeInsets.symmetric(vertical: screenHeight * 0.015, horizontal: screenWidth * 0.03),
@@ -617,11 +617,7 @@ if (_showImageError)
                           backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                         ),
 
-
-                
-
-
-                        
+      
 
                         
                         child: Text(localization.translate("Confirm"), style: const TextStyle(color: Colors.white, fontSize: 18)),

@@ -9,9 +9,14 @@ import 'package:csc/chaingedscreens.dart/pd%20frecipit.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 
 import 'package:csc/dashboardscreens/closed_schemes.dart';
+import 'package:csc/editprofile/edit2.dart';
+
+
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,8 +57,8 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   final RefreshController _refreshController = RefreshController();
 
    void _onRefresh() async {
-  await fetchData(); // Wait for fresh data
-  _refreshController.refreshCompleted(); // Then complete refresh
+  await fetchData(); 
+  _refreshController.refreshCompleted(); 
 }
 
    //String mobile_number = "Loading...";
@@ -76,7 +81,7 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   List accountDetails = [];
   String message = "";
 
-   bool isNoRecordsFound = false; // Add this flag to track if no records are found.
+  bool isNoRecordsFound = false; // Add this flag to track if no records are found.
 
  // bool isMyScreenCalled = false; // Add this at the top of your StatefulWidget class.
   
@@ -152,7 +157,7 @@ Future<void> verifyPaymentProcess() async {
 
     print("📱 Mobile Number for API: $mobileNumber");
 
-    final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
+    final url = Uri.parse('$baseUrl/payment_process_verification.php');
 
     try {
       final response = await http.post(
@@ -259,14 +264,20 @@ Future<void> verifyPaymentProcess() async {
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
      double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
+    double screenHeight = MediaQuery.of(context).size.height;
    
 
     return SafeArea(
       child: Scaffold(
        // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.white),
+          //iconTheme: const IconThemeData(color: Colors.white),
+          leading: BackButton(
+            color: Colors.white,
+            onPressed: () {
+                Navigator.pop(context);
+            },
+          ),
           backgroundColor: headerBackgroundColor,
           centerTitle: true,
           title: Text(
@@ -363,9 +374,10 @@ double screenHeight = MediaQuery.of(context).size.height;
       SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
       
-
+   
       // Total Paid Amount Label
       Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             localization.translate("Total Paid Amount"),
@@ -374,6 +386,9 @@ double screenHeight = MediaQuery.of(context).size.height;
               fontWeight: FontWeight.bold
             ),
           ),
+
+
+        
         ],
       ),
 
@@ -477,33 +492,49 @@ double screenHeight = MediaQuery.of(context).size.height;
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.person, color: Colors.blue),
-                        const SizedBox(width: 8),
-  Text(
-            capitalizeEachWord(name), // Capitalize each word
-            style: GoogleFonts.lato(
-              color: const Color.fromRGBO(2, 5, 67, 1),
-              fontWeight: FontWeight.bold,
-              fontSize: 14 * MediaQuery.of(context).textScaleFactor,
-            ),
+                  Row(
+  children: [
+    const Icon(Icons.person, color: Colors.blue),
+    const SizedBox(width: 8),
+    Expanded(
+      child: Text(
+        capitalizeEachWord(name), // Capitalize each word
+        style: GoogleFonts.lato(
+          color: const Color.fromRGBO(2, 5, 67, 1),
+          fontWeight: FontWeight.bold,
+          fontSize: 14 * MediaQuery.of(context).textScaleFactor,
+        ),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    IconButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Editscheme(schemeId: widget.schemeId),
           ),
+        );
+      },
+      icon: const Icon(Icons.edit, color: Colors.red),
+    ),
+  ],
+),
 
-                      ],
-                    ),
                     const SizedBox(height: 8),
+
                     Row(
                       children: [
-                        const Icon(Icons.phone, color: Colors.green),
-                        const SizedBox(width: 8),
-                        Text(phone, style: const TextStyle(fontSize: 15)),
+                      const Icon(Icons.phone, color: Colors.green),
+                      const SizedBox(width: 8),
+                      Text(phone, style: const TextStyle(fontSize: 15)),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    infoRow('Scheme No',regNo),
-                    infoRow('Total Installments',   '$totalInstallments'),
-                    infoRow('Paid Installments',    paidInstallments,),
+                    infoRow(localization.translate('Scheme No'),
+                    regNo),
+                    infoRow(localization.translate('Total Installments'),'$totalInstallments'),
+                    infoRow(localization.translate('Paid Installments'), paidInstallments,),
                   ],
                 ),
               ),
@@ -528,8 +559,8 @@ double screenHeight = MediaQuery.of(context).size.height;
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(value, style: const TextStyle(color: Colors.black54)),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(value, style: const TextStyle(color: Colors.black54)),
         ],
       ),
     );
@@ -548,7 +579,7 @@ Widget _buildTransactionCard({
   required String paymentStatus,
   required BuildContext context,
 }) {
-  var localization = Provider.of<LocalizationProvider>(context);
+  var localization = Provider.of<LocalizationProvider>(context,listen: false);
   double screenWidth = MediaQuery.of(context).size.width;
 double screenHeight = MediaQuery.of(context).size.height;
 
@@ -606,7 +637,7 @@ switch (status) {
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04), // 4% of screen width
     
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -625,71 +656,80 @@ switch (status) {
     ),
     
       
-    GestureDetector(
-    onTap: paymentStatusText == "Pay" 
-     // onTap: paymentStatusText == localization.translate("pay") // Compare with the localized string
-        ? () {
-            // Fetch required details from accountDetails
-            if (accountDetails.isNotEmpty) {
-              final String amount = accountDetails[0]['amount'] ?? '0'; // Assuming you want the first record
-              final String id = accountDetails[0]['id'] ?? '';
-              final String month = accountDetails[0]['month'] ?? '';
-              final String year = accountDetails[0]['year'] ?? '';
-              final String payId = accountDetails[0]['pay_id'] ?? ''; // Fetch the pay_id
-    
-              // Print the fetched details for verification
-              print("Reject clicked: Amount: $amount, ID: $id, Month: $month, Year: $year, Pay ID: $payid");
-    
-              // Pass the details to the next screen using arguments
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Scanner(activescheme: Activescheme(
-                    amountRs: amount,
-                    month: month,
-                    year: year,
-                    payId: payId
-                    
-                  ),
-                  rejectId: payId,
-                  ),
-    
-    
-                ),
-              );
-            } else {
-              print("No account details available");
-            }
-          }
-        : null, // For other statuses, no action will be triggered
-    child: Container(
-      padding: EdgeInsets.symmetric(
-        vertical: MediaQuery.of(context).size.height * 0.005,
-        horizontal: MediaQuery.of(context).size.width * 0.02,
-      ),
-      decoration: BoxDecoration(
-        color: paymentStatusText == "pay" ? Colors.green : paymentStatusColor, // Dynamic color
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            paymentStatusIcon,
+GestureDetector(
+  onTap: () {
+   // Navigator.pop(context);
+    if (status == "2") {
+      if (accountDetails.isNotEmpty) {
+        final String amount = accountDetails[0]['amount'] ?? '0';
+        final String id = accountDetails[0]['id'] ?? '';
+        final String month = accountDetails[0]['month'] ?? '';
+        final String year = accountDetails[0]['year'] ?? '';
+        final String payId = accountDetails[0]['pay_id'] ?? '';
+
+        print("Pay clicked: Amount: $amount, ID: $id, Month: $month, Year: $year, Pay ID: $payId");
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Scanner(
+              activescheme: Activescheme(
+                amountRs: amount,
+                month: month,
+                year: year,
+                schemeID: id,
+              ),
+              rejectId: payId,
+            ),
+          ),
+        );
+      } else {
+        print("No account details available");
+      }
+    } else if (status == "0") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentVerificationScreen(id: payid),
+        ),
+      );
+    }
+  },
+  child: Container(
+    padding: EdgeInsets.symmetric(
+      vertical: MediaQuery.of(context).size.height * 0.005,
+      horizontal: MediaQuery.of(context).size.width * 0.02,
+    ),
+    decoration: BoxDecoration(
+      color: paymentStatusText == "Pay"
+          ? Colors.green
+          : paymentStatusText == "Process"
+              ? Colors.orange
+              : paymentStatusColor, // Fallback color
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          paymentStatusIcon,
+          color: Colors.white,
+          size: 12 * MediaQuery.of(context).textScaleFactor,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Text(
+          paymentStatusText,
+          style: GoogleFonts.lato(
             color: Colors.white,
-            size: 12 * MediaQuery.of(context).textScaleFactor,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
           ),
-          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-          Text(
-            paymentStatusText, // Dynamic status text
-            style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold,fontSize: 12),
-          ),
-        ],
-      ),
-    
-    
+        ),
+      ],
     ),
-    ),
+  ),
+),
+
     
     ],
     ),

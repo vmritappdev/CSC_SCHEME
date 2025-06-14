@@ -1,49 +1,102 @@
-
+import 'dart:io';
+import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
-
 import 'package:permission_handler/permission_handler.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
+import 'package:provider/provider.dart';
 
-
-class BrochureScreen extends StatelessWidget {
-  final String brochureUrl = "https://www.africau.edu/images/default/sample.pdf";
-
-  final String brochureFileName = "gold_brochure.pdf";
-
+class BrochureScreen extends StatefulWidget {
   const BrochureScreen({super.key});
 
- Future<void> checkAndRequestPermissions(BuildContext context) async {
-  // ✅ Android 11+ కోసం MANAGE_EXTERNAL_STORAGE Permission చెక్ చేయాలి
-  if (await Permission.storage.request().isGranted ||
-      await Permission.manageExternalStorage.request().isGranted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Permission Granted ✅")),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Permission Denied ❌. Please allow from settings.")),
-    );
-    openAppSettings(); // ✅ If permanently denied, open settings
-  }
+  static const brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
+
+  @override
+  State<BrochureScreen> createState() => _BrochureScreenState();
 }
+
+class _BrochureScreenState extends State<BrochureScreen> {
+  bool isDownloading = false;
+
+  Future<void> _downloadBrochure(BuildContext context) async {
+    setState(() {
+      isDownloading = true;
+    });
+    try {
+      // Step 1: Permissions
+      if (Platform.isAndroid) {
+        if (await Permission.manageExternalStorage.request().isDenied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Storage permission denied')),
+          );
+          setState(() {
+            isDownloading = false;
+          });
+          return;
+        }
+      }
+
+      // Step 2: Get proper Downloads folder
+      final List<Directory>? extDirs = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      final Directory? downloadsDir = extDirs?.first;
+
+      if (downloadsDir == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to get downloads directory')),
+        );
+        setState(() {
+          isDownloading = false;
+        });
+        return;
+      }
+
+      // Step 3: Download
+      final filePath = '${downloadsDir.path}/CSC_SCHEME_BROUCHER.pdf';
+      final dio = Dio();
+      final response = await dio.download(BrochureScreen.brochureUrl, filePath);
+
+      if (response.statusCode == 200) {
+        await OpenFile.open(filePath);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Download failed')),
+        );
+      }
+    } catch (e) {
+      print('Download error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Download failed: $e')),
+      );
+    } finally {
+      setState(() {
+        isDownloading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+       final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Brochure Details", style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 12, 2, 29),
         iconTheme: const IconThemeData(color: Colors.white),
+        title:  Text(localization.translate('Brochure'),
+        style: TextStyle(color: Colors.white),),
+        backgroundColor: const Color(0xFF0C021D),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: Padding(
+         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ✅ Asset Image
+
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.asset(
-                  "assets/images/gold.jpg",
+                  'assets/images/haram.jpg',
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -51,38 +104,53 @@ class BrochureScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-            // ✅ Title
-            const Text(
-              "Gold Saving Scheme",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 12, 2, 29)),
+             Text(
+             localization.translate('Gold Saving Scheme'),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0C021D),
+              ),
             ),
             const SizedBox(height: 10),
-
-            // ✅ Description
-            const Text(
-              "Save gold every month and get exclusive benefits!",
+             Text(
+              localization.translate('Save gold every month and get exclusive benefits!'),
               style: TextStyle(fontSize: 16, color: Colors.black87),
             ),
-            const SizedBox(height: 20),
 
-            // ✅ Terms & Conditions
-            const Text(
-            "Terms & Conditions:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.redAccent),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              "1. Minimum deposit ₹500 per month.\n2. No withdrawal before 11 months.\n3. 100% Safe & Secure Investment.",
-              style: TextStyle(fontSize: 14, color: Colors.black54),
-            ),
-            const SizedBox(height: 20),
+            SizedBox(height: 50,),
+            Center(
 
-            // ✅ Download Button
-         
+
+
+              child: ElevatedButton.icon(
+                icon: isDownloading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 8, 1, 75)),
+                        ),
+                      )
+                    : const Icon(Icons.download, color: Colors.white),
+                label:  Text(
+                 localization.translate('Download Brochure'),
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: isDownloading ? null : () => _downloadBrochure(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0C021D),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+
+
+  
 }

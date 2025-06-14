@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/notification.dart';
+import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-//void main() => runApp(MaterialApp(home: NotificationScreen()));
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -12,94 +17,108 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-List<NotificationItem> notifications = [
-NotificationItem(
-      type: 'new_arrival',
-      title: 'New Diamond Collection!',
-      description: '24K Gold with VS1 Diamonds now available',
-      time: DateTime.now().subtract(const Duration(minutes: 15)),
-      isRead: false,
-      // imagePath: 'assets/images/gold1.jpg',
-    ),
-    NotificationItem(
-      type: 'price_alert',
-      title: 'Gold Rate Increased',
-      description: '22K gold price increased by 1.5% today',
-      time: DateTime.now().subtract(const Duration(hours: 2)),
-      isRead: true,
-    ),
-    NotificationItem(
-      type: 'order_update',
-      title: 'Order Shipped',
-      description: 'Your custom necklace has been dispatched',
-      time: DateTime.now().subtract(const Duration(days: 1)),
-      status: 'In Transit',
-    ),
-    NotificationItem(
-      type: 'offer',
-      title: 'Festival Special!',
-      description: 'Get 20% off on antique jewellery designs',
-      time: DateTime.now().subtract(const Duration(days: 2)),
-      expiry: DateTime.now().add(const Duration(days: 3)),
-    ),
-    NotificationItem(
-      type: 'appointment',
-      title: 'Design Consultation',
-      description: 'Your appointment confirmed for tomorrow 3 PM',
-      time: DateTime.now().subtract(const Duration(hours: 5)),
-    ),
-    NotificationItem(
-      type: 'wishlist',
-      title: 'Back in Stock',
-      description: '22K Mangalsutra design #452 is now available',
-      time: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    NotificationItem(
-      type: 'event',
-      title: 'Jewellery Exhibition',
-      description: 'Annual gold exhibition starts this weekend',
-      time: DateTime.now().subtract(const Duration(days: 4)),
-    ),
-    NotificationItem(
-      type: 'security',
-      title: 'Security Alert',
-      description: 'New device logged into your account',
-      time: DateTime.now().subtract(const Duration(days: 5)),
-    ),
-    NotificationItem(
-      type: 'membership',
-      title: 'Elite Member Benefits',
-      description: 'Exclusive preview of new collections',
-      time: DateTime.now().subtract(const Duration(days: 6)),
-    ),
-    NotificationItem(
-    type: 'anniversary',
-    title: 'Celebrate with Gold!',
-    description: 'Special discounts for account anniversary',
-    time: DateTime.now().subtract(const Duration(days: 7)),
-    ),
-  ];
+  List<NotificationItem> notifications = [];
+  bool isLoading = true;  // డేటా లోడ్ అవుతున్నప్పుడు చూపించడానికి
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndCallNotifications();
+    
+  }
+
+
+
+  
+
+  Future<void> fetchAndCallNotifications() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? mobileNumber = prefs.getString('phoneNumber');
+
+    if (mobileNumber != null && mobileNumber.isNotEmpty) {
+      final url = Uri.parse("$baseUrl/notifications.php");
+
+      try {
+        final response = await http.post(url, body: {
+          'mobile_no': mobileNumber,
+          'option': 'yes',
+        });
+
+         print("🌐 API Status Code: ${response.statusCode}");
+        print("🔄 Raw Response Body: ${response.body}");
+        
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          print("✅ Decoded JSON Response: $data");
+
+          if (data['response'] == 'success' && data['data'] != null) {
+            final List<dynamic> notifJsonList = data['data'];
+
+            setState(() {
+              notifications = notifJsonList
+                  .map((json) => NotificationItem.fromJson(json))
+                  .toList();
+              isLoading = false;
+            });
+          } else {
+            // No notifications found or response failed
+            setState(() {
+              notifications = [];
+              isLoading = false;
+            });
+          }
+        } else {
+          setState(() {
+            notifications = [];
+            isLoading = false;
+          });
+        }
+      } catch (e) {
+        setState(() {
+          notifications = [];
+          isLoading = false;
+        });
+      }
+    } else {
+      setState(() {
+        notifications = [];
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+     final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Text('Notifications (${notifications.where((n) => !n.isRead).length})',style: const TextStyle(color: Colors.white),),
+        title: Text(
+  '${localization.translate("Notifications")} (${notifications.where((n) => !n.isRead).length})',
+  style: const TextStyle(color: Colors.white),
+),
+
         backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
       ),
-      body: ListView.builder(
-        itemCount: notifications.length,
-        itemBuilder: (context, index) {
-          final notification = notifications[index];
-          return Dismissible(
-            key: Key(notification.hashCode.toString()),
-            background: Container(color: Colors.red),
-            onDismissed: (direction) => setState(() => notifications.removeAt(index)),
-            child: _buildNotificationCard(notification),
-          );
-        },
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : notifications.isEmpty
+              ?  Center(
+                  child: Text(
+                   localization.translate("No new notifications"),
+                    style: TextStyle(fontSize: 16, color: Colors.red),
+                  ),
+                )
+              : ListView.builder(
+                   physics: const BouncingScrollPhysics(), // లేదా ScrollPhysics()
+                 shrinkWrap: true,
+                  itemCount: notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = notifications[index];
+                    return _buildNotificationCard(notification);
+                  },
+                ),
     );
   }
 
@@ -109,122 +128,139 @@ NotificationItem(
       color: notification.isRead ? Colors.white : Colors.amber[50],
       child: ListTile(
         leading: _buildLeadingIcon(notification),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(notification.title, 
-                 style: TextStyle(
-                   fontWeight: FontWeight.bold,
-                   color: Colors.amber[900],
-                 )),
-            if (notification.status != null)
-              Chip(
-                label: Text(notification.status!,
-                    style: const TextStyle(fontSize: 12)),
-                backgroundColor: Colors.amber[100],
-              ),
-          ],
+        title: Text(
+          notification.title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.amber[900],
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Text(notification.description),
-
-
+            Text(notification.description,style: TextStyle(fontSize: 13),),
             const SizedBox(height: 4),
-
-
-
-            Row(
-              children: [
-              const Icon(Icons.access_time, size: 14, color: Colors.grey),
-
-
-                const SizedBox(width: 4),
-
-
-                Text(_formatTime(notification.time),
-                    style: const TextStyle(fontSize: 12)),
-                if (notification.expiry != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.timer, size: 14, color: Colors.red),
-                        Text(
-                          'Expires in ${notification.expiry!.difference(DateTime.now()).inDays}d',
-                          style: const TextStyle(color: Colors.red, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
+            Text(
+              '📅 ${_formatDate(notification.date)} 🕒 ${notification.time}',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
         ),
-          trailing: notification.imagePath != null 
-          ? Image.network(notification.imagePath!, width: 60)
-          : null,
         onTap: () => _handleNotificationTap(notification),
       ),
     );
   }
 
   Widget _buildLeadingIcon(NotificationItem notification) {
-    final iconMap = {
-
-      'new_arrival': Icons.new_releases,
-      'price_alert': Icons.attach_money,
-      'order_update': Icons.local_shipping,
-      'offer': Icons.discount,
-      'appointment': Icons.calendar_today,
-      'wishlist': Icons.favorite,
-      'event': Icons.event,
-      'security': Icons.security,
-      'membership': Icons.stars,
-      'anniversary': Icons.cake,
-    };
-
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-      color: Colors.amber[100],
-      shape: BoxShape.circle,
+        color: Colors.amber[100],
+        shape: BoxShape.circle,
       ),
       child: Icon(
-      iconMap[notification.type],
-      color: const Color.fromRGBO(2, 5, 67, 1),
+        
+        _getIconForNotification(notification),
+        color: const Color.fromRGBO(2, 5, 67, 1),
+        size: 15,
       ),
     );
   }
 
-  String _formatTime(DateTime time) {
-    final now = DateTime.now();
-    final difference = now.difference(time);
-
-    if (difference.inDays > 7) {
-      return DateFormat('MMM dd').format(time);
-    } else if (difference.inDays >= 1) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inHours >= 1) {
-      return '${difference.inHours}h ago';
-    }
-    return '${difference.inMinutes}m ago';
-  }
-
   void _handleNotificationTap(NotificationItem notification) {
     setState(() => notification.isRead = true);
-    
-    switch (notification.type) {
+  }
 
-      case 'order_update':
-       
-        break;
-      case 'new_arrival':
-        // Navigate to product page
-        break;
-      // Handle other types
+  static String _formatDate(String input) {
+    try {
+      if (input == '0000-00-00' || input.isEmpty) return 'N/A';
+      final parsedDate = DateTime.parse(input);
+      return DateFormat('dd MMMM yyyy').format(parsedDate);
+    } catch (e) {
+      return input;
     }
+  }
+
+  IconData _getIconForNotification(NotificationItem notification) {
+  final title = notification.title.toLowerCase();
+
+  if (title.contains('payment') || title.contains('paid')) {
+    return Icons.payment;
+  } else if (title.contains('offer') || title.contains('discount')) {
+    return Icons.local_offer;
+  } else if (title.contains('alert') || title.contains('important')) {
+    return Icons.warning;
+  } else if (title.contains('scheme') || title.contains('plan')) {
+    return Icons.star;
+  } else if (title.contains('installment')) {
+    return Icons.calendar_month;
+  } else if (title.contains('profile') || title.contains('account')) {
+    return Icons.person;
+  } else if (title.contains('reminder')) {
+    return Icons.notifications_active;
+  } else if (title.contains('birthday')) {
+    return Icons.cake;
+  } else if (title.contains('festival')) {
+    return Icons.celebration;
+  } else if (title.contains('feedback') || title.contains('review')) {
+    return Icons.feedback;
+  } else if (title.contains('thumbs up') || title.contains('like')) {
+    return Icons.thumb_up;
+  } else if (title.contains('love') || title.contains('heart')) {
+    return Icons.favorite;
+  } else {
+    return Icons.notifications; // fallback
   }
 }
 
+
+
+  DateTime _combineDateAndTime(String date, String time) {
+  try {
+    // date string -> DateTime
+    DateTime parsedDate = DateTime.parse(date);
+
+    // time string assumed as "HH:mm" లేదా "H:mm" format లో ఉంటుందని assume చేస్తున్నాం
+    List<String> timeParts = time.split(':');
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    // Combine date + time
+    return DateTime(
+      parsedDate.year,
+      parsedDate.month,
+      parsedDate.day,
+      hour,
+      minute,
+    );
+  } catch (e) {
+    return DateTime.now(); // fallback
+  }
+}
+
+
+String formatNotificationDateWithIST(DateTime dateTime) {
+  final now = DateTime.now();
+
+  // IST offset +5:30
+  final istDateTime = dateTime.add(Duration(hours: 5, minutes: 30));
+
+  final difference = now.difference(istDateTime).inDays;
+
+  final timeFormat = DateFormat.jm(); // 12-hour format with AM/PM
+  final formattedTime = timeFormat.format(istDateTime);
+
+  if (difference == 0) {
+    return "Today at $formattedTime";
+  } else if (difference > 0 && difference <= 7) {
+    return "$difference days ago at $formattedTime";
+  } else {
+    final dateFormat = DateFormat('dd MMM yyyy');
+    final formattedDate = dateFormat.format(istDateTime);
+    return "📅 $formattedDate at $formattedTime";
+  }
+}
+
+
+}

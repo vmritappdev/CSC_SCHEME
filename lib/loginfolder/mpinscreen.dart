@@ -54,9 +54,27 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
   String mpin = '';
   String confirmMpin = '';
   String errorMessage = '';
+   String? savedMobileNumber; // ✅ Add this
+
 
 final TextEditingController _mpinController = TextEditingController();
 final TextEditingController _confirmMpinController = TextEditingController();
+
+
+Future<void> _loadSavedMobileNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? number = prefs.getString('phoneNumber');
+    setState(() {
+      savedMobileNumber = number;
+    });
+    print("✅ Saved mobile number in CreateMpinScreen5: $savedMobileNumber");
+  }
+
+  @override
+  void initState() {
+  super.initState();
+  _loadSavedMobileNumber(); // ✅ Load mobile number on start
+  }
 
 
 
@@ -71,7 +89,7 @@ void dispose() {
 
   
 
-  @override
+@override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
     final screenHeight = MediaQuery.of(context).size.height;
@@ -160,7 +178,7 @@ buildPinput(
   child: Text(
     errorMessage, // Display error message
     style: TextStyle(
-      fontSize: MediaQuery.of(context).size.height * 0.02, // Dynamic Font Size
+      fontSize: MediaQuery.of(context).size.height * 0.015, // Dynamic Font Size
       color: Colors.red,
     ),
   ),
@@ -194,13 +212,14 @@ buildPinput(
                   ),
                 
               ),
+
+              
             ],
           ),
         ),
       ),
     );
   }
-
 Widget buildPinput({
   required ValueChanged<String> onChanged,
   required TextEditingController controller,
@@ -235,13 +254,18 @@ Future<void> _submitForm(LocalizationProvider localization) async {
     return;
   }
 
-  if (currentMpin != currentConfirmMpin) {
-    setState(() {
-      errorMessage = localization.translate('MPINs do not match!');
-    });
-    _showErrorPopup(localization.translate('MPINs do not match!'));
-    return;
-  }
+ if (currentMpin != currentConfirmMpin) {
+  setState(() {
+    errorMessage = localization.translate('MPINs do not match!');
+    _mpinController.clear();
+    _confirmMpinController.clear();
+    mpin = '';
+    confirmMpin = '';
+  });
+  _showErrorPopup(localization.translate('MPINs do not match!'));
+  return;
+}
+
 
   mpin = currentMpin; // update class variable if needed
   confirmMpin = currentConfirmMpin;
@@ -256,7 +280,8 @@ Future<void> _submitForm(LocalizationProvider localization) async {
 
 
  Future<bool> _submitMpinToServer() async {
-  const String apiUrl = "$baseUrl/save_mpin.php";  // Your API URL
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
+  String apiUrl = "$baseUrl/save_mpin.php";  // Your API URL
 
   String mpin = _mpinController.text.trim();
   String confirmMpin = _confirmMpinController.text.trim();
@@ -264,14 +289,14 @@ Future<void> _submitForm(LocalizationProvider localization) async {
   // Simple validation before API call
   if (mpin.length < 4) {
     setState(() {
-      errorMessage = 'MPIN must be at least 4 digits';
+      errorMessage = localization.translate('MPIN must be at least 4 digits');
     });
     return false;
   }
 
   if (mpin != confirmMpin) {
     setState(() {
-      errorMessage = 'MPIN and Confirm MPIN do not match';
+      errorMessage = localization.translate('MPIN and Confirm MPIN do not match');
     });
     return false;
   }
@@ -291,7 +316,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
 
     if (mobileNumber == null || mobileNumber.isEmpty) {
       setState(() {
-        errorMessage = 'Mobile number not found. Please try again.';
+        errorMessage = localization.translate('Mobile number not found. Please try again.');
       });
       return false;
     }
@@ -325,7 +350,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
       }
     } else {
       setState(() {
-        errorMessage = 'Failed to connect to the server. Status: ${response.statusCode}';
+      //  errorMessage = 'Failed to connect to the server. Status: ${response.statusCode}';
       });
       return false;
     }
@@ -360,10 +385,10 @@ Future<void> _submitForm(LocalizationProvider localization) async {
               children: [
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: constraints.maxWidth * 0.08, // Dynamic height
-                  width: constraints.maxWidth * 0.08,  // Dynamic width
+                  height: constraints.maxWidth * 0.09, // Dynamic height
+                  width: constraints.maxWidth * 0.09,  // Dynamic width
                   child: Lottie.asset(
-                    'assets/images/suc.json',
+                    'assets/images/suc2.json',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -493,26 +518,57 @@ Future<bool> checkInternet() async {
 }
 
 
-void _showErrorPopup(String message) {
+void _showErrorPopup( String message) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
   showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (BuildContext context) {
-      final localization = Provider.of<LocalizationProvider>(context, listen: false);
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
-        title: Text(
-          localization.translate("Error"),
-          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                localization.translate(message),
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(2, 5, 62, 1),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  localization.translate("OK"),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(localization.translate("OK")),
-          ),
-        ],
       );
     },
   );

@@ -16,12 +16,12 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 
  void main() {
@@ -104,6 +104,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
    void _showInvalidOTPDialog(String message) {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
+   final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
   showDialog(
     context: context,
@@ -124,7 +125,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
               child: Text(
-                message,
+               // message,
+                 localization.translate("Sorry, the mobile number has already been used. Please provide a different mobile number."),
                 style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
                 textAlign: TextAlign.center,
               ),
@@ -140,7 +142,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "OK",
+                 localization.translate("OK"),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: screenWidth * 0.045, // Dynamic Button Font Size
@@ -160,6 +162,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
 
   // Submit form and send data to API
   void showErrorDialog(String message) {
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -177,7 +181,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             ],
           ),
           content: Text(
-            message,
+           // message,
+         localization.translate("Sorry, the mobile number has already been used. Please provide a different mobile number."),
             style: const TextStyle(fontSize: 16),
           ),
           actions: [
@@ -194,8 +199,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    "OK",
+                  child:  Text(
+                   localization.translate("OK"),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -240,7 +245,7 @@ Future<void> submitForm() async {
       _isLoading = true;
     });
 
-    const url = "$baseUrl/save_account.php";    //"https://vmrdemos.com/csc_scheme/save_account.php"
+    var url = "$baseUrl/save_account.php";    //"https://vmrdemos.com/csc_scheme/save_account.php"
 
     final data = {
       'f_name': _controllerFirstName.text,
@@ -277,7 +282,7 @@ Future<void> submitForm() async {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const OtpScreen()),
+            MaterialPageRoute(builder: (context) =>  OtpScreen()),
           );
         } else {
           _showInvalidOTPDialog(responseData['message']);
@@ -307,196 +312,175 @@ Future<void> submitForm() async {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      
       body: Stack(
         
         children: [
           
           SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-
-                 
-
-                  Stack(
-                    children: [
-                      Container(
-                        height: screenHeight * 0.30,
-                        width: screenWidth,
-                       // color:  Color.fromRGBO(2, 5, 62, 1),
-                        alignment: Alignment.center,
-                        child: Padding(
-                         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05), 
-
-                          child: Column(
-                            children: [
-
-                              Align(alignment: Alignment.bottomLeft, child: BackButton(
-                                onPressed: () {
-                                  Navigator.push(context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreen1(),
-                                  )
-                                  );
-                                },
-                              )),
-                              Image.asset(
-                                'assets/images/csc2.png',
-                              height: MediaQuery.of(context).size.height * 0.1, // 10% of screen height
-
-                               // color: Colors.white,
-                              ),
-                              Text(
-                                localization.translate("JEWELLERS"),
-                                style: GoogleFonts.lato(
-                                  fontSize: MediaQuery.of(context).size.width * 0.05,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FontStyle.italic,
-                                  color: const Color.fromRGBO(2, 5, 67, 1),
-                                ),
-                              ),
-
-                              
-
-                              
-                            ],
-                          ),
-                        ),
-                      ),
-                     
-                    ],
-                  ),
-                 // SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
-                      child: Text(
-                        localization.translate("Register"),
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                           color: const Color.fromRGBO(2, 5, 69, 1),
-                            fontWeight: FontWeight.bold,
-                            fontSize:MediaQuery.of(context).size.width * 0.05,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                 SizedBox(
-  height: MediaQuery.of(context).size.height * 0.01, // Screen height యొక్క 1%
-),
-
-                Align(
-                   alignment: Alignment.bottomLeft,
-                  child: Padding(
-                   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
-                    child:   Text(
-                      
-                      localization.translate("Please provide your basic information"),
-                     
-                      style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.grey),
-                    ),
-                  ),
+  child: Column(
+    children: [
+      // Top Header Section (unchanged)
+      Container(
+        height: screenHeight * 0.30,
+        width: screenWidth,
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.05),
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: BackButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen1()),
+                    );
+                  },
                 ),
-
-               
-                SizedBox(height: screenHeight * 0.03),
-                
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        buildTextFormField(
-                          _controllerFirstName,
-                          localization.translate("First Name*"),
-                          
-                          Icons.person_outline,
-                          TextInputType.name,
-                          (value) {
-                            if (value == null || value.isEmpty) {
-                              return localization.translate("enter_first_name");
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                        buildTextFormField(
-                          _controllerLastName,
-                          localization.translate("Last Name*"),
-                          Icons.person_2,
-                          TextInputType.name,
-                          (value) {
-                            if (value == null || value.isEmpty) {
-                              return localization.translate("enter_last_name");
-                            }
-                            return null;
-                          },
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                      _buildPhoneField(),
-                        SizedBox(height: screenHeight * 0.02),
-                        buildTextFormField(
-                          _controlleremail,
-                          localization.translate("Email(Optinol)"),
-                          Icons.email_outlined,
-                          TextInputType.emailAddress,
-                          (value) {
-                            return null; // Email validation can be added if needed
-                          },
-                        ),
-                        SizedBox(height: screenHeight * 0.09),
-
-                        // Display Message
-                       // Text(
-                         // _message.isNotEmpty && !_message.startsWith('Success') ? _message : '',
-                         // style: TextStyle(
-                           // color: Colors.red, // Only show errors in red
-                          //  fontWeight: FontWeight.bold,
-                        //  ),
-                      //  ),
-
-                       
-
-                      SizedBox(
-  width: screenWidth * 0.85, // 85% of Screen Width
-  height: screenHeight * 0.06, // 6% of Screen Height
-  child: 
-     // borderRadius: BorderRadius.circular(10), // Rounded corners
-    
-     ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1), // Make button background transparent
-       // shadowColor: Colors.transparent, // Remove shadow if any
-       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
-      ),
-      onPressed: _isLoading
-          ? null // Disable button when loading
-          : () {
-              submitForm();
-            },
-      child: Text(
-        localization.translate("Verify Number"),
-        style: GoogleFonts.lato(
-          textStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-             fontSize: screenWidth * 0.045,
+              ),
+              Image.asset(
+                'assets/images/csc2.png',
+                height: screenHeight * 0.1,
+              ),
+              Text(
+                localization.translate("JEWELLERS"),
+                style: GoogleFonts.lato(
+                  fontSize: screenWidth * 0.05,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  color: const Color.fromRGBO(2, 5, 67, 1),
+                ),
+              ),
+            ],
           ),
         ),
       ),
-    ),
-  
-),
 
-                      ],
+      // Remaining content wrapped in Expanded
+      Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
+                    child: Text(
+                      localization.translate("Register"),
+                      style: GoogleFonts.poppins(
+                        textStyle: TextStyle(
+                          color: const Color.fromRGBO(2, 5, 69, 1),
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenWidth * 0.05,
+                        ),
+                      ),
                     ),
                   ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
+                    child: Text(
+                      localization.translate("Please provide your basic information"),
+                      style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.grey),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
+                  buildTextFormField(
+                    _controllerFirstName,
+                    localization.translate("First Name*"),
+                    Icons.person_outline,
+                    TextInputType.name,
+                    (value) {
+                      if (value == null || value.isEmpty) {
+                        return localization.translate("enter_first_name");
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                  buildTextFormField(
+                    _controllerLastName,
+                    localization.translate("Last Name*"),
+                    Icons.person_2,
+                    TextInputType.name,
+                    (value) {
+                      if (value == null || value.isEmpty) {
+                        return localization.translate("enter_last_name");
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                  _buildPhoneField(),
+                  SizedBox(height: screenHeight * 0.02),
+
+
+                  buildTextFormField(
+                    _controlleremail,
+                    localization.translate("Email(Optional)"),
+                    Icons.email_outlined,
+                    TextInputType.emailAddress,
+                    
+                 (value) {
+  if (value == null || value.isEmpty) {
+    return null; // Optional field, so allow empty
+  }
+  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+  if (!emailRegex.hasMatch(value)) {
+    return 'Please enter a valid email'; // Invalid format
+  }
+  return null; // Valid email
+},
+
+                    
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+
+      // Fixed Button
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.075,
+          vertical: screenHeight * 0.025,
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          height: screenHeight * 0.06,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            onPressed: _isLoading ? null : () => submitForm(),
+            child: Text(
+              localization.translate("Verify Number"),
+              style: GoogleFonts.lato(
+                textStyle: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth * 0.045,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
+
 
           
           if (_isLoading)
@@ -514,6 +498,12 @@ Future<void> submitForm() async {
       ),
     );
   }
+
+
+
+
+
+
 
   // Build text form field method
   Widget buildTextFormField(
@@ -563,61 +553,63 @@ Future<void> submitForm() async {
     );
   }
 
-   Widget _buildPhoneField() {
-     final localization = Provider.of<LocalizationProvider>(context, listen: true);
-  return Padding(
-     padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: TextFormField(
-       inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+ Widget _buildPhoneField() {
+  final localization = Provider.of<LocalizationProvider>(context, listen: true);
 
-  ],
-      textInputAction: TextInputAction.next,
-      controller: phoneController,
-      keyboardType: TextInputType.phone,
-      maxLength: 10, // Ensures only 10 digits can be entered
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
-        labelText:localization.translate("Mobile Number"),
-      //  labelStyle: const TextStyle(color: Colors.black),
-       labelStyle: GoogleFonts.lato(
-            textStyle: const TextStyle(fontSize: 15, color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
-          ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-        prefixIcon: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                "assets/images/flag.png",
-                height: 20,
-              ),
-              const SizedBox(width: 6),
-              const Text("+91", style: TextStyle(fontWeight: FontWeight.bold,color: Color.fromRGBO(43, 49, 101, 1),)),
-              const SizedBox(width: 6),
-            ],
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
-        ),
-        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
-        counterText: "", // Hides the default character count indicator
-      ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: FormField<String>(
       validator: (value) {
         if (value == null || value.isEmpty) {
           return localization.translate("Please enter a mobile number");
         } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
-          return "Enter a valid 10-digit mobile number";
+          return localization.translate("Enter a valid 10-digit mobile number");
         }
         return null;
+      },
+      builder: (FormFieldState<String> field) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IntlPhoneField(
+              controller: phoneController,
+              initialCountryCode: 'IN',
+              decoration: InputDecoration(
+                labelText: localization.translate("Mobile Number"),
+                labelStyle: GoogleFonts.lato(
+                  textStyle: const TextStyle(
+                    fontSize: 15,
+                    color: Color.fromRGBO(43, 49, 101, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(255, 18, 5, 93),
+                    width: 2,
+                  ),
+                ),
+                floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                counterText: "",
+                contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
+                errorText: field.errorText,
+              ),
+              dropdownIcon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+              dropdownIconPosition: IconPosition.trailing,
+              onChanged: (phone) {
+                field.didChange(phone.number); // ✅ update correct value for validator
+              },
+            ),
+          ],
+        );
       },
     ),
   );
 }
-
 
 
 

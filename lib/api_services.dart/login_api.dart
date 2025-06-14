@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   Future<bool> fetchAndSaveUserDetails() async {
-    const String apiUrl = "$baseUrl/get_reg_account_details.php";
+    String apiUrl = "$baseUrl/get_reg_account_details.php";
 
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

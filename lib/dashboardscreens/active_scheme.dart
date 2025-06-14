@@ -57,16 +57,16 @@ class _PaymentCardState extends State<PaymentCard> {
 
    bool showDialogFlag = false;
 
+   
+
    bool isMyScreenCalled = false; // Add this at the top of your StatefulWidget class.
 
-String overdue = "no";
+ String overdue = "no";
  bool isButtonActive = false; // Track if button is clicked
 
  final ActiveSchemeService _service = ActiveSchemeService();
 
- bool _popupShown = false; // To track if popup is already shown
- bool _isPolling = true; // Flag to control polling
-//bool _isPollingStarted = false;
+ 
 
   @override
   void initState() {
@@ -151,7 +151,7 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  const String apiUrl = "$baseUrl/active_pop.php";   
+  String apiUrl = "$baseUrl/active_pop.php";   
 
   try {
     final response = await http.post(
@@ -302,8 +302,12 @@ Future<void> loadSchemes() async {
  
 
 String getDueText(String dueDate, String schemeStatus) {
+
   // First check scheme status
-  if (schemeStatus.toLowerCase() == "closed") {
+  if (schemeStatus.toLowerCase() == "ready") {
+    
+    return "Ready To Purchase";
+  }else if (schemeStatus.toLowerCase() == "closed") {
     return "Scheme Closed";
   } else if (schemeStatus.toLowerCase() == "suspended") {
     return "Scheme Suspend";
@@ -354,7 +358,9 @@ String getOverdueStatus(String dueDate) {
     currentDate.day,
   )).inDays;
 
-  if (difference < 0) {
+print("diff $difference");
+
+  if (difference < -60) {
     return "1"; // Overdue
   } else {
     return "0"; // Not overdue
@@ -366,6 +372,9 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
   final dueDateTime = DateTime.parse(dueDate);
 
   // Color based on scheme status
+   if (schemeStatus.toLowerCase() == "ready") {
+    return Colors.blue; // Closed Scheme
+  } 
   if (schemeStatus.toLowerCase() == "closed") {
     return Colors.red; // Closed Scheme
   } else if (schemeStatus.toLowerCase() == "suspended") {
@@ -469,19 +478,34 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
             localization.translate("Short Term - Great Benefits"),
           ],
           iconWidget: const Icon(Icons.check, color: Colors.green),
-          amount: localization.translate("Rs. ${schemeDetail.amount}"),
-           dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
-            ? getOverdueStatus(schemeDetail.dueDate) == "1"
-          ? "" // Don't show anything if overdue
-          : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
-            : "",
+
+  amount: localization.translate(
+  "Rs. ${['ready', "closed", 'suspended'].contains(schemeDetail.schemeStatus.toLowerCase()) 
+      ? schemeDetail.paid_amount 
+      : schemeDetail.amount}"
+),
+
+
+
+
+          dueDate: activeSchemeNew!.activeSchemes.isNotEmpty
+    ? schemeDetail.schemeStatus.toLowerCase() == "ready"
+        ? localization.translate(
+            "Redeem your jewellery within ${schemeDetail.days} days")
+        : getOverdueStatus(schemeDetail.dueDate) == "1"
+            ? "" 
+            : localization.translate("Next Installment:") + formatDueDate(schemeDetail.dueDate)
+    : "",
+
         
         
           buttonText1: localization.translate("View details"),
-         buttonText2: getOverdueStatus(schemeDetail.dueDate) == "1"
-            ? localization.translate("Payment Disabled")
-            : 'Pay Rs. ${schemeDetail.amount}',
-        
+         buttonText2: schemeDetail.schemeStatus == "READY"
+    ? localization.translate("Completed")
+    : getOverdueStatus(schemeDetail.dueDate) == "1"
+        ? localization.translate("Payment Disabled")
+        : 'Pay Rs. ${schemeDetail.amount}',
+
         
         
           dueText: getDueText(schemeDetail.dueDate, schemeDetail.schemeStatus),
@@ -495,7 +519,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
           name: schemeDetail.name,
           scheme_status: schemeDetail.schemeStatus,
           over_due_status: schemeDetail.overdue,
-          buttonText3: ('')
+          buttonText3: schemeDetail.paid_amount,
         );
             },
           ),
@@ -724,7 +748,7 @@ double screenHeight = MediaQuery.of(context).size.height;
   style: GoogleFonts.lato(
     color: const Color.fromRGBO(2, 5, 67, 1),
     fontWeight: FontWeight.bold,
-    fontSize: 12 * MediaQuery.of(context).textScaleFactor,
+    fontSize: 10 * MediaQuery.of(context).textScaleFactor,
   ),
 ),
 
@@ -784,60 +808,55 @@ double screenHeight = MediaQuery.of(context).size.height;
                   ),
                   const SizedBox(width: 8.0),
                   
-             Expanded(
+           Expanded(
   child: ElevatedButton(
-onPressed: () {
-  final status = (scheme_status ?? "").toLowerCase().trim();
-  final overdue = (over_due_status ?? "").toLowerCase().trim();
+    onPressed: () {
+      final status = (scheme_status ?? "").toLowerCase().trim();
+      final overdue = (over_due_status ?? "").toLowerCase().trim();
 
-  if (overdue == "over due") {
-    showPaymentAccessDisabledBottomSheet(context);
-  } else if (status == "closed") {
-    showClosedSchemeBottomSheet(context);
-  } else if (status == "suspend" || status == "suspended") {
-    showSuspendedSchemeBottomSheet(context);
-  } else if (status == "active") {
-    if (pay_status == "1") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InstallmentScreen(schemeId: schemeID),
-        ),
-      );
-    } // else do nothing (user not allowed)
-  }
-}
-,
-        
-    style:ButtonStyle(
-  backgroundColor: WidgetStateProperty.resolveWith<Color>(
-    (Set<WidgetState> states) {
-      final isOverDue = (over_due_status ?? "").toLowerCase().trim() == "over due";
-      final isClosed = scheme_status.toLowerCase().trim() == "closed";
-      final isActive = scheme_status.toLowerCase().trim() == "active";
-
-      if (isOverDue || isClosed) {
-        return const Color.fromRGBO(2, 5, 62, 1); // Dark blue
-      }
-
-      if (isActive) {
-        if (pay_status == '') {
-          return  const Color.fromRGBO(2, 5, 62, 1); // Grey
-        } else {
-          return  const Color.fromARGB(255, 233, 231, 231); // Blue
-        }
-      }
-
-      return const Color.fromRGBO(2, 5, 62, 1); // Default dark blue
-    },
-  ),
-  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
+    if (overdue == "over due") {
+  showPaymentAccessDisabledBottomSheet(context);
+} else if (status == "closed") {
+  showClosedSchemeBottomSheet(context);
+} else if (status == "suspend" || status == "suspended") {
+  showSuspendedSchemeBottomSheet(context);
+} else if (status == "ready") {
+  showReadyToPurchaseBottomSheet(context); // ✅ ADD THIS
+} else if (status == "active" && pay_status == "1") {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => InstallmentScreen(schemeId: schemeID),
     ),
-  ),
-),
+  );
+}
 
+      // if pay_status != "1", do nothing (button inactive)
+    },
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (Set<WidgetState> states) {
+          final status = (scheme_status ?? "").toLowerCase().trim();
+          final overdue = (over_due_status ?? "").toLowerCase().trim();
+          final payAllowed = pay_status == "1";
+
+          final shouldEnableButton = 
+              (status == "active" && payAllowed) || // Navigate
+              overdue == "over due" ||              // Show bottom sheet
+              status == "closed" ||
+              status == "suspend" || status == "suspended" || status == "ready";
+             
+          return shouldEnableButton
+              ? const Color.fromRGBO(2, 5, 62, 1) // Dark blue
+              : const Color.fromARGB(255, 233, 231, 231); // Grey
+        },
+      ),
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
+    ),
     child: Text(
       buttonText2,
       style: GoogleFonts.lato(
@@ -848,6 +867,7 @@ onPressed: () {
     ),
   ),
 ),
+
 
 
                 ],
@@ -943,6 +963,7 @@ onPressed: () {
 
 
 void showPaymentAccessDisabledBottomSheet(BuildContext context) {
+   final localization = Provider.of<LocalizationProvider>(context, listen: false);
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent, // Transparent background
@@ -969,7 +990,7 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
               ),
             ],
           ),
-          child: const SingleChildScrollView(
+          child:  SingleChildScrollView(
           //  controller: scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -979,7 +1000,7 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                     Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 18),
                     SizedBox(width: 8),
                     Text(
-                      'Payment Access Disabled',
+                     localization.translate('Payment Access Disabled'),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -990,7 +1011,7 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.',
+                 localization.translate( 'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
                   style: TextStyle(
                     fontSize: 13,
                     color: Color(0xFF5D4037),
@@ -1003,7 +1024,7 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                     Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
                     SizedBox(width: 8),
                     Text(
-                      'Admin Contact: 94906 57008',
+                     localization.translate('Admin Contact: 94906 57008'),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -1024,6 +1045,7 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
 
 
 void showClosedSchemeBottomSheet(BuildContext context) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -1049,7 +1071,7 @@ void showClosedSchemeBottomSheet(BuildContext context) {
             ],
           ),
           padding: const EdgeInsets.all(16),
-          child: const Column(
+          child:  Column(
             mainAxisSize: MainAxisSize.min, // 👈 very important to shrink-wrap content
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1058,7 +1080,7 @@ void showClosedSchemeBottomSheet(BuildContext context) {
                   Icon(Icons.info_outline, color: Colors.red, size: 18),
                   SizedBox(width: 8),
                   Text(
-                    'Your Gold Scheme is Closed',
+                 localization.translate('Your Gold Scheme is Closed'),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -1069,7 +1091,7 @@ void showClosedSchemeBottomSheet(BuildContext context) {
               ),
               SizedBox(height: 12),
               Text(
-                'This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.',
+               localization.translate('This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.'),
                 style: TextStyle(
                   fontSize: 13,
                   color: Color(0xFF5D4037),
@@ -1082,7 +1104,7 @@ void showClosedSchemeBottomSheet(BuildContext context) {
                   Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
                   SizedBox(width: 8),
                   Text(
-                    'Admin Contact: 94906 57008',
+                    localization.translate('Admin Contact: 94906 57008'),
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -1102,6 +1124,8 @@ void showClosedSchemeBottomSheet(BuildContext context) {
 
 
 void showSuspendedSchemeBottomSheet(BuildContext context) {
+   final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -1122,7 +1146,7 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
           ),
         ],
       ),
-      child: const Column(
+      child:  Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1131,7 +1155,7 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
               Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
               SizedBox(width: 8),
               Text(
-                'Your Gold Scheme is Suspended',
+               localization.translate('Your Gold Scheme is Suspended'),
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -1142,7 +1166,7 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
           ),
           SizedBox(height: 12),
           Text(
-            'This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.',
+           localization.translate( 'This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.'),
             style: TextStyle(
               fontSize: 13,
               color: Color(0xFF5D4037),
@@ -1155,7 +1179,78 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
               Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
               SizedBox(width: 8),
               Text(
-                'Admin Contact: 94906 57008',
+              localization.translate('Admin Contact: 94906 57008'),
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFBF360C),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
+void showReadyToPurchaseBottomSheet(BuildContext context) {
+   final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) => Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF3E0),
+        border: Border.all(color: Colors.orange.shade700, width: 1.5),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
+              SizedBox(width: 8),
+              Text(
+              localization.translate('Your Gold Scheme is Ready To Purchase'),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFFEF6C00),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+          Text(
+           localization.translate('This scheme is now ready for purchase. Visit the store to redeem.'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Color(0xFF5D4037),
+              height: 1.5,
+            ),
+          ),
+          SizedBox(height: 20),
+          Row(
+            children: [
+              Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
+              SizedBox(width: 8),
+              Text(
+               localization.translate('Admin Contact: 94906 57008'),
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,

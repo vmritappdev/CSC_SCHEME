@@ -1,6 +1,7 @@
 // file: api_service.dart
 import 'dart:convert';
 import 'dart:io';
+import 'package:csc/utillity/constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,7 +10,7 @@ Future<Map<String, dynamic>?> submitRegistrationForm({
   File? adharImage,
   File? panImage,
   File? nomineeAdharImage,
-  required String baseUrl,
+ // required String baseUrl,
 }) async {
   try {
     var uri = Uri.parse('$baseUrl/save_registration.php');

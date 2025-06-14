@@ -45,6 +45,7 @@ class SchemeDetailsNew {
   final String name;
   final String schemeStatus;
   final String overdue;
+  final String paid_amount;
 
   SchemeDetailsNew({
     required this.amount,
@@ -58,6 +59,7 @@ class SchemeDetailsNew {
     required this.name,
     required this.schemeStatus,
     required this.overdue,
+    required this.paid_amount,
   });
 
   // Factory constructor to parse from JSON
@@ -76,6 +78,7 @@ class SchemeDetailsNew {
       name: json['name']?.toString() ?? '',
       schemeStatus: json['scheme_status']?.toString() ?? '0',
       overdue: json['over_due_status']?.toString() ?? '0',
+      paid_amount: json['paid_amount']?.toString() ?? '0',
     );
   }
 

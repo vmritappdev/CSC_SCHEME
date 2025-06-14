@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/loginfolder/loginotp.dart';
+
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
@@ -37,8 +38,6 @@ class _LoginScreen1State extends State<LoginScreen1> {
 bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
-
-
 
 
 
@@ -106,7 +105,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   
 
 Future<void> _fetchUserDetails() async {
-  const String apiUrl = "$baseUrl/get_reg_account_details.php";  
+  String apiUrl = "$baseUrl/get_reg_account_details.php";  
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -160,42 +159,39 @@ Future<void> _fetchUserDetails() async {
 
 
   // 🔹 MPIN వెరిఫై చేసే Function
-  Future<bool> _submitMpinToServer(String mpin, String mobileNumber) async {
-
-     bool hasInternet = await checkInternet();
-    if (!hasInternet) {
-      
-
+Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumber) async {
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
     Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
-  );
-      return false;
-    }
+      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+    );
+    return {'success': false, 'reason': 'NO_INTERNET'};
+  }
 
+  String phpUrl = "$baseUrl/mpin_verify.php";
+  try {
+    final response = await http.post(
+      Uri.parse(phpUrl),
+      body: {'mpin': mpin, 'mobile_no': mobileNumber},
+    );
 
-    const String phpUrl = "$baseUrl/mpin_verify.php";
-    try {
-      final response = await http.post(
-        Uri.parse(phpUrl),
-        body: {'mpin': mpin, 'mobile_no': mobileNumber},
-      );
-
-
-        print("Response Status: ${response.statusCode}");
+    print("Response Status: ${response.statusCode}");
     print("Response Body: ${response.body}");
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        return jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
-
-        
-      }
-      return false;
-    } catch (e) {
-      return false;
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      bool success = jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
+      String reason = jsonResponse['login1'] ?? 'UNKNOWN';
+      return {'success': success, 'reason': reason};
     }
+
+    return {'success': false, 'reason': 'SERVER_ERROR'};
+  } catch (e) {
+    return {'success': false, 'reason': 'EXCEPTION'};
   }
+}
+
 
 void _verifyMpin() async {
   String mpin = mpinController.text.trim();
@@ -206,12 +202,11 @@ void _verifyMpin() async {
   if (!hasInternet) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ErrorScreen()), // Error screen for no internet
+      MaterialPageRoute(builder: (context) => const ErrorScreen()),
     );
     return;
   }
 
-  // Mobile Number Validation
   if (mobileNumber.isEmpty || mobileNumber.length != 10) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
@@ -219,7 +214,6 @@ void _verifyMpin() async {
     return;
   }
 
-  // MPIN Validation
   if (mpin.isEmpty || mpin.length != 4) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
@@ -227,25 +221,20 @@ void _verifyMpin() async {
     return;
   }
 
-  // Show Loader (Lottie animation, for example)
   showLoaderDialog(context);
 
-  // Submit MPIN and Mobile Number to Server
-  bool isValid = await _submitMpinToServer(mpin, mobileNumber);
+  // 👉 Submit & get both success and reason
+  Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
+  bool isValid = result['success'];
+  String reason = result['reason'];
 
-  // Hide Loader after validation
-  Navigator.pop(context); // This will hide the loader
+  Navigator.pop(context);
 
   if (isValid) {
-    // Save Mobile Number to SharedPreferences
     await savePhoneNumber(mobileNumber);
-
-    // Fetch User Details
     await _fetchUserDetails();
-
-    // Navigate to HomeScreen
-    await Future.delayed(const Duration(milliseconds: 300)); // Allow saving to complete
-    await loadPhoneNumber(); // Ensure it loads correctly
+    await Future.delayed(const Duration(milliseconds: 300));
+    await loadPhoneNumber();
 
     Navigator.pushReplacement(
       context,
@@ -254,8 +243,8 @@ void _verifyMpin() async {
       ),
     );
   } else {
-    // Show error popup if MPIN/Number is incorrect
-    _showErrorPopup();
+    // 👉 Show reason-specific popup
+    _showErrorPopup(reason);
   }
 }
 
@@ -264,12 +253,22 @@ void _verifyMpin() async {
 // Declare a FocusNode for the mobile number field
 FocusNode phoneFocusNode = FocusNode();
 
-void _showErrorPopup() {
+void _showErrorPopup(String reason) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  String errorMsg;
+
+  if (reason == 'MPIN') {
+    errorMsg = localization.translate("The MPIN you entered is incorrect. Please try again.");
+  } else if (reason == 'MOBILE_NO') {
+    errorMsg = localization.translate("We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.");
+  } else {
+    errorMsg = localization.translate("");
+  }
+
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      final localization = Provider.of<LocalizationProvider>(context);
       return AlertDialog(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
@@ -277,17 +276,15 @@ void _showErrorPopup() {
         backgroundColor: Colors.white,
         contentPadding: EdgeInsets.zero,
         content: Column(
-        mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 15),
-            // 🔴 Icon Added
             const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
             const SizedBox(height: 10),
-            // 📄 Message
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                localization.translate("We couldn’t verify your MPIN or Mobile Number.\nPlease recheck and try again."),
+                errorMsg,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.lato(
                   fontSize: 15,
@@ -297,22 +294,19 @@ void _showErrorPopup() {
               ),
             ),
             const SizedBox(height: 20),
-            // 🔘 OK Button
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-              color: Color.fromRGBO(2, 5, 62, 1),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                color: Color.fromRGBO(2, 5, 62, 1),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               ),
               child: TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  phoneController.clear();  // Clear the mobile number field
-                  mpinController.clear();  // Clear the MPIN field
-                  setState(() {});           // Refresh the UI
-                  
-                  // Focus the phone number field after closing the popup
-                  FocusScope.of(context).requestFocus(phoneFocusNode);  // Focus on the phone field
+                  phoneController.clear();
+                  mpinController.clear();
+                  setState(() {});
+                  FocusScope.of(context).requestFocus(phoneFocusNode);
                 },
                 child: Text(
                   localization.translate("OK"),
@@ -332,6 +326,7 @@ void _showErrorPopup() {
 }
 
 
+
   // title: Text("Login Failed"),
         //  content: Text("Invalid MPIN or Mobile Number. Please try again."),
 
@@ -344,118 +339,210 @@ void _showErrorPopup() {
     double fontSizeSmall = screenHeight * 0.02;
     double inputFieldHeight = screenHeight * 0.07;
     double buttonHeight = screenHeight * 0.06;
-      final localization = Provider.of<LocalizationProvider>(context);
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
-    return Scaffold(
-     
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(paddingAll),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return WillPopScope(
+  onWillPop: () async {
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(height: screenHeight * 0.08),
-
-
-
-               Align(
-                    alignment: Alignment.bottomLeft,
-                    child: BackButton(
-                      color:  const Color.fromARGB(255, 12, 2, 42),
-                      onPressed: () {
-                        Navigator.push(
-                          context, 
-                          MaterialPageRoute(
-                            builder: (context) => const TermsAndConditionsScreen(),
-                          )
-                        );
-                      },
-                    ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
                   ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  ),
+);
 
-                  
+  if (shouldExit) {
+    SystemNavigator.pop();
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    
+  }
+
+  return false;
+},
+
+      child: SafeArea(
+        child: Scaffold(
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(paddingAll),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-
-                 
-                  Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
-                  SizedBox(width: screenWidth * 0.02),
-                  Text(
-                   localization.translate("CSC"),
-                    style: GoogleFonts.roboto(
-                      fontSize: fontSizeLarge,
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 3, 21, 47),
-                    ),
+                  SizedBox(height: screenHeight * 0.08),
+        
+        
+        
+                   Align(
+                        alignment: Alignment.bottomLeft,
+                        child: BackButton(
+                          color:  const Color.fromARGB(255, 12, 2, 42),
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                              builder: (context) =>  TermsAndConditionsScreen(),
+                              )
+                            );
+                          },
+                        ),
+                      ),
+        
+                      
+        
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+        
+                     
+                      Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
+                      SizedBox(width: screenWidth * 0.02),
+                      Text(
+                       localization.translate("CSC"),
+                        style: GoogleFonts.roboto(
+                          fontSize: fontSizeLarge,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 3, 21, 47),
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: screenHeight * 0.015),
+                  Text(
+                    localization.translate("Welcome back to your CSC account!"),
+                    style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+        
+                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
+                  SizedBox(height: screenHeight * 0.025),
+                  _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
+        
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => LoginOtpScreen(),
+                        )
+                      );
+                    },
+                    child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
+                                ),
+                  ),
+        
+                  SizedBox(height: screenHeight * 0.015),
+                  if (errorMessage.isNotEmpty)
+                    Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
+        
+                  SizedBox(height: screenHeight * 0.04),
+                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+                  SizedBox(height: screenHeight * 0.015),
+                  _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+                     Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginOtpScreen(),
+            ),
+          );
+                
+                      }),
+        
+                  SizedBox(height: screenHeight * 0.03),
+                  Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                     SizedBox(height: screenHeight * 0.02),
+                 Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  CurvedImageScreen2(),
+          ),
+        );
+            },
+            borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
+            child: Padding(
+        padding: const EdgeInsets.all(4.0), // Expands touch area
+        child: Text(
+          localization.translate("Register here"),
+          style: TextStyle(
+            color: const Color.fromARGB(255, 3, 21, 47),
+            fontSize: fontSizeSmall,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+            ),
+          ),
+        )
+        ,
+        
+                  SizedBox(height: screenHeight * 0.03),
+                  const Divider(),
+                  SizedBox(height: screenHeight * 0.015),
+                 // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
                 ],
               ),
-              SizedBox(height: screenHeight * 0.015),
-              Text(
-                localization.translate("Welcome back to your CSC account!"),
-                style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-
-              _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
-              SizedBox(height: screenHeight * 0.025),
-              _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context, 
-                    MaterialPageRoute(
-                      builder: (context) => const ForgotScreen1(),
-                    )
-                  );
-                },
-                child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
-                            ),
-              ),
-
-              SizedBox(height: screenHeight * 0.015),
-              if (errorMessage.isNotEmpty)
-                Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
-
-              SizedBox(height: screenHeight * 0.04),
-              _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
-              SizedBox(height: screenHeight * 0.015),
-              _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
-                 Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginOtp(),
-        ),
-      );
-            
-                  }),
-
-              SizedBox(height: screenHeight * 0.03),
-              Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-                 SizedBox(height: screenHeight * 0.02),
-              GestureDetector(child: Text(localization.translate("Register here"), style: TextStyle(color:const Color.fromARGB(255, 3, 21, 47), fontSize: fontSizeSmall,fontWeight: FontWeight.bold),
-              ),
-              onTap: () {
-                 Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>const CurvedImageScreen2(),
-        ),
-      );
-              },
-              ),
-
-              SizedBox(height: screenHeight * 0.03),
-              const Divider(),
-              SizedBox(height: screenHeight * 0.015),
-             // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-            ],
+            ),
           ),
         ),
       ),
@@ -471,42 +558,44 @@ Widget _buildTextField(
   double fieldHeight, {
   bool obscureText = false,
   int? maxLength,
+  bool isMPINField = false, // ✅ Add this flag
 }) {
   return SizedBox(
     height: fieldHeight,
     child: TextField(
-              inputFormatters: [
-    FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
- // Blocks " and ,
-  ],
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+      ],
       controller: controller,
-      obscureText: label == "MPIN" ? _isObscured : obscureText, // 🔹 MPIN Visibility Toggle
-      keyboardType: label == "Mobile Number" ? TextInputType.phone : TextInputType.number,
+      obscureText: isMPINField ? _isObscured : obscureText,
+      keyboardType: label == "Mobile Number"
+          ? TextInputType.phone
+          : TextInputType.number,
       maxLength: maxLength,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47)),
-        suffixIcon: label == "MPIN"
+        suffixIcon: isMPINField
             ? IconButton(
-                icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility),
+                icon: Icon(
+                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                ),
                 onPressed: () {
                   setState(() {
-                    _isObscured = !_isObscured; // 🔹 Click చేస్తే టోగుల్ అవుతుంది
+                    _isObscured = !_isObscured;
                   });
                 },
               )
             : null,
-        labelText: label, // 🔹 hintText Badulu labelText
-       // filled: true,
-        //fillColor: Colors.grey[200],
+        labelText: label,
         counterText: "",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-        //  borderSide: BorderSide.none,
         ),
       ),
     ),
   );
 }
+
 
   Widget _buildButton(String text, Color bgColor, Color textColor, double buttonHeight, VoidCallback onPressed) {
     return SizedBox(

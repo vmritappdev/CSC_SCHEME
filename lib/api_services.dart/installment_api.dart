@@ -5,16 +5,20 @@ import 'package:csc/utillity/constant.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Map<String, dynamic>>?> fetchInstallmentDetails(String mobileNumber, String schemeId) async {
-  const url = '$baseUrl/pay_due_details.php';  //'https://vmrdemos.com/csc_scheme/pay_due_details.php'
+  var url = '$baseUrl/pay_due_details.php';  
 
   try {
     final response = await http.post(
-      Uri.parse(url),
-      body: {
+    Uri.parse(url),
+    body: {
         'mobile_no': mobileNumber,
         'scheme_id': schemeId,
       },
     );
+
+
+     print('📬 Response Status Code: ${response.statusCode}');
+    print('📬 Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -31,7 +35,7 @@ Future<List<Map<String, dynamic>>?> fetchInstallmentDetails(String mobileNumber,
 
 // Fetch Balance and Due Days for a given installment
 Future<Map<String, dynamic>?> fetchBalanceAndDays(String schemeId, String month, String year) async {
-  const url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
+  var url = '$baseUrl/fetch_amount.php';  //'https://vmrdemos.com/csc_scheme/fetch_amount.php'
 
   try {
     final response = await http.post(
@@ -45,6 +49,7 @@ Future<Map<String, dynamic>?> fetchBalanceAndDays(String schemeId, String month,
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      print("Installment details fetched: $data");
       return {
         'balance_amount': double.tryParse(data['balance_amount'].toString()),
         'due_days': int.tryParse(data['days'].toString()),

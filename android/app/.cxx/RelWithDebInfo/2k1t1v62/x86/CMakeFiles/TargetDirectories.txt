@@ -1,0 +1,2 @@
+/Users/brahmaiahadigopula/AndroidStudioProjects/vs_code_projects/csc_app/CSC_SCHEME/android/app/.cxx/RelWithDebInfo/2k1t1v62/x86/CMakeFiles/edit_cache.dir
+/Users/brahmaiahadigopula/AndroidStudioProjects/vs_code_projects/csc_app/CSC_SCHEME/android/app/.cxx/RelWithDebInfo/2k1t1v62/x86/CMakeFiles/rebuild_cache.dir

@@ -36,7 +36,7 @@ class AccountService {
       return {'response': 'error', 'message': 'Phone number already used.'};
     }
 
-    const url = "$baseUrl/save_account.php";
+    var url = "$baseUrl/save_account.php";
     final data = {
       'f_name': firstName,
       'l_name': lastName,
