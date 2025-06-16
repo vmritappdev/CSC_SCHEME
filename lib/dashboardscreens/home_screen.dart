@@ -1542,14 +1542,24 @@ void showGoldBottomSheet(BuildContext context) async {
                               return Column(
                                 children: [
                                   AssetTile(
-                                    gifPath: 'assets/images/gif.gif',
-                                    title: "${localization.translate("Scheme")} ${index + 1}",
-                                    amount: "₹${scheme['paid_amount']}",
-                                    percentage: scheme['ms_no'],
-                                    balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
-                                    color: Colors.green,
-                                    value: 0.05,
-                                  ),
+  gifPath: 'assets/images/gif.gif',
+  title: "${localization.translate("Scheme")} ${index + 1}",
+  amount: "₹${scheme['paid_amount']}",
+  percentage: scheme['ms_no'],
+  balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
+
+  // Progress value based on fixed 11 total dues
+  value: (() {
+    const int totalDues = 11;
+    int balance = int.tryParse(scheme['balance_due'].toString()) ?? 0;
+    int paid = totalDues - balance;
+    return (paid / totalDues).clamp(0.0, 1.0);
+  })(),
+
+  // Always green color
+  color: Colors.green,
+)
+,
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: Padding(

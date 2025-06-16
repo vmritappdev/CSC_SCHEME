@@ -1,4 +1,4 @@
-package com.example.scheme
+package    com.vmrits.csc.scheme              
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
