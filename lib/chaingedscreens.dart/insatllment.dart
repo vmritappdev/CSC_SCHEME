@@ -12,7 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -53,15 +53,8 @@ double? paidAmount;
 String? _amountError;
 
 
- final RefreshController _refreshController = RefreshController();
+ //final RefreshController _refreshController = RefreshController();
 
-  void _onRefresh() async {
-   // <-- Load schemes again during refresh
-   _fetchInstallmentDetails();
-   
-   
-  _refreshController.refreshCompleted();
-}
 
 
 
@@ -778,8 +771,8 @@ Color getStatusColor(String? status) {
                   int installmentAmount = double.parse(installments[selectedInstallment]["amount"].toString()).toInt();
                   int balAmount = balanceAmount?.toInt() ?? 0;
                   String paymentStatus = installments[selectedInstallment]["payment_status"].toString();
-                 String countStr = installments[selectedInstallment]['count'].toString();
-                  int count = int.tryParse(countStr) ?? 0;
+                // String countStr = installments[selectedInstallment]['count'].toString();
+                 // int count = int.tryParse(countStr) ?? 0;
                   
                   String finalAmount;
             
@@ -825,7 +818,7 @@ Color getStatusColor(String? status) {
 
 
 
-  void _showInvalidOTPDialog() {
+  void showInvalidOTPDialog() {
   final double screenWidth = MediaQuery.of(context).size.width;
   final double screenHeight = MediaQuery.of(context).size.height;
   final localization = Provider.of<LocalizationProvider>(context);

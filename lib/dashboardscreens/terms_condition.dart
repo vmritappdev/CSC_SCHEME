@@ -5,7 +5,7 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/registationfolder/langvages%20page.dart';
 
-import 'package:csc/registationfolder/langvages.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

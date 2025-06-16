@@ -55,8 +55,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
 
 
 
-final _formKey = GlobalKey<FormState>();
-String? _imageError;
 
 
   String? _paymentType;
@@ -65,16 +63,13 @@ String? _imageError;
 
   final TextEditingController _transactionNumberController = TextEditingController();
   bool _isLoading = false;
-  String? _mobileNumber;
   VerificationResponse? verificationResponse;
   Installment? installment;
   bool _showImageError = false;
 
   
 
-  String _statusMessage = '';
 
-   final bool _isPopupShown = false; 
 
   @override
   void initState() {
@@ -115,7 +110,6 @@ Future<bool> checkInternet() async {
     String? mobileNumber = prefs.getString('phoneNumber');
 
     setState(() {
-      _mobileNumber = mobileNumber;
       _isLoading = true;
     });
 
@@ -157,7 +151,6 @@ Future<bool> checkInternet() async {
   String? mobileNumber = prefs.getString('phoneNumber');
 
   setState(() {
-    _mobileNumber = mobileNumber;
     _isLoading = true;
   });
 
@@ -296,7 +289,7 @@ Future<bool> checkInternet() async {
   // Submit Payment Details
  // Submit Payment Details
 Future<void> _submitDetails() async {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  Provider.of<LocalizationProvider>(context, listen: false);
 
 /*
   if (_transactionNumberController.text.isEmpty) {
@@ -309,7 +302,6 @@ Future<void> _submitDetails() async {
 
   if (_selectedImage == null) {
   setState(() {
-    _statusMessage = localization.translate("Please upload a screenshot of your payment.");
   });
   return;
 }
@@ -332,7 +324,6 @@ Future<void> _submitDetails() async {
 
   setState(() {
     _isLoading = true;
-    _statusMessage = '';
   });
 
   try {

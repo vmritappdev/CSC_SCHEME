@@ -3,7 +3,7 @@ import 'dart:io';
 
 
 import 'package:csc/dashboardscreens/home_screen.dart';
-import 'package:csc/editprofile/editscheme.dart';
+
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
@@ -570,7 +570,7 @@ Future<void> fetchAndSaveImage() async {
   required IconData icon,
   required VoidCallback onPressed,
 }) {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  Provider.of<LocalizationProvider>(context, listen: false);
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     child: ElevatedButton.icon(
@@ -601,43 +601,6 @@ Future<void> fetchAndSaveImage() async {
 
 
 
- Future<void> _pickImage1() async {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Take Photo'),
-              onTap: () async {
-                Navigator.pop(context);
-                final picked = await _picker.pickImage(source: ImageSource.camera);
-                if (picked != null) {
-                  setState(() => savedImageUrl = picked.path);
-                }
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from Gallery'),
-              onTap: () async {
-                Navigator.pop(context);
-                final picked = await _picker.pickImage(source: ImageSource.gallery);
-                if (picked != null) {
-                  setState(() => savedImageUrl = picked.path);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _viewImage(BuildContext context) {
     if (savedImageUrl.isEmpty) {

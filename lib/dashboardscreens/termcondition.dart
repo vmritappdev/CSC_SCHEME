@@ -1,7 +1,7 @@
 
 
 
-import 'package:csc/langvage%202.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

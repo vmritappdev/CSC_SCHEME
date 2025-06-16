@@ -40,7 +40,6 @@ class MyScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<MyScreen> {
-  final bool _isExpanded = false;
   final bool _showDetails = false;
   String lastPayDate = '';
   String totalPayAmount = '';
@@ -79,7 +78,7 @@ List<dynamic> salesList = [];
 
   
 
-   final ScrollController _scrollController = ScrollController(); // Scroll controller
+// Scroll controller
   
   bool showClosedScheme = true; // Default UI is visible
   bool isApiCallSuccessful = false; // Track the API call status

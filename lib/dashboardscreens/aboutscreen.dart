@@ -17,7 +17,6 @@ class AboutUsScreen extends StatefulWidget {
 class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
-    final isSmall = MediaQuery.of(context).size.width < 600;
     final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
     return Scaffold(
@@ -143,7 +142,7 @@ floatingActionButton: FloatingActionButton.extended(
           localization.translate("Join Scheme"),
           style: GoogleFonts.lato(color: Colors.white,fontSize: 18),
         ),
-       // icon: const Icon(Icons.add, color: Colors.white),
+       
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -240,7 +239,7 @@ floatingActionButton: FloatingActionButton.extended(
       child: Row(
         children: [
           const Text("•", style: TextStyle(fontSize: 18, color: Colors.teal)),
-         // Text("✅", style: TextStyle(fontSize: 18, color: Colors.teal)),
+        
           const SizedBox(width: 6),
           Expanded(
             child: Text(

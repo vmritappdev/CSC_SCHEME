@@ -1,6 +1,6 @@
 import 'package:csc/dashboardscreens/terms_condition.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/loginfolder/loginscreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -148,22 +148,11 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2> {
 
 
 
-  Future<void> _navigateBasedOnCondition() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-
-    if (!isFirstTime) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen1()),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final theme = Theme.of(context);
+    Theme.of(context);
 
     return SafeArea(
       child: Scaffold(

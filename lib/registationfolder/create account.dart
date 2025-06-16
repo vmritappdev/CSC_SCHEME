@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:async'; // Import for async operations
-import 'dart:io';
+
 
 
 
@@ -58,7 +58,7 @@ class _CurvedImageScreen2State extends State<CurvedImageScreen2> {
   final TextEditingController _controllerLastName = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController _controlleremail = TextEditingController();
-  String _message = ''; // Message to show after submission
+// Message to show after submission
    String? previousPhoneNumber;
 
    Future<void> _checkSavedPhoneNumber() async {
@@ -266,9 +266,6 @@ Future<void> submitForm() async {
         print('Response Data: $responseData');
 
         setState(() {
-          _message = responseData['response'] == 'success'
-              ? 'Success: ${responseData['message']}'
-              : 'Error: ${responseData['message']}';
         });
 
         if (responseData['response'] == 'success') {
@@ -516,7 +513,6 @@ Future<void> submitForm() async {
     
   }) {
      final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),

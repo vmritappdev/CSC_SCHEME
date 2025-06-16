@@ -187,7 +187,6 @@ Future<void> _fetchNotificationCount() async {
    int selectedIndex = 0;
     bool isButtonClicked = false;
   bool isProcessComplete = false;
-   final bool _isPopupShown = false; 
 
     final List<String> images = [
     'assets/images/jewe2.jpg',
@@ -199,7 +198,6 @@ Future<void> _fetchNotificationCount() async {
    int activeIndex = 0;
    String errorMessage = '';
    
-    final String _selectedLanguage = 'తె';
 
 
      String firstName = '';  // Default value for first name
@@ -214,60 +212,6 @@ Future<void> _fetchNotificationCount() async {
   }
 
 
-  void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
   // Submit form and send data to API
  
@@ -294,16 +238,12 @@ Future<String?> getMobileNumber() async {
 
 bool _popupShown = false; // To track if popup is already shown
 
-Timer? _notificationTimer;
 void _startPolling() {
   if (!_isPolling) return; // ✅ Stop if polling is off
 
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
       await _fetchVerificationResponse();
-       _notificationTimer = Timer.periodic(Duration(seconds: 15), (timer) {
-    _fetchNotificationCount();
-  });
     
       _startPolling(); // Continue polling
     }
@@ -313,13 +253,12 @@ void _startPolling() {
 
 
 bool _isPolling = true; // Flag to control polling
-bool _isPollingStarted = false;
 
 @override
 void dispose() {
   _isPolling = false; // Stop polling when the widget is disposed
   super.dispose();
-   _isPollingStarted = false; // ఫ్లాగ్ రీసెట్ చేయండి
+// ఫ్లాగ్ రీసెట్ చేయండి
 }
 
 
@@ -366,15 +305,6 @@ Future<void> _fetchVerificationResponse() async {
           // However, you're dealing with a POST request so you may want to validate or use this response later.
 
           // ✅ Create Activescheme Object with new schemeId if you need to use it
-          Activescheme activescheme = Activescheme.customparams(
-            schemeID: responseSchemeId,
-            amountRs: data['amount'],
-            month: data['month'],
-            year: data['year'], payId: '',rejectId: '',
-            balanceAmount: '',
-            installmentAmount: ''
-           
-          );
 
           // Debugging the process and message
           print("Process: ${verificationResponse.process}");
@@ -518,11 +448,6 @@ Future<void> closePopupAPI() async {
     
   _startPolling();
   
-    @override
-void dispose() {
-  _notificationTimer?.cancel(); // Important to avoid memory leaks
-  super.dispose();
-}
     
     //closePopupAPI();
     
@@ -623,9 +548,7 @@ void dispose() {
 
  
     
-      final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    const double padding = 2.0;
 
     
 
@@ -1516,49 +1439,6 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
       );
 
 
-   Widget _buildBottomNavItem(String assetPath, String labelKey, int index, Widget screen) {
-  final isSelected = selectedIndex == index;
-  final color = isSelected ? const Color.fromRGBO(4, 18, 142, 1) : Colors.grey;
-  final localization = Provider.of<LocalizationProvider>(context);
-
-  return InkWell(
-    onTap: () {
-      setState(() {
-        selectedIndex = index;
-      });
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => screen),
-      ).then((_) {
-        // Back చేసినపుడు Home (index 0) select అవ్వాలి
-        setState(() {
-          selectedIndex = 0;
-        });
-      });
-    },
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          assetPath,
-          color: color,
-          width: 30,
-          height: 30,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          localization.translate(labelKey),
-          style: GoogleFonts.montserrat(
-            color: color,
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    ),
-  );
-}
 
 
 
@@ -1607,12 +1487,12 @@ void showGoldBottomSheet(BuildContext context) async {
         context: currentContext,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (BuildContext context) {
           return WillPopScope(
             onWillPop: () async {
-              isBottomSheetOpen = false;
+            isBottomSheetOpen = false;
               return true;
             },
             child: SafeArea(

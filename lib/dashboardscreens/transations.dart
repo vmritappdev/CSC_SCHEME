@@ -252,8 +252,8 @@ Future<void> _fetchPayDetails(String id) async {
 
     
 
-    final double left = budget - spent; // Remaining amount
-    final double progress = spent / budget; // Progress calculation
+// Remaining amount
+// Progress calculation
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
@@ -445,9 +445,6 @@ Future<void> _fetchPayDetails(String id) async {
                 final transaction = transactions[index];
                 final amount = transaction['amount'];
                 final status = transaction['status'];
-                 final remark = transaction['remark'];
-                 final time = transaction['time'];
-                  final regId = transaction['reg_id'];
                  
                           final statusColor = status == 'Completed'
                     ? Colors.green
@@ -969,7 +966,7 @@ IconData getStatusIcon(String status) {
 }
 
 Color getStatusIconColor(String status) {
-  final localization = Provider.of<LocalizationProvider>(context);
+  Provider.of<LocalizationProvider>(context);
   switch (status.toLowerCase()) {
     case 'processing':
       return Colors.orange;

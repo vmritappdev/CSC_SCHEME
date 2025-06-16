@@ -216,28 +216,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
 
 
-  DateTime _combineDateAndTime(String date, String time) {
-  try {
-    // date string -> DateTime
-    DateTime parsedDate = DateTime.parse(date);
-
-    // time string assumed as "HH:mm" లేదా "H:mm" format లో ఉంటుందని assume చేస్తున్నాం
-    List<String> timeParts = time.split(':');
-    int hour = int.parse(timeParts[0]);
-    int minute = int.parse(timeParts[1]);
-
-    // Combine date + time
-    return DateTime(
-      parsedDate.year,
-      parsedDate.month,
-      parsedDate.day,
-      hour,
-      minute,
-    );
-  } catch (e) {
-    return DateTime.now(); // fallback
-  }
-}
 
 
 String formatNotificationDateWithIST(DateTime dateTime) {

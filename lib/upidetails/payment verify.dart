@@ -261,10 +261,9 @@ String processTimer(String remaingtimer) {
           return Text(localization.translate("Time's up!"));
         } else {
           // మాన్యువల్‌గా 48 గంటల కౌంట్‌ను కలిక్యులేట్ చేయడం
-          final totalSeconds = (time.days ?? 0) * 24 * 60 * 60 + (time.hours ?? 0) * 60 * 60 + (time.min ?? 0) * 60 + (time.sec ?? 0);
-          final hours = (totalSeconds ~/ 3600); // మొత్తం గంటలు
-          final minutes = (totalSeconds % 3600) ~/ 60; // మిగతా నిమిషాలు
-          final seconds = totalSeconds % 60; // మిగతా సెకన్లు
+// మొత్తం గంటలు
+// మిగతా నిమిషాలు
+// మిగతా సెకన్లు
         
           return Container(
             width: screenWidth * 0.3,

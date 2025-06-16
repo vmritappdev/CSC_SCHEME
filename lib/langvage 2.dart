@@ -35,15 +35,7 @@ class _Lang10State extends State<Lang10> {
 
   String selectedLanguageCode = "en";
 
-  Future<void> _savePhoneNumber(String phoneNumber) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('phoneNumber', phoneNumber);
-}
 
-Future<String?> _getPhoneNumber() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('phoneNumber');
-}
 
   @override
   void initState() {

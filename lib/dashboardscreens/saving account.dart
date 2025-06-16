@@ -477,39 +477,6 @@ Future<bool> checkInternet() async {
   }
 
 
-  void _showErrorPopup(String message, Widget nextScreen) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        title: Text(
-          "Error",
-          style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          message,
-          style: GoogleFonts.lato(fontSize: 16),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close the dialog
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => nextScreen), // Open new screen
-              );
-            },
-            child: const Text("OK", style: TextStyle(color: Colors.blue)),
-          ),
-        ],
-      );
-    },
-  );
-}
 
 
    Widget _buildStepItem(String title, bool isComplete, bool isLast,BuildContext context) {

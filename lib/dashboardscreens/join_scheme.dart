@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csc/api_services.dart/ifsc_codeapi.dart';
-import 'package:csc/api_services.dart/pincode_api.dart';
+
 import 'package:csc/api_services.dart/scheme_fetchdetails.dart';
 import 'package:csc/api_services.dart/scheme_submitform.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -56,7 +56,6 @@ class Jionscheme2 extends StatefulWidget {
 
 class _Jionscheme2State extends State<Jionscheme2> {
 
-   late ScrollController _scrollController;
    bool isButtonVisible = true;
    bool isAdharReadOnly = false;
    bool isPanReadOnly = false;
@@ -182,7 +181,6 @@ class _Jionscheme2State extends State<Jionscheme2> {
  File? _adharImage; // Adhar image
 File? _panImage;   // PAN image
  File? _nomineeadharImage;
-final ImagePicker _picker = ImagePicker();
 
 Future<void> _pickImage(int containerNumber) async {
   final pickedOption = await showDialog<ImageSource>(
@@ -294,8 +292,7 @@ final FocusNode _ifscFocusNode = FocusNode();
 
 
 
-   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       // When app is paused (closed or moved to background), clear other fields and only keep the firstName
       _saveSharedPreferences();
@@ -524,21 +521,6 @@ setState(() {
 
 
 
-Future<void> _getImage(ImageSource source, bool isPanCard) async {
-  final pickedFile = await ImagePicker().pickImage(source: source);
-  if (pickedFile != null) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      } else {
-        adharImage = pickedFile.path;
-        prefs.setString('adharImage', pickedFile.path);
-      }
-    });
-  }
-}
 
 
 
@@ -1988,20 +1970,6 @@ Widget buildRow4(){
   }
 }
 
-void _onIfscChanged(String ifsc) {
-  setState(() {
-    ifscError = null;
-  });
-
-  if (ifsc.length < 11) {
-    setState(() {
-      bankNameController.clear();
-      branchLocationController.clear();
-    });
-  } else if (ifsc.length == 11) {
-    fetchBankDetails(ifsc.toUpperCase());
-  }
-}
 
 
 
@@ -2333,7 +2301,7 @@ Widget _buildTextField1({
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: selectedImage != null
-                                  ? Image.file(selectedImage!)
+                                  ? Image.file(selectedImage)
                                   : Image.network(adharImage!, fit: BoxFit.cover),
                             ),
                             Positioned(
@@ -2629,7 +2597,7 @@ Widget _buildTextField2({
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: selectedImage != null
-                                  ? Image.file(selectedImage!)
+                                  ? Image.file(selectedImage)
                                   : Image.network(panImage!, fit: BoxFit.cover),
                             ),
                             Positioned(
@@ -2705,110 +2673,6 @@ Widget _buildTextField2({
 
 
 
-void _showSuccessPopup(BuildContext context, activescheme) {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
-
-  showDialog(
-    context: context,
-    barrierDismissible: true, // Tap cheste close avvadam
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
-      contentPadding: const EdgeInsets.all(20), // Better padding
-      content: Column(
-        mainAxisSize: MainAxisSize.min, // Small popup size maintain cheyyadam
-        children: [
-          // Lottie Animation
-          SizedBox(
-            height: 60, // Smaller animation size
-            width: 60,
-            child: Lottie.asset(
-              'assets/images/suc.json',
-              fit: BoxFit.cover,
-            ),
-          ), 
-          const SizedBox(height: 10),
-          Text(
-            localization.translate('Congratulations!'),
-            style: const TextStyle(
-              fontSize: 18, 
-              fontWeight: FontWeight.bold,
-              color: Colors.green, 
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            localization.translate("Your Scheme Registration Was Completed Successfully."),
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black87, fontSize: 14), 
-          ),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: () async {
-              // Save mobile number and join scheme
-              await saveMobileNumber(_phoneController.text);
-              await _saveSharedPreferences();
-              
-
-              // Clear all controllers
-              setState(() {
-                dobController.clear();
-                doorNoController.clear();
-                address1Controller.clear();
-                address2Controller.clear();
-                cityController.clear();
-                pincodeController.clear();
-                adharController.clear();
-                panController.clear();
-                referralController.clear();
-                bankNameController.clear();
-                holderNameController.clear();
-                accountNoController.clear();
-                ifscCodeController.clear();
-                branchLocationController.clear();
-                nomineeNameController.clear();
-                nomineeMobileController.clear();
-
-                selectedAmount = null;
-                selectedCountry = null;
-                selectedDate = null;
-                selectedDistrict = null;
-                selectedNomineeRelation = null;
-                selectedState = null;
-              });
-
-              // Close the popup
-              Navigator.pop(context);
-
-              
-
-              // Navigate to UPIDetailsScreen
-             Navigator.pushReplacement(
-              context,
-           MaterialPageRoute(
-          builder: (context) => Scanner(activescheme: Activescheme(),rejectId: schemeId,),
-          ),
-           );
-
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green, // Green button
-              foregroundColor: Colors.white, // White text
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              localization.translate("Okay"),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/loginfolder/loginotp.dart';
+
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
@@ -42,11 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   final LocalAuthentication auth = LocalAuthentication();
   String _pin = '';
   bool _isSuccess = false;
-  bool _isError = false;
-  bool _showFingerprint = false;
   String errorMessage = '';
-  bool _isBiometricAvailable = false;
-  final bool _isPinVisible = false;
 
   String firstName = '';
 String lastName = '';
@@ -125,26 +121,6 @@ final String correctMpin = "1234"; // Example correct MPIN
     
   }
 
-  void _validateMpin() {
-  String enteredPin = _enteredMpin.join();
-
-  if (enteredPin == correctMpin) {
-    // Correct MPIN
-    print("MPIN correct");
-    // Proceed to next step
-  } else {
-    // Wrong MPIN
-    print("Wrong MPIN");
-
-    // Clear MPIN
-    setState(() {
-      _enteredMpin.clear();
-    });
-
-    // Optionally, error popup kuda chupinchavachu
-   // _showErrorDialog();
-  }
-}
 
 
   void _onKeyTap(String value) {
@@ -163,8 +139,6 @@ void _validatePin() async {
 
   setState(() {
     _isSuccess = false;
-    _isError = false;
-    _showFingerprint = false;
   });
 
   bool isSuccess = await _submitMpinToServer(_pin);
@@ -172,8 +146,6 @@ void _validatePin() async {
   if (isSuccess) {
     setState(() {
       _isSuccess = true;
-      _isError = false;
-      _showFingerprint = _isBiometricAvailable;
       errorMessage = ''; // <<< Correct MPIN ayite error message empty cheyyadam
     });
 
@@ -186,7 +158,6 @@ void _validatePin() async {
 
   } else {
     setState(() {
-      _isError = true;
       errorMessage = localization.translate('Invalid MPIN. Please try again.');
       _pin = ''; // wrong ayite pin clear cheyyadam
     });
@@ -205,21 +176,11 @@ void _validatePin() async {
 
 
   Future<void> _checkBiometricAvailability() async {
-    bool canCheckBiometrics = await auth.canCheckBiometrics;
     setState(() {
-      _isBiometricAvailable = canCheckBiometrics;
     });
   }
 
 
-  void _startAuthentication() async {
-  bool isAuthenticated = await authenticate();
-  if (isAuthenticated) {
-    // Authentication success logic
-  } else {
-    // Authentication failed logic
-  }
-}
 
 Future<bool> authenticate() async {
   final LocalAuthentication auth = LocalAuthentication();
@@ -271,60 +232,6 @@ Future<void> _authenticateUser() async {
 
 
 
-  void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
   // Submit form and send data to API
  

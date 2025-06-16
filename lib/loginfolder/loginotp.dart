@@ -14,7 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:pinput/pinput.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,7 +26,6 @@ class LoginOtpScreen extends StatefulWidget {
 class _LoginOtpScreenState extends State<LoginOtpScreen> {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
   bool isOtpSent = false;
   bool isLoading = false;

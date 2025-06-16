@@ -249,9 +249,9 @@ Future<bool> checkInternet() async {
   @override
   Widget build(BuildContext context) {
       final localization = Provider.of<LocalizationProvider>(context);
-     bool isSmallScreen = ScreenUtils.isSmallScreen(context);
-    bool isLargeScreen = ScreenUtils.isLargeScreen(context);
-    bool isMediumScreen = ScreenUtils.isMediumScreen(context);
+     ScreenUtils.isSmallScreen(context);
+    ScreenUtils.isLargeScreen(context);
+    ScreenUtils.isMediumScreen(context);
 
 
     return SafeArea(

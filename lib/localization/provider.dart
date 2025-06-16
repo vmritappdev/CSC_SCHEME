@@ -35,7 +35,6 @@ class AuthProvider with ChangeNotifier {
     // Here you can add your sign-in logic, like API calls
 
     // For demonstration, assume successful login
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     _isLoggedIn = true;
     _phoneNumber = phoneNumber; // Retrieve other user data if needed
     notifyListeners();

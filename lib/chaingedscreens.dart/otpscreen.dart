@@ -52,11 +52,10 @@ class _OtpScreenState extends State<OtpScreen> {
   bool isOtpMessageReceived = false; // ✅ OTP Message వచ్చిన తర్వాత Auto‑Fill/Manual Entry కోసం
 
   DateTime otpReceivedTime = DateTime.now();
-  bool _isLoading = false; // Control loading screen
+// Control loading screen
 
   int timerSeconds = 30;
   bool _isResendAvailable = false;
-  bool _isOtpVisible = false;
 
   /// No need for lists now, so remove focus traversal logic
 
@@ -66,7 +65,7 @@ class _OtpScreenState extends State<OtpScreen> {
     super.dispose();
   }
 
-  /// OTP Auto‑Fill SMS vachinappudu Ee Method Call Avutundi
+  
   void codeUpdated(String? otpCode) {
     if (otpCode != null && otpCode.isNotEmpty) {
       setState(() {
@@ -97,7 +96,7 @@ class _OtpScreenState extends State<OtpScreen> {
   void _showInvalidOTPDialog(String message) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final localization = Provider.of<LocalizationProvider>(context, listen: false);
+    Provider.of<LocalizationProvider>(context, listen: false);
 
     showDialog(
       context: context,
@@ -175,7 +174,6 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     setState(() {
-      _isLoading = true;
       isOtpMessageReceived = false;
     });
 
@@ -184,15 +182,12 @@ class _OtpScreenState extends State<OtpScreen> {
       setState(() {
         receivedOtp = responseData['otp'].toString();
         otpReceivedTime = DateTime.now();
-        _isLoading = false;
-        _isOtpVisible = true;
         isOtpMessageReceived = true;
         _isResendAvailable = false;
         timerSeconds = 30;
       });
       _startResendTimer();
     } else {
-      setState(() => _isLoading = false);
     }
   }
 

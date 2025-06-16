@@ -45,7 +45,7 @@ class EditMPINScreen extends StatefulWidget {
 
   Timer? _resendTimer;
   Timer? _otpExpireTimer;
-  int _otpExpireSeconds = 600; // 10 minutes
+// 10 minutes
 
   @override
   void initState() {
@@ -163,8 +163,8 @@ class EditMPINScreen extends StatefulWidget {
   final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
   if (_isOtpExpired) {
-    _controllerOtp.clear();            // ⬅️ clear Pinput
-    FocusScope.of(context).requestFocus(_pinFocusNode); // optional
+    _controllerOtp.clear();            
+    FocusScope.of(context).requestFocus(_pinFocusNode); 
     _showInvalidOTPDialog(
       localization.translate("⏰ OTP expired. Please resend a new OTP."),
     );
@@ -177,15 +177,15 @@ class EditMPINScreen extends StatefulWidget {
       MaterialPageRoute(builder: (_) => const CreateMpinScreen5()),
     );
   } else {
-    _controllerOtp.clear();            // ⬅️ clear Pinput
-    FocusScope.of(context).requestFocus(_pinFocusNode); // optional
+    _controllerOtp.clear();            
+    FocusScope.of(context).requestFocus(_pinFocusNode); 
     _showInvalidOTPDialog(
       localization.translate("❌ Invalid OTP. Please try again."),
     );
   }
 }
 void _onResendOtp() {
-    final localization = Provider.of<LocalizationProvider>(context,listen: false);
+    Provider.of<LocalizationProvider>(context,listen: false);
   if (_isResendAvailable) {
     setState(() {
       _isResendAvailable = false;
@@ -201,7 +201,7 @@ void _onResendOtp() {
 }
 
   void _showInvalidOTPDialog(String message) {
-      final localization = Provider.of<LocalizationProvider>(context,listen: false);
+      Provider.of<LocalizationProvider>(context,listen: false);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -304,7 +304,7 @@ void _onResendOtp() {
   onChanged: (value) {
     if (value.length == 6) {
       print("OTP entered: $value");
-      // Trigger your OTP verification or open bottom sheet here
+     
     }
   },
 ),

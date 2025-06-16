@@ -8,7 +8,7 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/dashboardscreens/terms_condition.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/loginfolder/forgotscreen%202.dart';
+
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/registationfolder/create%20account.dart';
@@ -30,11 +30,9 @@ class LoginScreen1 extends StatefulWidget {
 }
 
 class _LoginScreen1State extends State<LoginScreen1> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController mpinController = TextEditingController();
   String errorMessage = '';
-   final String _message = '';
 bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి

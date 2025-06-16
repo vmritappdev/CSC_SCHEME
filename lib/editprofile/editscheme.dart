@@ -14,7 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,60 +114,6 @@ String regId = '';        // Holds Registration ID
 
 
 
-   void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
 
 Future<bool> checkInternet() async {
@@ -422,57 +368,12 @@ Future<void> fetchSchemeDetails() async {
   setState(() => isLoading = false);
 }
 
-  /// **🔹 ఇమేజ్ పికర్ & SharedPreferences లో స్టోర్ చేయడం**
- Future<void> _pickImage(bool isPanCard) async {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.camera),
-            title: const Text('Camera'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.camera, isPanCard);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.image),
-            title: const Text('Gallery'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.gallery, isPanCard);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
 
-Future<void> _getImage(ImageSource source, bool isPanCard) async {
-  final pickedFile = await ImagePicker().pickImage(source: source);
-  if (pickedFile != null) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      } else {
-        adharImage = pickedFile.path;
-        prefs.setString('adharImage', pickedFile.path);
-      }
-    });
-  }
-}
 
   @override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text(localization.translate("Edit Scheme",),

@@ -13,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/timezone.dart';
+
 
 void main() {
   runApp(
@@ -398,60 +398,11 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
     setState(() => isLoading = false);
   }
 
-  /// **🔹 ఇమేజ్ పికర్ & SharedPreferences లో స్టోర్ చేయడం**
- Future<void> _pickImage(bool isPanCard) async {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return Wrap(
-        children: [
-          ListTile(
-            leading: Icon(Icons.camera),
-            title: Text('Camera'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.camera, isPanCard);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.image),
-            title: Text('Gallery'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.gallery, isPanCard);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
 
- Future<void> _getImage(ImageSource source, bool isPanCard) async {
-  final pickedFile = await ImagePicker().pickImage(source: source);
-  if (pickedFile != null) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      } else {
-        nomineeImage = pickedFile.path;
-        prefs.setString('nomineeImage', pickedFile.path);
-      }
-       if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      }
-    });
-  }
-}
   @override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
       style: TextStyle(color: Colors.white),
@@ -822,7 +773,7 @@ Widget _buildTextField(
   bool isRequired = false,
   String? errorMessage, // 👈 New parameter
 }) {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  Provider.of<LocalizationProvider>(context, listen: false);
 
   return Padding(
     padding: EdgeInsets.symmetric(

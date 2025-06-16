@@ -2,7 +2,7 @@
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
-import 'package:csc/registationfolder/create%20account.dart';
+
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';

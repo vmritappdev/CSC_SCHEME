@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(
@@ -49,6 +50,17 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
       lastName = prefs.getString('lastName') ?? "Name";
     });
   }
+
+
+ void openPrivacyPolicy() async {
+  final Uri url = Uri.parse('https://cscjewellers.com/privacy_policy.php');
+  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Unable to open link")),
+    );
+  }
+}
+
 
 
 Future<void> logout() async {
@@ -165,6 +177,15 @@ Future<void> logout() async {
            buildMenuTile("assets/images/logout.png", localization.translate("LogOut"), () {
          logout();
           }),
+
+
+
+         ListTile(
+  leading: Icon(Icons.privacy_tip, color: Colors.blue),
+  title: Text("Privacy & Policy", style: GoogleFonts.lato(fontSize: 14)),
+  onTap: openPrivacyPolicy,
+),
+
         ],
       ),
     );

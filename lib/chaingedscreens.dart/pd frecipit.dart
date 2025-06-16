@@ -34,7 +34,7 @@ class ReceiptPDFGenerator {
           final rawDate = data['date'];
     final parsedDate = DateTime.tryParse(rawDate ?? '');
     final formattedDate = parsedDate != null
-        ? DateFormat('dd MMM yyyy').format(parsedDate) // eg. 29 May 2025
+        ? DateFormat('dd MMM yyyy').format(parsedDate) 
         : rawDate;
           return {
             'amount': data['amount'] ?? "Unknown",
@@ -79,7 +79,7 @@ class ReceiptPDFGenerator {
     const accentColor = PdfColor.fromInt(0xFFE74C3C); // Red
     const secondaryColor = PdfColor.fromInt(0xFFF5F7FA); // Light grey
     const textColor = PdfColor.fromInt(0xFF34495E); // Dark grey-blue
-    const highlightColor = PdfColor.fromInt(0xFF3498DB); // Blue
+// Blue
 
     pdf.addPage(
       pw.Page(
@@ -315,10 +315,10 @@ class ReceiptPDFGenerator {
 
         
         pw.Container(
-          width: 130, // same width as labels, but on right side
+          width: 130, 
           child: pw.Text(
             value,
-            textAlign: pw.TextAlign.left, // 👈 this is key
+            textAlign: pw.TextAlign.left, 
             style: pw.TextStyle(
               fontSize: 11,
               fontWeight:
