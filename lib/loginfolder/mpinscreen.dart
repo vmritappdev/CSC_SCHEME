@@ -312,7 +312,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? mobileNumber = prefs.getString('phoneNumber');
+    String? mobileNumber = prefs.getString('userPhoneNumber');
 
     if (mobileNumber == null || mobileNumber.isEmpty) {
       setState(() {
@@ -341,6 +341,8 @@ Future<void> _submitForm(LocalizationProvider localization) async {
       print('Decoded JSON response: $jsonResponse');
 
       if (jsonResponse['response'] == 'success') {
+        SharedPreferences prefs = await SharedPreferences.getInstance();          
+          await prefs.setString('userMpin', 'true');
         return true;
       } else {
         setState(() {

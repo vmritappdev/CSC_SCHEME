@@ -54,7 +54,7 @@ class _OtpScreenState extends State<OtpScreen> {
   DateTime otpReceivedTime = DateTime.now();
 // Control loading screen
 
-  int timerSeconds = 30;
+  int timerSeconds = 60;
   bool _isResendAvailable = false;
 
   /// No need for lists now, so remove focus traversal logic
@@ -85,7 +85,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Future<void> loadUserDetails() async {
     final prefs = await SharedPreferences.getInstance();
-    phoneNumber = prefs.getString('phoneNumber') ?? "";
+    phoneNumber = prefs.getString('userPhoneNumber') ?? "";
   }
 
   String maskPhoneNumber(String phoneNumber) {
@@ -184,98 +184,266 @@ class _OtpScreenState extends State<OtpScreen> {
         otpReceivedTime = DateTime.now();
         isOtpMessageReceived = true;
         _isResendAvailable = false;
-        timerSeconds = 30;
+        timerSeconds = 60;
       });
       _startResendTimer();
     } else {
     }
   }
 
-  void showProceedBottomSheet(BuildContext context) {
-    final localization = context.read<LocalizationProvider>();
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: false,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(0, -4),
-                    blurRadius: 16,
-                    color: Color(0x14000000),
-                  ),
-                ],
+
+
+  showProceedBottomSheet(BuildContext context) {
+  final localization = context.read<LocalizationProvider>();
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: false,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              border: Border.all(
+                color: Theme.of(context).dividerColor.withOpacity(0.1),
+                width: 1,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(colors: [Color.fromARGB(255, 16, 13, 72), Color.fromARGB(255, 16, 13, 72)]),
-                    ),
-                    child: const Icon(Icons.check, size: 32, color: Colors.white),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.18),
+                  blurRadius: 40,
+                  spreadRadius: -10,
+                  offset: const Offset(0, -15),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Premium icon with subtle accent
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF10194E).withOpacity(0.95),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF10194E).withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+
+                      )
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    localization.translate('OTP Verified!'),
-                    style: GoogleFonts.lato(fontSize: 20, fontWeight: FontWeight.w700),
+                  child: const Icon(Icons.verified_outlined, 
+                    size: 36, 
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    localization.translate("Click 'I Have Proceed' to continue."),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lato(fontSize: 14, color: Colors.black87),
+                ),
+                
+                const SizedBox(height: 28),
+                
+                // Elegant typography
+                Text(
+                  localization.translate('OTP Verified!'),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                    letterSpacing: -0.2,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                
+                const SizedBox(height: 12),
+                
+                Text(
+                  localization.translate("Click 'I Have Proceed' to continue."),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    fontSize: 15,
+                    height: 1.5,
+                  ),
+                ),
+                
+                const SizedBox(height: 32),
+                
+                // Professional button with subtle effects
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      navigateToNextScreen();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF10194E),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        navigateToNextScreen();
-                      },
-                      child: Ink(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(colors: [Color.fromARGB(255, 16, 13, 72), Color.fromARGB(255, 16, 13, 72)]),
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                      shadowColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                    ),
+                    child: Text(
+                      localization.translate('Proceed'),
+                      style: GoogleFonts.lato(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ),
+                ),
+                
+                // Additional legal text for professionalism
+                const SizedBox(height: 20),
+                Text(
+                  localization.translate('Secured by AES-256 encryption'),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showStylishSuccessSheet(BuildContext context) {
+  final localization = context.read<LocalizationProvider>();
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withOpacity(0.4),
+    builder: (context) {
+      return SafeArea(
+        top: false,
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Main Bottom Sheet
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(24, 72, 24, 32), // top: 72 for space under icon
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(28),
+                topRight: Radius.circular(28),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Verification Successful!',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      localization.translate("Your OTP has been verified successfully. You may now proceed."),
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        height: 1.6,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 45,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          navigateToNextScreen();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4CAF50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 4,
                         ),
-                        child: Center(
-                          child: Text(
-                            localization.translate('Proceed'),
-                            style: GoogleFonts.lato(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                        child: Text(
+                          localization.translate('Continue'),
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                   
+                  ],
+                ),
               ),
-            ),
+
+              // Floating Success Icon (No margin, use Positioned)
+              Positioned(
+                top: -25, // move up outside the sheet
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    width: 55,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF4CAF50), Color(0xFF81C784)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.green.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.check_circle_outline,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   void navigateToNextScreen() {
     Navigator.pushReplacement(
@@ -303,7 +471,7 @@ class _OtpScreenState extends State<OtpScreen> {
     }
 
     if (enteredOtp == receivedOtp) {
-      showProceedBottomSheet(context);
+      showStylishSuccessSheet(context);
     } else {
       _showInvalidOTPDialog(localization.translate("Incorrect OTP, please try again"));
       otpController.clear();
@@ -332,7 +500,7 @@ class _OtpScreenState extends State<OtpScreen> {
     if (_isResendAvailable) {
       setState(() {
         _isResendAvailable = false;
-        timerSeconds = 30;
+        timerSeconds = 60;
         otpController.clear();
         FocusScope.of(context).unfocus();
       });
@@ -407,12 +575,12 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                   ],
                 ),
-                Text(localization.translate("Enter OTP")),
+                Text(localization.translate("Enter OTP Here")),
                 SizedBox(height: screenHeight * 0.02),
 
                 /// -------------------- SINGLE OTP TEXTFIELD -------------------
                 SizedBox(
-                  width: screenWidth * 0.7,
+                  width: screenWidth * 0.8,
                   child: TextField(
                     controller: otpController,
                     enabled: isOtpMessageReceived,

@@ -698,12 +698,15 @@ localization.translate('CSC App'),
         color: Colors.white,
         size: MediaQuery.of(context).size.width * 0.05,
       ),
-      SizedBox(width: 4), // Spacing between icon and text
-      Text(
-        'EN', // or use Provider.of<LocalizationProvider>(context).languageCode
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: MediaQuery.of(context).size.width * 0.05,
+      SizedBox(width: 3), // Spacing between icon and text
+      Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: Text(
+          'EN', // or use Provider.of<LocalizationProvider>(context).languageCode
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: MediaQuery.of(context).size.width * 0.04,
+          ),
         ),
       ),
     ],

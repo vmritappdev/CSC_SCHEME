@@ -80,6 +80,9 @@ class _CurvedImageScreen2State extends State<CurvedImageScreen2> {
 Future<void> savePhoneNumber(String mobileNumber) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userPhoneNumber', mobileNumber);
+   // await prefs.reload();  // ✅ Ensures the latest value is stored
+
+    await prefs.setString('userMpin', 'false');
     await prefs.reload();  // ✅ Ensures the latest value is stored
     
     print("✅ Mobile Number Saved: $mobileNumber");
@@ -92,13 +95,15 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     super.initState();
     loadPhoneNumber();
     _checkSavedPhoneNumber();
+   
+    
   }
 
   // Load phone number from shared preferences
   Future<void> loadPhoneNumber() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? phoneNumber = prefs.getString('userPhoneNumber');
-    phoneController.text = phoneNumber!;
+   // phoneController.text = phoneNumber!;
     }
 
    void _showInvalidOTPDialog(String message) {
@@ -272,7 +277,9 @@ Future<void> submitForm() async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('firstName', _controllerFirstName.text);
           await prefs.setString('lastName', _controllerLastName.text);
+          await prefs.setString('userPhoneNumber', phoneController.text);
           await prefs.setString('phoneNumber', phoneController.text);
+          await prefs.setString('userMpin', 'false');
           await prefs.setString('email', _controlleremail.text);
 
           previousPhoneNumber = phoneController.text;
@@ -344,12 +351,15 @@ Future<void> submitForm() async {
               Text(
                 localization.translate("JEWELLERS"),
                 style: GoogleFonts.lato(
-                  fontSize: screenWidth * 0.05,
+                  fontSize: screenWidth * 0.03,
+                  letterSpacing: 4,
                   fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  color: const Color.fromRGBO(2, 5, 67, 1),
+                  //fontStyle: FontStyle.italic,
+                  color: const Color.fromARGB(255, 7, 10, 72),
                 ),
               ),
+
+              Text('Since 1971',style: TextStyle(fontSize: 8,color: const Color.fromARGB(255, 7, 10, 72),fontWeight: FontWeight.bold),)
             ],
           ),
         ),

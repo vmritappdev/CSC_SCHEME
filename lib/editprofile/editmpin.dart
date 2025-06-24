@@ -39,7 +39,7 @@ class EditMPINScreen extends StatefulWidget {
     
 
 
-  int _timerSeconds = 30;
+  int _timerSeconds = 60;
   String? receivedOtp;
   DateTime? otpSentTime;
 
@@ -113,7 +113,7 @@ class EditMPINScreen extends StatefulWidget {
            _isOtpVisible = true;
           _isOtpVisible = true;
           _isResendAvailable = false;
-          _timerSeconds = 30;
+          _timerSeconds = 60;
           otpSentTime = DateTime.now();
           _isOtpExpired = false;
         });
@@ -189,7 +189,7 @@ void _onResendOtp() {
   if (_isResendAvailable) {
     setState(() {
       _isResendAvailable = false;
-      _timerSeconds = 30;
+      _timerSeconds = 60;
 
       // ✅ Clear previous OTP and entered pin
       receivedOtp = null;

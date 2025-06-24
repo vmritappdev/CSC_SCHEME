@@ -1,4 +1,4 @@
-package com.vmrits.csc.scheme 
+package com.example.csc
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -33,7 +33,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   Timer? _otpTimer;
   Timer? _resendTimer;
   int _otpExpireSeconds = 600; // 10 minutes
-  int _resendWaitSeconds = 30;
+  int _resendWaitSeconds = 60;
   bool canResend = false;
 
   final _pinFocus = FocusNode();   // optional, keyboard open ఉన్నట్టే ఉంటుంది
@@ -118,7 +118,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
 
   void startResendTimer() {
     _resendTimer?.cancel();
-    _resendWaitSeconds = 30;
+    _resendWaitSeconds = 60;
     _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() => _resendWaitSeconds--);
       if (_resendWaitSeconds <= 0) {

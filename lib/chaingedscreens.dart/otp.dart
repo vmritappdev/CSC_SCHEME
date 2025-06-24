@@ -19,7 +19,7 @@ class OtpScreen1 extends StatefulWidget {
 
 class _OtpScreen1State extends State<OtpScreen1> {
   final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  List.generate(6, (_) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
   late SharedPreferences prefs;
   String phoneNumber = '';

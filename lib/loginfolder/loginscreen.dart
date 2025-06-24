@@ -43,8 +43,10 @@ Future<void> _checkSavedPhoneNumber() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.reload(); // Ensure the latest data is fetched
   String? savedPhoneNumber = prefs.getString('userPhoneNumber');
+  String? savedMpin = prefs.getString('userMpin');
 
-  if (savedPhoneNumber!.length == 10) {
+
+  if (savedPhoneNumber!.length == 10 && savedMpin == "true") {
     print("✅ Mobile Number Found: $savedPhoneNumber");
 
     // Navigate directly to the HomeScreen
@@ -64,6 +66,7 @@ Future<void> _checkSavedPhoneNumber() async {
 Future<void> savePhoneNumber(String mobileNumber) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userPhoneNumber', mobileNumber);
+    await prefs.setString('userMpin', 'true');
     await prefs.reload();  // ✅ Ensures the latest value is stored
     
     print("✅ Mobile Number Saved: $mobileNumber");
