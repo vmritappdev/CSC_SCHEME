@@ -19,7 +19,7 @@ void main() {
 }
 
 class Lang10 extends StatefulWidget {
-  const Lang10({super.key});
+const Lang10({super.key});
 
   @override
   _Lang10State createState() => _Lang10State();

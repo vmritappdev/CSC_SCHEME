@@ -109,14 +109,15 @@ void dispose() {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.1),
+            SizedBox(height: screenHeight * 0.1),
               Center(
                 child: Image.asset(
-                  'assets/images/mi.png',
+                  'assets/images/mpin9.png',
                   height: screenHeight * 0.3,
+                 // width: 20,
                 ),
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.03),
             Padding(
   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1), // Dynamic Padding
   child: Align(
@@ -135,6 +136,7 @@ void dispose() {
              // MPIN field
 buildPinput(
   controller: _mpinController,
+  obscureText: true,
   onChanged: (value) {
     print('mpin changed: "$value"');
     setState(() {
@@ -163,6 +165,7 @@ buildPinput(
               SizedBox(height: screenHeight * 0.02),
 buildPinput(
   controller: _confirmMpinController,
+  obscureText: false,
   onChanged: (value) {
     print('confirmMpin changed: "$value"');
     setState(() {
@@ -223,12 +226,23 @@ buildPinput(
 Widget buildPinput({
   required ValueChanged<String> onChanged,
   required TextEditingController controller,
+  bool obscureText = false, // కొత్త parameter
 }) {
   return Padding(
     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.02),
     child: Pinput(
       length: 4,
       controller: controller,
+      obscureText: obscureText, // true అయితే * చూపించు
+      obscuringCharacter: '*',
+      obscuringWidget: Text(
+        '*',
+        style: TextStyle(
+          fontSize: 24,
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       defaultPinTheme: defaultPinTheme,
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
@@ -236,9 +250,11 @@ Widget buildPinput({
         ),
       ),
       onChanged: onChanged,
+      keyboardType: TextInputType.number,
     ),
   );
 }
+
 
 Future<void> _submitForm(LocalizationProvider localization) async {
   String currentMpin = _mpinController.text.trim();
@@ -398,7 +414,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    localization.translate('Create MPIN Successfully'),
+                    localization.translate('Created MPIN Successfully'),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lato(
                       fontSize: fontSize, // Dynamic font size

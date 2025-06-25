@@ -29,7 +29,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
          localization.translate("About Us"),
-          style: GoogleFonts.cinzel(
+          style: GoogleFonts.nunito(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -45,7 +45,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         Text(
            localization.translate("CHINNI SRINIVASULU CHETTY JEWELLERS"),
            textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
+            style: GoogleFonts.nunito(
             fontSize: 15,
             color: Colors.teal[700],
             fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           Text(
             localization.translate("Est. 1971"),
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
+            style: GoogleFonts.nunito(
               fontSize: 14,
               color: Colors.grey[600],
               fontStyle: FontStyle.italic,
@@ -82,12 +82,12 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 const SizedBox(height: 10),
                 Text(
                    localization.translate("Pavan Srinivas Chinni"),
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.nunito(
                       fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600),
                 ),
                 Text(
                   localization.translate("Managing Director"),
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.nunito(
                     fontSize: 14,
                     color: Colors.grey[600],
                     fontStyle: FontStyle.italic,
@@ -140,7 +140,7 @@ floatingActionButton: FloatingActionButton.extended(
         label: Text(
           
           localization.translate("Join Scheme"),
-          style: GoogleFonts.lato(color: Colors.white,fontSize: 18),
+          style: GoogleFonts.nunito(color: Colors.white,fontSize: 18),
         ),
        
         backgroundColor: Colors.red,
@@ -194,7 +194,7 @@ floatingActionButton: FloatingActionButton.extended(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
       child: Text(
         title,
-        style: GoogleFonts.lato(
+        style: GoogleFonts.nunito(
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Colors.teal[800],
@@ -206,7 +206,7 @@ floatingActionButton: FloatingActionButton.extended(
   Widget sectionText(String content) {
     return Text(
       content,
-      style: GoogleFonts.lato(fontSize: 14.5, height: 1.6, color: Colors.black87),
+      style: GoogleFonts.nunito(fontSize: 14.5, height: 1.6, color: Colors.black87),
       textAlign: TextAlign.justify,
     );
   }
@@ -222,10 +222,10 @@ floatingActionButton: FloatingActionButton.extended(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: GoogleFonts.lato(fontSize: 15.5, fontWeight: FontWeight.bold)),
+                  style: GoogleFonts.nunito(fontSize: 15.5, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               Text(subtitle,
-                  style: GoogleFonts.lato(fontSize: 14, color: Colors.black87)),
+                  style: GoogleFonts.nunito(fontSize: 14, color: Colors.black87)),
             ],
           ),
         ),
@@ -244,7 +244,7 @@ floatingActionButton: FloatingActionButton.extended(
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.lato(fontSize: 14),
+              style: GoogleFonts.nunito(fontSize: 14),
             ),
           ),
         ],

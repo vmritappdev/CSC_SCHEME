@@ -262,9 +262,10 @@ void _onResendOtp() {
             children: [
         
               Image.asset('assets/images/otp.4.jpg'),
+              
               const SizedBox(height: 10),
               Text(
-                localization.translate('If you want to change your MPIN, you need to verify your Mobile Number or Email ID.'),
+                localization.translate('If you want to change your MPIN, you need to verify your Mobile Number.'),
                 style: GoogleFonts.roboto(color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
@@ -273,8 +274,9 @@ void _onResendOtp() {
                 readOnly: true,
                 controller: _controllerMobileNumber,
                 decoration:  InputDecoration(
-                  labelText: localization.translate('Mobile Number'),
+                labelText: localization.translate('Mobile Number'),
                   border: OutlineInputBorder(),
+                  
                 ),
               ),
               const SizedBox(height: 20),

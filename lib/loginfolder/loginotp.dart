@@ -274,7 +274,10 @@ void showError( String message) {
                   controller: mobileController,
                   keyboardType: TextInputType.phone,
                   
-                  decoration: InputDecoration(labelText: 
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 
+                  
                   localization.translate("Mobile Number"),
                   counterText: '',
                   prefixIcon: Icon(Icons.phone_android)
@@ -284,14 +287,20 @@ void showError( String message) {
           
           
                 SizedBox(height: 20,),
+
+                
               SizedBox(
           width: double.infinity,
           child: ElevatedButton(
                 onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
                 style: ElevatedButton.styleFrom(
+                  
           backgroundColor: (isLoading || isOtpSent)
               ? Colors.grey
-              : Theme.of(context).primaryColor,
+              : const Color.fromARGB(255, 12, 1, 72),
+              shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5), // ✅ Border Radius here
+    ),
                 ),
                 child: Text(
          localization.translate("Get OTP"),
@@ -353,15 +362,22 @@ void showError( String message) {
   ),
 ),
 
+
+
+              /*
                   SizedBox(
+                    
                     width: double.infinity,
                     child: ElevatedButton(
+                      
                       onPressed: validateOtp,
                       child: Text(
                         localization.translate("Verify OTP"),
                       style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
                     ),
                   ),
+
+                  */
                  // Text("OTP expires in ${_otpExpireSeconds ~/ 60}:${(_otpExpireSeconds % 60).toString().padLeft(2, '0')}")
                 ]
               ],

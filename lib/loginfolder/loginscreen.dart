@@ -408,7 +408,7 @@ localization.translate('CSC App'),
 );
 
   if (shouldExit) {
-    SystemNavigator.pop();
+  SystemNavigator.pop();
 
     
   }
@@ -418,22 +418,9 @@ localization.translate('CSC App'),
 
       child: SafeArea(
         child: Scaffold(
-         
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(paddingAll),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(height: screenHeight * 0.08),
-        
-        
-        
-                   Align(
-                        alignment: Alignment.bottomLeft,
-                        child: BackButton(
-                          color:  const Color.fromARGB(255, 12, 2, 42),
+          appBar: AppBar(
+            leading: BackButton(
+                          color:   Colors.white,
                           onPressed: () {
                             Navigator.push(
                               context, 
@@ -443,7 +430,23 @@ localization.translate('CSC App'),
                             );
                           },
                         ),
-                      ),
+            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+            centerTitle: true,
+            title: Text('Login', style: TextStyle(color:  Colors.white, fontSize: 17, fontWeight: FontWeight.bold),),
+          ),
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(paddingAll),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                //  SizedBox(height: screenHeight * 0.08),
+        
+        
+        
+                  
         
                       
         
@@ -495,9 +498,14 @@ localization.translate('CSC App'),
                     Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
         
                   SizedBox(height: screenHeight * 0.04),
-                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 2, 29, 67), Colors.white, buttonHeight, _verifyMpin,),
                   SizedBox(height: screenHeight * 0.015),
-                  _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+
+                  Text('Or'),
+
+                    SizedBox(height: screenHeight * 0.015),
+
+                  _buildButton(localization.translate("Login with OTP"), const Color.fromARGB(255, 2, 29, 67), Colors.white, buttonHeight, () {
                      Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -507,9 +515,15 @@ localization.translate('CSC App'),
                 
                       }),
         
-                  SizedBox(height: screenHeight * 0.03),
-                  Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-                     SizedBox(height: screenHeight * 0.02),
+                 // SizedBox(height: screenHeight * 0.03),
+                //  Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                     SizedBox(height: screenHeight * 0.06),
+
+
+
+                     Text('-------------------- Or Login With ---------------------', style: TextStyle(color: const Color.fromARGB(255, 6, 1, 75), fontSize: 13)),
+
+                      SizedBox(height: screenHeight * 0.06),
                  Material(
           color: Colors.transparent,
           child: InkWell(
@@ -524,22 +538,31 @@ localization.translate('CSC App'),
             borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
             child: Padding(
         padding: const EdgeInsets.all(4.0), // Expands touch area
-        child: Text(
-          localization.translate("Register here"),
-          style: TextStyle(
-            color: const Color.fromARGB(255, 3, 21, 47),
-            fontSize: fontSizeSmall,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+
+            Text('New User? ', style: TextStyle(color: Colors.orange, fontSize: fontSizeSmall)),
+
+            SizedBox(width: 10,),
+            Text(
+              localization.translate("Register here"),
+              style: TextStyle(
+                color: const Color.fromARGB(255, 3, 21, 47),
+                fontSize: fontSizeSmall,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
             ),
           ),
         )
         ,
         
-                  SizedBox(height: screenHeight * 0.03),
-                  const Divider(),
-                  SizedBox(height: screenHeight * 0.015),
+                 // SizedBox(height: screenHeight * 0.03),
+                 // const Divider(),
+                 // SizedBox(height: screenHeight * 0.015),
                  // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
                 ],
               ),
@@ -574,11 +597,11 @@ Widget _buildTextField(
           : TextInputType.number,
       maxLength: maxLength,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47)),
+        prefixIcon: Icon(icon, size: 20,),
         suffixIcon: isMPINField
             ? IconButton(
                 icon: Icon(
-                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                  _isObscured ? Icons.visibility_off : Icons.visibility,size: 20,
                 ),
                 onPressed: () {
                   setState(() {
@@ -592,6 +615,14 @@ Widget _buildTextField(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
         ),
+
+         enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 237, 233, 233), // Light grey border
+              width: 1.5,
+            ),
+          ),
       ),
     ),
   );
