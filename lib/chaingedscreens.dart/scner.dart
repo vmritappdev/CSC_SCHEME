@@ -252,113 +252,118 @@ Future<bool> checkInternet() async {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.05,
-            vertical: screenHeight * 0.01,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.01,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  localization.translate('This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.'),
+                  style: GoogleFonts.lato(
+                    fontSize: screenWidth * 0.035,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.teal,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                 localization.translate('CHINNI SRINIVSSULU JEWELLERS'),
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.03,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+             
+                SizedBox(height: screenHeight * 0.01),
+               SizedBox(
+            width: screenWidth * 0.4,
+            height: screenWidth * 0.5,
+            child: Image.asset(
+              'assets/images/qrcode.jpg', 
+              fit: BoxFit.cover, 
+            ),
           ),
-          child: Column(
-            children: [
-              Text(
-                localization.translate('This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.'),
-                style: GoogleFonts.lato(
-                  fontSize: screenWidth * 0.035,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.teal,
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              Text(
-               localization.translate('CHINNI SRINIVSSULU JEWELLERS'),
-                style: TextStyle(
-                  fontSize: screenWidth * 0.03,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-           
-              SizedBox(height: screenHeight * 0.01),
-             SizedBox(
-  width: screenWidth * 0.4,
-  height: screenWidth * 0.5,
-  child: Image.asset(
-    'assets/images/qrcode.jpg', 
-    fit: BoxFit.cover, 
-  ),
-),
-
-              SizedBox(height: screenHeight * 0.02),
-
           
-   
+                SizedBox(height: screenHeight * 0.02),
+          
             
+             
+              
+          
+             _buildDetailCard(
+            title: localization.translate('UPI Details'),
+            entries: [
+              _buildCopyRow(
+                '${localization.translate('UPI ID')}:',
+                'Chinnipavan-2@okhdfcbank',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
+            ],
+          ),
+          
+          
+          _buildDetailCard(
+            title: localization.translate('Bank Details'),
+            entries: [
+              _buildCopyRow(
+                localization.translate('Bank Name') + ':',
 
-           _buildDetailCard(
-  title: localization.translate('UPI Details'),
-  entries: [
-    _buildCopyRow(
-      '${localization.translate('UPI ID')}:',
-      'Chinnipavan-2@okhdfcbank',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-  ],
-),
-
-
-_buildDetailCard(
-  title: localization.translate('Bank Details'),
-  entries: [
-    _buildCopyRow(
-      localization.translate('Bank Name') + ':',
-      'HDFC Bank',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      localization.translate('Account No') + ':',
-      '50200103097351',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      localization.translate('IFSC Code') + ':',
-      'HDFC0002043',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      localization.translate('A/C Holder') + ':',
-      'Chinni Srinivasulu Chetty Jewellers',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-  ],
-),
-
-
-
-
+                'HDFC Bank',
+                 context,
+                 MediaQuery.of(context).size.width,
+              ),
 
               
-
- 
-              SizedBox(height: screenHeight * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildPaymentAppIcon('assets/images/gpay.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/ptm.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/phonepay.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/zon.png', screenWidth),
-                ],
+              _buildCopyRow(
+                localization.translate('Account No') + ':',
+                '50200103097351',
+                context,
+                MediaQuery.of(context).size.width,
               ),
-              SizedBox(height: screenHeight * 0.02),
-              _buildSchemeDetails(screenWidth),
-              SizedBox(height: screenHeight * 0.02),
-              _buildCheckbox(screenWidth),
-              SizedBox(height: screenHeight * 0.02),
-              _buildPaymentButton(screenWidth),
+              _buildCopyRow(
+                localization.translate('IFSC Code') + ':',
+                'HDFC0002043',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
+              _buildCopyRow(
+                localization.translate('A/C Holder') + ':',
+                'Chinni Srinivasulu Chetty Jewellers',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
             ],
+          ),
+          
+          
+          
+          
+          
+                
+          
+           
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildPaymentAppIcon('assets/images/gpay.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/ptm.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/phonepay.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/lk.png', screenWidth),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                _buildSchemeDetails(screenWidth),
+                SizedBox(height: screenHeight * 0.02),
+                _buildCheckbox(screenWidth),
+                SizedBox(height: screenHeight * 0.02),
+                _buildPaymentButton(screenWidth),
+              ],
+            ),
           ),
         ),
       ),

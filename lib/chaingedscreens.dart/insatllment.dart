@@ -8,6 +8,7 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -239,7 +240,12 @@ Color getStatusColor(String? status) {
                 const SizedBox(height: 10),
                 Expanded(
                   child: isLoading || selectedInstallment == -1
-                      ? Center(child: Image.asset('assets/images/gif.gif',height: 100,width: 100,)) // Loader
+                      ? Center(
+  child: SpinKitFadingFour(
+    color: Color.fromRGBO(2, 5, 67, 1,),
+    size: 40.0,
+  ),
+) // Loader
                       : ListView.builder(
                     itemCount: installments.length,
                     itemBuilder: (context, index) {

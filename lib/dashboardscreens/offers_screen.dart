@@ -132,8 +132,7 @@ class GoldShopOffersScreen extends StatelessWidget {
       ),
     ];
 
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: const BackButton(color: Colors.white),
@@ -147,85 +146,87 @@ class GoldShopOffersScreen extends StatelessWidget {
           ),
           backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         ),
-        body: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.02),
-          child: Column(
-            children: [
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
-                    crossAxisSpacing: screenWidth * 0.02,
-                    mainAxisSpacing: screenHeight * 0.02,
-                    childAspectRatio: gridItemWidth / gridItemHeight, 
-                  ),
-                  itemCount: offers.length,
-                  itemBuilder: (context, index) {
-                    final offer = offers[index];
-                    return Card(
-                      elevation: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Image.asset(
-                              offer.imagePath,
-                              fit: BoxFit.cover,
-                              height: imageHeight,
-                              width: double.infinity,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(screenWidth * 0.02),
-                            child: Text(
-                              offer.title,
-                              style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.bold,
-                                fontSize: fontSize * 0.9,
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth * 0.02),
+            child: Column(
+              children: [
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: screenWidth < 400 ? 2 : 3, // Small screens 2, large 3
+                      crossAxisSpacing: screenWidth * 0.02,
+                      mainAxisSpacing: screenHeight * 0.02,
+                      childAspectRatio: gridItemWidth / gridItemHeight, 
+                    ),
+                    itemCount: offers.length,
+                    itemBuilder: (context, index) {
+                      final offer = offers[index];
+                      return Card(
+                        elevation: 4,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Image.asset(
+                                offer.imagePath,
+                                fit: BoxFit.cover,
+                                height: imageHeight,
+                                width: double.infinity,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  offer.originalPrice,
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: fontSize * 0.8,
-                                    decoration: TextDecoration.lineThrough,
-                                  ),
+                            Padding(
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              child: Text(
+                                offer.title,
+                                style: GoogleFonts.roboto(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: fontSize * 0.9,
                                 ),
-                                Text(
-                                  offer.discountedPrice,
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: fontSize * 0.9,
-                                  ),
-                                ),
-                              ],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                
-                
-                          
-                        ],
-                      ),
-                    );
-                  },
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    offer.originalPrice,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: fontSize * 0.8,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                  Text(
+                                    offer.discountedPrice,
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: fontSize * 0.9,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+                  
+                  
+                            
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-
-
-
-              SizedBox(height: screenHeight * 0.05),
-            ],
+          
+          
+          
+                SizedBox(height: screenHeight * 0.05),
+              ],
+            ),
           ),
         ),
 
@@ -287,7 +288,7 @@ class GoldShopOffersScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      
     );
   }
 }

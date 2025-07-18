@@ -76,6 +76,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               // Text Below the Logo
+
+              
               Text(
                 "JEWELLERS",
                 style: GoogleFonts.roboto(
@@ -87,6 +89,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
+
+              Text('Since 1971',style: GoogleFonts.nunito( color: Colors.white,),)
             ],
           ),
         ),

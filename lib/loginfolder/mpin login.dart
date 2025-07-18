@@ -55,6 +55,17 @@ final String correctMpin = "1234"; // Example correct MPIN
  Future<void> _fetchUserDetails() async {
   String apiUrl = "$baseUrl/get_reg_account_details.php";
 
+  bool hasInternet = await checkInternet();
+if (!hasInternet) {
+  if (context.mounted) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+    );
+  }
+  return null;
+}
+
+
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload(); // Ensures latest data is fetched
@@ -202,26 +213,35 @@ Future<bool> authenticate() async {
 
 
 Future<void> _authenticateUser() async {
-    try {
-      bool isAuthenticated = await auth.authenticate(
-        localizedReason: 'Please authenticate to continue',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ErrorScreen()),
       );
-
-      if (isAuthenticated) {
-        // Authentication success
-        _goToHomeScreen();
-      } else {
-        // Authentication failed
-        // You can show error or stay on same screen
-      }
-    } catch (e) {
-      print("Authentication error: $e");
     }
+    return;
   }
+
+  try {
+    bool isAuthenticated = await auth.authenticate(
+      localizedReason: 'Please authenticate to continue',
+      options: const AuthenticationOptions(
+        biometricOnly: true,
+        stickyAuth: true,
+      ),
+    );
+
+    if (isAuthenticated) {
+      // Success
+      _goToHomeScreen();
+    } else {
+      // Authentication failed - stay on same screen
+    }
+  } catch (e) {
+    print("Authentication error: $e");
+  }
+}
 
   void _goToHomeScreen() {
     Navigator.pushReplacement(
@@ -300,30 +320,37 @@ Future<bool> checkInternet() async {
   
 
   Future<void> _authenticateWithFingerprint() async {
-
-    bool hasInternet = await checkInternet();
+  bool hasInternet = await checkInternet();
   if (!hasInternet) {
-  //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-  const ErrorScreen();
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ErrorScreen()),
+      );
+    }
     return;
   }
-    try {
-      bool isAuthenticated = await auth.authenticate(
-        localizedReason: 'Scan your fingerprint to login',
-        options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true),
+
+  try {
+    bool isAuthenticated = await auth.authenticate(
+      localizedReason: 'Scan your fingerprint to login',
+      options: const AuthenticationOptions(
+        stickyAuth: true,
+        biometricOnly: true,
+      ),
+    );
+
+    if (isAuthenticated) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
       );
-      if (isAuthenticated) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
-        );
-      }
-    } catch (e) {
-      print("Fingerprint Authentication Error: $e");
     }
+  } catch (e) {
+    print("Fingerprint Authentication Error: $e");
   }
+}
 
 @override
 Widget build(BuildContext context) {

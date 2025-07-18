@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:csc/api_services.dart/custmer_care%20api.dart';
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
@@ -20,61 +23,53 @@ class BrochureScreen extends StatefulWidget {
 class _BrochureScreenState extends State<BrochureScreen> {
   bool isDownloading = false;
 
-  Future<void> _downloadBrochure(BuildContext context) async {
-    setState(() {
-      isDownloading = true;
-    });
-    try {
-      // Step 1: Permissions
-      if (Platform.isAndroid) {
-        if (await Permission.manageExternalStorage.request().isDenied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Storage permission denied')),
-          );
-          setState(() {
-            isDownloading = false;
-          });
-          return;
-        }
-      }
-
-      // Step 2: Get proper Downloads folder
-      final List<Directory>? extDirs = await getExternalStorageDirectories(type: StorageDirectory.downloads);
-      final Directory? downloadsDir = extDirs?.first;
-
-      if (downloadsDir == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to get downloads directory')),
-        );
-        setState(() {
-          isDownloading = false;
-        });
-        return;
-      }
-
-      // Step 3: Download
-      final filePath = '${downloadsDir.path}/CSC_SCHEME_BROUCHER.pdf';
-      final dio = Dio();
-      final response = await dio.download(BrochureScreen.brochureUrl, filePath);
-
-      if (response.statusCode == 200) {
-        await OpenFile.open(filePath);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Download failed')),
-        );
-      }
-    } catch (e) {
-      print('Download error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Download failed: $e')),
+ Future<void> _downloadBrochure(BuildContext context) async {
+    bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ErrorScreen()),
       );
-    } finally {
-      setState(() {
-        isDownloading = false;
-      });
     }
+    return;
   }
+
+  setState(() {
+    isDownloading = true;
+  });
+
+  try {
+    final Directory dir;
+
+    if (Platform.isAndroid) {
+      dir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+    } else {
+      dir = await getApplicationDocumentsDirectory();
+    }
+
+    final filePath = '${dir.path}/CSC_SCHEME_BROUCHER.pdf';
+    final dio = Dio();
+    final response = await dio.download(BrochureScreen.brochureUrl, filePath);
+
+    if (response.statusCode == 200) {
+      await OpenFile.open(filePath);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Download failed')),
+      );
+    }
+  } catch (e) {
+    print('Download error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Download failed: $e')),
+    );
+  } finally {
+    setState(() {
+      isDownloading = false;
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {

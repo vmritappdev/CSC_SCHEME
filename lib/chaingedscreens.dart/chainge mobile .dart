@@ -19,8 +19,8 @@ void main() {
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
-          child: child!,
+        data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+        child: child!,
         );
       },
       home:const MobileScreen(),
@@ -37,12 +37,16 @@ class MobileScreen extends StatefulWidget {
 
 class _MobileScreenState extends State<MobileScreen> {
   final TextEditingController _controller = TextEditingController();
-  bool isLoading = false; // Loader state
+  bool isLoading = false; // Loader stat
 
- 
+// Removed invalid top-level await usage.
+// If you need to save the mobile number, do it inside an async method like below:
+
+
+
 
 Future<void> sendMobileChangeRequest() async {
-  if (!context.mounted) return;
+if (!context.mounted) return;
  final localization = Provider.of<LocalizationProvider>(context,listen: false);
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String mobileNumber = prefs.getString('phoneNumber') ?? "";
@@ -65,7 +69,7 @@ Future<void> sendMobileChangeRequest() async {
 
   try {
     final response = await http.post(
-      Uri.parse('$baseUrl/change_mobile_no.php'), //'https://vmrdemos.com/csc_scheme/change_mobile_no.php'
+      Uri.parse('$baseUrl/change_mobile_no.php'), 
       body: {
         'mobile_no': mobileNumber,
         'new_mobile_no': newMobileNumber,
@@ -243,9 +247,11 @@ Future<void> verifyMobileNumber() async {
  final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
         title: Text(
-         localization.translate('Forgot Mobile Number'), 
-        style: Theme.of(context).textTheme.titleLarge),
+         localization.translate('Forgot Mobile Number',), 
+        style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -264,14 +270,15 @@ Future<void> verifyMobileNumber() async {
               Text(
                localization.translate('Enter your CSC registered mobile number'), 
               style: Theme.of(context).textTheme.bodyMedium),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.04),
               
               TextField(
                 controller: _controller,
                 maxLength: 10,
                 decoration: InputDecoration(
+                  border: OutlineInputBorder(),
                   counterText: '',
-                  hintText: localization.translate('Enter new mobile number'),hintStyle: GoogleFonts.lato(fontSize: 15)
+                  labelText: localization.translate('Enter new mobile number'),hintStyle: GoogleFonts.lato(fontSize: 15)
                 ),
                 keyboardType: TextInputType.phone,
               ),
@@ -281,14 +288,24 @@ Future<void> verifyMobileNumber() async {
               SizedBox(
                 height: screenHeight * 0.06,
                 width: double.infinity,
-                child: ElevatedButton(
- onPressed: isLoading ? null : verifyMobileNumber, // Before: sendMobileChangeRequest
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                       localization.translate('Next'), 
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white)),
-                ),
+                child:ElevatedButton(
+  style: ButtonStyle(
+    backgroundColor: const WidgetStatePropertyAll(Color.fromRGBO(2, 5, 62, 1)),
+    shape: WidgetStatePropertyAll(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+    ),
+  ),
+  onPressed: isLoading ? null : verifyMobileNumber,
+  child: isLoading
+      ? const CircularProgressIndicator(color: Colors.white)
+      : Text(
+          localization.translate('Next'),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+        ),
+),
+
               ),
 
               SizedBox(height: screenHeight * 0.05),

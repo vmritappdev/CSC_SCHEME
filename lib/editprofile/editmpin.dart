@@ -265,7 +265,7 @@ void _onResendOtp() {
               
               const SizedBox(height: 10),
               Text(
-                localization.translate('If you want to change your MPIN, you need to verify your Mobile Number.'),
+                localization.translate("If you want to change your MPIN, you need to verify your Mobile Number."),
                 style: GoogleFonts.roboto(color: Colors.grey[600]),
                 textAlign: TextAlign.center,
               ),
@@ -316,7 +316,8 @@ void _onResendOtp() {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _onVerifyOtp,
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+                    
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                     child:  Text(
                       localization.translate("Verify"),
                     style: TextStyle(color: Colors.white),),

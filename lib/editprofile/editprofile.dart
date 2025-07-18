@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dainamicsizes.dart/dainamicsizes.dart';
 import 'package:csc/dashboardscreens/user_profile.dart';
@@ -185,7 +186,8 @@ Future<bool> checkInternet() async {
 
       bool hasInternet = await checkInternet();
     if (!hasInternet) {
-      _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
+      //_showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
+      ErrorScreen();
       return;
     }
 
@@ -254,8 +256,7 @@ Future<bool> checkInternet() async {
     ScreenUtils.isMediumScreen(context);
 
 
-    return SafeArea(
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
           backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
@@ -282,125 +283,127 @@ Future<bool> checkInternet() async {
           ),
           centerTitle: true,
         ),
-        body: Stack(
-          alignment: Alignment.center,
-          children: [
-            SingleChildScrollView(
-           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),  // 4% of the screen width
-      
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children:  [
-                        Text(
-                         localization.translate("Edit Profile Details"),
-                          style: TextStyle(
-                            color: const Color.fromRGBO(43, 49, 101, 1),
-                            fontWeight: FontWeight.bold,
-                           fontSize: MediaQuery.of(context).size.width * 0.05,  // 5% of the screen width
-      
+        body: SafeArea(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SingleChildScrollView(
+             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),  // 4% of the screen width
+                
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children:  [
+                          Text(
+                           localization.translate("Edit Profile Details"),
+                            style: TextStyle(
+                              color: const Color.fromRGBO(43, 49, 101, 1),
+                              fontWeight: FontWeight.bold,
+                             fontSize: MediaQuery.of(context).size.width * 0.05,  // 5% of the screen width
+                
+                            ),
                           ),
-                        ),
-                        const Icon(Icons.person, color: Color.fromRGBO(43, 49, 101, 1)),
-                      ],
-                    ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),  // 3% of the screen height
-      
-                    _buildTextField(localization.translate('First Name*'), _firstNameController),
+                          const Icon(Icons.person, color: Color.fromRGBO(43, 49, 101, 1)),
+                        ],
+                      ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),  // 3% of the screen height
+                
+                      _buildTextField(localization.translate('First Name*'), _firstNameController),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
+                
+                      _buildTextField(localization.translate('Last Name*'), _lastNameController),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
-      
-                    _buildTextField(localization.translate('Last Name*'), _lastNameController),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
-      
-                    _buildPhoneNumberField(),
-                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
-      
-                    _buildEmailField(),  
-                    // Specific method for email
-                   SizedBox(height: MediaQuery.of(context).size.height * 0.09),  // 9% of the screen height
-      
-                    Center(
-                      child: SizedBox(
-                        width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.05,  // 5% of the screen height
-      
-                        child: ElevatedButton(
-                          onPressed:
-                           _updateProfile,
-      
-                        // await  saveUpdatedDetails();
-                          
-                          
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                          ),
-                          child:  Text(
-                            localization.translate('Update Profile'),
-                            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05,  // 4% of the screen width
-       color: Colors.white),
+                
+                      _buildPhoneNumberField(),
+                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
+                
+                      _buildEmailField(),  
+                      // Specific method for email
+                     SizedBox(height: MediaQuery.of(context).size.height * 0.09),  // 9% of the screen height
+                
+                      Center(
+                        child: SizedBox(
+                          width: double.infinity,
+                        height: MediaQuery.of(context).size.height * 0.05,  // 5% of the screen height
+                
+                          child: ElevatedButton(
+                            onPressed:
+                             _updateProfile,
+                
+                          // await  saveUpdatedDetails();
+                            
+                            
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                            ),
+                            child:  Text(
+                              localization.translate('Update Profile'),
+                              style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05,  // 4% of the screen width
+                 color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
-      
-                  if (_message.isNotEmpty)
-       Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-      color: _message == "Profile updated successfully"
-          ? Colors.green.withOpacity(0.1)
-          : Colors.red.withOpacity(0.1),
-      border: Border.all(
-        color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
-      ),
-      borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-      children: [
-        Icon(
-          _message == "Profile updated successfully" ? Icons.check_circle : Icons.error,
+                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),  // 2% of the screen height
+                
+                    if (_message.isNotEmpty)
+                 Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+                color: _message == "Profile updated successfully"
+            ? Colors.green.withOpacity(0.1)
+            : Colors.red.withOpacity(0.1),
+                border: Border.all(
           color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            localization.translate(
-              _message == "Profile updated successfully"
-                ? "Profile updated successfully"
-                : "Profile update failed",
-            ),
-            style: TextStyle(
-              color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+                ),
+                borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+                children: [
+          Icon(
+            _message == "Profile updated successfully" ? Icons.check_circle : Icons.error,
+            color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              localization.translate(
+                _message == "Profile updated successfully"
+                  ? "Profile updated successfully"
+                  : "Profile update failed",
+              ),
+              style: TextStyle(
+                color: _message == "Profile updated successfully" ? Colors.green : Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-        ),
-      ],
-        ),
-      )
-      
-      
-                  ],
+                ],
+          ),
+                )
+                
+                
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (_isLoading) ...[
-              const CircularProgressIndicator(
-                strokeWidth: 4,
-                color: Color.fromARGB(255, 7, 1, 39),
-              ),
+              if (_isLoading) ...[
+                const CircularProgressIndicator(
+                  strokeWidth: 4,
+                  color: Color.fromARGB(255, 7, 1, 39),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
         backgroundColor: Colors.white,
-      ),
+      
     );
   }
 
@@ -443,7 +446,7 @@ Future<bool> checkInternet() async {
       ],
       controller: _emailController,
       decoration: InputDecoration(
-        labelText: localization.translate('Email (Optional)'),
+        labelText: localization.translate('Email ID(Optional)'),
         labelStyle: const TextStyle(color: Colors.black),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),

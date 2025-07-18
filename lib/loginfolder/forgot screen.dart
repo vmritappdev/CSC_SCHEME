@@ -263,15 +263,15 @@ class _ForgotScreenState extends State<ForgotScreen> {
   await prefs.clear(); 
   Navigator.push(
   context,
-  MaterialPageRoute(builder: (context) => const LoginScreen1()), 
-     // (route) => false, // Remove all previous routes
+  MaterialPageRoute(builder: (context) =>  LoginScreen1()), 
+   
       );
   }
 
 
   void _navigateToNextScreen() {
     Navigator.push(
-      context,
+    context,
       MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
     );
   }
@@ -297,7 +297,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                   MaterialPageRoute(
                     builder: (context) => LoginPage(), )
                 );
-                // Navigator.pop(context); // ← బాగా ఉపయోగపడుతుంది back navigation కి
+                
                },
                icon: Icon(Icons.arrow_forward), // ← Left side arrow icon
              ),
@@ -349,7 +349,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
 const SizedBox(height: 20),
 
-// Show this only if `showNewNumberBox` is true
+
   if (showNewNumberBox)
   GestureDetector(
     onTap: () {

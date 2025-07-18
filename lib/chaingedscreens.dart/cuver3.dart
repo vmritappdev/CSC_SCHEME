@@ -99,8 +99,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
 
   // Load phone number from shared preferences
   Future<void> loadPhoneNumber() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? phoneNumber = prefs.getString('userPhoneNumber');
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+   // String? phoneNumber = prefs.getString('userPhoneNumber');
    // phoneController.text = phoneNumber!;
     }
 
@@ -248,7 +248,7 @@ Future<void> submitForm() async {
       _isLoading = true;
     });
 
-    var url = "$baseUrl/save_account.php";    //"https://vmrdemos.com/csc_scheme/save_account.php"
+    var url = "$baseUrl/save_account.php";   
 
     final data = {
       'f_name': _controllerFirstName.text,
@@ -336,7 +336,7 @@ Widget build(BuildContext context) {
             key: _formKey,
             child: Column(
               children: [
-               // const SizedBox(height: 20),
+              
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
@@ -413,7 +413,7 @@ Widget build(BuildContext context) {
                         ),
                         SizedBox(height: screenHeight * 0.02),
                     
-                        // Mobile Number
+                        
                         _buildPhoneField(),
                         SizedBox(height: screenHeight * 0.02),
                     
@@ -435,7 +435,7 @@ Widget build(BuildContext context) {
                         ),
                         SizedBox(height: screenHeight * 0.025),
                     
-                        // Terms and Conditions
+                       
                      Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [

@@ -404,6 +404,7 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
     return Scaffold(
+      
       appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
       style: TextStyle(color: Colors.white),
       ),
@@ -412,265 +413,267 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                  
-                  
-                  
-                      Align(child: Text(localization.translate("Edit Customer Information"),
-                      style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
-                      alignment: Alignment.bottomLeft,
-                      ),
-                  
-                  
-                  
-                  
-                      Row(
-                        children: [
-                         Text(
-  "${localization.translate("Scheme Amount")} ₹$schemeAmount",
-  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-),
-
-                  
-                              SizedBox(width: 15,),
-                  
-                              Text(
-  "${localization.translate("Scheme No")} $regId",
-  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-),
-
-                        ],
-                      ),
-                  
-                  
-                        SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                     ),
-                     
-                     //_buildTextField(schemController, localization.translate("Scheme Type")),
-                      _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
-                      _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
-                      _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
-                        SizedBox(
-                      // height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                     ),
-                    //  _buildTextField(dobController, localization.translate("Date of Birth*")),
-                  
-                   _buildDateField(
-  dobController,
-  localization.translate("Date of Birth*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please select date of birth"),
-),
-
-                  
-                     SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                  
-                      _buildEmailField(),
-                  
-                        
-                     
-                     SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.03, // 6% of screen height
-                     ),
-                  
-                        genderDropdown(context),
-
-                        
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-_buildTextField(
-  doorNoController,
-  localization.translate("Door No*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter Door Number"),
-),
-
-                      _buildTextField(
-  address1Controller,
-  localization.translate("Address Line 1*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter Address Line 1"),
-),
-
-                      _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
-                          _buildTextField(
-  pincodeController,
-  localization.translate("Pincode*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter Pincode"),
-),
-
-                          _buildTextField(
-  countryController,
-  localization.translate("Country*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter country"),
-),
-
-_buildTextField(
-  stateController,
-  localization.translate("State*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter state"),  // add this line
-),
-                     _buildTextField(
-  districtController,
-  localization.translate("District*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter district"),
-),
-
-                        _buildTextField(
-  cityController,
-  localization.translate("City*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter city"),
-),
-
-                      _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage,12, false,),
-                        _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage,10, true),
-                     
-                       _buildTextField(referralController,localization.translate( "Referral Name/Number")),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                       Align(child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       alignment: Alignment.bottomLeft,
-                       ),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                     _buildTextField(
-  bankNameController,
-  localization.translate("Bank Name*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter bank name"),
-),
-
-_buildTextField(
-  holderName,
-  localization.translate("Bank Account Holder Name*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter account holder name"),
-),
-
-_buildTextField(
-  accountNoController,
-  localization.translate("Bank Account No*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter account number"),
-),
-
-_buildTextField(
-  ifscCodeController,
-  localization.translate("IFSC Code"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter IFSC code"),
-),
-
-_buildTextField(
-  branchLocationController,
-  localization.translate("Branch Location*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter branch location"),
-),
-
-                     
-                  
-                           SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                       Align(child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       alignment: Alignment.bottomLeft,
-                       ),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-_buildTextField(
-  nomineeNameController,
-  localization.translate("Nominee Full Name"),
-    isRequired:false,
-  errorMessage: localization.translate("Please enter nominee full name"),
-),
-
-                  
-                      
-                  
-                      
-                    buildnominee(),
-                  
-                      //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
-                  
-                  
-                         _buildNomineeRelationshipDropdown(),
-                                if (isOtherRelationVisible) _buildOtherRelationshipField(),
-                  
-                      _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
-                     
-                     // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
-                                 
+          : SafeArea(
+            child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
                     
-                     
+                    
+                    
+                        Align(child: Text(localization.translate("Edit Customer Information"),
+                        style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
+                        alignment: Alignment.bottomLeft,
+                        ),
+                    
+                    
+                    
+                    
+                        Row(
+                          children: [
+                           Text(
+              "${localization.translate("Scheme Amount")} ₹$schemeAmount",
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            
+                    
+                                SizedBox(width: 15,),
+                    
+                                Text(
+              "${localization.translate("Scheme No")} $regId",
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            
+                          ],
+                        ),
+                    
+                    
+                          SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                       ),
                        
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
-                  
-                  
-                    SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: () async {
-  FocusScope.of(context).unfocus();
-
-  // Check form validation
-  bool isFormValid = _formKey.currentState!.validate();
-
-  // Nominee image validation
-  if (_image == null && (nomineeImage == null || nomineeImage!.isEmpty)) {
-    isNomineeImageValid = false;
-    isFormValid = false;
-  } else {
-    isNomineeImageValid = true;
-  }
-
-  setState(() {}); // Refresh UI to show error if needed
-
-  if (isFormValid) {
-    await updateSchemeDetails();
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(localization.translate("Please fill in all the mandatory fields."))),
-    );
-  }
-},
-
-    child: Text(
-      localization.translate("Save Changes"),
-      style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-    ),
-  ),
-)
-
-                    ],
+                       //_buildTextField(schemController, localization.translate("Scheme Type")),
+                        _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
+                        _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
+                        _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
+                          SizedBox(
+                        // height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                       ),
+                      //  _buildTextField(dobController, localization.translate("Date of Birth*")),
+                    
+                     _buildDateField(
+              dobController,
+              localization.translate("Date of Birth*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please select date of birth"),
+            ),
+            
+                    
+                       SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                    
+                        _buildEmailField(),
+                    
+                          
+                       
+                       SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.03, // 6% of screen height
+                       ),
+                    
+                          genderDropdown(context),
+            
+                          
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+            _buildTextField(
+              doorNoController,
+              localization.translate("Door No*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter Door Number"),
+            ),
+            
+                        _buildTextField(
+              address1Controller,
+              localization.translate("Address Line 1*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter Address Line 1"),
+            ),
+            
+                        _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
+                            _buildTextField(
+              pincodeController,
+              localization.translate("Pincode*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter Pincode"),
+            ),
+            
+                            _buildTextField(
+              countryController,
+              localization.translate("Country*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter country"),
+            ),
+            
+            _buildTextField(
+              stateController,
+              localization.translate("State*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter state"),  // add this line
+            ),
+                       _buildTextField(
+              districtController,
+              localization.translate("District*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter district"),
+            ),
+            
+                          _buildTextField(
+              cityController,
+              localization.translate("City*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter city"),
+            ),
+            
+                        _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage,12, false,),
+                          _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage,10, true),
+                       
+                         _buildTextField(referralController,localization.translate( "Referral Name/Number")),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                         Align(child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                         alignment: Alignment.bottomLeft,
+                         ),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                       _buildTextField(
+              bankNameController,
+              localization.translate("Bank Name*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter bank name"),
+            ),
+            
+            _buildTextField(
+              holderName,
+              localization.translate("Bank Account Holder Name*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter account holder name"),
+            ),
+            
+            _buildTextField(
+              accountNoController,
+              localization.translate("Bank Account No*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter account number"),
+            ),
+            
+            _buildTextField(
+              ifscCodeController,
+              localization.translate("IFSC Code"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter IFSC code"),
+            ),
+            
+            _buildTextField(
+              branchLocationController,
+              localization.translate("Branch Location*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter branch location"),
+            ),
+            
+                       
+                    
+                             SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                         Align(child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                         alignment: Alignment.bottomLeft,
+                         ),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+            _buildTextField(
+              nomineeNameController,
+              localization.translate("Nominee Full Name"),
+                isRequired:false,
+              errorMessage: localization.translate("Please enter nominee full name"),
+            ),
+            
+                    
+                        
+                    
+                        
+                      buildnominee(),
+                    
+                        //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
+                    
+                    
+                           _buildNomineeRelationshipDropdown(),
+                                  if (isOtherRelationVisible) _buildOtherRelationshipField(),
+                    
+                        _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
+                       
+                       // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
+                                   
+                      
+                       
+                         
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
+                    
+                    
+                      SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+              FocusScope.of(context).unfocus();
+            
+              // Check form validation
+              bool isFormValid = _formKey.currentState!.validate();
+            
+              // Nominee image validation
+              if (_image == null && (nomineeImage == null || nomineeImage!.isEmpty)) {
+                isNomineeImageValid = false;
+                isFormValid = false;
+              } else {
+                isNomineeImageValid = true;
+              }
+            
+              setState(() {}); // Refresh UI to show error if needed
+            
+              if (isFormValid) {
+                await updateSchemeDetails();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localization.translate("Please fill in all the mandatory fields."))),
+                );
+              }
+            },
+            
+                child: Text(
+                  localization.translate("Save Changes"),
+                  style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ),
+            )
+            
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+          ),
     );
   }
 

@@ -6,7 +6,7 @@ import 'package:csc/loginfolder/loginotp.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
-import 'package:csc/dashboardscreens/terms_condition.dart';
+
 import 'package:csc/localization/localizationpro.dart';
 
 import 'package:csc/loginfolder/mpin%20login.dart';
@@ -15,6 +15,7 @@ import 'package:csc/registationfolder/create%20account.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +37,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
 bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
+bool _rememberMe = false;
 
 
 
@@ -46,20 +48,21 @@ Future<void> _checkSavedPhoneNumber() async {
   String? savedMpin = prefs.getString('userMpin');
 
 
-  if (savedPhoneNumber!.length == 10 && savedMpin == "true") {
-    print("✅ Mobile Number Found: $savedPhoneNumber");
+  if (savedPhoneNumber != null && savedPhoneNumber.length == 10 && savedMpin == "true") {
+  print("✅ Mobile Number Found: $savedPhoneNumber");
 
-    // Navigate directly to the HomeScreen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginPage(),
-      ),
-    );
-  } else {
-    print("❌ No valid Mobile Number found");
-    // Optionally, you can show a message or take other actions here
-  }
+  // Navigate directly to the HomeScreen
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const LoginPage(),
+    ),
+  );
+} else {
+  print("❌ No valid Mobile Number found");
+  // Optionally, show a message
+}
+
 }
 
 
@@ -80,7 +83,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
 
     setState(() {
       
-      phoneController.text = phoneNumber!;
+     
     });
     print("✅ Loaded Mobile Number: $phoneNumber");
     }
@@ -106,55 +109,76 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   
 
 Future<void> _fetchUserDetails() async {
-  String apiUrl = "$baseUrl/get_reg_account_details.php";  
+  String apiUrl = "$baseUrl/get_reg_account_details.php";
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload(); // ✅ Ensures latest data is fetched
+    await prefs.reload();
+
     String? mobileNumber = prefs.getString('userPhoneNumber');
 
-    if (mobileNumber!.length != 10) {
-      print("❌ Mobile Number not found in SharedPreferences");
+    if (mobileNumber == null || mobileNumber.length != 10) {
+      print("❌ Mobile Number not found or invalid in SharedPreferences");
       return;
     }
 
-    print("📤 Sending Mobile Number to API: $mobileNumber");
+    print("📤 Sending request with mobile number: $mobileNumber");
 
     final response = await http.post(
       Uri.parse(apiUrl),
-      headers: {"Content-Type": "application/x-www-form-urlencoded"}, // ✅ Important
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
       body: {'mobile_no': mobileNumber},
     );
 
-    print("📥 API Response Status: ${response.statusCode}");
-    print("📥 API Response Body: ${response.body}");
+    print("📥 Response status: ${response.statusCode}");
+    print("📥 Response body: ${response.body}");
 
-    final jsonResponse = json.decode(response.body);
-    if (jsonResponse['status'] == 200) {
-      print("✅ User Details: $jsonResponse");
+    if (response.statusCode == 200) {
+      final dynamic jsonResponse = json.decode(response.body);
 
-      var userDetails = jsonResponse['account_details'][0]; // ✅ First user data
-      String firstName = userDetails['f_name']?.trim() ?? "";
-      String lastName = userDetails['l_name']?.trim() ?? "";
-      String phoneNumber = userDetails['mobile_no']?.trim() ?? "";
-      String email = userDetails['email_id']?.trim() ?? "";
+      if (jsonResponse is! Map) {
+        print("❌ JSON root is not a map");
+        return;
+      }
 
-      // ✅ Save to SharedPreferences
-      await prefs.setString('firstName', firstName);
-      await prefs.setString('lastName', lastName);
-      await prefs.setString('phoneNumber', phoneNumber);
-      await prefs.setString('email', email);
+      if (jsonResponse['status'] == 200 &&
+          jsonResponse['account_details'] is List &&
+          (jsonResponse['account_details'] as List).isNotEmpty) {
+        
+        final dynamic account = (jsonResponse['account_details'] as List).first;
 
-      print("✅ Saved Data: FirstName: $firstName, LastName: $lastName, Mobile: $phoneNumber, Email: $email");
+        if (account is Map<String, dynamic>) {
+          // Use toString() safely
+          final firstName = account['f_name']?.toString().trim() ?? '';
+          final lastName = account['l_name']?.toString().trim() ?? '';
+          final phone = account['mobile_no']?.toString().trim() ?? '';
+          final email = account['email_id']?.toString().trim() ?? '';
 
+          // Debug logs
+          print("✅ First Name: $firstName");
+          print("✅ Last Name : $lastName");
+          print("✅ Phone     : $phone");
+          print("✅ Email     : $email");
+
+          // Save only strings
+          await prefs.setString('firstName', firstName);
+          await prefs.setString('lastName', lastName);
+          await prefs.setString('phoneNumber', phone);
+          await prefs.setString('email', email);
+        } else {
+          print("❌ account_details[0] is not a valid map");
+        }
+      } else {
+        print("❌ Invalid or empty data received");
+      }
     } else {
-      print("❌ User details fetch failed: ${jsonResponse['message']}");
+      print("❌ Server error: ${response.statusCode}");
     }
-  } catch (e) {
-    print("❌ Error fetching user details: $e");
+  } catch (e, stackTrace) {
+    print("❌ Error fetching data: $e");
+    print("📛 StackTrace:\n$stackTrace");
   }
 }
-
 
 
 
@@ -183,7 +207,8 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       bool success = jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
-      String reason = jsonResponse['login1'] ?? 'UNKNOWN';
+     // String reason = jsonResponse['login1'] ?? 'UNKNOWN';
+      String reason = jsonResponse['login1']?.toString() ?? 'UNKNOWN';
       return {'success': success, 'reason': reason};
     }
 
@@ -212,15 +237,29 @@ void _verifyMpin() async {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
     });
-    return;
-  }
+   Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      setState(() {
+        errorMessage = '';
+      });
+    }
+  });
+  return;
+}
 
   if (mpin.isEmpty || mpin.length != 4) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
     });
-    return;
-  }
+   Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      setState(() {
+        errorMessage = '';
+      });
+    }
+  });
+  return;
+}
 
   showLoaderDialog(context);
 
@@ -336,9 +375,9 @@ void _showErrorPopup(String reason) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double paddingAll = screenWidth * 0.05;
-    double fontSizeLarge = screenHeight * 0.035;
+   // double fontSizeLarge = screenHeight * 0.035;
     double fontSizeSmall = screenHeight * 0.02;
-    double inputFieldHeight = screenHeight * 0.07;
+    double inputFieldHeight = screenHeight * 0.06;
     double buttonHeight = screenHeight * 0.06;
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
@@ -418,9 +457,22 @@ localization.translate('CSC App'),
 
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            leading: BackButton(
-                          color:   Colors.white,
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(paddingAll),
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+               //   SizedBox(height: screenHeight * 0.08),
+        
+        
+        /*
+                   Align(
+                        alignment: Alignment.bottomLeft,
+                        child: BackButton(
+                          color:  const Color.fromARGB(255, 12, 2, 42),
                           onPressed: () {
                             Navigator.push(
                               context, 
@@ -430,31 +482,29 @@ localization.translate('CSC App'),
                             );
                           },
                         ),
-            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
-            centerTitle: true,
-            title: Text('Login', style: TextStyle(color:  Colors.white, fontSize: 17, fontWeight: FontWeight.bold),),
+                      ),
+        
+                        */        SizedBox(height: screenHeight * 0.04),
+
+          // 🖼️ Asset Image in center
+          Center(
+            child: Image.asset(
+              'assets/images/cs.png', // 👈 replace with your image path
+              height: screenHeight * 0.10, // adjust size
+              fit: BoxFit.contain,
+            ),
           ),
-         
-          backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(paddingAll),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                //  SizedBox(height: screenHeight * 0.08),
-        
-        
-        
-                  
-        
-                      
+
+        //  SizedBox(height: screenHeight * 0.02),
+
         
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+
+                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: Color.fromRGBO(2, 5, 67, 1)),)
         
-                     
+                     /*
                       Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
                       SizedBox(width: screenWidth * 0.02),
                       Text(
@@ -465,47 +515,118 @@ localization.translate('CSC App'),
                           color: const Color.fromARGB(255, 3, 21, 47),
                         ),
                       ),
+
+                 */
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.015),
+                  SizedBox(height: screenHeight * 0.020),
                   Text(
                     localization.translate("Welcome back to your CSC account!"),
-                    style: TextStyle(fontSize: fontSizeSmall, color: Colors.black54),
+                    style: GoogleFonts.nunito(fontSize: fontSizeSmall, color: Color.fromRGBO(2, 5, 67, 1),fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.04),
+
+
+                  
+
+
+
+                    SizedBox(height: screenHeight * 0.015),
         
                   _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
-                  SizedBox(height: screenHeight * 0.025),
-                  _buildTextField(localization.translate("MPIN"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
-        
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(
-                          builder: (context) => LoginOtpScreen(),
-                        )
-                      );
-                    },
-                    child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(localization.translate("Forgot MPIN?"), style: TextStyle(color: const Color.fromARGB(255, 12, 2, 42), fontSize: fontSizeSmall,fontWeight: FontWeight.bold)),
-                                ),
-                  ),
-        
+                  SizedBox(height: screenHeight * 0.010),
+
+
+                 
+
                   SizedBox(height: screenHeight * 0.015),
+                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
+
+                   SizedBox(height: screenHeight * 0.020),
+        
+                 Row(
+  children: [
+    // left side checkbox + text will start from left
+    Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,  // force start
+        children: [
+         Checkbox(
+  value: _rememberMe,
+  activeColor: const Color.fromARGB(255, 3, 21, 47),
+  onChanged: (bool? newValue) {
+    setState(() {
+      _rememberMe = newValue ?? false;
+    });
+  },
+  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+  visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
+),
+
+SizedBox(width: 8,),
+
+          Text(
+            localization.translate("Remember me"),
+            style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
+          ),
+        ],
+      ),
+    ),
+
+    // right side forgot mpin
+    GestureDetector(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginOtpScreen(),
+          ),
+        );
+      },
+      child: Text(
+        localization.translate("Forgot MPIN?"),
+        style: GoogleFonts.nunito(
+          color: const Color.fromARGB(255, 88, 7, 1),
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ],
+)
+,
+        
+                 // SizedBox(height: screenHeight * 0.010),
                   if (errorMessage.isNotEmpty)
                     Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
         
                   SizedBox(height: screenHeight * 0.04),
-                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 2, 29, 67), Colors.white, buttonHeight, _verifyMpin,),
+                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
                   SizedBox(height: screenHeight * 0.015),
 
-                  Text('Or'),
+                  RichText(
+  text: TextSpan(
+    children: [
+      TextSpan(
+        text: '--------------------------------------', 
+        style: TextStyle(color: Colors.grey),
+      ),
+      TextSpan(
+        text: ' Or ', 
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      TextSpan(
+        text: '-------------------------------------', 
+        style: TextStyle(color: Colors.grey),
+      ),
+    ],
+  ),
+)
+,
 
-                    SizedBox(height: screenHeight * 0.015),
+  SizedBox(height: screenHeight * 0.015),
 
-                  _buildButton(localization.translate("Login with OTP"), const Color.fromARGB(255, 2, 29, 67), Colors.white, buttonHeight, () {
+                  _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
                      Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -515,54 +636,41 @@ localization.translate('CSC App'),
                 
                       }),
         
-                 // SizedBox(height: screenHeight * 0.03),
-                //  Text(localization.translate("New on CSC?"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
-                     SizedBox(height: screenHeight * 0.06),
+                  SizedBox(height: screenHeight * 0.03),
 
-
-
-                     Text('-------------------- Or Login With ---------------------', style: TextStyle(color: const Color.fromARGB(255, 6, 1, 75), fontSize: 13)),
-
-                      SizedBox(height: screenHeight * 0.06),
-                 Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
+                  Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Text(
+      localization.translate("Don't have an account?"),
+      style: GoogleFonts.nunito(color: Colors.black, fontSize: fontSizeSmall),
+    ),
+    SizedBox(width: 4),
+    InkWell(
+      onTap: () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>  CurvedImageScreen2(),
+            builder: (context) => CurvedImageScreen3(),
           ),
         );
-            },
-            borderRadius: BorderRadius.circular(4), // Optional: for a rounded ripple
-            child: Padding(
-        padding: const EdgeInsets.all(4.0), // Expands touch area
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      },
+      child: Text(
+        localization.translate("Sign up"),
+        style: GoogleFonts.nunito( color: const Color.fromARGB(255, 3, 21, 47),
+          fontSize: fontSizeSmall,
+          fontWeight: FontWeight.bold,)
+      ),
+    ),
+  ],
+),
 
-            Text('New User? ', style: TextStyle(color: Colors.orange, fontSize: fontSizeSmall)),
 
-            SizedBox(width: 10,),
-            Text(
-              localization.translate("Register here"),
-              style: TextStyle(
-                color: const Color.fromARGB(255, 3, 21, 47),
-                fontSize: fontSizeSmall,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-            ),
-          ),
-        )
-        ,
-        
+
+                 
                  // SizedBox(height: screenHeight * 0.03),
                  // const Divider(),
-                 // SizedBox(height: screenHeight * 0.015),
+                  SizedBox(height: screenHeight * 0.015),
                  // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
                 ],
               ),
@@ -596,34 +704,36 @@ Widget _buildTextField(
           ? TextInputType.phone
           : TextInputType.number,
       maxLength: maxLength,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, size: 20,),
-        suffixIcon: isMPINField
-            ? IconButton(
-                icon: Icon(
-                  _isObscured ? Icons.visibility_off : Icons.visibility,size: 20,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isObscured = !_isObscured;
-                  });
-                },
-              )
-            : null,
-        labelText: label,
-        counterText: "",
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
+    decoration: InputDecoration(
+ // filled: true,
+  //fillColor: Colors.grey.shade100, // light background color
+  prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47),size: 18,),
+  suffixIcon: isMPINField
+      ? IconButton(
+          icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility,size: 18,),
+          onPressed: () {
+            setState(() {
+              _isObscured = !_isObscured;
+            });
+          },
+        )
+      : null,
+  labelText: label,labelStyle: GoogleFonts.nunito(fontSize: 14,color: const Color.fromARGB(255, 139, 139, 139)),
+  counterText: "",
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey), // light grey border
+    borderRadius: BorderRadius.circular(5),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: const Color.fromARGB(255, 3, 21, 47), width: 2),
+    borderRadius: BorderRadius.circular(5),
+  ),
+  floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 3, 21, 47)),
+),
 
-         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(
-              color: Color.fromARGB(255, 237, 233, 233), // Light grey border
-              width: 1.5,
-            ),
-          ),
-      ),
     ),
   );
 }
@@ -654,15 +764,11 @@ void showLoaderDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Center(
-        child: SizedBox(
-          width: 100,
-          height: 100,
-          child: Image.asset(
-            'assets/images/gif.gif', // ✅ Replace with your gif path
-            fit: BoxFit.contain,
-          ),
-        ),
-      );
+  child: SpinKitFadingFour(
+    color: Color.fromRGBO(2, 5, 67, 1,),
+    size: 40.0,
+  ),
+);
     },
   );
 }

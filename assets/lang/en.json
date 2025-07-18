@@ -51,7 +51,7 @@
   
   "Create MPIN*": "Create MPIN*",
   "Confirm MPIN*": "Confirm MPIN*",
-  "Create MPIN Successfully":"Create MPIN Successfully",
+  "Created MPIN Successfully":"Created MPIN Successfully",
   "": "SUBMIT",
   "Please enter both MPIN and Confirm MPIN.": "Please enter both MPIN and Confirm MPIN.",
   "MPINs do not match!": "MPINs do not match!",
@@ -192,6 +192,19 @@
 "Scheme Type":"Scheme Type",
 "Edit Scheme":"Edit Scheme",
 "Save Changes":"Save Changes",
+
+"Don't have an account?":"Don't have an account?",
+
+
+"Remember me":"Remember me",
+
+"Sign up":"Sign up",
+
+
+
+
+
+"Already have an account?":"Already have an account?",
 
 "UPI Transaction": "UPI Transaction",
   "This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.": "This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.",
@@ -864,8 +877,20 @@
   "This field is required": "This field is required",
   "Jewellers": "Jewellers",
 
+  
+
+  "Sign Up": "Sign Up",
+  "J E W E L L E R S": "J E W E L L E R S",
+  "Since 1971": "Since 1971",
+  "Email(optional)": "Email (optional)",
+  "I agree to the": "I agree to the",
+  "Please select Terms and Conditions": "Please select Terms and Conditions",
+  "Enter OTP Here": "Enter OTP Here",
+  
+  
+
   "app_title": "Jewellery",
-  "If you want to change your MPIN, you need to verify your Mobile Number or Email ID.": "If you want to change your MPIN, you need to verify your Mobile Number or Email ID.",
+  "If you want to change your MPIN, you need to verify your Mobile Number.": "If you want to change your MPIN, you need to verify your Mobile Number.",
   "Mobile Number/Email ID": "Mobile Number/Email ID",
   "Send OTP": "Send OTP",
   "Enter the 6-digit OTP sent to your number": "Enter the 6-digit OTP sent to your number",

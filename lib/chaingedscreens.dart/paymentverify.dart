@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:csc/utillity/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +23,7 @@ Future<void> verifyPaymentProcess() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  final url = Uri.parse('https://vmrdemos.com/csc_scheme/payment_process_verification.php');
+  final url = Uri.parse('$baseUrl/payment_process_verification.php');
 
   try {
     final response = await http.post(

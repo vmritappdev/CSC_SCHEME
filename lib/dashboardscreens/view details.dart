@@ -20,6 +20,7 @@ import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -56,7 +57,7 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   final RefreshController _refreshController = RefreshController();
 
    void _onRefresh() async {
-  await fetchData(); 
+   await fetchData(); 
   _refreshController.refreshCompleted(); 
 }
 
@@ -391,10 +392,10 @@ Future<void> verifyPaymentProcess() async {
             ),
           ),
           const Text(':', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-          Text(
-            '₹ $balanceAmount',
-            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-          ),
+         Text(
+  '₹ ${NumberFormat('#,##0').format(int.tryParse(balanceAmount) ?? 0)}',
+  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+),
         ],
       ),
     ],

@@ -44,14 +44,18 @@ class _FAQScreenState extends State<FAQScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    
+
+
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
     String currentLang = localization.languageCode;   // 🔄 current language
     bool isEnglish = currentLang == 'en';             // 🔄 check if English
     double screenWidth  = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return SafeArea(
-      child: Scaffold(
+    return  Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           centerTitle: true,
           iconTheme: const IconThemeData(color: Colors.white),
@@ -68,99 +72,101 @@ class _FAQScreenState extends State<FAQScreen> {
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(screenWidth * 0.04),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  localization.translate("Frequently asked questions"),
-                  style: GoogleFonts.lato(
-                    fontSize: screenWidth * 0.05,
-                    fontWeight: FontWeight.bold,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(screenWidth * 0.04),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    localization.translate("Frequently asked questions"),
+                    style: GoogleFonts.lato(
+                      fontSize: screenWidth * 0.05,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-
-                // -------------------- SEARCH BAR --------------------
-                IgnorePointer(                                   // 🔄 disable touch if not English
-                  ignoring: !isEnglish,
-                  child: Opacity(                               // 🔄 dim the bar when inactive
-                    opacity: isEnglish ? 1.0 : 0.4,
+                  SizedBox(height: screenHeight * 0.02),
+          
+                  // -------------------- SEARCH BAR --------------------
+                  IgnorePointer(                                   // 🔄 disable touch if not English
+                    ignoring: !isEnglish,
+                    child: Opacity(                               // 🔄 dim the bar when inactive
+                      opacity: isEnglish ? 1.0 : 0.4,
+                      child: SizedBox(
+                        height: screenHeight * 0.06,
+                        child: TextField(
+                          onChanged: (value) {
+                            if (isEnglish) {                     // 🔄 update query only in English
+                              setState(() => searchQuery = value.toLowerCase());
+                            } else {
+                              setState(() => searchQuery = '');
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: localization.translate("Ask me anything"),
+                            hintStyle: GoogleFonts.lato(
+                              fontSize: screenWidth * 0.04,
+                              color: const Color.fromARGB(255, 176, 175, 175),
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                              size: screenWidth * 0.06,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Color.fromARGB(255, 242, 240, 240)),
+                              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (!isEnglish)                                // 🔄 optional helper text
+                    Padding(
+                      padding: EdgeInsets.only(top: screenHeight * 0.012),
+                      child: Text(
+                        localization.translate("Search is available only in English"),
+                        style: GoogleFonts.lato(fontSize: screenWidth * 0.030, color: Colors.redAccent),
+                      ),
+                    ),
+                  
+          
+                  SizedBox(height: screenHeight * 0.02),
+          
+                  ..._buildFAQList(localization, isEnglish),     // 🔄 pass isEnglish
+          
+                  SizedBox(height: screenHeight * 0.02),
+          
+                  Center(
                     child: SizedBox(
                       height: screenHeight * 0.06,
-                      child: TextField(
-                        onChanged: (value) {
-                          if (isEnglish) {                     // 🔄 update query only in English
-                            setState(() => searchQuery = value.toLowerCase());
-                          } else {
-                            setState(() => searchQuery = '');
-                          }
-                        },
-                        decoration: InputDecoration(
-                          hintText: localization.translate("Ask me anything"),
-                          hintStyle: GoogleFonts.lato(
-                            fontSize: screenWidth * 0.04,
-                            color: const Color.fromARGB(255, 176, 175, 175),
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                            size: screenWidth * 0.06,
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Color.fromARGB(255, 242, 240, 240)),
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _openWhatsApp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(screenWidth * 0.02),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (!isEnglish)                                // 🔄 optional helper text
-                  Padding(
-                    padding: EdgeInsets.only(top: screenHeight * 0.012),
-                    child: Text(
-                      localization.translate("Search is available only in English"),
-                      style: GoogleFonts.lato(fontSize: screenWidth * 0.030, color: Colors.redAccent),
-                    ),
-                  ),
-                
-
-                SizedBox(height: screenHeight * 0.02),
-
-                ..._buildFAQList(localization, isEnglish),     // 🔄 pass isEnglish
-
-                SizedBox(height: screenHeight * 0.02),
-
-                Center(
-                  child: SizedBox(
-                    height: screenHeight * 0.06,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _openWhatsApp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                        ),
-                      ),
-                      child: Text(
-                        localization.translate("Chat with us"),
-                        style: GoogleFonts.lato(
-                          fontSize: screenWidth * 0.045,
-                          color: Colors.white,
+                        child: Text(
+                          localization.translate("Chat with us"),
+                          style: GoogleFonts.lato(
+                            fontSize: screenWidth * 0.045,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      
     );
   }
 

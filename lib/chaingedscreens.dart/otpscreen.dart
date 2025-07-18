@@ -41,12 +41,15 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   /// Single controller instead of 6 controllers
   final TextEditingController otpController = TextEditingController();
+ // final TextEditingController _mobileController = TextEditingController();
 
   String receivedOtp = ""; // API response lo OTP store cheyyali
   bool isLoading = true;
 
   late SharedPreferences prefs;
   String phoneNumber = '';
+
+  String? savedMobileNumber;
 
   bool isOtpReceived = false;
   bool isOtpMessageReceived = false; // ✅ OTP Message వచ్చిన తర్వాత Auto‑Fill/Manual Entry కోసం
@@ -75,12 +78,25 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
+
+
+  Future<void> _loadSavedMobileNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      savedMobileNumber = prefs.getString('phoneNumber');
+    });
+  }
+
+  
+
+
   @override
   void initState() {
     super.initState();
     fetchOtpFromApi();
     startTimer();
     loadUserDetails();
+    _loadSavedMobileNumber();
   }
 
   Future<void> loadUserDetails() async {
@@ -358,7 +374,7 @@ void showStylishSuccessSheet(BuildContext context) {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Verification Successful!',
+                     localization.translate("Verification Successful!"),
                       style: GoogleFonts.poppins(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -406,9 +422,9 @@ void showStylishSuccessSheet(BuildContext context) {
                 ),
               ),
 
-              // Floating Success Icon (No margin, use Positioned)
+
               Positioned(
-                top: -25, // move up outside the sheet
+                top: -25,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -519,7 +535,7 @@ void showStylishSuccessSheet(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(3, 4, 22, 1),
+      backgroundColor: const Color.fromRGBO(3, 4, 22, 1),
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
@@ -531,7 +547,7 @@ void showStylishSuccessSheet(BuildContext context) {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const CurvedImageScreen2()),
+              MaterialPageRoute(builder: (context) => const CurvedImageScreen3()),
             );
           },
         ),
@@ -544,13 +560,15 @@ void showStylishSuccessSheet(BuildContext context) {
                 SizedBox(height: screenHeight * 0.02),
                RichText(
   text: TextSpan(
-    text: "${localization.translate("Verification Code Sent to")} +${maskPhoneNumber(phoneNumber)}",
+    text: "${localization.translate("Verification Code Sent to")} +${maskPhoneNumber(savedMobileNumber?.isNotEmpty == true ? savedMobileNumber! : phoneNumber)}",
     style: GoogleFonts.poppins(
       color: Colors.black,
       fontSize: screenHeight * 0.02,
     ),
   ),
 ),
+
+
 
                 SizedBox(height: screenHeight * 0.02),
                 Row(
@@ -616,7 +634,7 @@ void showStylishSuccessSheet(BuildContext context) {
                   height: screenHeight * 0.06,
                   child: DecoratedBox(
                     decoration: const BoxDecoration(
-                      gradient: LinearGradient(
+                    gradient: LinearGradient(
                         colors: [
                           Color.fromRGBO(2, 5, 62, 1),
                           Color.fromRGBO(78, 67, 138, 1),
@@ -632,11 +650,11 @@ void showStylishSuccessSheet(BuildContext context) {
                         shadowColor: Colors.transparent,
                       ),
                       child: Text(
-                        localization.translate("Verify OTP"),
+                      localization.translate("Verify OTP"),
                         style: GoogleFonts.lato(
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenHeight * 0.02,
-                          color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenHeight * 0.02,
+                        color: Colors.white,
                         ),
                       ),
                     ),

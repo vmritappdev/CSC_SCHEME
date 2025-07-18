@@ -1,5 +1,5 @@
 
-import 'package:csc/customshapes/snake_painter.dart';
+
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/dashboardscreens/custmer_care.dart';
 import 'package:csc/dashboardscreens/brocher%20page.dart';
@@ -125,7 +125,7 @@ await prefs.setBool('isFirstTime', isFirstTime);
               Image.asset(
                 'assets/images/csc2.png',
                 color: Colors.white,
-                height: screenHeight * 0.1,
+                height: screenHeight * 0.05,
                 fit: BoxFit.contain,
               ),
 
@@ -144,18 +144,7 @@ await prefs.setBool('isFirstTime', isFirstTime);
         ),
 
         /// Blue Curve at Bottom
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: SizedBox(
-            height: screenHeight * 0.010,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: SnakePainter(),
-            ),
-          ),
-        ),
+       
       ],
     ),
   );

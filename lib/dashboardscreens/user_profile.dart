@@ -307,205 +307,213 @@ Future<void> fetchAndSaveImage() async {
 
   @override
   Widget build(BuildContext context) {
+
+    
+
+
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
 
     return WillPopScope(
        onWillPop: () async {
-//Navigator.pop(context);
+Navigator.pop(context);
       return false; // Prevent default back action
     },
-      child: SafeArea(
+      
         child: Scaffold(
-         
+          
+         appBar: AppBar(elevation: 0,backgroundColor:  Color.fromRGBO(2, 5, 67, 1),iconTheme: IconThemeData(color: Colors.white),),
           backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                 Container(
-        width: double.infinity,
-        color: Color.fromRGBO(2, 5, 67, 1),
-        padding: const EdgeInsets.fromLTRB(16, 40, 16, 24), // Top padding increased
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Back Button
-       BackButton(
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
-          },
-        ),
-      
-        const SizedBox(height: 20), // Gap between back button and profile
-      
-        // Row with avatar and name/phone
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Avatar with camera icon
-           Stack(
-                  children: [
-                   Positioned(
-          child: Stack(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () => _viewImage(context),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey[300],
-                      backgroundImage: savedImageUrl.isNotEmpty
-                          ? (savedImageUrl.startsWith('http')
-                              ? NetworkImage(savedImageUrl)
-                              : FileImage(File(savedImageUrl))) as ImageProvider
-                          : null,
-                      child: savedImageUrl.isEmpty
-                          ? Icon(Icons.person, size: 50, color: Colors.grey[600])
-                          : null,
+                   Container(
+                    width: double.infinity,
+                    color: Color.fromRGBO(2, 5, 67, 1),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 0, 10), // Top padding increased
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Back Button
+                  
+                  
+                    const SizedBox(height: 20), // Gap between back button and profile
+                  
+                    // Row with avatar and name/phone
+                    Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Avatar with camera icon
+             Stack(
+                    children: [
+                     Positioned(
+            child: Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _viewImage(context),
+                      child: CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey[300],
+                        backgroundImage: savedImageUrl.isNotEmpty
+                            ? (savedImageUrl.startsWith('http')
+                                ? NetworkImage(savedImageUrl)
+                                : FileImage(File(savedImageUrl))) as ImageProvider
+                            : null,
+                        child: savedImageUrl.isEmpty
+                            ? Icon(Icons.person, size: 50, color: Colors.grey[600])
+                            : null,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () => _pickImage(),
-                      child: const CircleAvatar(
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () => _pickImage(),
+                        child: const CircleAvatar(
                         radius: 16,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.camera_alt,
-                          size: 16,
-                          color: Color.fromRGBO(2, 5, 62, 1),
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 16,
+                            color: Color.fromRGBO(2, 5, 62, 1),
+                          ),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+                    ),
+                    
+                    ],
+                  ),
+              const SizedBox(width: 16),
+              // Name and number
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+
+
+                      Text(
+                        '$firstName',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+
+                      
+
+                      SizedBox(width: 8,),
+                  
+                        Text(
+                        '$lastName',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '91+ $phoneNumber',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
                     ),
                   ),
                 ],
               ),
-        ),
-        
-                  ],
-                ),
-            const SizedBox(width: 16),
-            // Name and number
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      '$firstName',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-      
-                      Text(
-                      '$lastName',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+            ],
                     ),
                   ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '91+ $phoneNumber',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-        ),
-      ),
-                const SizedBox(height: 16),
-                
-                const SizedBox(height: 20),
-        
-                // Navigation Buttons
-               _buildButton(
-          label: localization.translate("Change Profile"), // Pass localized string here
-          icon: Icons.person,
-          onPressed: () {
-        // Navigate to Edit Profile Screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-        );
-          },
-        ),
-        _buildButton(
-          label: localization.translate("Change Mpin"), // Pass localized string
-          icon: Icons.lock,
-          onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const EditMPINScreen()),
-        );
-          },
-        ),
-        
-        
-      
-        
-        _buildButton(
-          label: localization.translate("Help & Support"), // Pass localized string
-          icon: Icons.help,
-          onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const FAQScreen()),
-        );
-          },
-        ),
-        
-                const SizedBox(height: 40),
-      
-      
-      
-      
-                  InkWell(
-            onTap: () {
-            logout();
-              print("User logged out");
-              // Example:
-              // SharedPreferences prefs = await SharedPreferences.getInstance();
-              // await prefs.clear();
-              // Navigator.pushReplacement(...);
+                  const SizedBox(height: 16),
+                  
+                  const SizedBox(height: 20),
+                    
+                  // Navigation Buttons
+                 _buildButton(
+            label: localization.translate("Change Profile"), // Pass localized string here
+            icon: Icons.person,
+            onPressed: () {
+                    // Navigate to Edit Profile Screen
+                    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+                    );
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children:  [
-                Icon(Icons.power_settings_new, size: 20, color: Colors.red),
-                SizedBox(width: 8),
-                Text(localization.translate("Logout"), 
-                style: TextStyle(fontSize: 16, color: Colors.red)),
-              ],
-            ),
-             Text(
-               localization.translate("Terms & Policies"),
-              textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 12, color: Colors.teal),
-            ),
-          ],
+                    ),
+                    _buildButton(
+            label: localization.translate("Change Mpin"), // Pass localized string
+            icon: Icons.lock,
+            onPressed: () {
+                    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const EditMPINScreen()),
+                    );
+            },
+                    ),
+                    
+                    
+                  
+                    
+                    _buildButton(
+            label: localization.translate("Help & Support"), // Pass localized string
+            icon: Icons.help,
+            onPressed: () {
+                    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const FAQScreen()),
+                    );
+            },
+                    ),
+                    
+                  const SizedBox(height: 40),
+                  
+                  
+                  
+                  
+                    InkWell(
+              onTap: () {
+              logout();
+                print("User logged out");
+                // Example:
+                // SharedPreferences prefs = await SharedPreferences.getInstance();
+                // await prefs.clear();
+                // Navigator.pushReplacement(...);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children:  [
+                  Icon(Icons.power_settings_new, size: 20, color: Colors.red),
+                  SizedBox(width: 8),
+                  Text(localization.translate("Logout"), 
+                  style: TextStyle(fontSize: 16, color: Colors.red)),
+                ],
+              ),
+               Text(
+                 localization.translate("Terms & Policies"),
+                textAlign: TextAlign.right,
+                style: TextStyle(fontSize: 12, color: Colors.teal),
+              ),
+            ],
+                ),
               ),
             ),
-          ),
-        
-                
-              ],
+                    
+                  
+                ],
+              ),
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -561,7 +569,7 @@ Future<void> fetchAndSaveImage() async {
             ),
           ),
         ),
-      ),
+      
     );
   }
 

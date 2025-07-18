@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
@@ -174,7 +175,8 @@ Future<bool> checkInternet() async {
 
    bool hasInternet = await checkInternet();
     if (!hasInternet) {
-      _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
+      ErrorScreen();
+    //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
       return;
     }
 

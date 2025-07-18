@@ -1,8 +1,10 @@
 
 
 import 'package:csc/api_services.dart/active_api.dart';
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 
 import 'package:csc/chaingedscreens.dart/insatllment.dart';
+import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:csc/dashboardscreens/faq_screen.dart';
@@ -61,6 +63,8 @@ class _PaymentCardState extends State<PaymentCard> {
 
    bool isMyScreenCalled = false; 
 
+   
+
  String overdue = "no";
  bool isButtonActive = false; 
 
@@ -96,6 +100,19 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
   String? mobileNumber = prefs.getString('phoneNumber');
 
   String apiUrl = "$baseUrl/active_pop.php";   
+
+
+   bool hasInternet = await checkInternet();
+    if (!hasInternet) {
+    if (context.mounted) {
+      Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+        );
+      }
+      return null;
+    }
+
 
   try {
     final response = await http.post(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -34,13 +35,12 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child:  Image.asset(
-                  'assets/images/gif.gif', // Replace with your Lottie loader
-                  height: 100,
-                  width: 100,
-                ),
-      ),
+      body:Center(
+  child: SpinKitFadingFour(
+    color: Color.fromRGBO(2, 5, 67, 1,),
+    size: 40.0,
+  ),
+),
     );
   }
 }
