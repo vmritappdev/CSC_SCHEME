@@ -2,7 +2,7 @@ name: csc
 description: "CSC SCHEME"
 publish_to: 'none'
 
-version: 1.0.0+1  # version: version_number+build_number
+version: 1.0.1+1  # version: version_number+build_number
 
 
 environment:

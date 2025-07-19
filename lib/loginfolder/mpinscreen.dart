@@ -546,9 +546,9 @@ void _showErrorPopup( String message) {
             const SizedBox(height: 20),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(2, 5, 62, 1),
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(2, 5, 62, 1),
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),

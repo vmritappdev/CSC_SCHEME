@@ -5,7 +5,6 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/registationfolder/langvages%20page.dart';
 
-import 'package:csc/registationfolder/langvages.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -98,7 +97,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
             children: [
               BackButton(
                 color: Colors.white,
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageSelectionScreen2())),
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LanguageSelectionScreen2())),
               ),
               Text(localization.translate("Hello 👋"), style: titleStyle),
               const Icon(Icons.help_outline, color: Colors.white),

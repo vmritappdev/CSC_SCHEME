@@ -45,7 +45,7 @@ class EditMPINScreen extends StatefulWidget {
 
   Timer? _resendTimer;
   Timer? _otpExpireTimer;
-  int _otpExpireSeconds = 600; // 10 minutes
+  final int _otpExpireSeconds = 600; // 10 minutes
 
   @override
   void initState() {
@@ -244,7 +244,7 @@ void _onResendOtp() {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
         centerTitle: true,
         title: Column(
@@ -274,7 +274,7 @@ void _onResendOtp() {
                 controller: _controllerMobileNumber,
                 decoration:  InputDecoration(
                   labelText: localization.translate('Mobile Number'),
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
@@ -292,7 +292,7 @@ void _onResendOtp() {
                     style: const TextStyle(fontSize: 13, letterSpacing: 20),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: localization.translate('Enter OTP'),hintStyle: TextStyle(letterSpacing: 10),
+                      hintText: localization.translate('Enter OTP'),hintStyle: const TextStyle(letterSpacing: 10),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(
@@ -317,7 +317,7 @@ void _onResendOtp() {
                     style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
                     child:  Text(
                       localization.translate("Verify"),
-                    style: TextStyle(color: Colors.white),),
+                    style: const TextStyle(color: Colors.white),),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -325,7 +325,7 @@ void _onResendOtp() {
                   Text("${localization.translate("Resend OTP in")} $_timerSeconds ${localization.translate("seconds")}"),
                 if (_isResendAvailable)
                   TextButton(onPressed: _onResendOtp, child:  Text(localization.translate("Resend OTP"),
-                  style: TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),
+                  style: const TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),
               ] else
                 SizedBox(
                   width: double.infinity,
@@ -334,7 +334,7 @@ void _onResendOtp() {
                     style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
                     child:  Text(
                      localization.translate("Send OTP"),
-                    style: TextStyle(color: Colors.white),),
+                    style: const TextStyle(color: Colors.white),),
                   ),
                 )
             ],

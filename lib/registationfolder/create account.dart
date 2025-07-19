@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async'; // Import for async operations
-import 'dart:io';
 
 
 
@@ -201,7 +200,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   },
                   child:  Text(
                    localization.translate("OK"),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -282,7 +281,7 @@ Future<void> submitForm() async {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  OtpScreen()),
+            MaterialPageRoute(builder: (context) =>  const OtpScreen()),
           );
         } else {
           _showInvalidOTPDialog(responseData['message']);

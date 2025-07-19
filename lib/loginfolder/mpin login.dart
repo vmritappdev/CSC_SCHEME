@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/loginfolder/loginotp.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
@@ -443,22 +442,22 @@ Widget build(BuildContext context) {
         children: [
           Text(
 localization.translate('CSC App'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
            localization.translate('Are you sure do you want to exit?'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -466,7 +465,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(
                  localization.translate('CANCEL'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -477,7 +476,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                 localization.translate('EXIT'),
-                  style: TextStyle(
+                  style: const TextStyle(
                   fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -568,7 +567,7 @@ localization.translate('CSC App'),
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ForgotScreen()),
+            MaterialPageRoute(builder: (context) => const ForgotScreen()),
           );
         },
         child: Text(

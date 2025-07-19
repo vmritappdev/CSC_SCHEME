@@ -3,7 +3,6 @@ import 'dart:io';
 
 
 import 'package:csc/dashboardscreens/home_screen.dart';
-import 'package:csc/editprofile/editscheme.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/utillity/constant.dart';
@@ -121,18 +120,18 @@ Future<void> _pickImage() async {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text("Choose Option"),
+        title: const Text("Choose Option"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text("Gallery"),
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Gallery"),
               onTap: () => Navigator.of(context).pop(1),
             ),
             ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text("Camera"),
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Camera"),
               onTap: () => Navigator.of(context).pop(2),
             ),
           ],
@@ -178,7 +177,7 @@ Future<void> _pickImage() async {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => Dialog(
+        builder: (_) => const Dialog(
           backgroundColor: Colors.transparent,
           child: Center(
             child: CircularProgressIndicator(
@@ -189,7 +188,7 @@ Future<void> _pickImage() async {
       );
 
       // Simulate upload/save
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       setState(() {
         _image = newImage;
@@ -323,7 +322,7 @@ Future<void> fetchAndSaveImage() async {
               children: [
                  Container(
         width: double.infinity,
-        color: Color.fromRGBO(2, 5, 67, 1),
+        color: const Color.fromRGBO(2, 5, 67, 1),
         padding: const EdgeInsets.fromLTRB(16, 40, 16, 24), // Top padding increased
         child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,8 +392,8 @@ Future<void> fetchAndSaveImage() async {
                 Row(
                   children: [
                     Text(
-                      '$firstName',
-                      style: TextStyle(
+                      firstName,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -402,8 +401,8 @@ Future<void> fetchAndSaveImage() async {
                     ),
       
                       Text(
-                      '$lastName',
-                      style: TextStyle(
+                      lastName,
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -414,7 +413,7 @@ Future<void> fetchAndSaveImage() async {
                 const SizedBox(height: 4),
                 Text(
                   '91+ $phoneNumber',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.white,
                   ),
@@ -488,16 +487,16 @@ Future<void> fetchAndSaveImage() async {
           children: [
             Row(
               children:  [
-                Icon(Icons.power_settings_new, size: 20, color: Colors.red),
-                SizedBox(width: 8),
+                const Icon(Icons.power_settings_new, size: 20, color: Colors.red),
+                const SizedBox(width: 8),
                 Text(localization.translate("Logout"), 
-                style: TextStyle(fontSize: 16, color: Colors.red)),
+                style: const TextStyle(fontSize: 16, color: Colors.red)),
               ],
             ),
              Text(
                localization.translate("Terms & Policies"),
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 12, color: Colors.teal),
+              style: const TextStyle(fontSize: 12, color: Colors.teal),
             ),
           ],
               ),

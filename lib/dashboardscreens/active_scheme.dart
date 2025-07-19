@@ -441,7 +441,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
         controller: _refreshController,
         onRefresh: _onRefresh,
 
-          header: WaterDropHeader(
+          header: const WaterDropHeader(
           complete: Row(
           mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -450,7 +450,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
             Text("Refresh Completed", style: TextStyle(color: Colors.green)),
             ],
           ),
-         waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+         waterDropColor: Color.fromARGB(255, 4, 2, 29),
         ),
         child: SingleChildScrollView(
         child: Column(
@@ -997,11 +997,11 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 18),
-                    SizedBox(width: 8),
+                    const Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 18),
+                    const SizedBox(width: 8),
                     Text(
                      localization.translate('Payment Access Disabled'),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFFEF6C00),
@@ -1009,23 +1009,23 @@ void showPaymentAccessDisabledBottomSheet(BuildContext context) {
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Text(
                  localization.translate( 'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF5D4037),
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   children: [
-                    Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
-                    SizedBox(width: 8),
+                    const Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
+                    const SizedBox(width: 8),
                     Text(
                      localization.translate('Admin Contact: 94906 57008'),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFFBF360C),
@@ -1077,11 +1077,11 @@ void showClosedSchemeBottomSheet(BuildContext context) {
             children: [
               Row(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.red, size: 18),
-                  SizedBox(width: 8),
+                  const Icon(Icons.info_outline, color: Colors.red, size: 18),
+                  const SizedBox(width: 8),
                   Text(
                  localization.translate('Your Gold Scheme is Closed'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFFEF6C00),
@@ -1089,23 +1089,23 @@ void showClosedSchemeBottomSheet(BuildContext context) {
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(
                localization.translate('This scheme has been successfully completed or closed. Further payments cannot be made. For more details, please contact the store or start a new scheme.'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   color: Color(0xFF5D4037),
                   height: 1.5,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 children: [
-                  Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
-                  SizedBox(width: 8),
+                  const Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
+                  const SizedBox(width: 8),
                   Text(
                     localization.translate('Admin Contact: 94906 57008'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFFBF360C),
@@ -1152,11 +1152,11 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
         children: [
           Row(
             children: [
-              Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
-              SizedBox(width: 8),
+              const Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
+              const SizedBox(width: 8),
               Text(
                localization.translate('Your Gold Scheme is Suspended'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFFEF6C00),
@@ -1164,23 +1164,23 @@ void showSuspendedSchemeBottomSheet(BuildContext context) {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
            localization.translate( 'This scheme is currently suspended. Please contact the store to know the reason or request reactivation. Payments are temporarily disabled until the issue is resolved.'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Color(0xFF5D4037),
               height: 1.5,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
-              Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
-              SizedBox(width: 8),
+              const Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
+              const SizedBox(width: 8),
               Text(
               localization.translate('Admin Contact: 94906 57008'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFFBF360C),
@@ -1223,11 +1223,11 @@ void showReadyToPurchaseBottomSheet(BuildContext context) {
         children: [
           Row(
             children: [
-              Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
-              SizedBox(width: 8),
+              const Icon(Icons.warning_amber_outlined, color: Colors.deepOrange, size: 18),
+              const SizedBox(width: 8),
               Text(
               localization.translate('Your Gold Scheme is Ready To Purchase'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFFEF6C00),
@@ -1235,23 +1235,23 @@ void showReadyToPurchaseBottomSheet(BuildContext context) {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
            localization.translate('This scheme is now ready for purchase. Visit the store to redeem.'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Color(0xFF5D4037),
               height: 1.5,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
-              Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
-              SizedBox(width: 8),
+              const Icon(Icons.phone, size: 20, color: Color(0xFFEF6C00)),
+              const SizedBox(width: 8),
               Text(
                localization.translate('Admin Contact: 94906 57008'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFFBF360C),

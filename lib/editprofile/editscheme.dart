@@ -292,7 +292,7 @@ print("📸 Nominee Image Path: $nomineeimage");
         Future.delayed(const Duration(seconds: 2), () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
+            MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '')),
           );
         });
       } else {
@@ -713,7 +713,7 @@ Widget _buildNomineeRelationshipDropdown() {
             : null,
         decoration:  InputDecoration(
           labelText:localization.translate("Nominee Relationship*"),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         items: relationships.toSet().map((String item) {
           return DropdownMenuItem<String>(
@@ -746,7 +746,7 @@ Widget _buildNomineeRelationshipDropdown() {
           controller: otherController,
           decoration:  InputDecoration(
             labelText: localization.translate("Enter Custom Relationship"),
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
         ),
       ),

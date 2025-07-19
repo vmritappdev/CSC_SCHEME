@@ -107,7 +107,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ?  Center(
                   child: Text(
                    localization.translate("No new notifications"),
-                    style: TextStyle(fontSize: 16, color: Colors.red),
+                    style: const TextStyle(fontSize: 16, color: Colors.red),
                   ),
                 )
               : ListView.builder(
@@ -139,7 +139,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(notification.description,style: TextStyle(fontSize: 13),),
+            Text(notification.description,style: const TextStyle(fontSize: 13),),
             const SizedBox(height: 4),
             Text(
               '📅 ${_formatDate(notification.date)} 🕒 ${notification.time}',
@@ -244,7 +244,7 @@ String formatNotificationDateWithIST(DateTime dateTime) {
   final now = DateTime.now();
 
   // IST offset +5:30
-  final istDateTime = dateTime.add(Duration(hours: 5, minutes: 30));
+  final istDateTime = dateTime.add(const Duration(hours: 5, minutes: 30));
 
   final difference = now.difference(istDateTime).inDays;
 

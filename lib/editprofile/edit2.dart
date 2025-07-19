@@ -13,18 +13,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timezone/timezone.dart';
 
 void main() {
   runApp(
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
-      home: Editscheme(schemeId: ''),
+      home: const Editscheme(schemeId: ''),
     ),
   );
 }
@@ -38,7 +37,7 @@ enum ImageType {
 
 class Editscheme extends StatefulWidget {
   final String schemeId;
-  Editscheme({required this.schemeId});
+  const Editscheme({super.key, required this.schemeId});
 
   @override
   _EditschemeState createState() => _EditschemeState();
@@ -143,7 +142,7 @@ String regId = '';        // Holds Registration ID
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -267,10 +266,10 @@ Future<bool> checkInternet() async {
         ScaffoldMessenger.of(context).showSnackBar(
           
           SnackBar(content: Text(localization.translate("✅ Scheme updated successfully!"),
-          style: GoogleFonts.lato(color: Colors.white),),backgroundColor: Color.fromRGBO(2, 5, 62, 1),),
+          style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
         );
 
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => JewelryTransactionScreen(schemeId: widget.schemeId)), // Replace with your actual next screen
@@ -285,7 +284,7 @@ Future<bool> checkInternet() async {
   } catch (e) {
     print("❌ Error updating scheme: $e");
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("❌ Failed to update scheme.")),
+      const SnackBar(content: Text("❌ Failed to update scheme.")),
     );
   }
 }
@@ -406,16 +405,16 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
       return Wrap(
         children: [
           ListTile(
-            leading: Icon(Icons.camera),
-            title: Text('Camera'),
+            leading: const Icon(Icons.camera),
+            title: const Text('Camera'),
             onTap: () async {
               Navigator.pop(context);
               await _getImage(ImageSource.camera, isPanCard);
             },
           ),
           ListTile(
-            leading: Icon(Icons.image),
-            title: Text('Gallery'),
+            leading: const Icon(Icons.image),
+            title: const Text('Gallery'),
             onTap: () async {
               Navigator.pop(context);
               await _getImage(ImageSource.gallery, isPanCard);
@@ -454,16 +453,16 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
 double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
       ),
-      iconTheme: IconThemeData(color: Colors.white),
-      backgroundColor: Color.fromRGBO(2, 6, 67, 1),
+      iconTheme: const IconThemeData(color: Colors.white),
+      backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -471,9 +470,8 @@ double screenHeight = MediaQuery.of(context).size.height;
                   
                   
                   
-                      Align(child: Text(localization.translate("Edit Customer Information"),
+                      Align(alignment: Alignment.bottomLeft,child: Text(localization.translate("Edit Customer Information"),
                       style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
-                      alignment: Alignment.bottomLeft,
                       ),
                   
                   
@@ -483,15 +481,15 @@ double screenHeight = MediaQuery.of(context).size.height;
                         children: [
                          Text(
   "${localization.translate("Scheme Amount")} ₹$schemeAmount",
-  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
 ),
 
                   
-                              SizedBox(width: 15,),
+                              const SizedBox(width: 15,),
                   
                               Text(
   "${localization.translate("Scheme No")} $regId",
-  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
 ),
 
                         ],
@@ -506,7 +504,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                       _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
                       _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
                       _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
-                        SizedBox(
+                        const SizedBox(
                       // height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
                      ),
                     //  _buildTextField(dobController, localization.translate("Date of Birth*")),
@@ -596,8 +594,7 @@ _buildTextField(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                      ),
                   
-                       Align(child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       alignment: Alignment.bottomLeft,
+                       Align(alignment: Alignment.bottomLeft,child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
                        ),
                   
                          SizedBox(
@@ -644,8 +641,7 @@ _buildTextField(
                        height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
                      ),
                   
-                       Align(child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       alignment: Alignment.bottomLeft,
+                       Align(alignment: Alignment.bottomLeft,child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
                        ),
                   
                          SizedBox(
@@ -770,7 +766,7 @@ _buildDocumentRow(
                         imageUrl,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) =>
-                            Icon(Icons.broken_image, size: 100, color: Colors.white),
+                            const Icon(Icons.broken_image, size: 100, color: Colors.white),
                       ),
                     ),
                   ),
@@ -780,7 +776,7 @@ _buildDocumentRow(
                 top: 30,
                 left: 20,
                 child: IconButton(
-                  icon: Icon(Icons.clear, color: Colors.white, size: 30),
+                  icon: const Icon(Icons.clear, color: Colors.white, size: 30),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -804,10 +800,10 @@ _buildDocumentRow(
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    const Icon(Icons.broken_image, size: 40, color: Colors.grey),
               ),
             )
-          : Icon(Icons.image, size: 40, color: Colors.grey),
+          : const Icon(Icons.image, size: 40, color: Colors.grey),
     ),
   );
 }
@@ -841,9 +837,9 @@ Widget _buildTextField(
         keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(fontSize: 12),
+          labelStyle: const TextStyle(fontSize: 12),
           counterText: '',
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           filled: readOnly,
           fillColor: readOnly ? Colors.grey.shade200 : null,
         ),
@@ -882,9 +878,9 @@ Widget _buildDateField(
         readOnly: true,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(fontSize: 12),
-          border: OutlineInputBorder(),
-          suffixIcon: Icon(Icons.calendar_today),
+          labelStyle: const TextStyle(fontSize: 12),
+          border: const OutlineInputBorder(),
+          suffixIcon: const Icon(Icons.calendar_today),
         ),
         validator: (value) {
           if (isRequired && (value == null || value.trim().isEmpty)) {
@@ -961,8 +957,8 @@ Widget _buildNomineeRelationshipDropdown() {
             ? selectedRelationship
             : null,
         decoration:  InputDecoration(
-          labelText:localization.translate("Nominee Relationship*"),labelStyle: TextStyle(fontSize: 12),
-          border: OutlineInputBorder(),
+          labelText:localization.translate("Nominee Relationship*"),labelStyle: const TextStyle(fontSize: 12),
+          border: const OutlineInputBorder(),
         ),
         items: relationships.toSet().map((String item) {
           return DropdownMenuItem<String>(
@@ -1038,8 +1034,8 @@ Widget _buildEmailField() {
   ],
           controller: otherController,
           decoration:  InputDecoration(
-            labelText: localization.translate("Enter Custom Relationship"),labelStyle: TextStyle(fontSize: 12),
-            border: OutlineInputBorder(),
+            labelText: localization.translate("Enter Custom Relationship"),labelStyle: const TextStyle(fontSize: 12),
+            border: const OutlineInputBorder(),
           ),
           validator: (value) {
           if (isOtherRelationVisible) {
@@ -1123,16 +1119,16 @@ Future<void> _pickImage1(ImageSource source) async {
       builder: (context) => Wrap(
         children: [
           ListTile(
-            leading: Icon(Icons.camera_alt),
-            title: Text("Camera"),
+            leading: const Icon(Icons.camera_alt),
+            title: const Text("Camera"),
             onTap: () {
               Navigator.pop(context);
               _pickImage1(ImageSource.camera);
             },
           ),
           ListTile(
-            leading: Icon(Icons.photo_library),
-            title: Text("Gallery"),
+            leading: const Icon(Icons.photo_library),
+            title: const Text("Gallery"),
             onTap: () {
               Navigator.pop(context);
               _pickImage1(ImageSource.gallery );
@@ -1159,8 +1155,8 @@ Widget buildnominee() {
             controller: nomineeadharController,
             decoration: InputDecoration(
               counterText: '',
-              labelText:localization.translate('Nominee Adhar Number'),labelStyle: TextStyle(fontSize: 12),
-              border: OutlineInputBorder(),
+              labelText:localization.translate('Nominee Adhar Number'),labelStyle: const TextStyle(fontSize: 12),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -1173,7 +1169,7 @@ Widget buildnominee() {
           ),
         ),
       ),
-      SizedBox(width: 5),
+      const SizedBox(width: 5),
 
       GestureDetector(
         onTap: () {
@@ -1206,7 +1202,7 @@ Widget buildnominee() {
                         fit: BoxFit.cover,
                       ),
                     )
-                  : Icon(Icons.add_a_photo),
+                  : const Icon(Icons.add_a_photo),
         ),
       ),
     ],
@@ -1228,7 +1224,7 @@ void _showImagePreview(BuildContext context) {
                 ? Image.file(_image!, fit: BoxFit.contain)
                 : (nomineeImage != null && nomineeImage!.isNotEmpty)
                     ? Image.network(nomineeImage!, fit: BoxFit.contain)
-                    : Center(child: Icon(Icons.image, color: Colors.white, size: 100)),
+                    : const Center(child: Icon(Icons.image, color: Colors.white, size: 100)),
           ),
 
           // Clear icon (left) with circular background
@@ -1240,12 +1236,12 @@ void _showImagePreview(BuildContext context) {
                 Navigator.pop(context);
               },
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.clear, color: Colors.white, size: 20),
+                padding: const EdgeInsets.all(8),
+                child: const Icon(Icons.clear, color: Colors.white, size: 20),
               ),
             ),
           ),
@@ -1260,12 +1256,12 @@ void _showImagePreview(BuildContext context) {
                 _showImageSourceOptions();
               },
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.edit, color: Colors.white, size: 20),
+                padding: const EdgeInsets.all(8),
+                child: const Icon(Icons.edit, color: Colors.white, size: 20),
               ),
             ),
           ),

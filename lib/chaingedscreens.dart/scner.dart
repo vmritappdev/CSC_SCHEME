@@ -12,7 +12,6 @@ import 'package:csc/upidetails/payment%20page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
@@ -354,25 +353,25 @@ _buildDetailCard(
   title: localization.translate('Bank Details'),
   entries: [
     _buildCopyRow(
-      localization.translate('Bank Name') + ':',
+      '${localization.translate('Bank Name')}:',
       'HDFC Bank',
       context,
       MediaQuery.of(context).size.width,
     ),
     _buildCopyRow(
-      localization.translate('Account No') + ':',
+      '${localization.translate('Account No')}:',
       '50200103097351',
       context,
       MediaQuery.of(context).size.width,
     ),
     _buildCopyRow(
-      localization.translate('IFSC Code') + ':',
+      '${localization.translate('IFSC Code')}:',
       'HDFC0002043',
       context,
       MediaQuery.of(context).size.width,
     ),
     _buildCopyRow(
-      localization.translate('A/C Holder') + ':',
+      '${localization.translate('A/C Holder')}:',
       'Chinni Srinivasulu Chetty Jewellers',
       context,
       MediaQuery.of(context).size.width,

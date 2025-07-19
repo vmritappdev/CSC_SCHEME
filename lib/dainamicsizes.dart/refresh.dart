@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PremiumRefreshScreen extends StatefulWidget {
+  const PremiumRefreshScreen({super.key});
+
   @override
   _PremiumRefreshScreenState createState() => _PremiumRefreshScreenState();
 }
@@ -11,7 +13,7 @@ class _PremiumRefreshScreenState extends State<PremiumRefreshScreen> {
   final RefreshController _refreshController = RefreshController();
 
   void _onRefresh() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setState(() {
      // items = ["New 1", "New 2", "New 3", "New 4"];
     });
@@ -21,11 +23,11 @@ class _PremiumRefreshScreenState extends State<PremiumRefreshScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Premium Pull to Refresh")),
+      appBar: AppBar(title: const Text("Premium Pull to Refresh")),
       body: SmartRefresher(
         controller: _refreshController,
         onRefresh: _onRefresh,
-        header: WaterDropHeader(
+        header: const WaterDropHeader(
           complete: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -32,7 +32,7 @@ class ErrorScreen extends StatelessWidget {
               const SizedBox(height: 24),
                Text(
                localization.translate('Something went wrong!'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -41,7 +41,7 @@ class ErrorScreen extends StatelessWidget {
               const SizedBox(height: 8),
                Text(
               localization.translate('Please try again later.'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
@@ -64,7 +64,7 @@ class ErrorScreen extends StatelessWidget {
                   },
                   child:  Text(
                    localization.translate('Retry'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Colors.white, // ✅ Text color white
                     ),

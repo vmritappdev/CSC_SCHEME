@@ -8,7 +8,6 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/dashboardscreens/terms_condition.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/loginfolder/forgotscreen%202.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/registationfolder/create%20account.dart';
@@ -357,22 +356,22 @@ void _showErrorPopup(String reason) {
         children: [
           Text(
 localization.translate('CSC App'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
            localization.translate('Are you sure do you want to exit?'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -380,7 +379,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(
                  localization.translate('CANCEL'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -391,7 +390,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                  localization.translate('EXIT'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -437,7 +436,7 @@ localization.translate('CSC App'),
                             Navigator.push(
                               context, 
                               MaterialPageRoute(
-                              builder: (context) =>  TermsAndConditionsScreen(),
+                              builder: (context) =>  const TermsAndConditionsScreen(),
                               )
                             );
                           },
@@ -479,7 +478,7 @@ localization.translate('CSC App'),
                       Navigator.pushReplacement(
                         context, 
                         MaterialPageRoute(
-                          builder: (context) => LoginOtpScreen(),
+                          builder: (context) => const LoginOtpScreen(),
                         )
                       );
                     },
@@ -500,7 +499,7 @@ localization.translate('CSC App'),
                      Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => LoginOtpScreen(),
+              builder: (context) => const LoginOtpScreen(),
             ),
           );
                 
@@ -516,7 +515,7 @@ localization.translate('CSC App'),
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>  CurvedImageScreen2(),
+            builder: (context) =>  const CurvedImageScreen2(),
           ),
         );
             },

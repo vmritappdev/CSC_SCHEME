@@ -578,10 +578,10 @@ else
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Order Details',
                   style: TextStyle(
                     fontSize: 11,

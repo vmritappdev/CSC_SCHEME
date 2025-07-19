@@ -315,7 +315,7 @@ Future<void> _fetchPayDetails(String id) async {
                 controller: _refreshController,
           onRefresh: _onRefresh,
       
-            header: WaterDropHeader(
+            header: const WaterDropHeader(
             complete: Row(
             mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -324,7 +324,7 @@ Future<void> _fetchPayDetails(String id) async {
               Text("Refresh Completed", style: TextStyle(color: Colors.green)),
               ],
             ),
-            waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+            waterDropColor: Color.fromARGB(255, 4, 2, 29),
           ),
                 child: Container(
                   color: Colors.white,

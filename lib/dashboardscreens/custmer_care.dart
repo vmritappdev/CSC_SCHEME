@@ -417,34 +417,34 @@ Future<void> requestCallPermission() async {
         // Adding the "Communication Address" box
         Text(
            localization.translate('Communication Address:'),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
           ),
         
-        SizedBox(height: 12),  // Space between the label and the address
+        const SizedBox(height: 12),  // Space between the label and the address
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.location_on, color: Color(0xFF023344), size: 30),
-            SizedBox(width: 12),
+            const Icon(Icons.location_on, color: Color(0xFF023344), size: 30),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                    localization.translate('Csc Jewellerys'),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black87),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Text(
       localization.translate('Mandapal Street,'),
-                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                        style: const TextStyle(color: Colors.black87, fontSize: 14),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                        localization.translate('Nellore - 524001'),
-                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                        style: const TextStyle(color: Colors.black87, fontSize: 14),
                       ),
                     ],
                   ),
@@ -452,12 +452,12 @@ Future<void> requestCallPermission() async {
                     children: [
                       Text(
       localization.translate('Andhra Pradesh'),
-                        style: TextStyle(color: Colors.black87, fontSize: 14),
+                        style: const TextStyle(color: Colors.black87, fontSize: 14),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
                      localization.translate('Mobile: 9490657008'),
-                        style: TextStyle(color: Colors.black54),
+                        style: const TextStyle(color: Colors.black54),
                       ),
                     ],
                   ),

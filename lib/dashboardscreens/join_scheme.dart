@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csc/api_services.dart/ifsc_codeapi.dart';
-import 'package:csc/api_services.dart/pincode_api.dart';
 import 'package:csc/api_services.dart/scheme_fetchdetails.dart';
 import 'package:csc/api_services.dart/scheme_submitform.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -864,7 +863,7 @@ DateTime? selectedDate;
 
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(
-          content: Text(localization.translate('You must be 18 years or older to select this date.'),style: TextStyle(fontSize: 10),),
+          content: Text(localization.translate('You must be 18 years or older to select this date.'),style: const TextStyle(fontSize: 10),),
           backgroundColor: Colors.red,
         ),
       );
@@ -1356,7 +1355,7 @@ DateTime? selectedDate;
                   
                   
                   
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                   
                   
                     _buildTextField(controller:  nomineeNameController, 
@@ -1956,7 +1955,7 @@ Widget buildRow4(){
             countryController.clear();
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Invalid pincode entered.')),
+            const SnackBar(content: Text('Invalid pincode entered.')),
           );
         }
       } else {
@@ -1965,7 +1964,7 @@ Widget buildRow4(){
     } catch (e) {
       // Handle API call failure
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No internet connection. Please try again.')),
+        const SnackBar(content: Text('No internet connection. Please try again.')),
       );
     }
   }
@@ -2333,7 +2332,7 @@ Widget _buildTextField1({
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: selectedImage != null
-                                  ? Image.file(selectedImage!)
+                                  ? Image.file(selectedImage)
                                   : Image.network(adharImage!, fit: BoxFit.cover),
                             ),
                             Positioned(
@@ -2583,7 +2582,7 @@ Widget _buildTextField2({
                 maxLength: maxLength,
                 decoration: InputDecoration(
                   labelText: label,
-                  hintText: hintText,hintStyle: TextStyle(fontSize: 10),
+                  hintText: hintText,hintStyle: const TextStyle(fontSize: 10),
                   counterText: "",
                   border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -2629,7 +2628,7 @@ Widget _buildTextField2({
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: selectedImage != null
-                                  ? Image.file(selectedImage!)
+                                  ? Image.file(selectedImage)
                                   : Image.network(panImage!, fit: BoxFit.cover),
                             ),
                             Positioned(

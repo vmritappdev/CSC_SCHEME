@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GoldCardList extends StatefulWidget {
+  const GoldCardList({super.key});
+
   @override
   _GoldCardListState createState() => _GoldCardListState();
 }
@@ -29,7 +31,7 @@ class _GoldCardListState extends State<GoldCardList> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Removed $removedName's card"),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -38,14 +40,14 @@ class _GoldCardListState extends State<GoldCardList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(), // if used inside scrollable page
+      physics: const NeverScrollableScrollPhysics(), // if used inside scrollable page
       shrinkWrap: true,
       itemCount: cards.length,
       itemBuilder: (context, index) {
         final card = cards[index];
         return Card(
           elevation: 2,
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -58,31 +60,31 @@ class _GoldCardListState extends State<GoldCardList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(card["name"]!,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 13.5, fontWeight: FontWeight.w600)),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text("Scheme ID: ${card["id"]}",
-                          style: TextStyle(fontSize: 11.5)),
+                          style: const TextStyle(fontSize: 11.5)),
                     ],
                   ),
                 ),
                 Container(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.orange.shade50,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
                     card["status"]!,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: Colors.orange),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.close, size: 18, color: Colors.grey),
+                  icon: const Icon(Icons.close, size: 18, color: Colors.grey),
                   onPressed: () => removeCard(index),
                 ),
               ],

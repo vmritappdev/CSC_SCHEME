@@ -129,7 +129,9 @@ class _OtpScreen1State extends State<OtpScreen1> {
 
     if (now.difference(otpReceivedTime).inMinutes >= 10) {
       _showInvalidOTPDialog("OTP expired, please resend");
-      otpControllers.forEach((controller) => controller.clear());
+      for (var controller in otpControllers) {
+        controller.clear();
+      }
       focusNodes.first.requestFocus();
       return;
     }
@@ -218,7 +220,7 @@ class _OtpScreen1State extends State<OtpScreen1> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    localization.translate("OTP sent to") + " ${phoneNumber.replaceRange(0, 6, "XXXXXX")}",
+                    "${localization.translate("OTP sent to")} ${phoneNumber.replaceRange(0, 6, "XXXXXX")}",
                     style: GoogleFonts.lato(fontSize: 16),
                   ),
                   const SizedBox(height: 20),

@@ -153,7 +153,7 @@ Future<void> _fetchNotificationCount() async {
             "mobile_no": mobileNumber,
           },
         )
-        .timeout(Duration(seconds: 10)); // 👈 timeout added here
+        .timeout(const Duration(seconds: 10)); // 👈 timeout added here
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
@@ -301,7 +301,7 @@ void _startPolling() {
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
       await _fetchVerificationResponse();
-       _notificationTimer = Timer.periodic(Duration(seconds: 15), (timer) {
+       _notificationTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
     _fetchNotificationCount();
   });
     
@@ -452,24 +452,24 @@ void showCompletePopup(VerificationResponse response) {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentCard()));
                   },
-                  child: Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
+                  child: const Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                   Navigator.of(context, rootNavigator: true).pop();
-                  await Future.delayed(Duration(milliseconds: 100));
+                  await Future.delayed(const Duration(milliseconds: 100));
                     _popupShown = false;
                     closePopupAPI();
                   },
-                  child: Text("OK", style: TextStyle(fontSize: 14,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
+                  child: const Text("OK", style: TextStyle(fontSize: 14,color: Colors.white)),
                 ),
               ],
             ),
@@ -647,22 +647,22 @@ void dispose() {
         children: [
           Text(
 localization.translate('CSC App'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
            localization.translate('Are you sure do you want to exit?'),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -670,7 +670,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(
                  localization.translate('CANCEL'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -681,7 +681,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                  localization.translate('EXIT'),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -752,7 +752,7 @@ localization.translate('CSC App'),
           child: Container(
            // height: MediaQuery.of(context).size.width * 0.08,  // Dynamic height based on screen width
            // width: MediaQuery.of(context).size.width * 0.08,   // Dynamic width based on screen width
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
          //color: Colors.blueGrey, 
          //borderRadius: BorderRadius.circular(5),
             ),
@@ -775,7 +775,7 @@ localization.translate('CSC App'),
         color: Colors.white,
         size: MediaQuery.of(context).size.width * 0.05,
       ),
-      SizedBox(width: 4), // Spacing between icon and text
+      const SizedBox(width: 4), // Spacing between icon and text
       Text(
         'EN', // or use Provider.of<LocalizationProvider>(context).languageCode
         style: TextStyle(
@@ -857,7 +857,7 @@ localization.translate('CSC App'),
           controller: _refreshController,
           onRefresh: _onRefresh,
       
-            header: WaterDropHeader(
+            header: const WaterDropHeader(
             complete: Row(
             mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -866,7 +866,7 @@ localization.translate('CSC App'),
               Text("Refresh Completed", style: TextStyle(color: Colors.green)),
               ],
             ),
-            waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+            waterDropColor: Color.fromARGB(255, 4, 2, 29),
           ),
            child: Column(
               children: [
@@ -1159,7 +1159,7 @@ localization.translate('CSC App'),
               onTap: () {
                 Navigator.push(
                   context, 
-                  MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
+                  MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '')),
                 );
               },
               child: Image.asset(
@@ -1301,7 +1301,7 @@ localization.translate('CSC App'),
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BrochureScreen(),
+                          builder: (context) => const BrochureScreen(),
                         ),
                       );
                     });

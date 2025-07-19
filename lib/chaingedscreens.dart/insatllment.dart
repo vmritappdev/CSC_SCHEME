@@ -390,10 +390,10 @@ Color getStatusColor(String? status) {
                   
                     
                      Padding(
-            padding: EdgeInsets.only(left: 12, top: 4, bottom: 4),
+            padding: const EdgeInsets.only(left: 12, top: 4, bottom: 4),
             child: Text(
              localization.translate('Choose payment option'),
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
             ),
                     ),
                     const SizedBox(height: 20),
@@ -413,7 +413,7 @@ Color getStatusColor(String? status) {
               ),
                Text(
               localization.translate('Pay Installment'),
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(width: 10),
               
@@ -469,7 +469,7 @@ Color getStatusColor(String? status) {
               ),
                Text(
               localization.translate( 'Pay any amount'),
-                style: TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14),
               ),
             ],
                     ),
@@ -580,11 +580,11 @@ Color getStatusColor(String? status) {
             children: [
               Row(
                 children: [
-                  Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
-                  SizedBox(width: 8),
+                  const Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 14),
+                  const SizedBox(width: 8),
                   Text(
                     localization.translate('Payment Access Disabled'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFFEF6C00),
@@ -592,24 +592,24 @@ Color getStatusColor(String? status) {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 localization.translate(
                     'You have not paid your installment for over 60 days. As a result, the direct payment option has been disabled. Please contact CSC Jewellers admin or visit our branch in Nellore.'),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 11,
                   color: Color(0xFF5D4037),
                   height: 1.4,
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Row(
                 children: [
-                  Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
-                  SizedBox(width: 6),
+                  const Icon(Icons.phone, size: 18, color: Color(0xFFEF6C00)),
+                  const SizedBox(width: 6),
                   Text(
                     localization.translate('Admin Contact: 94906 57008'),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFFBF360C),
@@ -636,8 +636,8 @@ Color getStatusColor(String? status) {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.info_outline, size: 16, color: Colors.blueAccent),
-                    SizedBox(width: 8),
+                    const Icon(Icons.info_outline, size: 16, color: Colors.blueAccent),
+                    const SizedBox(width: 8),
                     Expanded(
             child: Text(
               localization.translate(

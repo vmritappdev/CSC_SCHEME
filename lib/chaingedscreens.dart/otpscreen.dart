@@ -432,7 +432,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     style: const TextStyle(fontSize: 13, letterSpacing: 20),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: localization.translate('Enter OTP'),hintStyle: TextStyle(letterSpacing: 8),
+                      hintText: localization.translate('Enter OTP'),hintStyle: const TextStyle(letterSpacing: 8),
                       contentPadding: const EdgeInsets.symmetric(vertical: 12),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(

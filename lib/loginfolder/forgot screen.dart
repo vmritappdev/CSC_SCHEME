@@ -2,7 +2,6 @@
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
-import 'package:csc/registationfolder/create%20account.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
@@ -295,18 +294,18 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(
-                    builder: (context) => LoginPage(), )
+                    builder: (context) => const LoginPage(), )
                 );
                 // Navigator.pop(context); // ← బాగా ఉపయోగపడుతుంది back navigation కి
                },
-               icon: Icon(Icons.arrow_forward), // ← Left side arrow icon
+               icon: const Icon(Icons.arrow_forward), // ← Left side arrow icon
              ),
            ),
 
               Image.asset('assets/images/csc2.png', height: 90),
                Text(
                localization.translate('CSCJEWELLERYS'),
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
               ),
               const SizedBox(height: 40),
       
@@ -446,7 +445,7 @@ TextFormField(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: _isVerifyEnabled ? _checkOtpMatch : null,
-                    child:  Text(localization.translate("✅ Verify OTP"), style: TextStyle(color: Colors.white)),
+                    child:  Text(localization.translate("✅ Verify OTP"), style: const TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
