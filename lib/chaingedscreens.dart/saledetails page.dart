@@ -31,7 +31,6 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
 
    String? sqlQuery = '';
 
-    static const brochureUrl = '$baseUrl/sale_print_api.php';
 
 
    bool isLoading = false;
@@ -308,7 +307,7 @@ Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
   }
 
   Widget _buildDetailRow(String label, String value, bool isSmallScreen, {bool isAmount = false}) {
-      final localization = Provider.of<LocalizationProvider>(context);
+      Provider.of<LocalizationProvider>(context);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: isSmallScreen ? 6 : 8),
       child: Row(

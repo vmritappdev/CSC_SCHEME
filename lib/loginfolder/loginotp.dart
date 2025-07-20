@@ -14,12 +14,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginOtpScreen extends StatefulWidget {
-  const LoginOtpScreen({super.key});
-
   @override
   _LoginOtpScreenState createState() => _LoginOtpScreenState();
 }
@@ -27,7 +26,6 @@ class LoginOtpScreen extends StatefulWidget {
 class _LoginOtpScreenState extends State<LoginOtpScreen> {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
   bool isOtpSent = false;
   bool isLoading = false;
@@ -35,7 +33,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   Timer? _otpTimer;
   Timer? _resendTimer;
   int _otpExpireSeconds = 600; // 10 minutes
-  int _resendWaitSeconds = 30;
+  int _resendWaitSeconds = 60;
   bool canResend = false;
 
   final _pinFocus = FocusNode();   // optional, keyboard open ఉన్నట్టే ఉంటుంది
@@ -109,7 +107,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
   void startOtpTimer() {
     _otpTimer?.cancel();
     _otpExpireSeconds = 600;
-    _otpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _otpTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() => _otpExpireSeconds--);
       if (_otpExpireSeconds <= 0) {
         _otpTimer?.cancel();
@@ -120,8 +118,8 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
 
   void startResendTimer() {
     _resendTimer?.cancel();
-    _resendWaitSeconds = 30;
-    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _resendWaitSeconds = 60;
+    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() => _resendWaitSeconds--);
       if (_resendWaitSeconds <= 0) {
         canResend = true;
@@ -149,7 +147,7 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
     await _fetchUserDetails();
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const CreateMpinScreen5()),
+      MaterialPageRoute(builder: (_) => CreateMpinScreen5()),
     );
   } else {
     // ❌ OTP invalid
@@ -247,14 +245,14 @@ void showError( String message) {
       child: Scaffold(
         appBar: AppBar(title: Text(
          localization.translate("Login with OTP"),
-          style: const TextStyle(color: Colors.white),),
-        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
+          style: TextStyle(color: Colors.white),),
+        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
         leading: BackButton(color: Colors.white,
         onPressed: () {
           Navigator.pushReplacement(
             context, 
             MaterialPageRoute(
-              builder: (context) => const LoginScreen1(),
+              builder: (context) => LoginScreen1(),
             )
           );
         },
@@ -270,34 +268,43 @@ void showError( String message) {
           
                 Image.asset('assets/images/otp.4.jpg'),
           
-                const SizedBox(height: 20,),
+                SizedBox(height: 20,),
                 TextFormField(
                   
                   controller: mobileController,
                   keyboardType: TextInputType.phone,
                   
-                  decoration: InputDecoration(labelText: 
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 
+                  
                   localization.translate("Mobile Number"),
                   counterText: '',
-                  prefixIcon: const Icon(Icons.phone_android)
+                  prefixIcon: Icon(Icons.phone_android)
                   ),
                   maxLength: 10,
                 ),
           
           
-                const SizedBox(height: 20,),
+                SizedBox(height: 20,),
+
+                
               SizedBox(
           width: double.infinity,
           child: ElevatedButton(
                 onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
                 style: ElevatedButton.styleFrom(
+                  
           backgroundColor: (isLoading || isOtpSent)
               ? Colors.grey
-              : Theme.of(context).primaryColor,
+              : const Color.fromARGB(255, 12, 1, 72),
+              shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5), // ✅ Border Radius here
+    ),
                 ),
                 child: Text(
          localization.translate("Get OTP"),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -306,7 +313,7 @@ void showError( String message) {
                 ),
                 
                 if (isOtpSent) ...[
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
 
              TextFormField(
@@ -316,7 +323,7 @@ void showError( String message) {
   maxLength: 6,
   autofillHints: const [AutofillHints.oneTimeCode],
   
-   style: const TextStyle(
+   style: TextStyle(
       fontSize: 18,
       letterSpacing: 32, // for spaced digits look
       fontWeight: FontWeight.bold,
@@ -325,14 +332,14 @@ void showError( String message) {
     decoration: InputDecoration(
       counterText: '',
       hintText: localization.translate('Enter OTP'),
-      hintStyle: const TextStyle(letterSpacing: 2,fontSize: 13),
-      contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      hintStyle: TextStyle(letterSpacing: 2,fontSize: 13),
+      contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
-        borderSide: const BorderSide(
+        borderSide: BorderSide(
           color: Color.fromRGBO(2, 5, 67, 1),
           width: 2,
         ),
@@ -355,15 +362,22 @@ void showError( String message) {
   ),
 ),
 
+
+
+              /*
                   SizedBox(
+                    
                     width: double.infinity,
                     child: ElevatedButton(
+                      
                       onPressed: validateOtp,
                       child: Text(
                         localization.translate("Verify OTP"),
-                      style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
                     ),
                   ),
+
+                  */
                  // Text("OTP expires in ${_otpExpireSeconds ~/ 60}:${(_otpExpireSeconds % 60).toString().padLeft(2, '0')}")
                 ]
               ],

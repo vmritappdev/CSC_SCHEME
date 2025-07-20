@@ -19,7 +19,7 @@ class OtpScreen1 extends StatefulWidget {
 
 class _OtpScreen1State extends State<OtpScreen1> {
   final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  List.generate(6, (_) => TextEditingController());
   final List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
   late SharedPreferences prefs;
   String phoneNumber = '';
@@ -27,7 +27,6 @@ class _OtpScreen1State extends State<OtpScreen1> {
   bool isOtpMessageReceived = false;
   bool _isResendAvailable = false;
   bool _isLoading = false;
-  bool _isOtpVisible = false;
   int timerSeconds = 30;
   DateTime otpReceivedTime = DateTime.now();
 
@@ -64,7 +63,6 @@ class _OtpScreen1State extends State<OtpScreen1> {
         receivedOtp = responseData['otp'].toString();
         otpReceivedTime = DateTime.now();
         _isLoading = false;
-        _isOtpVisible = true;
         isOtpMessageReceived = true;
         _isResendAvailable = false;
         timerSeconds = 30;

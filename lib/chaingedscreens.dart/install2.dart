@@ -793,8 +793,8 @@ Color getStatusColor(String? status) {
                   int installmentAmount = double.parse(installments[selectedInstallment]["amount"].toString()).toInt();
                   int balAmount = balanceAmount?.toInt() ?? 0;
                   String paymentStatus = installments[selectedInstallment]["payment_status"].toString();
-                 String countStr = installments[selectedInstallment]['count'].toString();
-                  int count = int.tryParse(countStr) ?? 0;
+                 //String countStr = installments[selectedInstallment]['count'].toString();
+                 // int count = int.tryParse(countStr) ?? 0;
                   
                   String finalAmount;
             
@@ -840,61 +840,7 @@ Color getStatusColor(String? status) {
 
 
 
-  void _showInvalidOTPDialog() {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-  final localization = Provider.of<LocalizationProvider>(context);
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-               localization.translate('Oops! You’re only allowed to pay up to your installment amount.'),
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                 localization.translate("OK"),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+ 
 
 void _showInvalidOTPDialog1() {
   final double screenWidth = MediaQuery.of(context).size.width;

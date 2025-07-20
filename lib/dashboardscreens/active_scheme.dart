@@ -1,8 +1,10 @@
 
 
 import 'package:csc/api_services.dart/active_api.dart';
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 
 import 'package:csc/chaingedscreens.dart/insatllment.dart';
+import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:csc/dashboardscreens/faq_screen.dart';
@@ -47,11 +49,11 @@ class PaymentCard extends StatefulWidget {
 
 class _PaymentCardState extends State<PaymentCard> {
   SchemeResponseNew? activeSchemeNew;
-  bool isDataLoaded = false; // Flag to track if data is loaded
+  bool isDataLoaded = false; 
    final RefreshController _refreshController = RefreshController();
 
   void _onRefresh() async {
-  await loadSchemes(); // <-- Load schemes again during refresh
+  await loadSchemes(); 
   _refreshController.refreshCompleted();
 }
 
@@ -59,10 +61,12 @@ class _PaymentCardState extends State<PaymentCard> {
 
    
 
-   bool isMyScreenCalled = false; // Add this at the top of your StatefulWidget class.
+   bool isMyScreenCalled = false; 
+
+   
 
  String overdue = "no";
- bool isButtonActive = false; // Track if button is clicked
+ bool isButtonActive = false; 
 
  final ActiveSchemeService _service = ActiveSchemeService();
 
@@ -88,62 +92,6 @@ class _PaymentCardState extends State<PaymentCard> {
  
 
 
-   void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-
-               
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
 
 
@@ -152,6 +100,19 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
   String? mobileNumber = prefs.getString('phoneNumber');
 
   String apiUrl = "$baseUrl/active_pop.php";   
+
+
+   bool hasInternet = await checkInternet();
+    if (!hasInternet) {
+    if (context.mounted) {
+      Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+        );
+      }
+      return null;
+    }
+
 
   try {
     final response = await http.post(
@@ -192,9 +153,9 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
 
 void showNoSchemePopup(BuildContext currentContext) {
     final localization = Provider.of<LocalizationProvider>(context, listen: false);
-  // Check if the dialog is already shown
+ 
   if (isDataLoaded && (activeSchemeNew == null || activeSchemeNew!.schemeDetails.isEmpty) && !showDialogFlag) {
-  showDialogFlag = true;  // Prevent showing the dialog again
+  showDialogFlag = true;  
   Future.microtask(() {
    showDialog(
     context: currentContext,
@@ -239,15 +200,14 @@ void showNoSchemePopup(BuildContext currentContext) {
           const SizedBox(height: 20),
         ],
       ),
-      actionsPadding: EdgeInsets.zero, // Remove default actions padding
+      actionsPadding: EdgeInsets.zero, 
       actions: [
         Container(
           width: double.infinity,
           decoration: const BoxDecoration(
             color: Color.fromRGBO(2, 5, 62, 1),
             borderRadius: BorderRadius.only(
-              //bottomLeft: Radius.circular(20),
-             // bottomRight: Radius.circular(20),
+              
             ),
           ),
           child: TextButton(
@@ -261,7 +221,7 @@ void showNoSchemePopup(BuildContext currentContext) {
               );
             },
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 15), // Fix button height
+              padding: const EdgeInsets.symmetric(vertical: 15), 
             ),
             child: Text(
               localization.translate("OK"),
@@ -280,7 +240,7 @@ void showNoSchemePopup(BuildContext currentContext) {
 }
 }
 
-  // Submit form and send data to API
+
  
 
 Future<void> loadSchemes() async {
@@ -315,7 +275,7 @@ String getDueText(String dueDate, String schemeStatus) {
     return "Discounted Scheme";
   }
 
-  // Otherwise, calculate due days normally (only if Active)
+ 
   final currentDate = DateTime.now();
   final dueDateTime = DateTime(
     int.parse(dueDate.substring(0, 4)),
@@ -405,13 +365,10 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
   final currentContext = context;
 
      double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    double padding = screenWidth * 0.05;
 
      
 
-     // Show popup if activeSchemeNew is null or has no details
-  // Show popup if activeSchemeNew is null or has no details after data is loaded
+    
 
   checkSchemeDetails(currentContext, );
 
@@ -535,25 +492,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
                 ),
               ),
         
-              /*
-        
-                 Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    localization.translate("Closed Schemes"),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color.fromRGBO(43, 49, 101, 1),
-                    ),
-                  ),
-                ),
-              ),
-        
-              */
-        
+            
         
         
         
@@ -567,7 +506,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
                       _buildSectionTitle("Closed Schemes"),
                       _buildSchemeList(activeSchemeNew!.closedSchemes),
                     ],
-           // MyScreen(), // Closed schemes or any additional widget
+           
         
         
            const SizedBox(  height: 40)
@@ -589,7 +528,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
           localization.translate("Join Scheme"),
           style: GoogleFonts.lato(color: Colors.white,fontSize: 18),
         ),
-       // icon: const Icon(Icons.add, color: Colors.white),
+      
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -598,7 +537,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+         padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -679,17 +618,17 @@ double screenHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
         Container(
-         padding: EdgeInsets.all(screenWidth * 0.05),  // 4% of screen width
+         padding: EdgeInsets.all(screenWidth * 0.05),  
   margin: EdgeInsets.symmetric(
-    vertical: screenHeight * 0.01,  // 1% of screen height
-    horizontal: screenWidth * 0.04,  // 4% of screen width
+    vertical: screenHeight * 0.01,  
+    horizontal: screenWidth * 0.04,  
   ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade300,
+            BoxShadow(
+              color: Colors.grey.shade300,
                 blurRadius: 5.0,
                 spreadRadius: 2.0,
               ),
@@ -702,20 +641,12 @@ double screenHeight = MediaQuery.of(context).size.height;
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
 
-                  /*
-                 Image.asset(
-  image,
-  height: MediaQuery.of(context).size.height * 0.04, // 4% of screen height
-  width: MediaQuery.of(context).size.width * 0.08,   // 8% of screen width
-  fit: BoxFit.contain, // Ensures the image scales properly
-),
-
-    */              Expanded(
-                    child: Text(
-                      title,
+                    Expanded(
+                     child: Text(
+                    title,
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold,
-                        fontSize: 14* MediaQuery.of(context).textScaleFactor,
-                        color: const Color.fromRGBO(2, 5, 62, 1),)
+                      fontSize: 14* MediaQuery.of(context).textScaleFactor,
+                      color: const Color.fromRGBO(2, 5, 62, 1),)
                     ),
                   ),
             
@@ -811,8 +742,8 @@ double screenHeight = MediaQuery.of(context).size.height;
            Expanded(
   child: ElevatedButton(
     onPressed: () {
-      final status = (scheme_status ?? "").toLowerCase().trim();
-      final overdue = (over_due_status ?? "").toLowerCase().trim();
+      final status = (scheme_status).toLowerCase().trim();
+      final overdue = (over_due_status).toLowerCase().trim();
 
     if (overdue == "over due") {
   showPaymentAccessDisabledBottomSheet(context);
@@ -836,8 +767,8 @@ double screenHeight = MediaQuery.of(context).size.height;
     style: ButtonStyle(
       backgroundColor: WidgetStateProperty.resolveWith<Color>(
         (Set<WidgetState> states) {
-          final status = (scheme_status ?? "").toLowerCase().trim();
-          final overdue = (over_due_status ?? "").toLowerCase().trim();
+          final status = (scheme_status).toLowerCase().trim();
+          final overdue = (over_due_status).toLowerCase().trim();
           final payAllowed = pay_status == "1";
 
           final shouldEnableButton = 

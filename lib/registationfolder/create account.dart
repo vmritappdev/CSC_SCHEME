@@ -6,16 +6,21 @@ import 'dart:async'; // Import for async operations
 
 
 
+
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
+import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,53 +37,70 @@ import 'package:http/http.dart' as http;
           child: child!,
         );
       },
-      home:const CurvedImageScreen2(),
+      home:const CurvedImageScreen3(),
     ),
   );
 }
 
 
-class CurvedImageScreen2 extends StatefulWidget {
-  const CurvedImageScreen2({super.key});
+class CurvedImageScreen3 extends StatefulWidget {
+  const CurvedImageScreen3({super.key});
 
   @override
-  State<CurvedImageScreen2> createState() => _CurvedImageScreen2State();
+  State<CurvedImageScreen3> createState() => _CurvedImageScreen3State();
 }
 
-class _CurvedImageScreen2State extends State<CurvedImageScreen2> {
+class _CurvedImageScreen3State extends State<CurvedImageScreen3> {
 
 
 
 
 
   bool _isLoading = false; // Control loading screen
+
+    bool _termsAccepted = false;
+
+
+bool _showTermsError = false;
+
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerFirstName = TextEditingController();
   final TextEditingController _controllerLastName = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController _controlleremail = TextEditingController();
-  String _message = ''; // Message to show after submission
+// Message to show after submission
    String? previousPhoneNumber;
 
    Future<void> _checkSavedPhoneNumber() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.reload(); // Ensure the latest data is fetched
   String? savedPhoneNumber = prefs.getString('userPhoneNumber');
+  String? savedMpin = prefs.getString('userMpin');
 
-  if (savedPhoneNumber!.length == 10) {
+  if (savedPhoneNumber != null && savedPhoneNumber.length == 10 && savedMpin == "true") {
     print("✅ Mobile Number Found: $savedPhoneNumber");
 
     // Navigate directly to the HomeScreen
-  
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
   } else {
-    print("❌ Mobile Number Not Found");
+    print("❌ No valid Mobile Number found");
   }
 }
+
 
 
 Future<void> savePhoneNumber(String mobileNumber) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('userPhoneNumber', mobileNumber);
+   // await prefs.reload();  // ✅ Ensures the latest value is stored
+
+    await prefs.setString('userMpin', 'false');
     await prefs.reload();  // ✅ Ensures the latest value is stored
     
     print("✅ Mobile Number Saved: $mobileNumber");
@@ -91,13 +113,15 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     super.initState();
     loadPhoneNumber();
     _checkSavedPhoneNumber();
+   
+    
   }
 
   // Load phone number from shared preferences
   Future<void> loadPhoneNumber() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? phoneNumber = prefs.getString('userPhoneNumber');
-    phoneController.text = phoneNumber!;
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
+    //String? phoneNumber = prefs.getString('userPhoneNumber');
+   // phoneController.text = phoneNumber!;
     }
 
    void _showInvalidOTPDialog(String message) {
@@ -134,7 +158,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:  Color.fromRGBO(2, 5, 67, 1),
               ),
               child: TextButton(
                 onPressed: () {
@@ -200,7 +224,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
                   },
                   child:  Text(
                    localization.translate("OK"),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -220,6 +244,25 @@ Future<void> savePhoneNumber(String mobileNumber) async {
 
 
 Future<void> submitForm() async {
+
+  if (!_termsAccepted) {
+    setState(() {
+      _showTermsError = true;
+    });
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _showTermsError = false;
+        });
+      }
+    });
+
+    return;
+  }
+
+
+
   if (_formKey.currentState!.validate()) {
 
     // **🔥 Correct Network Check Before API Call**
@@ -265,23 +308,22 @@ Future<void> submitForm() async {
         print('Response Data: $responseData');
 
         setState(() {
-          _message = responseData['response'] == 'success'
-              ? 'Success: ${responseData['message']}'
-              : 'Error: ${responseData['message']}';
         });
 
         if (responseData['response'] == 'success') {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString('firstName', _controllerFirstName.text);
           await prefs.setString('lastName', _controllerLastName.text);
+          await prefs.setString('userPhoneNumber', phoneController.text);
           await prefs.setString('phoneNumber', phoneController.text);
+          await prefs.setString('userMpin', 'false');
           await prefs.setString('email', _controlleremail.text);
 
           previousPhoneNumber = phoneController.text;
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  const OtpScreen()),
+            MaterialPageRoute(builder: (context) =>  OtpScreen()),
           );
         } else {
           _showInvalidOTPDialog(responseData['message']);
@@ -300,203 +342,301 @@ Future<void> submitForm() async {
 }
 
 
-  @override
-  Widget build(BuildContext context) {
+ @override
+Widget build(BuildContext context) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: true);
+  final double screenWidth = MediaQuery.of(context).size.width;
+  final double screenHeight = MediaQuery.of(context).size.height;
 
-     
+  return WillPopScope(
+    onWillPop: () async {
+      Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => const LoginScreen1()),
+);
 
-
-    final localization = Provider.of<LocalizationProvider>(context, listen: true);
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      
+     // Navigator.pop(context);  // back button press on device
+      return false; // handled manually
+    },
+    child: Scaffold(
       body: Stack(
-        
         children: [
-          
           SafeArea(
-  child: Column(
-    children: [
-      // Top Header Section (unchanged)
-      Container(
-        height: screenHeight * 0.30,
-        width: screenWidth,
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.05),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: BackButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen1()),
-                    );
-                  },
-                ),
-              ),
-              Image.asset(
-                'assets/images/csc2.png',
-                height: screenHeight * 0.1,
-              ),
-              Text(
-                localization.translate("JEWELLERS"),
-                style: GoogleFonts.lato(
-                  fontSize: screenWidth * 0.05,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  color: const Color.fromRGBO(2, 5, 67, 1),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            child: Column(
+              children: [
+                // Header section
+                Container(
+                  height: screenHeight * 0.30,
+                  width: screenWidth,
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.05),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: BackButton(
+                            color:  Color.fromRGBO(2, 5, 67, 1),
+                            onPressed: () {
+                             Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => const LoginScreen1()),
+);
 
-      // Remaining content wrapped in Expanded
-      Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
-                    child: Text(
-                      localization.translate("Register"),
-                      style: GoogleFonts.poppins(
-                        textStyle: TextStyle(
-                          color: const Color.fromRGBO(2, 5, 69, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: screenWidth * 0.05,
+                            },
+                          ),
                         ),
+                        Image.asset(
+                          'assets/images/csc2.png',
+                          height: screenHeight * 0.1,
+                          color: Color.fromRGBO(2, 5, 67, 1),
+                        ),
+                        Text(
+                          localization.translate("JEWELLERS"),
+                          style: GoogleFonts.lato(
+                            fontSize: screenWidth * 0.03,
+                            letterSpacing: 4,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(2, 5, 67, 1),
+                          ),
+                        ),
+                        Text(localization.translate('Since 1971'),
+                            style: TextStyle(fontSize: 8, color: Color.fromRGBO(2, 5, 67, 1), fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+    
+    
+                
+    
+                // Form section in scroll view
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                localization.translate("Create Account"),
+                                style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: screenWidth * 0.05,
+                                ),
+                              ),
+                              Icon(Icons.touch_app, color: Colors.black),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+    
+                          buildTextFormField(
+                            _controllerFirstName,
+                            localization.translate("First Name*"),
+                            Icons.person_outline,
+                            TextInputType.name,
+                            (value) => value == null || value.isEmpty
+                                ? localization.translate("enter_first_name")
+                                : null,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+    
+                          buildTextFormField(
+                            _controllerLastName,
+                            localization.translate("Last Name*"),
+                            Icons.person_2,
+                            TextInputType.name,
+                            (value) => value == null || value.isEmpty
+                                ? localization.translate("enter_last_name")
+                                : null,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+    
+                          _buildPhoneField(),
+                          SizedBox(height: screenHeight * 0.02),
+    
+                          buildTextFormField(
+                            _controlleremail,
+                            localization.translate("Email(Optional)"),
+                            Icons.email_outlined,
+                            TextInputType.emailAddress,
+                            (value) {
+                              if (value == null || value.isEmpty) return null;
+                              final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                              return !emailRegex.hasMatch(value) ? 'Please enter a valid email' : null;
+                            },
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+    
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Checkbox(
+                                  value: _termsAccepted,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _termsAccepted = value!;
+                                      _showTermsError = false;
+                                    });
+                                  },
+                                  activeColor: Color.fromRGBO(2, 5, 67, 1),
+                                  side: BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 1.5),
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                              ),
+                             // const SizedBox(width: 8),
+
+                             SizedBox(width: 8, ),
+
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                                    children: [
+                                      TextSpan(text: localization.translate("I agree to the"), style: GoogleFonts.nunito()),
+                                      TextSpan(
+                                        text: localization.translate('Terms and Conditions'),
+                                        style: GoogleFonts.nunito(
+                                          decoration: TextDecoration.underline,
+                                          color: Color.fromRGBO(2, 5, 67, 1),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            print("Terms tapped");
+                                          },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+    
+                          SizedBox(height: screenHeight * 0.03), // Extra space before button
+
+                        
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05), 
-                    child: Text(
-                      localization.translate("Please provide your basic information"),
-                      style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.grey),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  buildTextFormField(
-                    _controllerFirstName,
-                    localization.translate("First Name*"),
-                    Icons.person_outline,
-                    TextInputType.name,
-                    (value) {
-                      if (value == null || value.isEmpty) {
-                        return localization.translate("enter_first_name");
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  buildTextFormField(
-                    _controllerLastName,
-                    localization.translate("Last Name*"),
-                    Icons.person_2,
-                    TextInputType.name,
-                    (value) {
-                      if (value == null || value.isEmpty) {
-                        return localization.translate("enter_last_name");
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  _buildPhoneField(),
-                  SizedBox(height: screenHeight * 0.02),
-
-
-                  buildTextFormField(
-                    _controlleremail,
-                    localization.translate("Email(Optional)"),
-                    Icons.email_outlined,
-                    TextInputType.emailAddress,
-                    
-                 (value) {
-  if (value == null || value.isEmpty) {
-    return null; // Optional field, so allow empty
-  }
-  final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-  if (!emailRegex.hasMatch(value)) {
-    return 'Please enter a valid email'; // Invalid format
-  }
-  return null; // Valid email
-},
-
-                    
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-
-      // Fixed Button
-      Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.075,
-          vertical: screenHeight * 0.025,
-        ),
-        child: SizedBox(
-          width: double.infinity,
-          height: screenHeight * 0.06,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-            ),
-            onPressed: _isLoading ? null : () => submitForm(),
-            child: Text(
-              localization.translate("Verify Number"),
-              style: GoogleFonts.lato(
-                textStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: screenWidth * 0.045,
                 ),
-              ),
+    
+                // Bottom fixed: Button + login text
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: screenWidth * 0.075,
+                    right: screenWidth * 0.075,
+                    bottom: screenHeight * 0.030,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: screenHeight * 0.06,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: _isLoading ? null : () => submitForm(),
+                          child: Text(
+                            localization.translate("Verify Number"),
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth * 0.045,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.015),
+                      GestureDetector(
+                         onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>  LoginScreen1()),
+                              );
+                            },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(localization.translate('Already have an account?')
+                              , style: TextStyle(color: Colors.black)),
+                            SizedBox(width: 5),
+                            Text(
+                              localization.translate('Login'),
+                                style: TextStyle(color: Color.fromRGBO(2, 5, 67, 1), fontWeight: FontWeight.bold),
+                              ),
+                            
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-      ),
-    ],
-  ),
-),
-
-
-          
+    
+          // Loader
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.7),
               child: Center(
                 child: Image.asset(
-                  'assets/images/gif.gif', // Replace with your Lottie loader
+                  'assets/images/gif.gif',
                   height: 100,
                   width: 100,
                 ),
               ),
             ),
+    
+          // Terms error
+          if (_showTermsError)
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 0,
+              left: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        localization.translate('Please select Terms and Conditions'),
+                        style: GoogleFonts.nunito(color: Colors.white),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showTermsError = false;
+                        });
+                      },
+                      child: const Icon(Icons.close, color: Colors.white),
+                    )
+                  ],
+                ),
+              ),
+            )
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
 
 
@@ -504,8 +644,8 @@ Future<void> submitForm() async {
 
 
 
-  // Build text form field method
-  Widget buildTextFormField(
+
+    Widget buildTextFormField(
     TextEditingController controller,
     String labelText,
     IconData icon,
@@ -515,7 +655,6 @@ Future<void> submitForm() async {
     
   }) {
      final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -529,24 +668,35 @@ Future<void> submitForm() async {
         textCapitalization: TextCapitalization.words,
         keyboardType: keyboardType,
         maxLength: maxLength,
-        decoration: InputDecoration(
-          counterText: '',
-          labelText: labelText,
-          
-          labelStyle: GoogleFonts.lato(
-            textStyle: TextStyle(fontSize: screenWidth * 0.04, color: const Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold),
-          ),
-          prefixIcon: Icon(icon),
-         // contentPadding: EdgeInsets.all(15),
-          border: const OutlineInputBorder(),
-           focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
-        ),
-        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
-           // contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0), // Reduce padding
-             contentPadding: EdgeInsets.all(screenWidth * 0.03),
-        ),
+       decoration: InputDecoration(
+  counterText: '',
+  labelText: labelText,
+  labelStyle: GoogleFonts.nunito(
+    textStyle: TextStyle(
+      fontSize: screenWidth * 0.03,
+      color:  Colors.black,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  errorStyle: TextStyle(
+    fontSize: 9,
+    height: 0.18, // NEW: make error text use less vertical space
+  ),
+  prefixIcon: Icon(icon,color: Color.fromRGBO(2, 5, 67, 1),),
+  isDense: true, // NEW: reduce default vertical space
+  contentPadding: EdgeInsets.symmetric(
+    vertical: screenWidth * 0.025, // smaller vertical padding
+    horizontal: screenWidth * 0.03,
+  ),
+  border: const OutlineInputBorder(),
+  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: const Color.fromARGB(255, 202, 200, 200))),
+  focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   Color.fromRGBO(2, 5, 67, 1), width: 2),
+  ),
+  floatingLabelStyle: const TextStyle(color:   Color.fromRGBO(2, 5, 67, 1),),
+),
+
         validator: validator,
       ),
     );
@@ -557,7 +707,49 @@ Future<void> submitForm() async {
 
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 20),
-    child: FormField<String>(
+    child: TextFormField(
+      controller: phoneController,
+      keyboardType: TextInputType.number,
+      maxLength: 10,
+      decoration: InputDecoration(
+        counterText: "",
+        labelText: localization.translate("Mobile Number"),
+        labelStyle: GoogleFonts.nunito(
+          textStyle: const TextStyle(
+            fontSize: 12,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        prefixIcon: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(width: 8),
+            Image.asset(
+              'assets/images/flag.png',  // 👉 +91 image
+              width: 30,
+              height: 20,
+             // color: Colors.black,
+            ),
+            SizedBox(width: 4),
+          ],
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 202, 200, 200)),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(
+            color: Color.fromRGBO(2, 5, 67, 1),
+            width: 2,
+          ),
+        ),
+        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 67, 1)),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
+      ),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return localization.translate("Please enter a mobile number");
@@ -565,46 +757,6 @@ Future<void> submitForm() async {
           return localization.translate("Enter a valid 10-digit mobile number");
         }
         return null;
-      },
-      builder: (FormFieldState<String> field) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IntlPhoneField(
-              controller: phoneController,
-              initialCountryCode: 'IN',
-              decoration: InputDecoration(
-                labelText: localization.translate("Mobile Number"),
-                labelStyle: GoogleFonts.lato(
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    color: Color.fromRGBO(43, 49, 101, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                  borderSide: const BorderSide(
-                    color: Color.fromARGB(255, 18, 5, 93),
-                    width: 2,
-                  ),
-                ),
-                floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
-                counterText: "",
-                contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
-                errorText: field.errorText,
-              ),
-              dropdownIcon: const Icon(Icons.arrow_drop_down, color: Colors.black),
-              dropdownIconPosition: IconPosition.trailing,
-              onChanged: (phone) {
-                field.didChange(phone.number); // ✅ update correct value for validator
-              },
-            ),
-          ],
-        );
       },
     ),
   );

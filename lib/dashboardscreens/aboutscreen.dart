@@ -17,7 +17,6 @@ class AboutUsScreen extends StatefulWidget {
 class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
-    final isSmall = MediaQuery.of(context).size.width < 600;
     final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
     return Scaffold(
@@ -30,7 +29,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
          localization.translate("About Us"),
-          style: GoogleFonts.cinzel(
+          style: GoogleFonts.nunito(
           color: Colors.white,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -39,94 +38,96 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       ),
 
       
-       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        children: [
-          
-        Text(
-           localization.translate("CHINNI SRINIVASULU CHETTY JEWELLERS"),
-           textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
-            fontSize: 15,
-            color: Colors.teal[700],
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-            ),
-          ),
-          const SizedBox(height: 4),
+       body: SafeArea(
+         child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          children: [
+            
           Text(
-            localization.translate("Est. 1971"),
-            textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
-              fontSize: 14,
-              color: Colors.grey[600],
-              fontStyle: FontStyle.italic,
+             localization.translate("CHINNI SRINIVASULU CHETTY JEWELLERS"),
+             textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+              fontSize: 15,
+              color: Colors.teal[700],
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+              ),
             ),
-          ),
-          const Divider(thickness: 1, height: 32),
-          
-          //sectionTitle("Our Legacy"),
-         
-
-         
-
-           const SizedBox(height: 12),
-
+            const SizedBox(height: 4),
+            Text(
+              localization.translate("Est. 1971"),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                fontSize: 14,
+                color: Colors.grey[600],
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const Divider(thickness: 1, height: 32),
+            
+            //sectionTitle("Our Legacy"),
            
-          Center(
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage("assets/images/cscimage.jpg"),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                   localization.translate("Pavan Srinivas Chinni"),
-                  style: GoogleFonts.lato(
-                      fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  localization.translate("Managing Director"),
-                  style: GoogleFonts.lato(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-
-
-const SizedBox(height: 15,),
-
-                 sectionText(
-             localization.translate("Founded in 1971, Chinni Srinivasulu Chetty Jewellers has built a lasting reputation for trust, tradition, and unmatched quality in the world of fine jewellery. Over the decades, we’ve grown from a humble beginning into a respected name among customers who value not only our exquisite designs but also the genuine relationships we’ve nurtured with them.")),
-              ],
-            ),
-          ),
-         const SizedBox(height: 12),
-          sectionText(
-             localization.translate("Under the visionary leadership of Pavan Srinivas Chinni, the business has evolved to meet modern demands while staying true to its heritage. We have expanded our offerings with a perfect blend of tradition and innovation — serving both retail and wholesale jewellery needs.")),
-
-           const SizedBox(height: 12),
-
-           sectionText(localization.translate("Our wholesale operations, based in Chennai, Tamil Nadu, supply a wide range of BIS-hallmarked gold ornaments to jewellers across South India. Every piece is crafted with meticulous attention to detail, reflecting timeless craftsmanship and evolving style.")),
-
-           const SizedBox(height: 12),
-
-          sectionText(localization.translate("In Nellore, Andhra Pradesh, our flagship retail showroom brings this legacy directly to our valued customers. The store offers an exclusive collection of gold jewellery — from elegant daily wear to breathtaking bridal sets — curated to match every occasion and personality, all at transparent and competitive prices.")),
+         
+           
+         
+             const SizedBox(height: 12),
+         
              
-          sectionTitle(localization.translate("Why Choose Us?")),
-
-          bulletPoint(localization.translate("✅ 100% Certified Purity & Premium Quality")),
-          bulletPoint(localization.translate("✅ Fair Pricing & Flexible Purchase Schemes")),
-          bulletPoint(localization.translate("✅ Lifetime Support & Customer-Centric Service")),
-
-          const Divider(thickness: 1, height: 40),
-          sectionText(
-         localization.translate( "With a team of warm, knowledgeable, and experienced professionals, we are committed to making every visit a personalized, delightful, and memorable jewellery shopping experience.")),
-          const SizedBox(height: 24),
-        ],
-      ),
+            Center(
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage("assets/images/cscimage.jpg"),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                     localization.translate("Pavan Srinivas Chinni"),
+                    style: GoogleFonts.nunito(
+                        fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    localization.translate("Managing Director"),
+                    style: GoogleFonts.nunito(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+         
+         
+         const SizedBox(height: 15,),
+         
+                   sectionText(
+               localization.translate("Founded in 1971, Chinni Srinivasulu Chetty Jewellers has built a lasting reputation for trust, tradition, and unmatched quality in the world of fine jewellery. Over the decades, we’ve grown from a humble beginning into a respected name among customers who value not only our exquisite designs but also the genuine relationships we’ve nurtured with them.")),
+                ],
+              ),
+            ),
+           const SizedBox(height: 12),
+            sectionText(
+               localization.translate("Under the visionary leadership of Pavan Srinivas Chinni, the business has evolved to meet modern demands while staying true to its heritage. We have expanded our offerings with a perfect blend of tradition and innovation — serving both retail and wholesale jewellery needs.")),
+         
+             const SizedBox(height: 12),
+         
+             sectionText(localization.translate("Our wholesale operations, based in Chennai, Tamil Nadu, supply a wide range of BIS-hallmarked gold ornaments to jewellers across South India. Every piece is crafted with meticulous attention to detail, reflecting timeless craftsmanship and evolving style.")),
+         
+             const SizedBox(height: 12),
+         
+            sectionText(localization.translate("In Nellore, Andhra Pradesh, our flagship retail showroom brings this legacy directly to our valued customers. The store offers an exclusive collection of gold jewellery — from elegant daily wear to breathtaking bridal sets — curated to match every occasion and personality, all at transparent and competitive prices.")),
+               
+            sectionTitle(localization.translate("Why Choose Us?")),
+         
+            bulletPoint(localization.translate("✅ 100% Certified Purity & Premium Quality")),
+            bulletPoint(localization.translate("✅ Fair Pricing & Flexible Purchase Schemes")),
+            bulletPoint(localization.translate("✅ Lifetime Support & Customer-Centric Service")),
+         
+            const Divider(thickness: 1, height: 40),
+            sectionText(
+           localization.translate( "With a team of warm, knowledgeable, and experienced professionals, we are committed to making every visit a personalized, delightful, and memorable jewellery shopping experience.")),
+            const SizedBox(height: 24),
+          ],
+               ),
+       ),
 
 
 floatingActionButton: FloatingActionButton.extended(
@@ -141,9 +142,9 @@ floatingActionButton: FloatingActionButton.extended(
         label: Text(
           
           localization.translate("Join Scheme"),
-          style: GoogleFonts.lato(color: Colors.white,fontSize: 18),
+          style: GoogleFonts.nunito(color: Colors.white,fontSize: 18),
         ),
-       // icon: const Icon(Icons.add, color: Colors.white),
+       
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -195,7 +196,7 @@ floatingActionButton: FloatingActionButton.extended(
       padding: const EdgeInsets.only(top: 24, bottom: 8),
       child: Text(
         title,
-        style: GoogleFonts.lato(
+        style: GoogleFonts.nunito(
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: Colors.teal[800],
@@ -207,7 +208,7 @@ floatingActionButton: FloatingActionButton.extended(
   Widget sectionText(String content) {
     return Text(
       content,
-      style: GoogleFonts.lato(fontSize: 14.5, height: 1.6, color: Colors.black87),
+      style: GoogleFonts.nunito(fontSize: 14.5, height: 1.6, color: Colors.black87),
       textAlign: TextAlign.justify,
     );
   }
@@ -223,10 +224,10 @@ floatingActionButton: FloatingActionButton.extended(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: GoogleFonts.lato(fontSize: 15.5, fontWeight: FontWeight.bold)),
+                  style: GoogleFonts.nunito(fontSize: 15.5, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               Text(subtitle,
-                  style: GoogleFonts.lato(fontSize: 14, color: Colors.black87)),
+                  style: GoogleFonts.nunito(fontSize: 14, color: Colors.black87)),
             ],
           ),
         ),
@@ -240,12 +241,12 @@ floatingActionButton: FloatingActionButton.extended(
       child: Row(
         children: [
           const Text("•", style: TextStyle(fontSize: 18, color: Colors.teal)),
-         // Text("✅", style: TextStyle(fontSize: 18, color: Colors.teal)),
+        
           const SizedBox(width: 6),
           Expanded(
             child: Text(
               text,
-              style: GoogleFonts.lato(fontSize: 14),
+              style: GoogleFonts.nunito(fontSize: 14),
             ),
           ),
         ],

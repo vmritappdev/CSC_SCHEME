@@ -20,6 +20,7 @@ import 'package:csc/utillity/constant.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -52,12 +53,11 @@ class JewelryTransactionScreen extends StatefulWidget {
 class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
   static const Color headerBackgroundColor = Color.fromRGBO(2, 5, 62, 1);
   final Color cardBackgroundColor = Colors.white;
-  static const Color titleTextColor = Color.fromRGBO(2, 5, 62, 1);
   final Color bodyTextColor = Colors.black87;
   final RefreshController _refreshController = RefreshController();
 
    void _onRefresh() async {
-  await fetchData(); 
+   await fetchData(); 
   _refreshController.refreshCompleted(); 
 }
 
@@ -197,60 +197,6 @@ Future<void> verifyPaymentProcess() async {
 
 
 
-   void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
   // Submit form and send data to API
  
@@ -263,8 +209,6 @@ Future<void> verifyPaymentProcess() async {
   @override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
-     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
    
 
     return SafeArea(
@@ -448,10 +392,10 @@ Future<void> verifyPaymentProcess() async {
             ),
           ),
           const Text(':', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-          Text(
-            '₹ $balanceAmount',
-            style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-          ),
+         Text(
+  '₹ ${NumberFormat('#,##0').format(int.tryParse(balanceAmount) ?? 0)}',
+  style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+),
         ],
       ),
     ],
@@ -580,8 +524,6 @@ Widget _buildTransactionCard({
   required BuildContext context,
 }) {
   var localization = Provider.of<LocalizationProvider>(context,listen: false);
-  double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
 
 
   

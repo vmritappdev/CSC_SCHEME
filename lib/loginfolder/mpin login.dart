@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
+
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
@@ -41,11 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   final LocalAuthentication auth = LocalAuthentication();
   String _pin = '';
   bool _isSuccess = false;
-  bool _isError = false;
-  bool _showFingerprint = false;
   String errorMessage = '';
-  bool _isBiometricAvailable = false;
-  final bool _isPinVisible = false;
 
   String firstName = '';
 String lastName = '';
@@ -57,6 +54,17 @@ final String correctMpin = "1234"; // Example correct MPIN
 
  Future<void> _fetchUserDetails() async {
   String apiUrl = "$baseUrl/get_reg_account_details.php";
+
+  bool hasInternet = await checkInternet();
+if (!hasInternet) {
+  if (context.mounted) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+    );
+  }
+  return null;
+}
+
 
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -124,26 +132,6 @@ final String correctMpin = "1234"; // Example correct MPIN
     
   }
 
-  void _validateMpin() {
-  String enteredPin = _enteredMpin.join();
-
-  if (enteredPin == correctMpin) {
-    // Correct MPIN
-    print("MPIN correct");
-    // Proceed to next step
-  } else {
-    // Wrong MPIN
-    print("Wrong MPIN");
-
-    // Clear MPIN
-    setState(() {
-      _enteredMpin.clear();
-    });
-
-    // Optionally, error popup kuda chupinchavachu
-   // _showErrorDialog();
-  }
-}
 
 
   void _onKeyTap(String value) {
@@ -162,8 +150,6 @@ void _validatePin() async {
 
   setState(() {
     _isSuccess = false;
-    _isError = false;
-    _showFingerprint = false;
   });
 
   bool isSuccess = await _submitMpinToServer(_pin);
@@ -171,8 +157,6 @@ void _validatePin() async {
   if (isSuccess) {
     setState(() {
       _isSuccess = true;
-      _isError = false;
-      _showFingerprint = _isBiometricAvailable;
       errorMessage = ''; // <<< Correct MPIN ayite error message empty cheyyadam
     });
 
@@ -185,7 +169,6 @@ void _validatePin() async {
 
   } else {
     setState(() {
-      _isError = true;
       errorMessage = localization.translate('Invalid MPIN. Please try again.');
       _pin = ''; // wrong ayite pin clear cheyyadam
     });
@@ -204,21 +187,11 @@ void _validatePin() async {
 
 
   Future<void> _checkBiometricAvailability() async {
-    bool canCheckBiometrics = await auth.canCheckBiometrics;
     setState(() {
-      _isBiometricAvailable = canCheckBiometrics;
     });
   }
 
 
-  void _startAuthentication() async {
-  bool isAuthenticated = await authenticate();
-  if (isAuthenticated) {
-    // Authentication success logic
-  } else {
-    // Authentication failed logic
-  }
-}
 
 Future<bool> authenticate() async {
   final LocalAuthentication auth = LocalAuthentication();
@@ -240,26 +213,35 @@ Future<bool> authenticate() async {
 
 
 Future<void> _authenticateUser() async {
-    try {
-      bool isAuthenticated = await auth.authenticate(
-        localizedReason: 'Please authenticate to continue',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ErrorScreen()),
       );
-
-      if (isAuthenticated) {
-        // Authentication success
-        _goToHomeScreen();
-      } else {
-        // Authentication failed
-        // You can show error or stay on same screen
-      }
-    } catch (e) {
-      print("Authentication error: $e");
     }
+    return;
   }
+
+  try {
+    bool isAuthenticated = await auth.authenticate(
+      localizedReason: 'Please authenticate to continue',
+      options: const AuthenticationOptions(
+        biometricOnly: true,
+        stickyAuth: true,
+      ),
+    );
+
+    if (isAuthenticated) {
+      // Success
+      _goToHomeScreen();
+    } else {
+      // Authentication failed - stay on same screen
+    }
+  } catch (e) {
+    print("Authentication error: $e");
+  }
+}
 
   void _goToHomeScreen() {
     Navigator.pushReplacement(
@@ -270,60 +252,6 @@ Future<void> _authenticateUser() async {
 
 
 
-  void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
   // Submit form and send data to API
  
@@ -392,30 +320,37 @@ Future<bool> checkInternet() async {
   
 
   Future<void> _authenticateWithFingerprint() async {
-
-    bool hasInternet = await checkInternet();
+  bool hasInternet = await checkInternet();
   if (!hasInternet) {
-  //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-  const ErrorScreen();
+    if (context.mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ErrorScreen()),
+      );
+    }
     return;
   }
-    try {
-      bool isAuthenticated = await auth.authenticate(
-        localizedReason: 'Scan your fingerprint to login',
-        options: const AuthenticationOptions(stickyAuth: true, biometricOnly: true),
+
+  try {
+    bool isAuthenticated = await auth.authenticate(
+      localizedReason: 'Scan your fingerprint to login',
+      options: const AuthenticationOptions(
+        stickyAuth: true,
+        biometricOnly: true,
+      ),
+    );
+
+    if (isAuthenticated) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
       );
-      if (isAuthenticated) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
-        );
-      }
-    } catch (e) {
-      print("Fingerprint Authentication Error: $e");
     }
+  } catch (e) {
+    print("Fingerprint Authentication Error: $e");
   }
+}
 
 @override
 Widget build(BuildContext context) {
@@ -442,22 +377,22 @@ Widget build(BuildContext context) {
         children: [
           Text(
 localization.translate('CSC App'),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
            localization.translate('Are you sure do you want to exit?'),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: Colors.black87,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -465,7 +400,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text(
                  localization.translate('CANCEL'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -476,7 +411,7 @@ localization.translate('CSC App'),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                 localization.translate('EXIT'),
-                  style: const TextStyle(
+                  style: TextStyle(
                   fontSize: 13,
                     color: Colors.blue,
                     fontWeight: FontWeight.w600,
@@ -567,7 +502,7 @@ localization.translate('CSC App'),
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ForgotScreen()),
+            MaterialPageRoute(builder: (context) => ForgotScreen()),
           );
         },
         child: Text(

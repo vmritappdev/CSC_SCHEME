@@ -14,16 +14,17 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 void main() {
   runApp(
     MaterialApp(
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
           child: child!,
         );
       },
-      home: const Editscheme(schemeId: ''),
+      home: Editscheme(schemeId: ''),
     ),
   );
 }
@@ -37,7 +38,7 @@ enum ImageType {
 
 class Editscheme extends StatefulWidget {
   final String schemeId;
-  const Editscheme({super.key, required this.schemeId});
+  Editscheme({required this.schemeId});
 
   @override
   _EditschemeState createState() => _EditschemeState();
@@ -142,7 +143,7 @@ String regId = '';        // Holds Registration ID
             SizedBox(height: screenHeight * 0.02),
             Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Color.fromRGBO(2, 5, 62, 1),
               ),
               child: TextButton(
@@ -266,10 +267,10 @@ Future<bool> checkInternet() async {
         ScaffoldMessenger.of(context).showSnackBar(
           
           SnackBar(content: Text(localization.translate("✅ Scheme updated successfully!"),
-          style: GoogleFonts.lato(color: Colors.white),),backgroundColor: const Color.fromRGBO(2, 5, 62, 1),),
+          style: GoogleFonts.lato(color: Colors.white),),backgroundColor: Color.fromRGBO(2, 5, 62, 1),),
         );
 
-        Future.delayed(const Duration(seconds: 2), () {
+        Future.delayed(Duration(seconds: 2), () {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => JewelryTransactionScreen(schemeId: widget.schemeId)), // Replace with your actual next screen
@@ -284,7 +285,7 @@ Future<bool> checkInternet() async {
   } catch (e) {
     print("❌ Error updating scheme: $e");
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("❌ Failed to update scheme.")),
+      SnackBar(content: Text("❌ Failed to update scheme.")),
     );
   }
 }
@@ -397,325 +398,282 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
     setState(() => isLoading = false);
   }
 
-  /// **🔹 ఇమేజ్ పికర్ & SharedPreferences లో స్టోర్ చేయడం**
- Future<void> _pickImage(bool isPanCard) async {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.camera),
-            title: const Text('Camera'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.camera, isPanCard);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.image),
-            title: const Text('Gallery'),
-            onTap: () async {
-              Navigator.pop(context);
-              await _getImage(ImageSource.gallery, isPanCard);
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
 
- Future<void> _getImage(ImageSource source, bool isPanCard) async {
-  final pickedFile = await ImagePicker().pickImage(source: source);
-  if (pickedFile != null) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      } else {
-        nomineeImage = pickedFile.path;
-        prefs.setString('nomineeImage', pickedFile.path);
-      }
-       if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      }
-    });
-  }
-}
   @override
   Widget build(BuildContext context) {
     final localization = Provider.of<LocalizationProvider>(context);
-    double screenWidth = MediaQuery.of(context).size.width;
-double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      
       appBar: AppBar(title: Text(localization.translate("Edit Scheme",),
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white),
       ),
-      iconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
+      iconTheme: IconThemeData(color: Colors.white),
+      backgroundColor: Color.fromRGBO(2, 6, 67, 1),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                  
-                  
-                  
-                      Align(alignment: Alignment.bottomLeft,child: Text(localization.translate("Edit Customer Information"),
-                      style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
-                      ),
-                  
-                  
-                  
-                  
-                      Row(
-                        children: [
-                         Text(
-  "${localization.translate("Scheme Amount")} ₹$schemeAmount",
-  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-),
-
-                  
-                              const SizedBox(width: 15,),
-                  
-                              Text(
-  "${localization.translate("Scheme No")} $regId",
-  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
-),
-
-                        ],
-                      ),
-                  
-                  
-                        SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                     ),
-                     
-                     //_buildTextField(schemController, localization.translate("Scheme Type")),
-                      _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
-                      _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
-                      _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
-                        const SizedBox(
-                      // height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
-                     ),
-                    //  _buildTextField(dobController, localization.translate("Date of Birth*")),
-                  
-                   _buildDateField(
-  dobController,
-  localization.translate("Date of Birth*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please select date of birth"),
-),
-
-                  
-                     SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                  
-                      _buildEmailField(),
-                  
-                        
-                     
-                     SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.03, // 6% of screen height
-                     ),
-                  
-                        genderDropdown(context),
-
-                        
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-_buildTextField(
-  doorNoController,
-  localization.translate("Door No*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter Door Number"),
-),
-
-                      _buildTextField(
-  address1Controller,
-  localization.translate("Address Line 1*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter Address Line 1"),
-),
-
-                      _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
-                          _buildTextField(
-  pincodeController,
-  localization.translate("Pincode*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter Pincode"),
-),
-
-                          _buildTextField(
-  countryController,
-  localization.translate("Country*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter country"),
-),
-
-_buildTextField(
-  stateController,
-  localization.translate("State*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter state"),  // add this line
-),
-                     _buildTextField(
-  districtController,
-  localization.translate("District*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter district"),
-),
-
-                        _buildTextField(
-  cityController,
-  localization.translate("City*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter city"),
-),
-
-                      _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage,12, false,),
-                        _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage,10, true),
-                     
-                       _buildTextField(referralController,localization.translate( "Referral Name/Number")),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                       Align(alignment: Alignment.bottomLeft,child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       ),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                     _buildTextField(
-  bankNameController,
-  localization.translate("Bank Name*"),
-  isRequired: true,
-  errorMessage: localization.translate("Please enter bank name"),
-),
-
-_buildTextField(
-  holderName,
-  localization.translate("Bank Account Holder Name*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter account holder name"),
-),
-
-_buildTextField(
-  accountNoController,
-  localization.translate("Bank Account No*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter account number"),
-),
-
-_buildTextField(
-  ifscCodeController,
-  localization.translate("IFSC Code"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter IFSC code"),
-),
-
-_buildTextField(
-  branchLocationController,
-  localization.translate("Branch Location*"),
-    isRequired: true,
-  errorMessage: localization.translate("Please enter branch location"),
-),
-
-                     
-                  
-                           SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-                  
-                       Align(alignment: Alignment.bottomLeft,child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
-                       ),
-                  
-                         SizedBox(
-                       height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
-                     ),
-_buildTextField(
-  nomineeNameController,
-  localization.translate("Nominee Full Name"),
-    isRequired:false,
-  errorMessage: localization.translate("Please enter nominee full name"),
-),
-
-                  
-                      
-                  
-                      
-                    buildnominee(),
-                  
-                      //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
-                  
-                  
-                         _buildNomineeRelationshipDropdown(),
-                                if (isOtherRelationVisible) _buildOtherRelationshipField(),
-                  
-                      _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
-                     
-                     // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
-                                 
+          ? Center(child: CircularProgressIndicator())
+          : SafeArea(
+            child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
                     
-                     
+                    
+                    
+                        Align(child: Text(localization.translate("Edit Customer Information"),
+                        style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black)),
+                        alignment: Alignment.bottomLeft,
+                        ),
+                    
+                    
+                    
+                    
+                        Row(
+                          children: [
+                           Text(
+              "${localization.translate("Scheme Amount")} ₹$schemeAmount",
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            
+                    
+                                SizedBox(width: 15,),
+                    
+                                Text(
+              "${localization.translate("Scheme No")} $regId",
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            
+                          ],
+                        ),
+                    
+                    
+                          SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                       ),
                        
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
-                  
-                  
-                    SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: () async {
-  FocusScope.of(context).unfocus();
-
-  // Check form validation
-  bool isFormValid = _formKey.currentState!.validate();
-
-  // Nominee image validation
-  if (_image == null && (nomineeImage == null || nomineeImage!.isEmpty)) {
-    isNomineeImageValid = false;
-    isFormValid = false;
-  } else {
-    isNomineeImageValid = true;
-  }
-
-  setState(() {}); // Refresh UI to show error if needed
-
-  if (isFormValid) {
-    await updateSchemeDetails();
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(localization.translate("Please fill in all the mandatory fields."))),
-    );
-  }
-},
-
-    child: Text(
-      localization.translate("Save Changes"),
-      style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-    ),
-  ),
-)
-
-                    ],
+                       //_buildTextField(schemController, localization.translate("Scheme Type")),
+                        _buildTextField(firstNameController, localization.translate("First Name*"),readOnly: true),
+                        _buildTextField(lastNameController, localization.translate("Last Name*"),readOnly: true),
+                        _buildTextField(phoneController, localization.translate("Mobile Number*"), readOnly: true),
+                          SizedBox(
+                        // height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
+                       ),
+                      //  _buildTextField(dobController, localization.translate("Date of Birth*")),
+                    
+                     _buildDateField(
+              dobController,
+              localization.translate("Date of Birth*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please select date of birth"),
+            ),
+            
+                    
+                       SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                    
+                        _buildEmailField(),
+                    
+                          
+                       
+                       SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.03, // 6% of screen height
+                       ),
+                    
+                          genderDropdown(context),
+            
+                          
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+            _buildTextField(
+              doorNoController,
+              localization.translate("Door No*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter Door Number"),
+            ),
+            
+                        _buildTextField(
+              address1Controller,
+              localization.translate("Address Line 1*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter Address Line 1"),
+            ),
+            
+                        _buildTextField(address2Controller, localization.translate("Address Line 2/Land Mark")),
+                            _buildTextField(
+              pincodeController,
+              localization.translate("Pincode*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter Pincode"),
+            ),
+            
+                            _buildTextField(
+              countryController,
+              localization.translate("Country*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter country"),
+            ),
+            
+            _buildTextField(
+              stateController,
+              localization.translate("State*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter state"),  // add this line
+            ),
+                       _buildTextField(
+              districtController,
+              localization.translate("District*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter district"),
+            ),
+            
+                          _buildTextField(
+              cityController,
+              localization.translate("City*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter city"),
+            ),
+            
+                        _buildDocumentRow(localization.translate("Aadhar Number*"), adharController, adharImage,12, false,),
+                          _buildDocumentRow(localization.translate("PAN Card Number*"), panController, panImage,10, true),
+                       
+                         _buildTextField(referralController,localization.translate( "Referral Name/Number")),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                         Align(child: Text('Bank Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                         alignment: Alignment.bottomLeft,
+                         ),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                       _buildTextField(
+              bankNameController,
+              localization.translate("Bank Name*"),
+              isRequired: true,
+              errorMessage: localization.translate("Please enter bank name"),
+            ),
+            
+            _buildTextField(
+              holderName,
+              localization.translate("Bank Account Holder Name*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter account holder name"),
+            ),
+            
+            _buildTextField(
+              accountNoController,
+              localization.translate("Bank Account No*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter account number"),
+            ),
+            
+            _buildTextField(
+              ifscCodeController,
+              localization.translate("IFSC Code"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter IFSC code"),
+            ),
+            
+            _buildTextField(
+              branchLocationController,
+              localization.translate("Branch Location*"),
+                isRequired: true,
+              errorMessage: localization.translate("Please enter branch location"),
+            ),
+            
+                       
+                    
+                             SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+                    
+                         Align(child: Text('Nominee Deatails',style: GoogleFonts.lato(fontSize: 18,fontWeight: FontWeight.bold,color: Colors.black),),
+                         alignment: Alignment.bottomLeft,
+                         ),
+                    
+                           SizedBox(
+                         height: MediaQuery.of(context).size.height * 0.01, // 6% of screen height
+                       ),
+            _buildTextField(
+              nomineeNameController,
+              localization.translate("Nominee Full Name"),
+                isRequired:false,
+              errorMessage: localization.translate("Please enter nominee full name"),
+            ),
+            
+                    
+                        
+                    
+                        
+                      buildnominee(),
+                    
+                        //  _buildTextField(nomineeadharController, localization.translate("Nominee Adhaar Number"),maxLength: 12,keyboardType: TextInputType.number),
+                    
+                    
+                           _buildNomineeRelationshipDropdown(),
+                                  if (isOtherRelationVisible) _buildOtherRelationshipField(),
+                    
+                        _buildTextField(nomineeMobileController, localization.translate("Nominee Phone Number (Optional)")),
+                       
+                       // _buildTextField(nomineeRelationship, localization.translate("Nominee Relationship*")),
+                                   
+                      
+                       
+                         
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.025), // 2.5% of screen height
+                    
+                    
+                      SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+              FocusScope.of(context).unfocus();
+            
+              // Check form validation
+              bool isFormValid = _formKey.currentState!.validate();
+            
+              // Nominee image validation
+              if (_image == null && (nomineeImage == null || nomineeImage!.isEmpty)) {
+                isNomineeImageValid = false;
+                isFormValid = false;
+              } else {
+                isNomineeImageValid = true;
+              }
+            
+              setState(() {}); // Refresh UI to show error if needed
+            
+              if (isFormValid) {
+                await updateSchemeDetails();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(localization.translate("Please fill in all the mandatory fields."))),
+                );
+              }
+            },
+            
+                child: Text(
+                  localization.translate("Save Changes"),
+                  style: GoogleFonts.lato(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ),
+            )
+            
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+          ),
     );
   }
 
@@ -766,7 +724,7 @@ _buildDocumentRow(
                         imageUrl,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.broken_image, size: 100, color: Colors.white),
+                            Icon(Icons.broken_image, size: 100, color: Colors.white),
                       ),
                     ),
                   ),
@@ -776,7 +734,7 @@ _buildDocumentRow(
                 top: 30,
                 left: 20,
                 child: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.white, size: 30),
+                  icon: Icon(Icons.clear, color: Colors.white, size: 30),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -800,10 +758,10 @@ _buildDocumentRow(
                 imageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    Icon(Icons.broken_image, size: 40, color: Colors.grey),
               ),
             )
-          : const Icon(Icons.image, size: 40, color: Colors.grey),
+          : Icon(Icons.image, size: 40, color: Colors.grey),
     ),
   );
 }
@@ -818,7 +776,7 @@ Widget _buildTextField(
   bool isRequired = false,
   String? errorMessage, // 👈 New parameter
 }) {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  Provider.of<LocalizationProvider>(context, listen: false);
 
   return Padding(
     padding: EdgeInsets.symmetric(
@@ -837,9 +795,9 @@ Widget _buildTextField(
         keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontSize: 12),
+          labelStyle: TextStyle(fontSize: 12),
           counterText: '',
-          border: const OutlineInputBorder(),
+          border: OutlineInputBorder(),
           filled: readOnly,
           fillColor: readOnly ? Colors.grey.shade200 : null,
         ),
@@ -878,9 +836,9 @@ Widget _buildDateField(
         readOnly: true,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontSize: 12),
-          border: const OutlineInputBorder(),
-          suffixIcon: const Icon(Icons.calendar_today),
+          labelStyle: TextStyle(fontSize: 12),
+          border: OutlineInputBorder(),
+          suffixIcon: Icon(Icons.calendar_today),
         ),
         validator: (value) {
           if (isRequired && (value == null || value.trim().isEmpty)) {
@@ -957,8 +915,8 @@ Widget _buildNomineeRelationshipDropdown() {
             ? selectedRelationship
             : null,
         decoration:  InputDecoration(
-          labelText:localization.translate("Nominee Relationship*"),labelStyle: const TextStyle(fontSize: 12),
-          border: const OutlineInputBorder(),
+          labelText:localization.translate("Nominee Relationship*"),labelStyle: TextStyle(fontSize: 12),
+          border: OutlineInputBorder(),
         ),
         items: relationships.toSet().map((String item) {
           return DropdownMenuItem<String>(
@@ -1034,8 +992,8 @@ Widget _buildEmailField() {
   ],
           controller: otherController,
           decoration:  InputDecoration(
-            labelText: localization.translate("Enter Custom Relationship"),labelStyle: const TextStyle(fontSize: 12),
-            border: const OutlineInputBorder(),
+            labelText: localization.translate("Enter Custom Relationship"),labelStyle: TextStyle(fontSize: 12),
+            border: OutlineInputBorder(),
           ),
           validator: (value) {
           if (isOtherRelationVisible) {
@@ -1119,16 +1077,16 @@ Future<void> _pickImage1(ImageSource source) async {
       builder: (context) => Wrap(
         children: [
           ListTile(
-            leading: const Icon(Icons.camera_alt),
-            title: const Text("Camera"),
+            leading: Icon(Icons.camera_alt),
+            title: Text("Camera"),
             onTap: () {
               Navigator.pop(context);
               _pickImage1(ImageSource.camera);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.photo_library),
-            title: const Text("Gallery"),
+            leading: Icon(Icons.photo_library),
+            title: Text("Gallery"),
             onTap: () {
               Navigator.pop(context);
               _pickImage1(ImageSource.gallery );
@@ -1155,8 +1113,8 @@ Widget buildnominee() {
             controller: nomineeadharController,
             decoration: InputDecoration(
               counterText: '',
-              labelText:localization.translate('Nominee Adhar Number'),labelStyle: const TextStyle(fontSize: 12),
-              border: const OutlineInputBorder(),
+              labelText:localization.translate('Nominee Adhar Number'),labelStyle: TextStyle(fontSize: 12),
+              border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
@@ -1169,7 +1127,7 @@ Widget buildnominee() {
           ),
         ),
       ),
-      const SizedBox(width: 5),
+      SizedBox(width: 5),
 
       GestureDetector(
         onTap: () {
@@ -1202,7 +1160,7 @@ Widget buildnominee() {
                         fit: BoxFit.cover,
                       ),
                     )
-                  : const Icon(Icons.add_a_photo),
+                  : Icon(Icons.add_a_photo),
         ),
       ),
     ],
@@ -1224,7 +1182,7 @@ void _showImagePreview(BuildContext context) {
                 ? Image.file(_image!, fit: BoxFit.contain)
                 : (nomineeImage != null && nomineeImage!.isNotEmpty)
                     ? Image.network(nomineeImage!, fit: BoxFit.contain)
-                    : const Center(child: Icon(Icons.image, color: Colors.white, size: 100)),
+                    : Center(child: Icon(Icons.image, color: Colors.white, size: 100)),
           ),
 
           // Clear icon (left) with circular background
@@ -1236,12 +1194,12 @@ void _showImagePreview(BuildContext context) {
                 Navigator.pop(context);
               },
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.clear, color: Colors.white, size: 20),
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.clear, color: Colors.white, size: 20),
               ),
             ),
           ),
@@ -1256,12 +1214,12 @@ void _showImagePreview(BuildContext context) {
                 _showImageSourceOptions();
               },
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.edit, color: Colors.white, size: 20),
+                padding: EdgeInsets.all(8),
+                child: Icon(Icons.edit, color: Colors.white, size: 20),
               ),
             ),
           ),

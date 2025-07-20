@@ -1,9 +1,8 @@
 name: csc
-description: "CSC SCHEME"
+description: "CSC Gold SCHEME"
 publish_to: 'none'
 
-version: 1.0.1+1  # version: version_number+build_number
-
+version: 1.0.2+3  # version: version_number+build_number
 
 environment:
   sdk: ^3.7.2
@@ -20,7 +19,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   image_picker: ^0.8.5+3
   local_auth: ^2.3.0
-  intl: ^0.20.2
+  intl: ^0.20.0  # Downgraded for easy_localization compatibility
   lottie: ^2.0.0
   shared_preferences: ^2.0.0
   http: ^1.2.2
@@ -49,27 +48,11 @@ dependencies:
   connectivity_plus: ^6.1.3
   audioplayers: ^6.4.0
   intl_phone_field: ^3.2.0
-  
-
-  
-
   timezone: ^0.10.0
   pull_to_refresh: ^2.0.0
-  
-  
-  
-  
-  
-  
-  
-  
   badges: ^3.1.2
+  flutter_colorpicker: ^1.0.3
   
-  
-  
-  
-  
-
   
 
 dev_dependencies:
@@ -85,13 +68,11 @@ flutter:
     - assets/lang/
     - assets/sounds/notifications.wav
 
-
-# ✅ **Corrected Section - App Icon Configuration**
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/a.jpg"  # ✅ మీ custom logo path
-  adaptive_icon_background: "#ffffff"       # (Optional) Adaptive icon background
-  adaptive_icon_foreground: "assets/images/a.jpg" # (Optional) Foreground for Android
+  image_path: "assets/images/a.jpg"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/a.jpg"
   remove_alpha_ios: true
   min_sdk_android: 21

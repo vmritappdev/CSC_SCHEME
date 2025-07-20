@@ -12,11 +12,12 @@ import 'package:csc/upidetails/payment%20page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:share_plus/share_plus.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -57,47 +58,12 @@ class _ScannerState extends State<Scanner> {
   String installmentLabel = '';
   String installmentid = '';
 
-   File? _selectedImage;
 
 
 
-  void _shareImage() {
-  if (_selectedImage != null) {
-    try {
-      Share.shareXFiles(
-        [XFile(_selectedImage!.path)],
-        text: "Check out this image!",
-      );
-    } catch (e) {
-      print("Error sharing image: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error sharing image: $e")),
-      );
-    }
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("No image to share.")),
-    );
-  }
-}
 
 
   // Download Image
-  void _downloadImage() async {
-    final directory = Directory('/storage/emulated/0/Download');
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
-    }
-
-    final fileName = _selectedImage!.path.split('/').last;
-    final newFilePath = '${directory.path}/$fileName';
-
-    final newFile = await _selectedImage!.copy(newFilePath);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Image saved to: ${newFile.path}")),
-    );
-  }
 
 
 
@@ -107,16 +73,6 @@ class _ScannerState extends State<Scanner> {
   ];
 
 
-  void _copyToClipboard(BuildContext context, String upiId) {
-    Clipboard.setData(ClipboardData(text: upiId));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Copied "$upiId"'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -206,7 +162,7 @@ Future<bool> checkInternet() async {
   Future<void> _fetchInstallmentDetails() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mobileNumber = prefs.getString('phoneNumber');
-    String schemeId = widget.activescheme.schemeID ?? '';
+    String schemeId = widget.activescheme.schemeID;
 
     if (mobileNumber!.isEmpty) return;
 
@@ -252,7 +208,7 @@ Future<bool> checkInternet() async {
       context,
       MaterialPageRoute(
         builder: (context) => PaymentDetailsScreen(
-          payid: widget.rejectId.isNotEmpty ? widget.rejectId : widget.activescheme.payId ?? '',
+          payid: widget.rejectId.isNotEmpty ? widget.rejectId : widget.activescheme.payId,
           activescheme: widget.activescheme,
           
           rejectId: widget.rejectId,  // Pass rejectId from Scanner
@@ -269,7 +225,7 @@ Future<bool> checkInternet() async {
     final double screenWidth = screenSize.width;
     final double screenHeight = screenSize.height;
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
-    double labelWidth = screenWidth * 0.3; // ఉదాహరణకు 30% స్క్రీన్ వెడల్పు
+// ఉదాహరణకు 30% స్క్రీన్ వెడల్పు
 
 
     return WillPopScope(
@@ -296,113 +252,118 @@ Future<bool> checkInternet() async {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.05,
-            vertical: screenHeight * 0.01,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.05,
+              vertical: screenHeight * 0.01,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  localization.translate('This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.'),
+                  style: GoogleFonts.lato(
+                    fontSize: screenWidth * 0.035,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.teal,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                 localization.translate('CHINNI SRINIVSSULU JEWELLERS'),
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.03,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+             
+                SizedBox(height: screenHeight * 0.01),
+               SizedBox(
+            width: screenWidth * 0.4,
+            height: screenWidth * 0.5,
+            child: Image.asset(
+              'assets/images/qrcode.jpg', 
+              fit: BoxFit.cover, 
+            ),
           ),
-          child: Column(
-            children: [
-              Text(
-                localization.translate('This is a manual payment process. Please make the payment for the scheme amount using the following UPI details.'),
-                style: GoogleFonts.lato(
-                  fontSize: screenWidth * 0.035,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.teal,
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              Text(
-               localization.translate('CHINNI SRINIVSSULU JEWELLERS'),
-                style: TextStyle(
-                  fontSize: screenWidth * 0.03,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-           
-              SizedBox(height: screenHeight * 0.01),
-             SizedBox(
-  width: screenWidth * 0.4,
-  height: screenWidth * 0.5,
-  child: Image.asset(
-    'assets/images/qrcode.jpg', // నీ asset path ఇక్కడ పెడాలి
-    fit: BoxFit.cover, // లేదా BoxFit.contain, అవసరాన్ని బట్టి మార్చవచ్చు
-  ),
-),
-
-              SizedBox(height: screenHeight * 0.02),
-
           
-   
+                SizedBox(height: screenHeight * 0.02),
+          
             
+             
+              
+          
+             _buildDetailCard(
+            title: localization.translate('UPI Details'),
+            entries: [
+              _buildCopyRow(
+                '${localization.translate('UPI ID')}:',
+                'Chinnipavan-2@okhdfcbank',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
+            ],
+          ),
+          
+          
+          _buildDetailCard(
+            title: localization.translate('Bank Details'),
+            entries: [
+              _buildCopyRow(
+                localization.translate('Bank Name') + ':',
 
-           _buildDetailCard(
-  title: localization.translate('UPI Details'),
-  entries: [
-    _buildCopyRow(
-      '${localization.translate('UPI ID')}:',
-      'Chinnipavan-2@okhdfcbank',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-  ],
-),
-
-
-_buildDetailCard(
-  title: localization.translate('Bank Details'),
-  entries: [
-    _buildCopyRow(
-      '${localization.translate('Bank Name')}:',
-      'HDFC Bank',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      '${localization.translate('Account No')}:',
-      '50200103097351',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      '${localization.translate('IFSC Code')}:',
-      'HDFC0002043',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-    _buildCopyRow(
-      '${localization.translate('A/C Holder')}:',
-      'Chinni Srinivasulu Chetty Jewellers',
-      context,
-      MediaQuery.of(context).size.width,
-    ),
-  ],
-),
-
-
-
-
+                'HDFC Bank',
+                 context,
+                 MediaQuery.of(context).size.width,
+              ),
 
               
-
- 
-              SizedBox(height: screenHeight * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildPaymentAppIcon('assets/images/gpay.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/ptm.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/phonepay.png', screenWidth),
-                  _buildPaymentAppIcon('assets/images/zon.png', screenWidth),
-                ],
+              _buildCopyRow(
+                localization.translate('Account No') + ':',
+                '50200103097351',
+                context,
+                MediaQuery.of(context).size.width,
               ),
-              SizedBox(height: screenHeight * 0.02),
-              _buildSchemeDetails(screenWidth),
-              SizedBox(height: screenHeight * 0.02),
-              _buildCheckbox(screenWidth),
-              SizedBox(height: screenHeight * 0.02),
-              _buildPaymentButton(screenWidth),
+              _buildCopyRow(
+                localization.translate('IFSC Code') + ':',
+                'HDFC0002043',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
+              _buildCopyRow(
+                localization.translate('A/C Holder') + ':',
+                'Chinni Srinivasulu Chetty Jewellers',
+                context,
+                MediaQuery.of(context).size.width,
+              ),
             ],
+          ),
+          
+          
+          
+          
+          
+                
+          
+           
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildPaymentAppIcon('assets/images/gpay.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/ptm.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/phonepay.png', screenWidth),
+                    _buildPaymentAppIcon('assets/images/lk.png', screenWidth),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                _buildSchemeDetails(screenWidth),
+                SizedBox(height: screenHeight * 0.02),
+                _buildCheckbox(screenWidth),
+                SizedBox(height: screenHeight * 0.02),
+                _buildPaymentButton(screenWidth),
+              ],
+            ),
           ),
         ),
       ),
@@ -452,7 +413,7 @@ _buildDetailCard(
                            ? widget.activescheme.balanceAmount
                            : widget.activescheme.installmentAmount.isNotEmpty == true
                   ? widget.activescheme.installmentAmount
-                  : installmentAmount}', // Use fetched value finally
+                  : installmentAmount}', 
                    style: TextStyle(
                      color: Colors.black,
                      fontWeight: FontWeight.bold,
@@ -533,18 +494,6 @@ _buildDetailCard(
 
 
 
-String _getSchemeAmount() {
-  final amountRs = widget.activescheme.amountRs;
-  final balanceAmount = widget.activescheme.balanceAmount;
-
-  if (amountRs.isNotEmpty) {
-    return amountRs;
-  } else if (balanceAmount.isNotEmpty) {
-    return balanceAmount;
-  } else {
-    return '0';
-  }
-}
 
 
 
@@ -587,7 +536,7 @@ Widget buildUpiRow(String label, String value, {VoidCallback? onCopy}) {
 
 
 Widget _buildDetailCard({required String title, required List<Widget> entries}) {
-  final localization = Provider.of<LocalizationProvider>(context,listen: false);
+  Provider.of<LocalizationProvider>(context,listen: false);
   return Card(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     elevation: 2,
@@ -611,14 +560,14 @@ Widget _buildDetailCard({required String title, required List<Widget> entries}) 
 }
 
 Widget _buildCopyRow(String label, String value, BuildContext context,double screenWidth) {
-   final localization = Provider.of<LocalizationProvider>(context);
+   Provider.of<LocalizationProvider>(context);
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 0), // కొంచెం పైకే దిగువకు gap
+    padding: const EdgeInsets.symmetric(vertical: 0), 
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center, // text vertical alignment center
+      crossAxisAlignment: CrossAxisAlignment.center, 
       children: [
         SizedBox(
-         width: screenWidth * 0.3, // మీకు తగినట్టు adjust చేయండి
+         width: screenWidth * 0.3, 
           child: Text(
             label,
             style: GoogleFonts.lato(

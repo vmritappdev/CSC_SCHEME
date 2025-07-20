@@ -52,19 +52,20 @@ Timer? periodicTimer;
 void initState() {
   super.initState();
   SharedPreferences.getInstance().then((prefs) {
-    setState(() {
-      mobileNumber = prefs.getString('phoneNumber'); // Fetch mobile number
-    });
-
-    print("📞 Fetched Mobile Number: $mobileNumber"); // Debugging
-
-    if (mobileNumber != null) {
-      // Start periodic API call
-      startPeriodicApiCall(mobileNumber!, widget.id);
-    } else {
-      print("🚨 Mobile number or ID missing!");
-    }
+  if (!mounted) return; // 👈 check added
+  setState(() {
+    mobileNumber = prefs.getString('phoneNumber');
   });
+
+  print("📞 Fetched Mobile Number: $mobileNumber");
+
+  if (mobileNumber != null) {
+    startPeriodicApiCall(mobileNumber!, widget.id);
+  } else {
+    print("🚨 Mobile number or ID missing!");
+  }
+});
+
 }
 
 // Add this function to start periodic API call
@@ -97,9 +98,12 @@ void dispose() {
   Future<void> verifyPayment(String mobileNumber, String id) async {
      SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-    setState(() {
-      isVerifying = true;
-    });
+    if (mounted) {
+  setState(() {
+    isVerifying = true;
+  });
+}
+
 
     try {
       final response = await http.post(
@@ -142,9 +146,12 @@ void dispose() {
       print("🔴 API Call Failed: $e"); // 🖨️ Exception Print
      
     } finally {
-      setState(() {
-        isVerifying = false;
-      });
+      if (mounted) {
+  setState(() {
+    isVerifying = false;
+  });
+}
+
     }
   }
 
@@ -261,10 +268,9 @@ String processTimer(String remaingtimer) {
           return Text(localization.translate("Time's up!"));
         } else {
           // మాన్యువల్‌గా 48 గంటల కౌంట్‌ను కలిక్యులేట్ చేయడం
-          final totalSeconds = (time.days ?? 0) * 24 * 60 * 60 + (time.hours ?? 0) * 60 * 60 + (time.min ?? 0) * 60 + (time.sec ?? 0);
-          final hours = (totalSeconds ~/ 3600); // మొత్తం గంటలు
-          final minutes = (totalSeconds % 3600) ~/ 60; // మిగతా నిమిషాలు
-          final seconds = totalSeconds % 60; // మిగతా సెకన్లు
+// మొత్తం గంటలు
+// మిగతా నిమిషాలు
+// మిగతా సెకన్లు
         
           return Container(
             width: screenWidth * 0.3,

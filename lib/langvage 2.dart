@@ -19,7 +19,7 @@ void main() {
 }
 
 class Lang10 extends StatefulWidget {
-  const Lang10({super.key});
+const Lang10({super.key});
 
   @override
   _Lang10State createState() => _Lang10State();
@@ -35,15 +35,7 @@ class _Lang10State extends State<Lang10> {
 
   String selectedLanguageCode = "en";
 
-  Future<void> _savePhoneNumber(String phoneNumber) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('phoneNumber', phoneNumber);
-}
 
-Future<String?> _getPhoneNumber() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('phoneNumber');
-}
 
   @override
   void initState() {

@@ -1,4 +1,5 @@
 
+
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/dashboardscreens/custmer_care.dart';
 import 'package:csc/dashboardscreens/brocher%20page.dart';
@@ -10,13 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(
     MaterialApp(
       builder: (context, child) {
       return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
+      data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },
@@ -51,9 +53,29 @@ class _NavigationDrawerScreenState extends State<NavigationDrawerScreen> {
   }
 
 
+ void openPrivacyPolicy() async {
+  final Uri url = Uri.parse('https://cscjewellers.com/privacy_policy.php');
+  if (!await launchUrl(url, mode: LaunchMode.platformDefault)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Unable to open link")),
+    );
+  }
+}
+
+
+
 Future<void> logout() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.clear(); 
+ final prefs = await SharedPreferences.getInstance();
+
+// Step 1: Save 'isFirstTime' value temporarily
+final isFirstTime = prefs.getBool('isFirstTime') ?? false;
+
+// Step 2: Clear all
+await prefs.clear();
+
+// Step 3: Restore 'isFirstTime'
+await prefs.setBool('isFirstTime', isFirstTime);
+
   Navigator.push(
   context,
   MaterialPageRoute(builder: (context) => const LoginScreen1()), 
@@ -80,41 +102,54 @@ Future<void> logout() async {
     );
   }
 
-  Widget buildHeader(BuildContext context, LocalizationProvider localization) {
-  double topPadding = MediaQuery.of(context).padding.top;  // Dynamic top padding
+ Widget buildHeader(BuildContext context, LocalizationProvider localization) {
+  double topPadding = MediaQuery.of(context).padding.top;
   double screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      color: const Color.fromRGBO(2, 5, 62, 1),
-      padding: EdgeInsets.only(
-      top: 24 + topPadding, 
-      bottom: screenHeight * 0.03, 
-      ),
-      child: Column(
+  return SizedBox(
+    width: double.infinity,
+    height: screenHeight * 0.20,
+    child: Stack(
       children: [
-          Image.asset(
-          'assets/images/csc2.png',
-          color: Colors.white,
-          height: screenHeight * 0.1,  
-          
-            
-            fit: BoxFit.fill,
-
-
+        /// Blue Header Container
+        Container(
+          width: double.infinity,
+          color: const Color.fromRGBO(2, 5, 62, 1),
+          padding: EdgeInsets.only(
+            top: 24 + topPadding,
+            bottom: screenHeight * 0.03,
           ),
-          Text(
-            "$firstName $lastName", 
-            style: GoogleFonts.lato(
-              color: Colors.white,
-              fontSize: screenHeight * 0.025,  
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Image.asset(
+                'assets/images/csc2.png',
+                color: Colors.white,
+                height: screenHeight * 0.05,
+                fit: BoxFit.contain,
+              ),
+
+             // SizedBox(height: 5,),
+              Text(
+                "$firstName $lastName",
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontSize: screenHeight * 0.025,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+
+        /// Blue Curve at Bottom
+       
+      ],
+    ),
+  );
+}
+
 
   Widget buildMenuItems(BuildContext context, LocalizationProvider localization) {
   double screenWidth = MediaQuery.of(context).size.width;
@@ -162,9 +197,22 @@ Future<void> logout() async {
             );
           }),
 
+
+           ListTile(
+  leading: Icon(Icons.privacy_tip, color: Colors.blue),
+  title: Text(localization.translate("Privacy & Policy"), 
+  style: GoogleFonts.lato(fontSize: 14)),
+  onTap: openPrivacyPolicy,
+),
+
            buildMenuTile("assets/images/logout.png", localization.translate("LogOut"), () {
          logout();
           }),
+
+
+
+        
+
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:csc/api_services.dart/ifsc_codeapi.dart';
+
 import 'package:csc/api_services.dart/scheme_fetchdetails.dart';
 import 'package:csc/api_services.dart/scheme_submitform.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -19,6 +20,7 @@ import 'package:csc/model/activescheme.dart';
 
 
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -55,7 +57,6 @@ class Jionscheme2 extends StatefulWidget {
 
 class _Jionscheme2State extends State<Jionscheme2> {
 
-   late ScrollController _scrollController;
    bool isButtonVisible = true;
    bool isAdharReadOnly = false;
    bool isPanReadOnly = false;
@@ -181,7 +182,6 @@ class _Jionscheme2State extends State<Jionscheme2> {
  File? _adharImage; // Adhar image
 File? _panImage;   // PAN image
  File? _nomineeadharImage;
-final ImagePicker _picker = ImagePicker();
 
 Future<void> _pickImage(int containerNumber) async {
   final pickedOption = await showDialog<ImageSource>(
@@ -293,8 +293,7 @@ final FocusNode _ifscFocusNode = FocusNode();
 
 
 
-   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       // When app is paused (closed or moved to background), clear other fields and only keep the firstName
       _saveSharedPreferences();
@@ -523,21 +522,6 @@ setState(() {
 
 
 
-Future<void> _getImage(ImageSource source, bool isPanCard) async {
-  final pickedFile = await ImagePicker().pickImage(source: source);
-  if (pickedFile != null) {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (isPanCard) {
-        panImage = pickedFile.path;
-        prefs.setString('panImage', pickedFile.path);
-      } else {
-        adharImage = pickedFile.path;
-        prefs.setString('adharImage', pickedFile.path);
-      }
-    });
-  }
-}
 
 
 
@@ -863,7 +847,7 @@ DateTime? selectedDate;
 
       ScaffoldMessenger.of(context).showSnackBar(
          SnackBar(
-          content: Text(localization.translate('You must be 18 years or older to select this date.'),style: const TextStyle(fontSize: 10),),
+          content: Text(localization.translate('You must be 18 years or older to select this date.'),style: TextStyle(fontSize: 10),),
           backgroundColor: Colors.red,
         ),
       );
@@ -899,13 +883,16 @@ DateTime? selectedDate;
 
     return Stack(
       children: [
-        SafeArea(
-          child: Scaffold(
+        Scaffold(
           
             
            appBar: AppBar(
               automaticallyImplyLeading: false,
-              toolbarHeight: 140,
+              toolbarHeight: 100,
+               elevation: 0,
+              shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+          ),
               backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
               title: Padding(
                padding: const EdgeInsets.only(bottom: 0),
@@ -923,678 +910,676 @@ DateTime? selectedDate;
                                   builder: (context) => HomeScreen(activescheme: Activescheme(),),
                                 ));
                          },
-                          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                          icon: const Icon(Icons.arrow_back_ios, color: Colors.white,size: 29,),
                        ),
+
+                         Text(
+                         // 'Registration',
+
+          
+                         localization.translate("Registration"),
+                        
+                            style: GoogleFonts.lato(color: Colors.white, fontSize: 22)
+                            ),
                         Image.asset('assets/images/csc2.png',
                            height: 70, color: Colors.white)
                       ],
                     ),
                     const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  
+                  ],
+                ),
+              ),
+            ),
+            body: SafeArea(
+              child: Padding(
+                
+                padding: const EdgeInsets.all(16.0),
+                
+                child: SingleChildScrollView(
+                 // controller:  _scrollController,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                         // 'Registration',
-          
-                         localization.translate("Registration"),
+                         // 'SCHEME REGISTRATION',
+                         localization.translate("SCHEME REGISTRATION"),
+                            style:GoogleFonts.lato( color: const Color.fromRGBO(2, 5, 62, 1),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)
+                                ),
+                        Text(
+                          //'Continue to Register',
+                          localization.translate("Customer Information"),
+                            style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
+                                ),
+                       // const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
                         
-                            style: GoogleFonts.lato(color: Colors.white, fontSize: 15)
-                            ),
-          
-                           
-                       
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            body: Padding(
-              
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-               // controller:  _scrollController,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                        
+                        Textamount(),
+                        
+                          //  SizedBox(height: 16,),
+                        
+                 
+                    
+                        buildrow(),
+                        
+                        const SizedBox(height: 16,),
+                        // Mobile Number
+                      _buildTextField(
+              controller: _phoneController,
+              label: localization.translate("Mobile Number*"),
+              readOnly: true,
+              prefixIcon:  Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                       // 'SCHEME REGISTRATION',
-                       localization.translate("SCHEME REGISTRATION"),
-                          style:GoogleFonts.lato( color: const Color.fromRGBO(2, 5, 62, 1),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold)
-                              ),
-                      Text(
-                        //'Continue to Register',
-                        localization.translate("Customer Information"),
-                          style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
-                              ),
-                     // const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
-          
-                      
-                      Textamount(),
-          
-                        //  SizedBox(height: 16,),
-          
-               
-                  
-                      buildrow(),
-          
-                      const SizedBox(height: 16,),
-                      // Mobile Number
-                    _buildTextField(
-            controller: _phoneController,
-            label: localization.translate("Mobile Number*"),
-            readOnly: true,
-            prefixIcon:  Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      "assets/images/flag.png",
-                      height: 20,
-                    ),
-                    const SizedBox(width: 6),
-                    const Text("+91", style: TextStyle(fontWeight: FontWeight.bold)),
-                    const SizedBox(width: 6),
-                  ],
-                ),
-              ),
-            keyboardType: TextInputType.phone,
-            validator: (value) {
-          if (value == null || value.isEmpty) {
-            return localization.translate('Please enter your mobile number');
-          }
-          return null;
-            },
-          ),
-          
-          //SizedBox(height: 16,),
-          
-          
-          
-                      // Date of Birth
-
-                   _buildTextField(
-            controller: dobController,
-            label: (localization.translate("Date of Birth*")),
-            validator: (value) {
-          if (value == null || value.isEmpty) {
-            return (localization.translate("Please enter Date of Birth"));
-          }
-          return null;
-            },
-            readOnly: true,
-            suffixIcon: IconButton(
-          icon: const Icon(
-            Icons.calendar_today,
-            color: Color.fromRGBO(2, 5, 62, 1),
-          ),
-          onPressed: () => _selectDate(context),
-            ),
-          ),
-          
-
-
-
-
-             
-
-
-
-
-              buildGenderDropdown(),
-          
-          
-          
-             const SizedBox(height: 16,),
-          
-                      // Email ID
-                    _buildTextField(
-            controller: _emailController,
-            label: localization.translate("Email ID(Optional)"),
-           // readOnly: true,
-            prefixIcon: const Icon(Icons.email_outlined),
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) {
-          if (value != null && value.isNotEmpty) {
-            // Check for a valid email format if provided
-            final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-            if (!emailRegex.hasMatch(value)) {
-              return localization.translate("Please enter a valid email address");
-            }
-          }
-          // No validation error if the field is empty since it's optional
-          return null;
-            },
-          ),
-          
-                  
-                        _buildTextField(
-            controller: doorNoController,
-            label: localization.translate("Door No*"),
-            
-            validator: (value) =>
-          value!.isEmpty ? localization.translate("Please enter door number") : null,
-          ),
-          
-                  
-                       _buildTextField(
-            controller: address1Controller,
-            label: localization.translate("Address Line 1*"),
-            
-            validator: (value) {
-          if (value == null || value.isEmpty) {
-            return localization.translate("Please enter Address");
-          }
-          return null;
-            },
-          ),
-          
-                  
-                  
-                           _buildTextField(
-            controller: address2Controller,
-            label: localization.translate("Address Line 2/Land Mark"),
-          ),
-          
-                  
-                      
-          
-                  
-                    _buildTextField(
-                       keyboardType: TextInputType.number,
-                       maxLength: 6,
-                      onChanged: (value) {
-                  if (value.length == 6) {
-                    getPincodeDetails(value); // Trigger the API call when 6-digit pincode is entered
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty || value.length != 6) {
-                    return localization.translate('Please enter a valid 6-digit pincode');
-                  }
-                  return null;
-                }, 
-            controller: pincodeController,
-            label: localization.translate("Pincode*"),
-            
-          ),
-          
-            _buildTextField(
-            controller:countryController,
-            label: localization.translate("Country*"),
-            readOnly: false
-           
-          ),
-          
-           _buildTextField(
-            controller:   stateController,
-            label: localization.translate("State*"),
-            readOnly: false
-           
-          ),
-          
-           _buildTextField(
-            controller:   districtController,
-            label: localization.translate("District*"),
-            readOnly: false
-           
-          ),
-          
-           _buildTextField(
-            controller:   cityController,
-            label: localization.translate("City*"),
-            readOnly: false
-           
-          ),
-          
-          
-          
-          
-                     // SizedBox(height: 16,),
-          
-                
-          
-                //  _buildDropdownField2(),
-          
-                      
-          
-          _buildTextField1(
-            controller: adharController,
-            label: localization.translate("Aadhar Number*"), // Localized label
-            
-            selectedImage: _adharImage, // Selected image for the field
-            onPickImage: () => _pickImage(1), // Image picker callback
-            maxLength: 12, // Adhar number should be 12 digits
-           // hintText: "456788883", // Hint text for Adhar number
-           isadhearRequired: isadhearRequired
-           
-          ),
-          
-          _buildTextField2(
-            controller: panController,
-            label: localization.translate("PAN Card Number*"),
-            
-            selectedImage: _panImage,
-            onPickImage: () => _pickImage(2),
-            maxLength: 10,
-            hintText: "ABCDE1234F",
-            isPanRequired: isPanRequired, // pass the flag dynamically
-          ),
-          
-          
-                   
-          
-            const SizedBox(height: 5,),
-                  
-                      _buildTextField(controller: referralController,
-                       label: 
-                       //'Refferal Name/Number'
-                        localization.translate("Referral Name/Number"),
-                        
-                       
-                  ),
-                       
-                  
-                  
-                      const SizedBox(height: 20,),
-                  
-                  
-                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Text(
-                         // 'Bank Details',
-                          localization.translate("Bank Details"),
-                  
-                          style: GoogleFonts.lato(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromRGBO(2, 5, 62, 1),
-                          ),
-                        ),
+                      Image.asset(
+                        "assets/images/flag.png",
+                        height: 20,
                       ),
-                  
-          
-                                      const SizedBox(height: 20,),
-                  
-                  
-                      _buildTextField4(
-           // controller: _ifscController, // <-- Add this line
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return localization.translate('Please enter IFSC Code');
-              }
-              if (!RegExp(r'^[A-Z]{4}[0][A-Z0-9]{6}$').hasMatch(value)) {
-                return 'Invalid IFSC Code';
-              }
-              return null;
-            },
-             onChanged: (value) {
-              value = value.toUpperCase();
-          
-              if (value.length == 11) {
-                if (RegExp(r'^[A-Z]{4}[0][A-Z0-9]{6}$').hasMatch(value)) {
-          fetchBankDetails(value); // ✅ valid, call API
-                } else {
-          bankNameController.clear();
-          branchLocationController.clear();
-          
-          // ✅ Show Snackbar for invalid code
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid IFSC Code')),
-          );
-                }
-              } else {
-                bankNameController.clear();
-                branchLocationController.clear();
-              }
-            },
-          ),
-           const SizedBox(height: 10),
-          
-                  
-                     //  BankDetails(),
-                  
-                        _buildTextField(controller: bankNameController,
-                       label: 
-                       //'Refferal Name/Number'
-                        localization.translate("Bank Name*"),
-                         validator: (value) {
-            if (value == null || value.isEmpty) {
-              return localization.translate('Please enter the bank name'); // Validator message
-            }
-            return null; // Valid input
-          },
-                        
-                       
-                  ),
-          
-                      //SizedBox(height: 16),
-          
-          
-          
-                       _buildTextField(controller:  branchLocationController, 
-                      label:  localization.translate("Branch Location*"),
-                       validator: (value) {
-            if (value == null || value.isEmpty) {
-             return localization.translate('Please enter the bank location'); // Validator message
-            }
-            return null; // Valid input
-          },
-                   
-                      ),
-                  
-                  
-          
-          
-                        _buildTextField(controller: holderNameController,
-                       label: 
-                       //'Refferal Name/Number'
-                        localization.translate("Bank Account Holder Name*"),
-                         validator: (value) {
-            if (value == null || value.isEmpty) {
-            return  localization.translate('Please enter the bank a/c holder name'); // Validator message
-            }
-            return null; // Valid input
-          },
-                        
-                       
-                  ),
-                  
-                  
-                  
-                      // SizedBox(height: 16),
-          
-                       _buildTextField(controller:accountNoController, 
-                       label:   localization.translate("Bank Account No*"),
-                       keyboardType: TextInputType.number,
-                       maxLength: 18,
-                        validator: (value) {
-            if (value == null || value.isEmpty) {
-              return localization.translate('Please enter the bank account number'); // Validator message
-            }
-            return null; // Valid input
-          },
-                       ),
-                       
-                  
-                  
-                       
-                  
-                  
-                   
-          
-                
-          //HDFC0001234
-                  
-          
-                      const SizedBox(height: 16,),
-          
-                     
-                     
-                  
-                       const SizedBox(height: 16,),
-                  
-                        Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Text(
-                        // 'Nominee Details',
-                          localization.translate("Nominee Details"),
-                  
-                          style: GoogleFonts.lato(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: const Color.fromRGBO(2, 5, 62, 1),
-                          ),
-                        ),
-                      ),
-                  
-                  
-                  
-                      const SizedBox(height: 20,),
-                  
-                  
-                    _buildTextField(controller:  nomineeNameController, 
-                    label:  localization.translate("Nominee Full Name"),
-                      
-                    ),
-                  
-                   
-                        
-                  //SizedBox(height: 16,),
-                     
-                    
-                      buildDropdownField(localization.translate("Nominee Relationship*"), nomineeOptions, selectedNomineeRelation, (value) {
-                        setState(() => selectedNomineeRelation = value);
-                      }),
-                  
-                      const SizedBox(height: 5,),
-                      
-                    
-                  /*
-                  
-                    _buildTextField(controller:  nomineeadharController,
-                    keyboardType: TextInputType.number, 
-                    maxLength: 12,
-                    label:  localization.translate("Nominee Adhar Number*"),
-                      validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Please enter nominee adhar number";
-              } else if (value.length != 12) {
-                return "Adhar number must be 12 digits";
-              }
-              return null;
-            },
-                      
-                    ),
-          
-                    */
-          
-          
-                    _buildTextField3(
-            controller: nomineeadharController,
-            label: localization.translate("Nominee Adhar Number*"), // Localized label
-            selectedImage: _nomineeadharImage, // Selected image for the field
-            onPickImage: () => _pickImage(3), // Image picker callback
-            maxLength: 12, // Adhar number should be 12 digits
-           // hintText: "456788883", // Hint text for Adhar number
-           isnomineeadhearRequired: isPanRequired, // pass the flag dynamically
-            // Optional: Add a v
-          
-           /*
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Please enter  nominee adhar number";
-              } else if (value.length != 12) {
-                return "Adhar number must be 12 digits";
-              }
-              return null;
-            },
-          
-            */
-          ),
-                  
-                    const SizedBox(height: 10,),
-                     
-                      SizedBox(
-                       // height: 50,
-                        child: TextField(
-                          maxLength: 10,
-                          controller: nomineeMobileController,
-                          decoration: InputDecoration(
-                            counterText: '',
-                            border: const OutlineInputBorder(),
-                             focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-            borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                   floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
-                             // Remove border
-                          //  filled: true,
-                            //fillColor: Colors.grey[200], // Fill color for TextField
-                            labelText:localization.translate( "Nominee Phone Number (Optional)"),labelStyle: GoogleFonts.lato()
-                          ),
-                          keyboardType: TextInputType.phone,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ),
-                  
-                  
-                  
-                      const SizedBox(height: 16,),
-                  
-                  buildRow4(),
-                     
-                  
-                    
-                  
-                  
-                    SizedBox(
-            height: 50,
-            width: double.infinity,
-            child:
-            
-          ElevatedButton(
-            style: ButtonStyle(
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              backgroundColor: const WidgetStatePropertyAll(
-                Color.fromRGBO(1, 5, 41, 1),
-              ),
-            ),
-            onPressed: isLoading
-                ? null
-                : () async {
-            FocusScope.of(context).unfocus();
-          
-            
-            // Step 1: Validate form fields
-            if (!_formKey.currentState!.validate()) {
-               ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localization.translate('Please fill in all the mandatory fields.')),
-                backgroundColor: Colors.red,
-              ),
-            );
-              return; // Field-level validation will show errors
-            }
-          
-            
-          
-            // Step 2: Check if terms accepted
-            if (!_termsAccepted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(localization.translate("Please accept the Terms and Conditions to proceed.")),
-                  backgroundColor: Colors.red,
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-              return;
-            }
-          
-             // Step 3: Check if nominee and user details are same (custom validation)
-          final nomineeAadhar = adharController.text.trim();
-          final nomineeAadharNumber = nomineeadharController.text.trim();
-          final nomineeMobileNumber = nomineeMobileController.text.trim();
-          final userMobileNumber = _phoneController.text.trim();
-          
-          if (nomineeAadhar == nomineeAadharNumber &&
-              nomineeMobileNumber == userMobileNumber) {
-            _Form(); // Call your validation popup method here
-            return;
-          }
-          
-          
-            
-          
-            setState(() {
-              isLoading = true;
-            });
-          
-            // Step 3: Save important fields
-            final preservedFirstName = _firstNameController.text;
-            final preservedLastName = _lastNameController.text;
-            final preservedPhone = _phoneController.text;
-            final preservedEmail = _emailController.text;
-          
-            await submitForm();
-            await _saveSharedPreferences();
-          
-            // Step 4: Clear only other fields
-            setState(() {
-              _amountController.clear();
-              dobController.clear();
-              doorNoController.clear();
-              address1Controller.clear();
-              address2Controller.clear();
-              cityController.clear();
-              pincodeController.clear();
-              adharController.clear();
-              panController.clear();
-              referralController.clear();
-              bankNameController.clear();
-              holderNameController.clear();
-              accountNoController.clear();
-              ifscCodeController.clear();
-              branchLocationController.clear();
-              nomineeNameController.clear();
-              nomineeMobileController.clear();
-              nomineeadharController.clear();
-              otherController.clear();
-          
-              selectedAmount = null;
-              selectedCountry = null;
-              selectedDate = null;
-              selectedDistrict = null;
-              selectedNomineeRelation = null;
-              selectedState = null;
-              selectedGender = null;
-          
-              adharImage = null;
-              panImage = null;
-              nomineeimage = null;
-             
-          
-             
-              
-          
-              // Restore preserved fields
-              _firstNameController.text = preservedFirstName;
-              _lastNameController.text = preservedLastName;
-              _phoneController.text = preservedPhone;
-              _emailController.text = preservedEmail;
-          
-              isLoading = false;
-          
-              
-            });
-          },
-            child: Text(
-              localization.translate("continue"),
-              style: GoogleFonts.lato(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-              ),
-            ),
-          )
-          ),
-             
+                      const SizedBox(width: 6),
+                      const Text("+91", style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 6),
                     ],
                   ),
                 ),
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                        if (value == null || value.isEmpty) {
+              return localization.translate('Please enter your mobile number');
+                        }
+                        return null;
+              },
+                        ),
+                        
+                        //SizedBox(height: 16,),
+                        
+                        
+                        
+                        // Date of Birth
+              
+                     _buildTextField(
+              controller: dobController,
+              label: (localization.translate("Date of Birth*")),
+              validator: (value) {
+                        if (value == null || value.isEmpty) {
+              return (localization.translate("Please enter Date of Birth"));
+                        }
+                        return null;
+              },
+              readOnly: true,
+              suffixIcon: IconButton(
+                        icon: const Icon(
+              Icons.calendar_today,
+              color: Color.fromRGBO(2, 5, 62, 1),
+                        ),
+                        onPressed: () => _selectDate(context),
+              ),
+                        ),
+                        
+              
+              
+              
+              
+               
+              
+              
+              
+              
+                buildGenderDropdown(),
+                        
+                        
+                        
+               const SizedBox(height: 16,),
+                        
+                        // Email ID
+                      _buildTextField(
+              controller: _emailController,
+              label: localization.translate("Email ID(Optional)"),
+                         // readOnly: true,
+              prefixIcon: const Icon(Icons.email_outlined),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                        if (value != null && value.isNotEmpty) {
+              // Check for a valid email format if provided
+              final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              if (!emailRegex.hasMatch(value)) {
+                return localization.translate("Please enter a valid email address");
+              }
+                        }
+                        // No validation error if the field is empty since it's optional
+                        return null;
+              },
+                        ),
+                        
+                    
+                          _buildTextField(
+              controller: doorNoController,
+              label: localization.translate("Door No*"),
+              
+              validator: (value) =>
+                        value!.isEmpty ? localization.translate("Please enter door number") : null,
+                        ),
+                        
+                    
+                         _buildTextField(
+              controller: address1Controller,
+              label: localization.translate("Address Line 1*"),
+              
+              validator: (value) {
+                        if (value == null || value.isEmpty) {
+              return localization.translate("Please enter Address");
+                        }
+                        return null;
+              },
+                        ),
+                        
+                    
+                    
+                             _buildTextField(
+              controller: address2Controller,
+              label: localization.translate("Address Line 2/Land Mark"),
+                        ),
+                        
+                    
+                        
+                        
+                    
+                      _buildTextField(
+                         keyboardType: TextInputType.number,
+                         maxLength: 6,
+                        onChanged: (value) {
+                    if (value.length == 6) {
+                      getPincodeDetails(value); // Trigger the API call when 6-digit pincode is entered
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length != 6) {
+                      return localization.translate('Please enter a valid 6-digit pincode');
+                    }
+                    return null;
+                  }, 
+              controller: pincodeController,
+              label: localization.translate("Pincode*"),
+              
+                        ),
+                        
+              _buildTextField(
+              controller:countryController,
+              label: localization.translate("Country*"),
+              readOnly: false
+                         
+                        ),
+                        
+                         _buildTextField(
+              controller:   stateController,
+              label: localization.translate("State*"),
+              readOnly: false
+                         
+                        ),
+                        
+                         _buildTextField(
+              controller:   districtController,
+              label: localization.translate("District*"),
+              readOnly: false
+                         
+                        ),
+                        
+                         _buildTextField(
+              controller:   cityController,
+              label: localization.translate("City*"),
+              readOnly: false
+                         
+                        ),
+                        
+                        
+                        
+                        
+                       // SizedBox(height: 16,),
+                        
+                  
+                        
+                  //  _buildDropdownField2(),
+                        
+                        
+                        
+                        _buildTextField1(
+              controller: adharController,
+              label: localization.translate("Aadhar Number*"), // Localized label
+              
+              selectedImage: _adharImage, // Selected image for the field
+              onPickImage: () => _pickImage(1), // Image picker callback
+              maxLength: 12, // Adhar number should be 12 digits
+                         // hintText: "456788883", // Hint text for Adhar number
+                         isadhearRequired: isadhearRequired
+                         
+                        ),
+                        
+                        _buildTextField2(
+              controller: panController,
+              label: localization.translate("PAN Card Number*"),
+              
+              selectedImage: _panImage,
+              onPickImage: () => _pickImage(2),
+              maxLength: 10,
+              hintText: "ABCDE1234F",
+              isPanRequired: isPanRequired, // pass the flag dynamically
+                        ),
+                        
+                        
+                     
+                        
+              const SizedBox(height: 5,),
+                    
+                        _buildTextField(controller: referralController,
+                         label: 
+                         //'Refferal Name/Number'
+                          localization.translate("Referral Name/Number"),
+                          
+                         
+                    ),
+                         
+                    
+                    
+                        const SizedBox(height: 20,),
+                    
+                    
+                         Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Text(
+                           // 'Bank Details',
+                            localization.translate("Bank Details"),
+                    
+                            style: GoogleFonts.lato(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromRGBO(2, 5, 62, 1),
+                            ),
+                          ),
+                        ),
+                    
+                        
+                                        const SizedBox(height: 20,),
+                    
+                    
+                        _buildTextField4(
+                         // controller: _ifscController, // <-- Add this line
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return localization.translate('Please enter IFSC Code');
+                }
+                if (!RegExp(r'^[A-Z]{4}[0][A-Z0-9]{6}$').hasMatch(value)) {
+                  return 'Invalid IFSC Code';
+                }
+                return null;
+              },
+               onChanged: (value) {
+                value = value.toUpperCase();
+                        
+                if (value.length == 11) {
+                  if (RegExp(r'^[A-Z]{4}[0][A-Z0-9]{6}$').hasMatch(value)) {
+                        fetchBankDetails(value); // ✅ valid, call API
+                  } else {
+                        bankNameController.clear();
+                        branchLocationController.clear();
+                        
+                        // ✅ Show Snackbar for invalid code
+                        ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Invalid IFSC Code')),
+                        );
+                  }
+                } else {
+                  bankNameController.clear();
+                  branchLocationController.clear();
+                }
+              },
+                        ),
+                         const SizedBox(height: 10),
+                        
+                    
+                       //  BankDetails(),
+                    
+                          _buildTextField(controller: bankNameController,
+                         label: 
+                         //'Refferal Name/Number'
+                          localization.translate("Bank Name*"),
+                           validator: (value) {
+              if (value == null || value.isEmpty) {
+                return localization.translate('Please enter the bank name'); // Validator message
+              }
+              return null; // Valid input
+                        },
+                          
+                         
+                    ),
+                        
+                        //SizedBox(height: 16),
+                        
+                        
+                        
+                         _buildTextField(controller:  branchLocationController, 
+                        label:  localization.translate("Branch Location*"),
+                         validator: (value) {
+              if (value == null || value.isEmpty) {
+               return localization.translate('Please enter the bank location'); // Validator message
+              }
+              return null; // Valid input
+                        },
+                     
+                        ),
+                    
+                    
+                        
+                        
+                          _buildTextField(controller: holderNameController,
+                         label: 
+                         //'Refferal Name/Number'
+                          localization.translate("Bank Account Holder Name*"),
+                           validator: (value) {
+              if (value == null || value.isEmpty) {
+              return  localization.translate('Please enter the bank a/c holder name'); // Validator message
+              }
+              return null; // Valid input
+                        },
+                          
+                         
+                    ),
+                    
+                    
+                    
+                        // SizedBox(height: 16),
+                        
+                         _buildTextField(controller:accountNoController, 
+                         label:   localization.translate("Bank Account No*"),
+                         keyboardType: TextInputType.number,
+                         maxLength: 18,
+                          validator: (value) {
+              if (value == null || value.isEmpty) {
+                return localization.translate('Please enter the bank account number'); // Validator message
+              }
+              return null; // Valid input
+                        },
+                         ),
+                         
+                    
+                    
+                         
+                    
+                    
+                     
+                        
+                  
+                        //HDFC0001234
+                    
+                        
+                        const SizedBox(height: 16,),
+                        
+                       
+                       
+                    
+                         const SizedBox(height: 16,),
+                    
+                          Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          child: Text(
+                          // 'Nominee Details',
+                            localization.translate("Nominee Details"),
+                    
+                            style: GoogleFonts.lato(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromRGBO(2, 5, 62, 1),
+                            ),
+                          ),
+                        ),
+                    
+                    
+                    
+                        SizedBox(height: 20,),
+                    
+                    
+                      _buildTextField(controller:  nomineeNameController, 
+                      label:  localization.translate("Nominee Full Name"),
+                        
+                      ),
+                    
+                     
+                          
+                    //SizedBox(height: 16,),
+                       
+                      
+                        buildDropdownField(localization.translate("Nominee Relationship*"), nomineeOptions, selectedNomineeRelation, (value) {
+                          setState(() => selectedNomineeRelation = value);
+                        }),
+                    
+                        const SizedBox(height: 5,),
+                        
+                      
+                    /*
+                    
+                      _buildTextField(controller:  nomineeadharController,
+                      keyboardType: TextInputType.number, 
+                      maxLength: 12,
+                      label:  localization.translate("Nominee Adhar Number*"),
+                        validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter nominee adhar number";
+                } else if (value.length != 12) {
+                  return "Adhar number must be 12 digits";
+                }
+                return null;
+              },
+                        
+                      ),
+                        
+                      */
+                        
+                        
+                      _buildTextField3(
+              controller: nomineeadharController,
+              label: localization.translate("Nominee Adhar Number*"), // Localized label
+              selectedImage: _nomineeadharImage, // Selected image for the field
+              onPickImage: () => _pickImage(3), // Image picker callback
+              maxLength: 12, // Adhar number should be 12 digits
+                         // hintText: "456788883", // Hint text for Adhar number
+                         isnomineeadhearRequired: isPanRequired, // pass the flag dynamically
+              // Optional: Add a v
+                        
+                         /*
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter  nominee adhar number";
+                } else if (value.length != 12) {
+                  return "Adhar number must be 12 digits";
+                }
+                return null;
+              },
+                        
+              */
+                        ),
+                    
+                      const SizedBox(height: 10,),
+                       
+                        SizedBox(
+                         // height: 50,
+                          child: TextField(
+                            maxLength: 10,
+                            controller: nomineeMobileController,
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: const OutlineInputBorder(),
+                               focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                     floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                               // Remove border
+                            //  filled: true,
+                              //fillColor: Colors.grey[200], // Fill color for TextField
+                              labelText:localization.translate( "Nominee Phone Number (Optional)"),labelStyle: GoogleFonts.lato()
+                            ),
+                            keyboardType: TextInputType.phone,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        ),
+                    
+                    
+                    
+                        const SizedBox(height: 16,),
+                    
+                    buildRow4(),
+                       
+                    
+                      
+                    
+                    
+                      SizedBox(
+              height: 50,
+              width: double.infinity,
+              child:
+              
+                        ElevatedButton(
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                backgroundColor: const WidgetStatePropertyAll(
+                  Color.fromRGBO(1, 5, 41, 1),
+                ),
+              ),
+              onPressed: isLoading
+                  ? null
+                  : () async {
+              FocusScope.of(context).unfocus();
+                        
+              
+              // Step 1: Validate form fields
+              if (!_formKey.currentState!.validate()) {
+                 ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(localization.translate('Please fill in all the mandatory fields.')),
+                  backgroundColor: Colors.red,
+                ),
+              );
+                return; // Field-level validation will show errors
+              }
+                        
+              
+                        
+              // Step 2: Check if terms accepted
+              if (!_termsAccepted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(localization.translate("Please accept the Terms and Conditions to proceed.")),
+                    backgroundColor: Colors.red,
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+                return;
+              }
+                        
+               // Step 3: Check if nominee and user details are same (custom validation)
+                        final nomineeAadhar = adharController.text.trim();
+                        final nomineeAadharNumber = nomineeadharController.text.trim();
+                        final nomineeMobileNumber = nomineeMobileController.text.trim();
+                        final userMobileNumber = _phoneController.text.trim();
+                        
+                        if (nomineeAadhar == nomineeAadharNumber &&
+                nomineeMobileNumber == userMobileNumber) {
+              _Form(); // Call your validation popup method here
+              return;
+                        }
+                        
+                        
+              
+                        
+              setState(() {
+                isLoading = true;
+              });
+                        
+              // Step 3: Save important fields
+              final preservedFirstName = _firstNameController.text;
+              final preservedLastName = _lastNameController.text;
+              final preservedPhone = _phoneController.text;
+              final preservedEmail = _emailController.text;
+                        
+              await submitForm();
+              await _saveSharedPreferences();
+                        
+              // Step 4: Clear only other fields
+              setState(() {
+                _amountController.clear();
+                dobController.clear();
+                doorNoController.clear();
+                address1Controller.clear();
+                address2Controller.clear();
+                cityController.clear();
+                pincodeController.clear();
+                adharController.clear();
+                panController.clear();
+                referralController.clear();
+                bankNameController.clear();
+                holderNameController.clear();
+                accountNoController.clear();
+                ifscCodeController.clear();
+                branchLocationController.clear();
+                nomineeNameController.clear();
+                nomineeMobileController.clear();
+                nomineeadharController.clear();
+                otherController.clear();
+                        
+                selectedAmount = null;
+                selectedCountry = null;
+                selectedDate = null;
+                selectedDistrict = null;
+                selectedNomineeRelation = null;
+                selectedState = null;
+                selectedGender = null;
+                        
+                adharImage = null;
+                panImage = null;
+                nomineeimage = null;
+               
+                        
+               
+                
+                        
+                // Restore preserved fields
+                _firstNameController.text = preservedFirstName;
+                _lastNameController.text = preservedLastName;
+                _phoneController.text = preservedPhone;
+                _emailController.text = preservedEmail;
+                        
+                isLoading = false;
+                        
+                
+              });
+                        },
+              child: Text(
+                localization.translate("continue"),
+                style: GoogleFonts.lato(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
+                        )
+                        ),
+               
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+          
         ),
 
 
@@ -1602,12 +1587,11 @@ DateTime? selectedDate;
             Container(
               color: Colors.black.withOpacity(0.7),
               child: Center(
-                child: Image.asset(
-                  'assets/images/gif.gif', // Replace with your Lottie loader
-                  height: 100,
-                  width: 100,
-                ),
-              ),
+  child: SpinKitFadingFour(
+    color: Color.fromRGBO(2, 5, 67, 1,),
+    size: 40.0,
+  ),
+),
             ),
       ],
     );
@@ -1955,7 +1939,7 @@ Widget buildRow4(){
             countryController.clear();
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid pincode entered.')),
+            SnackBar(content: Text('Invalid pincode entered.')),
           );
         }
       } else {
@@ -1964,7 +1948,7 @@ Widget buildRow4(){
     } catch (e) {
       // Handle API call failure
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No internet connection. Please try again.')),
+        SnackBar(content: Text('No internet connection. Please try again.')),
       );
     }
   }
@@ -1987,20 +1971,6 @@ Widget buildRow4(){
   }
 }
 
-void _onIfscChanged(String ifsc) {
-  setState(() {
-    ifscError = null;
-  });
-
-  if (ifsc.length < 11) {
-    setState(() {
-      bankNameController.clear();
-      branchLocationController.clear();
-    });
-  } else if (ifsc.length == 11) {
-    fetchBankDetails(ifsc.toUpperCase());
-  }
-}
 
 
 
@@ -2582,7 +2552,7 @@ Widget _buildTextField2({
                 maxLength: maxLength,
                 decoration: InputDecoration(
                   labelText: label,
-                  hintText: hintText,hintStyle: const TextStyle(fontSize: 10),
+                  hintText: hintText,hintStyle: TextStyle(fontSize: 10),
                   counterText: "",
                   border: const OutlineInputBorder(),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -2704,110 +2674,6 @@ Widget _buildTextField2({
 
 
 
-void _showSuccessPopup(BuildContext context, activescheme) {
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
-
-  showDialog(
-    context: context,
-    barrierDismissible: true, // Tap cheste close avvadam
-    builder: (context) => AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
-      contentPadding: const EdgeInsets.all(20), // Better padding
-      content: Column(
-        mainAxisSize: MainAxisSize.min, // Small popup size maintain cheyyadam
-        children: [
-          // Lottie Animation
-          SizedBox(
-            height: 60, // Smaller animation size
-            width: 60,
-            child: Lottie.asset(
-              'assets/images/suc.json',
-              fit: BoxFit.cover,
-            ),
-          ), 
-          const SizedBox(height: 10),
-          Text(
-            localization.translate('Congratulations!'),
-            style: const TextStyle(
-              fontSize: 18, 
-              fontWeight: FontWeight.bold,
-              color: Colors.green, 
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            localization.translate("Your Scheme Registration Was Completed Successfully."),
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.black87, fontSize: 14), 
-          ),
-          const SizedBox(height: 15),
-          ElevatedButton(
-            onPressed: () async {
-              // Save mobile number and join scheme
-              await saveMobileNumber(_phoneController.text);
-              await _saveSharedPreferences();
-              
-
-              // Clear all controllers
-              setState(() {
-                dobController.clear();
-                doorNoController.clear();
-                address1Controller.clear();
-                address2Controller.clear();
-                cityController.clear();
-                pincodeController.clear();
-                adharController.clear();
-                panController.clear();
-                referralController.clear();
-                bankNameController.clear();
-                holderNameController.clear();
-                accountNoController.clear();
-                ifscCodeController.clear();
-                branchLocationController.clear();
-                nomineeNameController.clear();
-                nomineeMobileController.clear();
-
-                selectedAmount = null;
-                selectedCountry = null;
-                selectedDate = null;
-                selectedDistrict = null;
-                selectedNomineeRelation = null;
-                selectedState = null;
-              });
-
-              // Close the popup
-              Navigator.pop(context);
-
-              
-
-              // Navigate to UPIDetailsScreen
-             Navigator.pushReplacement(
-              context,
-           MaterialPageRoute(
-          builder: (context) => Scanner(activescheme: Activescheme(),rejectId: schemeId,),
-          ),
-           );
-
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green, // Green button
-              foregroundColor: Colors.white, // White text
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              localization.translate("Okay"),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
 
 }

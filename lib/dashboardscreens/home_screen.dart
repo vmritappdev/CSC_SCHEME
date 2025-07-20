@@ -145,6 +145,11 @@ Future<void> _fetchNotificationCount() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
+  if (mobileNumber == null || mobileNumber.length != 10) {
+    print("❌ Invalid or missing mobile number in SharedPreferences");
+    return;
+  }
+
   try {
     final response = await http
         .post(
@@ -153,12 +158,14 @@ Future<void> _fetchNotificationCount() async {
             "mobile_no": mobileNumber,
           },
         )
-        .timeout(const Duration(seconds: 10)); // 👈 timeout added here
+        .timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      if (jsonData['response'] == 'success') {
-        final count = int.tryParse(jsonData['count'].toString()) ?? 0;
+      print("Notification Count Response: $jsonData");
+
+      if (jsonData['response']?.toString() == 'success') {
+        final count = int.tryParse(jsonData['count']?.toString() ?? '0') ?? 0;
 
         // ✅ Play sound if count increased
         if (count > _previousNotificationCount) {
@@ -168,18 +175,22 @@ Future<void> _fetchNotificationCount() async {
 
         setState(() {
           _notificationCount = count;
-          _previousNotificationCount = count; // update after setting
+          _previousNotificationCount = count;
         });
+      } else {
+        print("⚠️ Server response not success: ${jsonData['response']}");
       }
     } else {
       print("❌ Server returned error: ${response.statusCode}");
     }
   } on TimeoutException catch (_) {
     print("⏱️ Request timed out after 10 seconds");
-  } catch (e) {
-     print("❌ Error fetching notification count: $e");
+  } catch (e, stackTrace) {
+    print("❌ Error fetching notification count: $e");
+    print("📛 Stack trace:\n$stackTrace");
   }
 }
+
 
 
 
@@ -187,19 +198,19 @@ Future<void> _fetchNotificationCount() async {
    int selectedIndex = 0;
     bool isButtonClicked = false;
   bool isProcessComplete = false;
-   final bool _isPopupShown = false; 
 
     final List<String> images = [
-    'assets/images/jewe2.jpg',
-    'assets/images/jewe.jpg',
-    'assets/images/gold1.jpg',
-    'assets/images/jewe2.jpg',
+   'assets/images/e7.png',   
+    'assets/images/e4.png',
+    'assets/images/e9.png',
+    'assets/images/Banner.png',
+    'assets/images/e2.png',
+    'assets/images/ssss.png',
   ];
 
    int activeIndex = 0;
    String errorMessage = '';
    
-    final String _selectedLanguage = 'తె';
 
 
      String firstName = '';  // Default value for first name
@@ -214,60 +225,6 @@ Future<void> _fetchNotificationCount() async {
   }
 
 
-  void _showInvalidOTPDialog(String message) {
-  final double screenWidth = MediaQuery.of(context).size.width;
-  final double screenHeight = MediaQuery.of(context).size.height;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.02), // Dynamic Border Radius
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: screenHeight * 0.02), // Dynamic Spacing
-            Icon(Icons.error, color: Colors.red, size: screenWidth * 0.1), // Dynamic Icon Size
-            SizedBox(height: screenHeight * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // Dynamic Padding
-              child: Text(
-                message,
-                style: GoogleFonts.lato(fontSize: screenWidth * 0.04), // Dynamic Font Size
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.045, // Dynamic Button Font Size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
 
   // Submit form and send data to API
  
@@ -294,16 +251,12 @@ Future<String?> getMobileNumber() async {
 
 bool _popupShown = false; // To track if popup is already shown
 
-Timer? _notificationTimer;
 void _startPolling() {
-  if (!_isPolling) return; // ✅ Stop if polling is off
+  if (!_isPolling) return; // Stop if polling is off
 
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
       await _fetchVerificationResponse();
-       _notificationTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
-    _fetchNotificationCount();
-  });
     
       _startPolling(); // Continue polling
     }
@@ -313,13 +266,12 @@ void _startPolling() {
 
 
 bool _isPolling = true; // Flag to control polling
-bool _isPollingStarted = false;
 
 @override
 void dispose() {
   _isPolling = false; // Stop polling when the widget is disposed
   super.dispose();
-   _isPollingStarted = false; // ఫ్లాగ్ రీసెట్ చేయండి
+// ఫ్లాగ్ రీసెట్ చేయండి
 }
 
 
@@ -327,7 +279,7 @@ void dispose() {
 Future<void> _fetchVerificationResponse() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
-  String schemeId = widget.activescheme.schemeID;
+  String? schemeId = widget.activescheme.schemeID;
 
   final url = Uri.parse('$baseUrl/process_verification.php');  //'https://vmrdemos.com/csc_scheme/process_verification.php'
 
@@ -366,15 +318,6 @@ Future<void> _fetchVerificationResponse() async {
           // However, you're dealing with a POST request so you may want to validate or use this response later.
 
           // ✅ Create Activescheme Object with new schemeId if you need to use it
-          Activescheme activescheme = Activescheme.customparams(
-            schemeID: responseSchemeId,
-            amountRs: data['amount'],
-            month: data['month'],
-            year: data['year'], payId: '',rejectId: '',
-            balanceAmount: '',
-            installmentAmount: ''
-           
-          );
 
           // Debugging the process and message
           print("Process: ${verificationResponse.process}");
@@ -452,24 +395,24 @@ void showCompletePopup(VerificationResponse response) {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentCard()));
                   },
+                  child: Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                   Navigator.of(context, rootNavigator: true).pop();
-                  await Future.delayed(const Duration(milliseconds: 100));
+                  await Future.delayed(Duration(milliseconds: 100));
                     _popupShown = false;
                     closePopupAPI();
                   },
+                  child: Text("OK", style: TextStyle(fontSize: 14,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
-                  child: const Text("OK", style: TextStyle(fontSize: 14,color: Colors.white)),
                 ),
               ],
             ),
@@ -518,11 +461,6 @@ Future<void> closePopupAPI() async {
     
   _startPolling();
   
-    @override
-void dispose() {
-  _notificationTimer?.cancel(); // Important to avoid memory leaks
-  super.dispose();
-}
     
     //closePopupAPI();
     
@@ -623,90 +561,81 @@ void dispose() {
 
  
     
-      final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    const double padding = 2.0;
 
     
 
 
-    return WillPopScope(
-
-    onWillPop: () async {
- bool shouldExit = await showDialog(
-  
-  barrierDismissible: false,
-  context: context,
-  builder: (context) => Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-localization.translate('CSC App'),
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-           localization.translate('Are you sure do you want to exit?'),
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+   return WillPopScope(
+  onWillPop: () async {
+    bool shouldExit = await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text(
-                 localization.translate('CANCEL'),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w600,
-                  ),
+              Text(
+                localization.translate('CSC App'),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(
-                 localization.translate('EXIT'),
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.blue,
-                    fontWeight: FontWeight.w600,
-                  ),
+              SizedBox(height: 8),
+              Text(
+                localization.translate('Are you sure do you want to exit?'),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
                 ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      localization.translate('CANCEL'),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      localization.translate('EXIT'),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
-    ),
-  ),
-);
+    );
 
-  if (shouldExit) {
-    SystemNavigator.pop();
+    return shouldExit; 
+    // true అంటే app close అవుతుంది 
+    // false అంటే popup మాత్రమే close అవుతుంది, app run అవుతుంది
+  },
 
-    
-  }
-
-  return false;
-},
-
-
-      child: SafeArea(
+      
         child: Scaffold(
           drawer: const NavigationDrawerScreen(),
           backgroundColor: const Color(0xFFFFF7E6),
@@ -744,54 +673,49 @@ localization.translate('CSC App'),
               
             
            actions: [
-         GestureDetector(
-          onTap: () {
-            final localization = Provider.of<LocalizationProvider>(context, listen: false);
-            _showLanguagePopup(context, localization);
-          },
-          child: Container(
-           // height: MediaQuery.of(context).size.width * 0.08,  // Dynamic height based on screen width
-           // width: MediaQuery.of(context).size.width * 0.08,   // Dynamic width based on screen width
-            decoration: const BoxDecoration(
-         //color: Colors.blueGrey, 
-         //borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(
-        child: Container(
-  //padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-  decoration: BoxDecoration(
-    //color: Colors.blue, // Background color
-    border: Border.all(
-      color: const Color.fromARGB(255, 148, 147, 147), // Border color
-      width: 1.5,          // Border width
+       GestureDetector(
+  onTap: () {
+    final localization = Provider.of<LocalizationProvider>(context, listen: false);
+    _showLanguagePopup(context, localization);
+  },
+  child: Container(
+    decoration: BoxDecoration(
+      border: Border.all(
+        color: const Color.fromARGB(255, 148, 147, 147),
+        width: 1.5,
+      ),
+      borderRadius: BorderRadius.circular(8),
     ),
-    borderRadius: BorderRadius.circular(8), // Rounded corners
-  ),
-  child: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Icon(
-        Icons.language, // Language or globe icon
-        color: Colors.white,
-        size: MediaQuery.of(context).size.width * 0.05,
-      ),
-      const SizedBox(width: 4), // Spacing between icon and text
-      Text(
-        'EN', // or use Provider.of<LocalizationProvider>(context).languageCode
-        style: TextStyle(
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.language,
           color: Colors.white,
-          fontSize: MediaQuery.of(context).size.width * 0.05,
+          size: MediaQuery.of(context).size.width * 0.05,
         ),
-      ),
-    ],
-  ),
-)
-
-            ),
+        SizedBox(width: 3),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: Consumer<LocalizationProvider>(
+            builder: (context, localization, _) {
+              // languageCode తీసుకుని uppercase లో చూపించు
+              String displayCode = localization.languageCode.toUpperCase();
+              return Text(
+                displayCode,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                ),
+              );
+            },
           ),
         ),
-        
-        
+      ],
+    ),
+  ),
+),
+
         SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Dynamic spacing
         
  GestureDetector(
@@ -857,7 +781,7 @@ localization.translate('CSC App'),
           controller: _refreshController,
           onRefresh: _onRefresh,
       
-            header: const WaterDropHeader(
+            header: WaterDropHeader(
             complete: Row(
             mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -866,552 +790,631 @@ localization.translate('CSC App'),
               Text("Refresh Completed", style: TextStyle(color: Colors.green)),
               ],
             ),
-            waterDropColor: Color.fromARGB(255, 4, 2, 29),
+            waterDropColor: const Color.fromARGB(255, 4, 2, 29),
           ),
-           child: Column(
-              children: [
+           child: SafeArea(
+             child: Column(
+                children: [
+                  
+                     Padding(
+                padding: EdgeInsets.only(bottom: screenHeight * 0.01),
+                child: SizedBox(
                 
-                   Padding(
-              padding: EdgeInsets.only(bottom: screenHeight * 0.01),
-              child: SizedBox(
-              
-                width: double.infinity,
-                
-                child: CarouselSlider.builder(
-                  itemCount: images.length,
-                  options: CarouselOptions(
-                    height: screenHeight * 0.16,
-                    viewportFraction: 1.0,
-                    autoPlay: true,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enableInfiniteScroll: false,
-                    autoPlayAnimationDuration: const Duration(milliseconds: 700),
-                    onPageChanged: (index, reason) {
-                      setState(() => activeIndex = index);
+                  width: double.infinity,
+                  
+                  child: CarouselSlider.builder(
+                    itemCount: images.length,
+                    options: CarouselOptions(
+                      height: screenHeight * 0.16,
+                      viewportFraction: 1.0,
+                      autoPlay: true,
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enableInfiniteScroll: false,
+                      autoPlayAnimationDuration: const Duration(milliseconds: 700),
+                      onPageChanged: (index, reason) {
+                        setState(() => activeIndex = index);
+                      },
+                      autoPlayInterval: const Duration(seconds: 3),
+                    ),
+                    itemBuilder: (context, index, realIndex) {
+                      final image = images[index];
+                      return Container(
+                        
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                       
+                        ),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                             // borderRadius: BorderRadius.circular(5),
+                              child: Image.asset(
+                                image, 
+                                fit: BoxFit.cover,
+                           width: double.infinity,
+                           height: screenHeight * 0.6, 
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 90),
+                            
+                              child: Center(
+                              child: buildIndicator()
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
-                    autoPlayInterval: const Duration(seconds: 3),
                   ),
-                  itemBuilder: (context, index, realIndex) {
-                    final image = images[index];
-                    return Container(
-                      
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                     
-                      ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                           // borderRadius: BorderRadius.circular(5),
-                            child: Image.asset(
-                              image, 
-                              fit: BoxFit.cover,
-                         width: double.infinity,
-                         height: screenHeight * 0.6, 
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 90),
-                          
-                            child: Center(
-                            child: buildIndicator()
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
                 ),
               ),
-            ),
-                   
-                  
-                
-                   
-                   
-               // SizedBox(height: 20,),
-                   
-                
-                   
-                Text(
-                  //"Today's Gold Rate",
-                 localization.translate("Today's Gold Rate"),
-                  style:GoogleFonts.lato(
-                    color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                     
                     
-                  )
-                  // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
-                   ),
-                   
-              //  SizedBox(height: 10,),
-                   
-               
-                   
-                
-             Container(
-            padding: EdgeInsets.symmetric(
-                   horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
-                   vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
-            ),
-            decoration: BoxDecoration(
-                   borderRadius: BorderRadius.circular(10),
-            ),
-            child: SingleChildScrollView(
-                   scrollDirection: Axis.horizontal,
-                   child: Row(
-            children: [
-              // Gold Rate Card
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
-                      vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
+                  
+                     
+                     
+                 // SizedBox(height: 20,),
+                     
+                  
+                     
+                  Text(
+                    //"Today's Gold Rate",
+                   localization.translate("Today's Gold Rate"),
+                    style:GoogleFonts.lato(
+                      color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                      
+                    )
+                    // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
+                     ),
+                     
+                //  SizedBox(height: 10,),
+                     
+                 
+                     
+                  
+               Container(
+              padding: EdgeInsets.symmetric(
+                     horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
+                     vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
+              ),
+              decoration: BoxDecoration(
+                     borderRadius: BorderRadius.circular(10),
+              ),
+              child: SingleChildScrollView(
+                     scrollDirection: Axis.horizontal,
+                     child: Row(
+              children: [
+                // Gold Rate Card
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
+                        vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(2, 5, 62, 1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+              "${localization.translate("Gold")} $goldRate",
+              style: GoogleFonts.lato(
+                     color: Colors.white,
+                     fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                     fontWeight: FontWeight.bold,
+              ),
+                     ),
+                     
                     ),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(2, 5, 62, 1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-            "${localization.translate("Gold")} $goldRate",
-            style: GoogleFonts.lato(
-                   color: Colors.white,
-                   fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                   fontWeight: FontWeight.bold,
-            ),
-                   ),
-                   
-                  ),
-                  Positioned(
-                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                    top: 0,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/go.png'),
-                          fit: BoxFit.cover,
+                    Positioned(
+                      left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                      top: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                        height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/go.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
-              // Silver Rate Card
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
-                      vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(2, 5, 62, 1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                       "${localization.translate("Silver")} $silverRate",
-                     // "Silver $silverRate",
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                        fontWeight: FontWeight.bold,
+                  ],
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
+                // Silver Rate Card
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
+                        vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                    top: 0,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/silver.png'),
-                          fit: BoxFit.cover,
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(2, 5, 62, 1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                         "${localization.translate("Silver")} $silverRate",
+                       // "Silver $silverRate",
+                        style: GoogleFonts.lato(
+                          color: Colors.white,
+                          fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    Positioned(
+                      left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                      top: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                        height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/silver.png'),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+                     ),
               ),
-            ],
-                   ),
-            ),
-                   ),
-                   
-                   
-           // SizedBox(height: 10),
-                   
-            
-                   
-                  Center(
-             child: (verificationResponse?.process == "pending" ||
-            verificationResponse?.process == "incomplete")
-                 ? Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            decoration: BoxDecoration(
-              color: verificationResponse?.process == "pending"
-                  ? Colors.orange.shade50
-                  : Colors.red.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
+                     ),
+                     
+                     
+             // SizedBox(height: 10),
+                     
+              
+                     
+                    Center(
+               child: (verificationResponse?.process == "pending" ||
+              verificationResponse?.process == "incomplete")
+                   ? Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              decoration: BoxDecoration(
                 color: verificationResponse?.process == "pending"
-                    ? Colors.orange
-                    : Colors.red,
-                width: 1,
+                    ? Colors.orange.shade50
+                    : Colors.red.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: verificationResponse?.process == "pending"
+                      ? Colors.orange
+                      : Colors.red,
+                  width: 1,
+                ),
               ),
-            ),
-            child: Row(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Text Message
+                  Expanded(
+                    child: Text(
+                      verificationResponse?.process == "pending"
+                          ? "Transaction is pending. Please complete it to proceed."
+                          : localization.translate(
+                              "Your join scheme registration is still pending. Kindly complete your registration process."),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.030,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+             
+                  //const SizedBox(width: 10),
+             
+                  // Button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8), // Small button
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              Scanner(activescheme: Activescheme(), rejectId: ''),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      localization.translate('continue'),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: MediaQuery.of(context).size.width * 0.03,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+                     )
+                   : const SizedBox.shrink(),
+             ),
+             
+                 
+                     
+             
+                     
+                Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Text Message
-                Expanded(
-                  child: Text(
-                    verificationResponse?.process == "pending"
-                        ? "Transaction is pending. Please complete it to proceed."
-                        : localization.translate(
-                            "Your join scheme registration is still pending. Kindly complete your registration process."),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.030,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                ),
-           
-                //const SizedBox(width: 10),
-           
-                // Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8), // Small button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Scanner(activescheme: Activescheme(), rejectId: ''),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    localization.translate('continue'),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-                   )
-                 : const SizedBox.shrink(),
-           ),
-           
-               
-                   
-           
-                   
-              Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-                   Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
-                ),
-                child: Text(
-                  localization.translate("Welcome Back"),
-                  style: GoogleFonts.lato(
-                    color: const Color.fromRGBO(43, 49, 101, 1),
-                    fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-                   ),
-                   
-                   Padding(
-            padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
-            ),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => const ProfileScreen(schemeID: '')),
-                );
-              },
-              child: Image.asset(
-                'assets/images/person1.png',
-                color: const Color.fromARGB(255, 3, 4, 19),
-                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-              ),
-            ),
-                   ),
-            ],
-                   ),
-                   
-                   
-                 Container(
-            padding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
-            ),
-            alignment: Alignment.bottomLeft, 
-            child: Text(
-              '$firstName $lastName',
-              style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-              color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
-                   ),
-                  textAlign: TextAlign.start, // Left align for natural reading flow
-            ),
-                   ),
-                   
-                   
-                   
-               // SizedBox(height: 20,),
-                
-            Expanded(
-            child: LayoutBuilder(
-                   builder: (context, constraints) {
-            int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
-            double spacing = getSpacing(constraints.maxWidth);
-                   
-            return GridView.count(
-              padding: const EdgeInsets.all(13),
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
+                     Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildGridButton(
-                  'assets/images/schme.png',
-                  localization.translate("Join Scheme"),
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SavingsAccountScreen(),
-                      ),
-                    );
-                  },
-             context),
-                _buildGridButton(
-                  'assets/images/myschme.png',
-                  localization.translate("My Scheme"),
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadingScreen(),
-                      ),
-                    );
-                   
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PaymentCard(),
-                        ),
-                      );
-                    });
-                  },
-               context ),
-                _buildGridButton(
-                  'assets/images/pay.png',
-                  localization.translate("Quick Pay"),
-                  () {
-                    showGoldBottomSheet(context);
-                  },
-              context  ),
-                _buildGridButton(
-                  'assets/images/customre.png',
-                  localization.translate("Contact Us"),
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadingScreen(),
-                      ),
-                    );
-                   
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomerCare(),
-                        ),
-                      );
-                    });
-                  },
-               context ),
-                _buildGridButton(
-                  'assets/images/transation.png',
-                  localization.translate("Transactions"),
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadingScreen(),
-                      ),
-                    );
-                   
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Transaction(),
-                        ),
-                      );
-                    });
-                  },
-               context ),
-                _buildGridButton(
-                  'assets/images/browser.png',
-                  localization.translate('Brochure'),
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoadingScreen(),
-                      ),
-                    );
-                   
-                    Future.delayed(const Duration(seconds: 1), () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BrochureScreen(),
-                        ),
-                      );
-                    });
-                  },
-               context ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
+                  ),
+                  child: Text(
+                    localization.translate("Welcome Back"),
+                    style: GoogleFonts.lato(
+                      color: const Color.fromRGBO(43, 49, 101, 1),
+                      fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
-            );
-                   },
-            ),
-                   ),
-
-
-           
-
-                   
-                   
+                     ),
+                     
+                     Padding(
+              padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
+                  );
+                },
+                child: Image.asset(
+                  'assets/images/person1.png',
+                  color: const Color.fromARGB(255, 3, 4, 19),
+                  height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+                ),
+              ),
+                     ),
               ],
-            ),
+                     ),
+                     
+                     
+                   Container(
+              padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
+              ),
+              alignment: Alignment.bottomLeft, 
+              child: Text(
+                '$firstName $lastName',
+                style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
+                     ),
+                    textAlign: TextAlign.start, // Left align for natural reading flow
+              ),
+                     ),
+                     
+                     
+                     
+                 // SizedBox(height: 20,),
+                  
+              Expanded(
+              child: LayoutBuilder(
+                     builder: (context, constraints) {
+              int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
+              double spacing = getSpacing(constraints.maxWidth);
+                     
+              return GridView.count(
+                padding: const EdgeInsets.all(13),
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+                children: [
+                  _buildGridButton(
+                    'assets/images/schme.png',
+                    localization.translate("Join Scheme"),
+                    ()  async{
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+             
+             
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavingsAccountScreen(),
+                        ),
+                      );
+                    },
+               context),
+                  _buildGridButton(
+                    'assets/images/myschme.png',
+                    localization.translate("My Scheme"),
+                    () async {
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+             
+             
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadingScreen(),
+                        ),
+                      );
+                     
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PaymentCard(),
+                          ),
+                        );
+                      });
+                    },
+                 context ),
+                  _buildGridButton(
+                    'assets/images/pay.png',
+                    localization.translate("Quick Pay"),
+                    () async {
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+                      showGoldBottomSheet(context);
+                    },
+                context  ),
+                  _buildGridButton(
+                    'assets/images/customre.png',
+                    localization.translate("Contact Us"),
+                    ()  async{
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+             
+             
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadingScreen(),
+                        ),
+                      );
+                     
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CustomerCare(),
+                          ),
+                        );
+                      });
+                    },
+                 context ),
+                  _buildGridButton(
+                    'assets/images/transation.png',
+                    localization.translate("Transactions"),
+                    () async {
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+             
+             
+             
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadingScreen(),
+                        ),
+                      );
+                     
+                      Future.delayed(const Duration(seconds: 2), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Transaction(),
+                          ),
+                        );
+                      });
+                    },
+                 context ),
+                  _buildGridButton(
+                    'assets/images/browser.png',
+                    localization.translate('Brochure'),
+                    ()  async {
+             
+                       bool hasInternet = await checkInternet();
+                 if (!hasInternet) {
+                   if (context.mounted) {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                     );
+                   }
+                   return;
+                 }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoadingScreen(),
+                        ),
+                      );
+                     
+                      Future.delayed(const Duration(seconds: 1), () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BrochureScreen(),
+                          ),
+                        );
+                      });
+                    },
+                 context ),
+                ],
+              );
+                     },
+              ),
+                     ),
+             
+             
+             
+             
+                     
+                     
+                ],
+              ),
+           ),
          ),
         
          bottomNavigationBar: Container(
           decoration: BoxDecoration(
             border: Border(top: BorderSide(color: Colors.grey.shade300)),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(4, (index) {
-        final isSelected = _selectedIndex == index;
-        
-        String imagePath;
-        String label;
-        
-        switch (index) {
-          case 0:
-            imagePath = 'assets/images/home.png';
-            label = localization.translate('Home');
-            break;
-          case 1:
-            imagePath = 'assets/images/info.png';
-            label = localization.translate('About');
-            break;
-          case 2:
-            imagePath = 'assets/images/shopping.png';
-            label = localization.translate('Collections');
-            break;
-          case 3:
-            imagePath = 'assets/images/faq.png';
-            label = localization.translate('More');
-            break;
-          default:
-            imagePath = 'assets/images/faq.png';
-            label = localization.translate('Other');
-        }
-        
-        return Expanded(
-          child: InkWell(
-            onTap: () => _navigateTo(index), // Or your onTap logic
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Top curved indicator
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: 5,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color.fromARGB(255, 3, 1, 22)
-                        : Colors.transparent,
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(20),
+          child: SafeArea(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(4, (index) {
+                final isSelected = _selectedIndex == index;
+                    
+                    String imagePath;
+                    String label;
+                    
+                    switch (index) {
+            case 0:
+              imagePath = 'assets/images/home.png';
+              label = localization.translate('Home');
+              break;
+            case 1:
+              imagePath = 'assets/images/info.png';
+              label = localization.translate('About');
+              break;
+            case 2:
+              imagePath = 'assets/images/shopping.png';
+              label = localization.translate('Collections');
+              break;
+            case 3:
+              imagePath = 'assets/images/faq.png';
+              label = localization.translate('More');
+              break;
+            default:
+              imagePath = 'assets/images/faq.png';
+              label = localization.translate('Other');
+                    }
+                    
+                    return Expanded(
+            child: InkWell(
+              onTap: () => _navigateTo(index), // Or your onTap logic
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Top curved indicator
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: 5,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? const Color.fromARGB(255, 3, 1, 22)
+                          : Colors.transparent,
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(20),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 6),
-        
-                // 🔴 Removed badge here
-                Image.asset(
-                  imagePath,
-                  height: 24,
-                  color: isSelected
-                      ? const Color.fromARGB(255, 3, 1, 22)
-                      : Colors.black,
-                ),
-        
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 13,
+                  const SizedBox(height: 6),
+                    
+                  // 🔴 Removed badge here
+                  Image.asset(
+                    imagePath,
+                    height: 24,
                     color: isSelected
                         ? const Color.fromARGB(255, 3, 1, 22)
                         : Colors.black,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                ),
-                const SizedBox(height: 8),
-              ],
+                    
+                  const SizedBox(height: 4),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: isSelected
+                          ? const Color.fromARGB(255, 3, 1, 22)
+                          : Colors.black,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
-          ),
-        );
-            }),
+                    );
+              }),
+            ),
           ),
         ),
         
             
         
         ),
-      ),
+      
     );
   }
 
@@ -1516,49 +1519,6 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
       );
 
 
-   Widget _buildBottomNavItem(String assetPath, String labelKey, int index, Widget screen) {
-  final isSelected = selectedIndex == index;
-  final color = isSelected ? const Color.fromRGBO(4, 18, 142, 1) : Colors.grey;
-  final localization = Provider.of<LocalizationProvider>(context);
-
-  return InkWell(
-    onTap: () {
-      setState(() {
-        selectedIndex = index;
-      });
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => screen),
-      ).then((_) {
-        // Back చేసినపుడు Home (index 0) select అవ్వాలి
-        setState(() {
-          selectedIndex = 0;
-        });
-      });
-    },
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          assetPath,
-          color: color,
-          width: 30,
-          height: 30,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          localization.translate(labelKey),
-          style: GoogleFonts.montserrat(
-            color: color,
-            fontSize: 11,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    ),
-  );
-}
 
 
 
@@ -1576,12 +1536,16 @@ void showGoldBottomSheet(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  bool hasInternet = await checkInternet();
-  if (!hasInternet) {
-    const ErrorScreen();
-    isBottomSheetOpen = false;
-    return;
+ bool hasInternet = await checkInternet();
+if (!hasInternet) {
+  if (context.mounted) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+    );
   }
+  return null;
+}
+
 
   var url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
   final response = await http.post(
@@ -1607,12 +1571,12 @@ void showGoldBottomSheet(BuildContext context) async {
         context: currentContext,
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (BuildContext context) {
           return WillPopScope(
             onWillPop: () async {
-              isBottomSheetOpen = false;
+            isBottomSheetOpen = false;
               return true;
             },
             child: SafeArea(
@@ -1635,9 +1599,9 @@ void showGoldBottomSheet(BuildContext context) async {
                             child: Row(
                               children: [
                                 Image.asset(
-                                  'assets/images/gif.gif',
-                                  height: 60,
-                                  width: 60,
+                                  'assets/images/go.png',
+                                  height: 50,
+                                  width: 50,
                                 ),
                                 const SizedBox(width: 20),
                                 Column(
@@ -1662,14 +1626,24 @@ void showGoldBottomSheet(BuildContext context) async {
                               return Column(
                                 children: [
                                   AssetTile(
-                                    gifPath: 'assets/images/gif.gif',
-                                    title: "${localization.translate("Scheme")} ${index + 1}",
-                                    amount: "₹${scheme['paid_amount']}",
-                                    percentage: scheme['ms_no'],
-                                    balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
-                                    color: Colors.green,
-                                    value: 0.05,
-                                  ),
+  gifPath: 'assets/images/go.png',
+  title: "${localization.translate("Scheme")} ${index + 1}",
+  amount: "₹${scheme['paid_amount']}",
+  percentage: scheme['ms_no'],
+  balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
+
+  // Progress value based on fixed 11 total dues
+  value: (() {
+    const int totalDues = 11;
+    int balance = int.tryParse(scheme['balance_due'].toString()) ?? 0;
+    int paid = totalDues - balance;
+    return (paid / totalDues).clamp(0.0, 1.0);
+  })(),
+
+  // Always green color
+  color: Colors.green,
+)
+,
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: Padding(

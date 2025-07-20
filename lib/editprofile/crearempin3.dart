@@ -236,7 +236,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
   }
 
   void _showCustomBottomSheet(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context, listen: false);
+    Provider.of<LocalizationProvider>(context, listen: false);
 
     showModalBottomSheet(
       context: context,

@@ -2,6 +2,7 @@
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
+
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
@@ -262,15 +263,15 @@ class _ForgotScreenState extends State<ForgotScreen> {
   await prefs.clear(); 
   Navigator.push(
   context,
-  MaterialPageRoute(builder: (context) => const LoginScreen1()), 
-     // (route) => false, // Remove all previous routes
+  MaterialPageRoute(builder: (context) =>  LoginScreen1()), 
+   
       );
   }
 
 
   void _navigateToNextScreen() {
     Navigator.push(
-      context,
+    context,
       MaterialPageRoute(builder: (context) => const CreateMpinScreen5()),
     );
   }
@@ -294,18 +295,18 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 Navigator.push(
                   context, 
                   MaterialPageRoute(
-                    builder: (context) => const LoginPage(), )
+                    builder: (context) => LoginPage(), )
                 );
-                // Navigator.pop(context); // ← బాగా ఉపయోగపడుతుంది back navigation కి
+                
                },
-               icon: const Icon(Icons.arrow_forward), // ← Left side arrow icon
+               icon: Icon(Icons.arrow_forward), // ← Left side arrow icon
              ),
            ),
 
               Image.asset('assets/images/csc2.png', height: 90),
                Text(
                localization.translate('CSCJEWELLERYS'),
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
               ),
               const SizedBox(height: 40),
       
@@ -348,7 +349,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
 const SizedBox(height: 20),
 
-// Show this only if `showNewNumberBox` is true
+
   if (showNewNumberBox)
   GestureDetector(
     onTap: () {
@@ -445,7 +446,7 @@ TextFormField(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     onPressed: _isVerifyEnabled ? _checkOtpMatch : null,
-                    child:  Text(localization.translate("✅ Verify OTP"), style: const TextStyle(color: Colors.white)),
+                    child:  Text(localization.translate("✅ Verify OTP"), style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],

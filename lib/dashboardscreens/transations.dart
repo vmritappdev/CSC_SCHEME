@@ -252,13 +252,12 @@ Future<void> _fetchPayDetails(String id) async {
 
     
 
-    final double left = budget - spent; // Remaining amount
-    final double progress = spent / budget; // Progress calculation
+// Remaining amount
+// Progress calculation
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return SafeArea(
-      child: Scaffold(
+    return  Scaffold(
         body: Column(
           children: [
             Stack(
@@ -445,9 +444,6 @@ Future<void> _fetchPayDetails(String id) async {
                 final transaction = transactions[index];
                 final amount = transaction['amount'];
                 final status = transaction['status'];
-                 final remark = transaction['remark'];
-                 final time = transaction['time'];
-                  final regId = transaction['reg_id'];
                  
                           final statusColor = status == 'Completed'
                     ? Colors.green
@@ -749,7 +745,7 @@ Future<void> _fetchPayDetails(String id) async {
             ),
           ),
         ),
-      ),
+      
     );
   }
 
@@ -844,70 +840,73 @@ Future<void> _fetchPayDetails(String id) async {
           // **API Fetching Start (కోడ్ ఓపెన్ కాగానే ఇది ఓపెన్ అవుతుంది)**
           WidgetsBinding.instance.addPostFrameCallback((_) => fetchPayDetails());
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-
-                decoration: const BoxDecoration(
-                  color: Colors.green,
-                //  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          localization.translate("Payment Successful"),
-                          style:  TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+            
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                  //  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            localization.translate("Payment Successful"),
+                            style:  TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+            
+                            ),
                           ),
-                        ),
-                       SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-                      ],
-                    ),
-                     Icon(
-                      Icons.check_circle,
-                      color: Colors.white,
-                     size: MediaQuery.of(context).size.width * 0.1,
-
-                    ),
-                  ],
+                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            
+                        ],
+                      ),
+                       Icon(
+                        Icons.check_circle,
+                        color: Colors.white,
+                       size: MediaQuery.of(context).size.width * 0.1,
+            
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-
-                color: Colors.white,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildDetailItem(localization.translate("Installment Amount"), "₹${paymentDetails['amount']}"),
-                        _buildDetailItem(localization.translate("Scheme No"), "${paymentDetails['scheme']}"),
-                      ],
-                    ),
-                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildDetailItem(localization.translate("Payment Method"), paymentDetails['payment_type'] ?? ""),
-                        _buildDetailItem(localization.translate("Transacted on"), paymentDetails['date'] ?? ""),
-                      ],
-                    ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-
-                    ElevatedButton.icon(
+                Container(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+            
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildDetailItem(localization.translate("Installment Amount"), "₹${paymentDetails['amount']}"),
+                          _buildDetailItem(localization.translate("Scheme No"), "${paymentDetails['scheme']}"),
+                        ],
+                      ),
+                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildDetailItem(localization.translate("Payment Method"), paymentDetails['payment_type'] ?? ""),
+                          _buildDetailItem(localization.translate("Transacted on"), paymentDetails['date'] ?? ""),
+                        ],
+                      ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+            
+                     isLoading
+                  ? const CircularProgressIndicator() // show loader
+                  : ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
                         foregroundColor: Colors.white,
@@ -917,19 +916,29 @@ Future<void> _fetchPayDetails(String id) async {
                         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                       ),
                       onPressed: () async {
-                         print("Second Button Clicked, ID: $id");
-                          ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId:id);
-          await pdfGenerator.generatePDF(context);
-                      
-                       
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        try {
+                          print("Download clicked, ID: $id");
+                          ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId: id);
+                          await pdfGenerator.generatePDF(context);
+                        } catch (e) {
+                          print('PDF generate error: $e');
+                        } finally {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
                       },
                       icon: const Icon(Icons.download),
-                      label: Text(localization.translate("Download Invoice")),
-                    ),
-                  ],
+                      label: Text(localization.translate("Download Invoice")),)
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       );
@@ -969,7 +978,7 @@ IconData getStatusIcon(String status) {
 }
 
 Color getStatusIconColor(String status) {
-  final localization = Provider.of<LocalizationProvider>(context);
+  Provider.of<LocalizationProvider>(context);
   switch (status.toLowerCase()) {
     case 'processing':
       return Colors.orange;
