@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace =  "com.example.scheme"                                                            //"com.vmrits.csc.scheme"
+    namespace =  "com.vmrits.csc.scheme"                                                            //"com.vmrits.csc.scheme"
     compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.scheme"
+        applicationId = "com.vmrits.csc.scheme"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 21
@@ -31,7 +31,6 @@ android {
     }
 
     
-  /*
     flavorDimensions "env"
     productFlavors {
         dev {
@@ -44,7 +43,6 @@ android {
         }
     }
 
-    */
 
 
     buildTypes {

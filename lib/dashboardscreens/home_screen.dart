@@ -162,7 +162,7 @@ Future<void> _fetchNotificationCount() async {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print("✅ Notification response: $jsonData");
+      print("Notification Count Response: $jsonData");
 
       if (jsonData['response']?.toString() == 'success') {
         final count = int.tryParse(jsonData['count']?.toString() ?? '0') ?? 0;
@@ -252,7 +252,7 @@ Future<String?> getMobileNumber() async {
 bool _popupShown = false; // To track if popup is already shown
 
 void _startPolling() {
-  if (!_isPolling) return; // ✅ Stop if polling is off
+  if (!_isPolling) return; // Stop if polling is off
 
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {
@@ -279,15 +279,7 @@ void dispose() {
 Future<void> _fetchVerificationResponse() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
- // String schemeId = widget.activescheme.schemeID;
- String? schemeId = widget.activescheme.schemeID;
-if (schemeId == null || schemeId.isEmpty) {
-  print("❌ schemeId is null or empty");
-  return;
-}
-
-
-
+  String? schemeId = widget.activescheme.schemeID;
 
   final url = Uri.parse('$baseUrl/process_verification.php');  //'https://vmrdemos.com/csc_scheme/process_verification.php'
 
