@@ -8,6 +8,8 @@ import 'dart:async'; // Import for async operations
 
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/dashboardscreens/terms3.dart';
+import 'package:csc/dashboardscreens/terms_condition.dart';
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
@@ -19,6 +21,7 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
@@ -494,28 +497,54 @@ Widget build(BuildContext context) {
 
                              SizedBox(width: 8, ),
 
-                              Expanded(
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: const TextStyle(fontSize: 12, color: Colors.black87),
-                                    children: [
-                                      TextSpan(text: localization.translate("I agree to the"), style: GoogleFonts.nunito()),
-                                      TextSpan(
-                                        text: localization.translate('Terms and Conditions'),
-                                        style: GoogleFonts.nunito(
-                                          decoration: TextDecoration.underline,
-                                          color: Color.fromRGBO(2, 5, 67, 1),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        recognizer: TapGestureRecognizer()
-                                          ..onTap = () {
-                                            print("Terms tapped");
-                                          },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                             Expanded(
+  child: RichText(
+    text: TextSpan(
+      style: const TextStyle(fontSize: 12, color: Colors.black87),
+      children: [
+        TextSpan(text: localization.translate("I agree to the"), style: GoogleFonts.nunito()),
+        TextSpan(
+          text: localization.translate('Terms and Conditions'),
+          style: GoogleFonts.nunito(
+            decoration: TextDecoration.underline,
+            color: Color.fromRGBO(2, 5, 67, 1),
+            fontWeight: FontWeight.bold,
+          ),
+          recognizer: TapGestureRecognizer()
+         ..onTap = () async {
+  // Show loading dialog
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Center(
+        child: SpinKitFadingFour(
+          color: Color.fromRGBO(2, 5, 67, 1),
+          size: 40.0,
+        ),
+      );
+    },
+  );
+
+  // Wait for 1 second (optional: simulate loading or API call)
+  await Future.delayed(Duration(seconds: 1));
+
+  // Close the loader
+  Navigator.of(context).pop();
+
+  // Navigate to TermsAndConditionScreen
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => TermsAndConditionsScreen3()),
+  );
+},
+
+        ),
+      ],
+    ),
+  ),
+),
+
                             ],
                           ),
     
@@ -592,15 +621,14 @@ Widget build(BuildContext context) {
             Container(
               color: Colors.black.withOpacity(0.7),
               child: Center(
-                child: Image.asset(
-                  'assets/images/gif.gif',
-                  height: 100,
-                  width: 100,
-                ),
+                child:SpinKitFadingFour(
+          color: Color.fromRGBO(2, 5, 67, 1),
+          size: 40.0,
+        ),
               ),
             ),
     
-          // Terms error
+        
           if (_showTermsError)
             Positioned(
               top: MediaQuery.of(context).padding.top + 0,

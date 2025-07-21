@@ -11,11 +11,11 @@ class AppInitializer extends StatefulWidget {
 }
 
 class _AppInitializerState extends State<AppInitializer> {
-  bool _isLoading = true;
+bool _isLoading = true;
 
   @override
   void initState() {
-    super.initState();
+  super.initState();
     _initApp();
   }
 

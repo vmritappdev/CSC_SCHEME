@@ -35,6 +35,7 @@ import 'package:csc/upidetails/loding%20screen.dart';
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -145,52 +146,41 @@ Future<void> _fetchNotificationCount() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
-  if (mobileNumber == null || mobileNumber.length != 10) {
-    print("❌ Invalid or missing mobile number in SharedPreferences");
-    return;
-  }
-
   try {
     final response = await http
         .post(
           url,
           body: {
-            "mobile_no": mobileNumber,
+          "mobile_no": mobileNumber,
           },
         )
-        .timeout(Duration(seconds: 10));
+        .timeout(Duration(seconds: 10)); // 👈 timeout added here
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      print("✅ Notification response: $jsonData");
-
-      if (jsonData['response']?.toString() == 'success') {
-        final count = int.tryParse(jsonData['count']?.toString() ?? '0') ?? 0;
+    final jsonData = json.decode(response.body);
+    if (jsonData['response'] == 'success') {
+        final count = int.tryParse(jsonData['count'].toString()) ?? 0;
 
         // ✅ Play sound if count increased
         if (count > _previousNotificationCount) {
-          final player = AudioPlayer();
+        final player = AudioPlayer();
           await player.play(AssetSource('sounds/notifications.wav'));
         }
 
         setState(() {
           _notificationCount = count;
-          _previousNotificationCount = count;
+          _previousNotificationCount = count; // update after setting
         });
-      } else {
-        print("⚠️ Server response not success: ${jsonData['response']}");
       }
     } else {
       print("❌ Server returned error: ${response.statusCode}");
     }
   } on TimeoutException catch (_) {
     print("⏱️ Request timed out after 10 seconds");
-  } catch (e, stackTrace) {
-    print("❌ Error fetching notification count: $e");
-    print("📛 Stack trace:\n$stackTrace");
+  } catch (e) {
+     print("❌ Error fetching notification count: $e");
   }
 }
-
 
 
 
@@ -200,7 +190,7 @@ Future<void> _fetchNotificationCount() async {
   bool isProcessComplete = false;
 
     final List<String> images = [
-   'assets/images/e7.png',   
+    'assets/images/e7.png',   
     'assets/images/e4.png',
     'assets/images/e9.png',
     'assets/images/Banner.png',
@@ -226,7 +216,7 @@ Future<void> _fetchNotificationCount() async {
 
 
 
-  // Submit form and send data to API
+
  
 
 
@@ -279,17 +269,9 @@ void dispose() {
 Future<void> _fetchVerificationResponse() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
- // String schemeId = widget.activescheme.schemeID;
- String? schemeId = widget.activescheme.schemeID;
-if (schemeId == null || schemeId.isEmpty) {
-  print("❌ schemeId is null or empty");
-  return;
-}
+  String schemeId = widget.activescheme.schemeID;
 
-
-
-
-  final url = Uri.parse('$baseUrl/process_verification.php');  //'https://vmrdemos.com/csc_scheme/process_verification.php'
+  final url = Uri.parse('$baseUrl/process_verification.php');  
 
   try {
     final response = await http.post(
@@ -346,7 +328,7 @@ if (schemeId == null || schemeId.isEmpty) {
 }
 
           } else {
-            print("Process Status is not 2, no popup shown.");
+          print("Process Status is not 2, no popup shown.");
           }
 
         } catch (e) {
@@ -382,7 +364,7 @@ void showCompletePopup(VerificationResponse response) {
           backgroundColor: Colors.white,
           title: Row(
             children: [
-              Image.asset('assets/images/csc2.png', height: 40, width: 40),
+              Image.asset('assets/images/csc2.png', height: 40, width: 40,color: Color.fromRGBO(2, 5, 67, 1),),
               const SizedBox(width: 10),
               Text(
                 Provider.of<LocalizationProvider>(context, listen: false)
@@ -405,7 +387,7 @@ void showCompletePopup(VerificationResponse response) {
                   },
                   child: Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                    backgroundColor: Color.fromRGBO(2, 5, 67, 1),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
@@ -574,76 +556,83 @@ Future<void> closePopupAPI() async {
     
 
 
-   return WillPopScope(
-  onWillPop: () async {
-    bool shouldExit = await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return WillPopScope(
+
+    onWillPop: () async {
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                localization.translate('CSC App'),
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                localization.translate('Are you sure do you want to exit?'),
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(
-                      localization.translate('CANCEL'),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(
-                      localization.translate('EXIT'),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-        ),
+        ],
       ),
-    );
+    ),
+  ),
+);
 
-    return shouldExit; 
-    // true అంటే app close అవుతుంది 
-    // false అంటే popup మాత్రమే close అవుతుంది, app run అవుతుంది
-  },
+  if (shouldExit) {
+    SystemNavigator.pop();
 
-      
+    
+  }
+
+  return false;
+},
+
+
+     
         child: Scaffold(
           drawer: const NavigationDrawerScreen(),
           backgroundColor: const Color(0xFFFFF7E6),
@@ -653,7 +642,7 @@ Future<void> closePopupAPI() async {
         
             toolbarHeight: 90,
             centerTitle: true,
-            backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
             
             title: 
               
@@ -681,7 +670,7 @@ Future<void> closePopupAPI() async {
               
             
            actions: [
-       GestureDetector(
+        GestureDetector(
   onTap: () {
     final localization = Provider.of<LocalizationProvider>(context, listen: false);
     _showLanguagePopup(context, localization);
@@ -689,7 +678,7 @@ Future<void> closePopupAPI() async {
   child: Container(
     decoration: BoxDecoration(
       border: Border.all(
-        color: const Color.fromARGB(255, 148, 147, 147),
+        color: Colors.white,
         width: 1.5,
       ),
       borderRadius: BorderRadius.circular(8),
@@ -723,7 +712,8 @@ Future<void> closePopupAPI() async {
     ),
   ),
 ),
-
+        
+        
         SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Dynamic spacing
         
  GestureDetector(
@@ -800,551 +790,474 @@ Future<void> closePopupAPI() async {
             ),
             waterDropColor: const Color.fromARGB(255, 4, 2, 29),
           ),
-           child: SafeArea(
-             child: Column(
-                children: [
-                  
-                     Padding(
-                padding: EdgeInsets.only(bottom: screenHeight * 0.01),
-                child: SizedBox(
-                
-                  width: double.infinity,
-                  
-                  child: CarouselSlider.builder(
-                    itemCount: images.length,
-                    options: CarouselOptions(
-                      height: screenHeight * 0.16,
-                      viewportFraction: 1.0,
-                      autoPlay: true,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enableInfiniteScroll: false,
-                      autoPlayAnimationDuration: const Duration(milliseconds: 700),
-                      onPageChanged: (index, reason) {
-                        setState(() => activeIndex = index);
-                      },
-                      autoPlayInterval: const Duration(seconds: 3),
-                    ),
-                    itemBuilder: (context, index, realIndex) {
-                      final image = images[index];
-                      return Container(
-                        
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                       
-                        ),
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                             // borderRadius: BorderRadius.circular(5),
-                              child: Image.asset(
-                                image, 
-                                fit: BoxFit.cover,
-                           width: double.infinity,
-                           height: screenHeight * 0.6, 
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 90),
-                            
-                              child: Center(
-                              child: buildIndicator()
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-                     
-                    
-                  
-                     
-                     
-                 // SizedBox(height: 20,),
-                     
-                  
-                     
-                  Text(
-                    //"Today's Gold Rate",
-                   localization.translate("Today's Gold Rate"),
-                    style:GoogleFonts.lato(
-                      color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
-                      
-                    )
-                    // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
-                     ),
-                     
-                //  SizedBox(height: 10,),
-                     
-                 
-                     
-                  
-               Container(
-              padding: EdgeInsets.symmetric(
-                     horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
-                     vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
-              ),
-              decoration: BoxDecoration(
-                     borderRadius: BorderRadius.circular(10),
-              ),
-              child: SingleChildScrollView(
-                     scrollDirection: Axis.horizontal,
-                     child: Row(
+           child: Column(
               children: [
-                // Gold Rate Card
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
-                        vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(2, 5, 62, 1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-              "${localization.translate("Gold")} $goldRate",
-              style: GoogleFonts.lato(
-                     color: Colors.white,
-                     fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                     fontWeight: FontWeight.bold,
-              ),
-                     ),
-                     
-                    ),
-                    Positioned(
-                      left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                      top: 0,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                        height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/go.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
-                // Silver Rate Card
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
-                        vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(2, 5, 62, 1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                         "${localization.translate("Silver")} $silverRate",
-                       // "Silver $silverRate",
-                        style: GoogleFonts.lato(
-                          color: Colors.white,
-                          fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
-                      top: 0,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
-                        height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/silver.png'),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-                     ),
-              ),
-                     ),
-                     
-                     
-             // SizedBox(height: 10),
-                     
+                
+                   Padding(
+              padding: EdgeInsets.only(bottom: screenHeight * 0.01),
+              child: SizedBox(
               
+                width: double.infinity,
+                
+                child: CarouselSlider.builder(
+                  itemCount: images.length,
+                  options: CarouselOptions(
+                    height: screenHeight * 0.16,
+                    viewportFraction: 1.0,
+                    autoPlay: true,
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enableInfiniteScroll: false,
+                    autoPlayAnimationDuration: const Duration(milliseconds: 700),
+                    onPageChanged: (index, reason) {
+                      setState(() => activeIndex = index);
+                    },
+                    autoPlayInterval: const Duration(seconds: 3),
+                  ),
+                  itemBuilder: (context, index, realIndex) {
+                    final image = images[index];
+                    return Container(
+                      
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
                      
-                    Center(
-               child: (verificationResponse?.process == "pending" ||
-              verificationResponse?.process == "incomplete")
-                   ? Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              decoration: BoxDecoration(
-                color: verificationResponse?.process == "pending"
-                    ? Colors.orange.shade50
-                    : Colors.red.shade50,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: verificationResponse?.process == "pending"
-                      ? Colors.orange
-                      : Colors.red,
-                  width: 1,
+                      ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                           // borderRadius: BorderRadius.circular(5),
+                            child: Image.asset(
+                              image, 
+                              fit: BoxFit.cover,
+                         width: double.infinity,
+                         height: screenHeight * 0.6, 
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 90),
+                          
+                            child: Center(
+                            child: buildIndicator()
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+                   
+                  
+                
+                   
+                   
+               // SizedBox(height: 20,),
+                   
+                
+                   
+                Text(
+                  //"Today's Gold Rate",
+                 localization.translate("Today's Gold Rate"),
+                  style:GoogleFonts.lato(
+                    color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                    
+                  )
+                  // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
+                   ),
+                   
+              //  SizedBox(height: 10,),
+                   
+               
+                   
+                
+             Container(
+            padding: EdgeInsets.symmetric(
+                   horizontal: MediaQuery.of(context).size.width * 0.05, // 5% of screen width
+                   vertical: MediaQuery.of(context).size.height * 0.005, // Dynamic padding
+            ),
+            decoration: BoxDecoration(
+                   borderRadius: BorderRadius.circular(10),
+            ),
+            child: SingleChildScrollView(
+                   scrollDirection: Axis.horizontal,
+                   child: Row(
+            children: [
+              // Gold Rate Card
+              Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  // Text Message
-                  Expanded(
-                    child: Text(
-                      verificationResponse?.process == "pending"
-                          ? "Transaction is pending. Please complete it to proceed."
-                          : localization.translate(
-                              "Your join scheme registration is still pending. Kindly complete your registration process."),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.030,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.06,  // 6% of screen width
+                      vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
                     ),
+                    decoration: BoxDecoration(
+                      color:    Color.fromRGBO(2, 5, 67, 1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+            "${localization.translate("Gold")} $goldRate",
+            style: GoogleFonts.lato(
+                   color: Colors.white,
+                   fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                   fontWeight: FontWeight.bold,
+            ),
+                   ),
+                   
                   ),
-             
-                  //const SizedBox(width: 10),
-             
-                  // Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8), // Small button
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              Scanner(activescheme: Activescheme(), rejectId: ''),
+                  Positioned(
+                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                    top: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/go.png'),
+                          fit: BoxFit.cover,
                         ),
-                      );
-                    },
-                    child: Text(
-                      localization.translate('continue'),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.width * 0.03,
                       ),
                     ),
                   ),
                 ],
               ),
-                     )
-                   : const SizedBox.shrink(),
-             ),
-             
-                 
-                     
-             
-                     
-                Row(
+              SizedBox(width: MediaQuery.of(context).size.width * 0.04), // Dynamic spacing
+              // Silver Rate Card
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.07, // 7% of screen width
+                      vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
+                    ),
+                    decoration: BoxDecoration(
+                      color:  Color.fromRGBO(2, 5, 67, 1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                       "${localization.translate("Silver")} $silverRate",
+                     // "Silver $silverRate",
+                      style: GoogleFonts.lato(
+                        color: Colors.white,
+                        fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: -MediaQuery.of(context).size.width * 0.03, // Dynamic positioning
+                    top: 0,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.08, // Dynamic width
+                      height: MediaQuery.of(context).size.width * 0.08, // Dynamic height
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/silver.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+                   ),
+            ),
+                   ),
+                   
+                   
+           // SizedBox(height: 10),
+                   
+            
+                   
+                  Center(
+             child: (verificationResponse?.process == "pending" ||
+            verificationResponse?.process == "incomplete")
+                 ? Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            decoration: BoxDecoration(
+              color: verificationResponse?.process == "pending"
+                  ? Colors.orange.shade50
+                  : Colors.red.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: verificationResponse?.process == "pending"
+                    ? Colors.orange
+                    : Colors.red,
+                width: 1,
+              ),
+            ),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                     Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
-                  ),
+                // Text Message
+                Expanded(
                   child: Text(
-                    localization.translate("Welcome Back"),
-                    style: GoogleFonts.lato(
-                      color: const Color.fromRGBO(43, 49, 101, 1),
-                      fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
+                    verificationResponse?.process == "pending"
+                        ? "Transaction is pending. Please complete it to proceed."
+                        : localization.translate(
+                            "Your join scheme registration is still pending. Kindly complete your registration process."),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.030,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+           
+                //const SizedBox(width: 10),
+           
+                // Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8), // Small button
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Scanner(activescheme: Activescheme(), rejectId: ''),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    localization.translate('continue'),
+                    style: TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
                     ),
                   ),
                 ),
               ],
-                     ),
-                     
-                     Padding(
-              padding: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
-                  );
-                },
-                child: Image.asset(
-                  'assets/images/person1.png',
-                  color: const Color.fromARGB(255, 3, 4, 19),
-                  height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+            ),
+                   )
+                 : const SizedBox.shrink(),
+           ),
+           
+               
+                   
+           
+                   
+              Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+                   Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
+                ),
+                child: Text(
+                  localization.translate("Welcome Back"),
+                  style: GoogleFonts.lato(
+                    color: const Color.fromRGBO(43, 49, 101, 1),
+                    fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-                     ),
+            ],
+                   ),
+                   
+                   Padding(
+            padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
+            ),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
+                );
+              },
+              child: Image.asset(
+                'assets/images/person1.png',
+                color:  Color.fromRGBO(2, 5, 67, 1),
+                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
+              ),
+            ),
+                   ),
+            ],
+                   ),
+                   
+                   
+                 Container(
+            padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
+            ),
+            alignment: Alignment.bottomLeft, 
+            child: Text(
+              '$firstName $lastName',
+              style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
+              color:  Color.fromRGBO(2, 5, 67, 1),fontWeight: FontWeight.bold
+                   ),
+                  textAlign: TextAlign.start, // Left align for natural reading flow
+            ),
+                   ),
+                   
+                   
+                   
+               // SizedBox(height: 20,),
+                
+            Expanded(
+            child: LayoutBuilder(
+                   builder: (context, constraints) {
+            int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
+            double spacing = getSpacing(constraints.maxWidth);
+                   
+            return GridView.count(
+              padding: const EdgeInsets.all(13),
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing,
+              children: [
+                _buildGridButton(
+                  'assets/images/schme.png',
+                  localization.translate("Join Scheme"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SavingsAccountScreen(),
+                      ),
+                    );
+                  },
+             context),
+                _buildGridButton(
+                  'assets/images/myschme.png',
+                  localization.translate("My Scheme"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PaymentCard(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/pay.png',
+                  localization.translate("Quick Pay"),
+                  () {
+                    showGoldBottomSheet(context);
+                  },
+              context  ),
+                _buildGridButton(
+                  'assets/images/customre.png',
+                  localization.translate("Contact Us"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CustomerCare(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/transation.png',
+                  localization.translate("Transactions"),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Transaction(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
+                _buildGridButton(
+                  'assets/images/browser.png',
+                  localization.translate('Brochure'),
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoadingScreen(),
+                      ),
+                    );
+                   
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BrochureScreen(),
+                        ),
+                      );
+                    });
+                  },
+               context ),
               ],
-                     ),
-                     
-                     
-                   Container(
-              padding: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
-              ),
-              alignment: Alignment.bottomLeft, 
-              child: Text(
-                '$firstName $lastName',
-                style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-                color: const Color.fromARGB(255, 4, 60, 226),fontWeight: FontWeight.bold
-                     ),
-                    textAlign: TextAlign.start, // Left align for natural reading flow
-              ),
-                     ),
-                     
-                     
-                     
-                 // SizedBox(height: 20,),
-                  
-              Expanded(
-              child: LayoutBuilder(
-                     builder: (context, constraints) {
-              int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
-              double spacing = getSpacing(constraints.maxWidth);
-                     
-              return GridView.count(
-                padding: const EdgeInsets.all(13),
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: spacing,
-                mainAxisSpacing: spacing,
-                children: [
-                  _buildGridButton(
-                    'assets/images/schme.png',
-                    localization.translate("Join Scheme"),
-                    ()  async{
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-             
-             
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SavingsAccountScreen(),
-                        ),
-                      );
-                    },
-               context),
-                  _buildGridButton(
-                    'assets/images/myschme.png',
-                    localization.translate("My Scheme"),
-                    () async {
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-             
-             
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoadingScreen(),
-                        ),
-                      );
-                     
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PaymentCard(),
-                          ),
-                        );
-                      });
-                    },
-                 context ),
-                  _buildGridButton(
-                    'assets/images/pay.png',
-                    localization.translate("Quick Pay"),
-                    () async {
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-                      showGoldBottomSheet(context);
-                    },
-                context  ),
-                  _buildGridButton(
-                    'assets/images/customre.png',
-                    localization.translate("Contact Us"),
-                    ()  async{
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-             
-             
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoadingScreen(),
-                        ),
-                      );
-                     
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CustomerCare(),
-                          ),
-                        );
-                      });
-                    },
-                 context ),
-                  _buildGridButton(
-                    'assets/images/transation.png',
-                    localization.translate("Transactions"),
-                    () async {
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-             
-             
-             
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoadingScreen(),
-                        ),
-                      );
-                     
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Transaction(),
-                          ),
-                        );
-                      });
-                    },
-                 context ),
-                  _buildGridButton(
-                    'assets/images/browser.png',
-                    localization.translate('Brochure'),
-                    ()  async {
-             
-                       bool hasInternet = await checkInternet();
-                 if (!hasInternet) {
-                   if (context.mounted) {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => const ErrorScreen()),
-                     );
-                   }
-                   return;
-                 }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoadingScreen(),
-                        ),
-                      );
-                     
-                      Future.delayed(const Duration(seconds: 1), () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BrochureScreen(),
-                          ),
-                        );
-                      });
-                    },
-                 context ),
-                ],
-              );
-                     },
-              ),
-                     ),
-             
-             
-             
-             
-                     
-                     
-                ],
-              ),
-           ),
+            );
+                   },
+            ),
+                   ),
+
+
+           
+
+                   
+                   
+              ],
+            ),
          ),
         
-         bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: Colors.grey.shade300)),
-          ),
-          child: SafeArea(
+         bottomNavigationBar: SafeArea(
+           child: Container(
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.grey.shade300)),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(4, (index) {
-                final isSelected = _selectedIndex == index;
-                    
-                    String imagePath;
-                    String label;
-                    
-                    switch (index) {
+                   final isSelected = _selectedIndex == index;
+                   
+                   String imagePath;
+                   String label;
+                   
+                   switch (index) {
             case 0:
               imagePath = 'assets/images/home.png';
               label = localization.translate('Home');
@@ -1364,9 +1277,9 @@ Future<void> closePopupAPI() async {
             default:
               imagePath = 'assets/images/faq.png';
               label = localization.translate('Other');
-                    }
-                    
-                    return Expanded(
+                   }
+                   
+                   return Expanded(
             child: InkWell(
               onTap: () => _navigateTo(index), // Or your onTap logic
               child: Column(
@@ -1379,7 +1292,7 @@ Future<void> closePopupAPI() async {
                     width: 40,
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color.fromARGB(255, 3, 1, 22)
+                          ?  Color.fromRGBO(2, 5, 67, 1)
                           : Colors.transparent,
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(20),
@@ -1387,7 +1300,7 @@ Future<void> closePopupAPI() async {
                     ),
                   ),
                   const SizedBox(height: 6),
-                    
+                   
                   // 🔴 Removed badge here
                   Image.asset(
                     imagePath,
@@ -1396,7 +1309,7 @@ Future<void> closePopupAPI() async {
                         ? const Color.fromARGB(255, 3, 1, 22)
                         : Colors.black,
                   ),
-                    
+                   
                   const SizedBox(height: 4),
                   Text(
                     label,
@@ -1413,11 +1326,11 @@ Future<void> closePopupAPI() async {
                 ],
               ),
             ),
-                    );
+                   );
               }),
             ),
-          ),
-        ),
+                   ),
+         ),
         
             
         
@@ -1544,16 +1457,12 @@ void showGoldBottomSheet(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? mobileNumber = prefs.getString('phoneNumber');
 
- bool hasInternet = await checkInternet();
-if (!hasInternet) {
-  if (context.mounted) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ErrorScreen()),
-    );
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    const ErrorScreen();
+    isBottomSheetOpen = false;
+    return;
   }
-  return null;
-}
-
 
   var url = '$baseUrl/pay_due.php';  //'https://vmrdemos.com/csc_scheme/pay_due.php'
   final response = await http.post(
@@ -1601,19 +1510,19 @@ if (!hasInternet) {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: const Color.fromRGBO(43, 49, 101, 1),
+                              color: Color.fromRGBO(2, 5, 67, 1),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
                               children: [
                                 Image.asset(
                                   'assets/images/go.png',
-                                  height: 50,
-                                  width: 50,
+                                  height: 60,
+                                  width: 60,
                                 ),
                                 const SizedBox(width: 20),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     buildInfoRow(Icons.water_drop, localization.translate("24K Pure Gold")),
                                     buildInfoRow(Icons.security, localization.translate("100% Safe Investment")),
@@ -1624,11 +1533,11 @@ if (!hasInternet) {
                             ),
                           ),
                         ),
-                        // Scheme Details
+                        
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Column(
-                            children: schemeDetails.asMap().entries.map<Widget>((entry) {
+                          children: schemeDetails.asMap().entries.map<Widget>((entry) {
                               int index = entry.key;
                               var scheme = entry.value;
                               return Column(
@@ -1658,7 +1567,7 @@ if (!hasInternet) {
                                       padding: const EdgeInsets.only(right: 0),
                                       child: TextButton(
                                         style: TextButton.styleFrom(
-                                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                                          backgroundColor: Color.fromRGBO(2, 5, 67, 1),
                                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8),

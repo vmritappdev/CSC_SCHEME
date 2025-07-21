@@ -497,12 +497,20 @@ localization.translate('CSC App'),
 
         //  SizedBox(height: screenHeight * 0.02),
 
-        
+         Text(
+                          localization.translate("JEWELLERS"),
+                          style: GoogleFonts.lato(
+                            fontSize: screenWidth * 0.03,
+                            letterSpacing: 4,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(2, 5, 67, 1),
+                          ),
+                        ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
-                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: Color.fromRGBO(2, 5, 67, 1)),)
+                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: Color.fromRGBO(2, 5, 67, 1),fontSize: 9),)
         
                      /*
                       Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
