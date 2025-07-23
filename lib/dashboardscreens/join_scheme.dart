@@ -1342,10 +1342,18 @@ DateTime? selectedDate;
                         SizedBox(height: 20,),
                     
                     
-                      _buildTextField(controller:  nomineeNameController, 
-                      label:  localization.translate("Nominee Full Name"),
-                        
-                      ),
+                     _buildTextField(
+  controller: nomineeNameController,
+  label: localization.translate("Nominee Full Name"),
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter the nominee name ";
+    }
+   
+    return null;
+  },
+),
+
                     
                      
                           

@@ -224,6 +224,7 @@ void _verifyMpin() async {
   String mobileNumber = phoneController.text.trim();
   final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
+  // 👉 Check internet first
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
     Navigator.push(
@@ -233,60 +234,65 @@ void _verifyMpin() async {
     return;
   }
 
+  // 👉 Validate mobile number
   if (mobileNumber.isEmpty || mobileNumber.length != 10) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
     });
-   Future.delayed(const Duration(seconds: 2), () {
-    if (mounted) {
-      setState(() {
-        errorMessage = '';
-      });
-    }
-  });
-  return;
-}
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          errorMessage = '';
+        });
+      }
+    });
+    return;
+  }
 
+  // 👉 Validate MPIN
   if (mpin.isEmpty || mpin.length != 4) {
     setState(() {
       errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
     });
-   Future.delayed(const Duration(seconds: 2), () {
-    if (mounted) {
-      setState(() {
-        errorMessage = '';
-      });
-    }
-  });
-  return;
-}
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          errorMessage = '';
+        });
+      }
+    });
+    return;
+  }
+  
 
-  showLoaderDialog(context);
+ 
+  
 
-  // 👉 Submit & get both success and reason
+  // 👉 Submit MPIN (no loader)
   Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
   bool isValid = result['success'];
   String reason = result['reason'];
 
-  Navigator.pop(context);
-
   if (isValid) {
+    // 👉 Go to next screen immediately (no delay, no loader)
     await savePhoneNumber(mobileNumber);
     await _fetchUserDetails();
-    await Future.delayed(const Duration(milliseconds: 300));
     await loadPhoneNumber();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(activescheme: Activescheme()),
-      ),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(activescheme: Activescheme()),
+        ),
+      );
+    }
   } else {
-    // 👉 Show reason-specific popup
+    // 👉 Show error if login failed
     _showErrorPopup(reason);
   }
 }
+
 
 
 
@@ -512,19 +518,6 @@ localization.translate('CSC App'),
 
                       Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: Color.fromRGBO(2, 5, 67, 1),fontSize: 9),)
         
-                     /*
-                      Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
-                      SizedBox(width: screenWidth * 0.02),
-                      Text(
-                       localization.translate("CSC"),
-                        style: GoogleFonts.roboto(
-                          fontSize: fontSizeLarge,
-                          fontWeight: FontWeight.bold,
-                          color: const Color.fromARGB(255, 3, 21, 47),
-                        ),
-                      ),
-
-                 */
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.020),

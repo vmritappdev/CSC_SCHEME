@@ -177,12 +177,11 @@ void _validatePin() async {
 
 
  void _onDelete() {
-  if (_enteredMpin.isNotEmpty) {
-    setState(() {
-   //   _enteredMpin.removeLast();
-       _pin = _pin.substring(0, _pin.length - 1);
-    });
-  }
+  setState(() {
+    if (_pin.isNotEmpty) {
+      _pin = _pin.substring(0, _pin.length - 1);
+    }
+  });
 }
 
 

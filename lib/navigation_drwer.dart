@@ -108,7 +108,7 @@ await prefs.setBool('isFirstTime', isFirstTime);
 
   return SizedBox(
     width: double.infinity,
-    height: screenHeight * 0.20,
+   // height: screenHeight * 0.20,
     child: Stack(
       children: [
         /// Blue Header Container
@@ -129,15 +129,26 @@ await prefs.setBool('isFirstTime', isFirstTime);
                 fit: BoxFit.contain,
               ),
 
-             // SizedBox(height: 5,),
-              Text(
-                "$firstName $lastName",
-                style: GoogleFonts.lato(
-                  color: Colors.white,
-                  fontSize: screenHeight * 0.025,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w600,
-                ),
+              
+
+              SizedBox(height: 10,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                 
+
+                          SizedBox(width: 8,),
+                  Text(
+                    "$firstName $lastName",
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: screenHeight * 0.020,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

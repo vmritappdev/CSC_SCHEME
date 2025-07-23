@@ -192,7 +192,7 @@ Future<void> _fetchNotificationCount() async {
     final List<String> images = [
     'assets/images/e7.png',   
     'assets/images/e4.png',
-    'assets/images/e9.png',
+    'assets/images/e2.png',
     'assets/images/Banner.png',
     'assets/images/e2.png',
     'assets/images/ssss.png',
@@ -857,7 +857,7 @@ localization.translate('CSC App'),
                    
                 Text(
                   //"Today's Gold Rate",
-                 localization.translate("Today's Gold Rate"),
+                 localization.translate("Today's Rate"),
                   style:GoogleFonts.lato(
                     color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
                     
@@ -1484,28 +1484,29 @@ void showGoldBottomSheet(BuildContext context) async {
       isBottomSheetOpen = false;
     } else {
       // Show bottom sheet if data is available
-      showModalBottomSheet(
-        context: currentContext,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        builder: (BuildContext context) {
-          return WillPopScope(
-            onWillPop: () async {
-            isBottomSheetOpen = false;
-              return true;
-            },
-            child: SafeArea(
-              child: FractionallySizedBox(
-                child: Container(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Gold Info Card
-                        Padding(
+     showModalBottomSheet(
+  context: currentContext,
+  isScrollControlled: true,
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  ),
+  builder: (BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        isBottomSheetOpen = false;
+        return true;
+      },
+      child: SafeArea(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.65,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Gold Info Card (keep as is)
+
+                Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
                             padding: const EdgeInsets.all(16),
@@ -1534,78 +1535,76 @@ void showGoldBottomSheet(BuildContext context) async {
                           ),
                         ),
                         
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Column(
-                          children: schemeDetails.asMap().entries.map<Widget>((entry) {
-                              int index = entry.key;
-                              var scheme = entry.value;
-                              return Column(
-                                children: [
-                                  AssetTile(
-  gifPath: 'assets/images/go.png',
-  title: "${localization.translate("Scheme")} ${index + 1}",
-  amount: "₹${scheme['paid_amount']}",
-  percentage: scheme['ms_no'],
-  balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
 
-  // Progress value based on fixed 11 total dues
-  value: (() {
-    const int totalDues = 11;
-    int balance = int.tryParse(scheme['balance_due'].toString()) ?? 0;
-    int paid = totalDues - balance;
-    return (paid / totalDues).clamp(0.0, 1.0);
-  })(),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: schemeDetails.asMap().entries.map<Widget>((entry) {
+                      int index = entry.key;
+                      var scheme = entry.value;
 
-  // Always green color
-  color: Colors.green,
-)
-,
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 0),
-                                      child: TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Color.fromRGBO(2, 5, 67, 1),
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => InstallmentScreen(schemeId: scheme['scheme_id']),
-                                            ),
-                                          );
-                                        },
-                                        child: Text(
-                                          "${localization.translate("Pay")} ₹${scheme['amount']}",
-                                          style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const Divider(),
-                                ],
-                              );
-                            }).toList(),
+                      return Column(
+                        children: [
+                          AssetTile(
+                            gifPath: 'assets/images/go.png',
+                            title: "${localization.translate("Scheme")} ${index + 1}",
+                            amount: "₹${scheme['paid_amount']}",
+                            percentage: scheme['ms_no'],
+                            balanceDues: "${localization.translate("Balance Dues")}: ${scheme['balance_due']}",
+                            value: (() {
+                              const int totalDues = 11;
+                              int balance = int.tryParse(scheme['balance_due'].toString()) ?? 0;
+                              int paid = totalDues - balance;
+                              return (paid / totalDues).clamp(0.0, 1.0);
+                            })(),
+                            color: Colors.green,
                           ),
-                        ),
-                      ],
-                    ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 0),
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          InstallmentScreen(schemeId: scheme['scheme_id']),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "${localization.translate("Pay")} ₹${scheme['amount']}",
+                                  style: const TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Divider(),
+                        ],
+                      );
+                    }).toList(),
                   ),
                 ),
-              ),
+              ],
             ),
-          );
-        },
-      ).whenComplete(() {
-        isBottomSheetOpen = false;
-      });
+          ),
+        ),
+      ),
+    );
+  },
+).whenComplete(() {
+  isBottomSheetOpen = false;
+});
+
     }
   } else {
     _showErrorDialog(context, localization.translate("Failed to fetch scheme details. Please try again later."));

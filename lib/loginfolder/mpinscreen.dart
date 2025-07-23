@@ -56,6 +56,12 @@ class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
   String errorMessage = '';
    String? savedMobileNumber; // ✅ Add this
 
+   bool isSubmitting = false;
+
+
+
+
+
 
 final TextEditingController _mpinController = TextEditingController();
 final TextEditingController _confirmMpinController = TextEditingController();
@@ -191,29 +197,33 @@ buildPinput(
               SizedBox(
                 width: screenWidth * 0.8,
                 child: 
-                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1), 
-                     // shadowColor: Colors.transparent, 
-                     padding: EdgeInsets.symmetric(
-  vertical: MediaQuery.of(context).size.height * 0.015, // Dynamic Vertical Padding
-),
-
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    ),
-                    onPressed: () => _submitForm(localization),
-                     
-                    child: Text(
-  localization.translate('SUBMIT'),
-  style: TextStyle(
-    fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic Font Size
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
+                  ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.015,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    ),
+    onPressed: isSubmitting ? null : () => _submitForm(localization),
+    child: isSubmitting
+        ? const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.5,
+              color: Colors.white,
+            ),
+          )
+        : Text(
+            localization.translate('SUBMIT'),
+            style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.04,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
   ),
-),
-
-                  ),
-                
               ),
 
               
@@ -260,9 +270,6 @@ Future<void> _submitForm(LocalizationProvider localization) async {
   String currentMpin = _mpinController.text.trim();
   String currentConfirmMpin = _confirmMpinController.text.trim();
 
-  print('controller mpin: "$currentMpin"');
-  print('controller confirmMpin: "$currentConfirmMpin"');
-
   if (currentMpin.isEmpty || currentConfirmMpin.isEmpty) {
     setState(() {
       errorMessage = localization.translate('Please enter both MPIN and Confirm MPIN.');
@@ -270,29 +277,34 @@ Future<void> _submitForm(LocalizationProvider localization) async {
     return;
   }
 
- if (currentMpin != currentConfirmMpin) {
-  setState(() {
-    errorMessage = localization.translate('MPINs do not match!');
-    _mpinController.clear();
-    _confirmMpinController.clear();
-    mpin = '';
-    confirmMpin = '';
-  });
-  _showErrorPopup(localization.translate('MPINs do not match!'));
-  return;
-}
+  if (currentMpin != currentConfirmMpin) {
+    setState(() {
+      errorMessage = localization.translate('MPINs do not match!');
+      _mpinController.clear();
+      _confirmMpinController.clear();
+      mpin = '';
+      confirmMpin = '';
+    });
+    _showErrorPopup(localization.translate('MPINs do not match!'));
+    return;
+  }
 
+  setState(() => isSubmitting = true); // ✅ Show loader in button
 
-  mpin = currentMpin; // update class variable if needed
+  mpin = currentMpin;
   confirmMpin = currentConfirmMpin;
 
   final success = await _submitMpinToServer();
+
+  setState(() => isSubmitting = false); // ✅ Show text again
+
   if (success) {
     _showpopup(context);
   } else {
     _showErrorPopup(localization.translate("Failed to create MPIN. Please try again."));
   }
 }
+
 
 
  Future<bool> _submitMpinToServer() async {

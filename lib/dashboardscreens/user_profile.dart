@@ -3,6 +3,8 @@ import 'dart:io';
 
 
 import 'package:csc/dashboardscreens/home_screen.dart';
+import 'package:csc/dashboardscreens/terms3.dart';
+import 'package:csc/dashboardscreens/terms_condition.dart';
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/model/activescheme.dart';
@@ -146,25 +148,13 @@ Future<void> _pickImage() async {
   final ImageSource source =
       (choice == 1) ? ImageSource.gallery : ImageSource.camera;
 
-  // ✅ Permission Handling
-  Permission permission;
-  if (source == ImageSource.camera) {
-    permission = Permission.camera;
-  } else {
-    if (Platform.isAndroid) {
-      permission = Permission.photos; // Android 13+ support
-    } else {
-      permission = Permission.photos; // iOS
-    }
-  }
+  Permission permission = (source == ImageSource.camera)
+      ? Permission.camera
+      : Permission.photos;
 
   final status = await permission.request();
-
   if (!status.isGranted) {
-    Fluttertoast.showToast(
-      msg: "${permission.toString()} permission denied",
-      backgroundColor: Colors.red,
-    );
+    Fluttertoast.showToast(msg: "Permission denied", backgroundColor: Colors.red);
     return;
   }
 
@@ -174,51 +164,24 @@ Future<void> _pickImage() async {
     if (pickedFile != null) {
       File newImage = File(pickedFile.path);
 
-      // ✅ Show Loader
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => Dialog(
-          backgroundColor: Colors.transparent,
-          child: Center(
-            child: CircularProgressIndicator(
-              color: Color.fromRGBO(2, 6, 67, 1),
-            ),
-          ),
-        ),
-      );
-
-      // Simulate upload/save
-      await Future.delayed(Duration(seconds: 1));
-
+      // ✅ Update image immediately in UI
       setState(() {
         _image = newImage;
-        savedImageUrl = pickedFile.path;
       });
 
-      await saveImagePath(pickedFile.path); // Save locally
-      await updateProfileDetails(phoneNumber, newImage); // Upload to server
+      // ✅ Save path and upload
+      await saveImagePath(pickedFile.path);
+      await updateProfileDetails(phoneNumber, newImage);
 
-      Navigator.of(context).pop(); // Close loader
-
-      Fluttertoast.showToast(
-        msg: "Image updated successfully!",
-        backgroundColor: Colors.green,
-      );
+      Fluttertoast.showToast(msg: "Image updated!", backgroundColor: Colors.green);
     } else {
-      Fluttertoast.showToast(
-        msg: "No image selected.",
-        backgroundColor: Colors.orange,
-      );
+      Fluttertoast.showToast(msg: "No image selected.", backgroundColor: Colors.orange);
     }
   } catch (e) {
-    Navigator.of(context).pop(); // Close loader if error
-    Fluttertoast.showToast(
-      msg: "Failed to pick image.",
-      backgroundColor: Colors.red,
-    );
+    Fluttertoast.showToast(msg: "Error picking image.", backgroundColor: Colors.red);
   }
 }
+
 
 Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -479,16 +442,7 @@ Navigator.pop(context);
                   
                   
                   
-                    InkWell(
-              onTap: () {
-              logout();
-                print("User logged out");
-                // Example:
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // await prefs.clear();
-                // Navigator.pushReplacement(...);
-              },
-              child: Padding(
+                   Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -497,19 +451,36 @@ Navigator.pop(context);
                 children:  [
                   Icon(Icons.power_settings_new, size: 20, color: Colors.red),
                   SizedBox(width: 8),
-                  Text(localization.translate("Logout"), 
-                  style: TextStyle(fontSize: 16, color: Colors.red)),
+                  InkWell(
+                    onTap: () {
+                      logout();
+                    },
+                    child: Text(localization.translate("Logout"), 
+                    style: TextStyle(fontSize: 16, color: Colors.red)),
+                  ),
                 ],
               ),
-               Text(
-                 localization.translate("Terms & Policies"),
-                textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 12, color: Colors.teal),
-              ),
+
+
+               InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => TermsAndConditionsScreen3(),
+                    )
+                  );
+                },
+                 child: Text(
+                   localization.translate("Terms & Policies"),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 12, color: Colors.teal),
+                               ),
+               ),
             ],
                 ),
               ),
-            ),
+            
                     
                   
                 ],

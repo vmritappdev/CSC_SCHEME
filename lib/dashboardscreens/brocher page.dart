@@ -4,6 +4,7 @@ import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/sample.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -28,7 +29,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
   if (!hasInternet) {
     if (context.mounted) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        MaterialPageRoute(builder: (context) => NoInternetScreen()),
       );
     }
     return;

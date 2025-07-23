@@ -44,27 +44,25 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
     super.initState();
   }
 
-  Future<void> verifyMobileNumber() async {
-     final localization = Provider.of<LocalizationProvider>(context, listen: false);
-    String mobile = mobileController.text.trim();
-    if (mobile.length != 10) {
-      showError(localization.translate("Please enter a valid 10-digit mobile number"));
-      return;
-    }
+ Future<void> verifyMobileNumber() async {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  String mobile = mobileController.text.trim();
 
-    if (!await hasInternet()) {
-      showError("No internet connection");
-      return;
-    }
+  if (mobile.length != 10) {
+    showError(localization.translate("Please enter a valid 10-digit mobile number"));
+    return;
+  }
 
+  if (!await hasInternet()) {
+    showError("No internet connection");
+    return;
+  }
 
+  setState(() => isLoading = true);
 
-
-    
-
-    setState(() => isLoading = true);
+  try {
     final response = await http.post(
-     Uri.parse("$baseUrl/mobile_verification.php"),
+      Uri.parse("$baseUrl/mobile_verification.php"),
       body: {'mobile_no': mobile},
     );
 
@@ -74,8 +72,12 @@ class _LoginOtpScreenState extends State<LoginOtpScreen> {
     } else {
       showError(localization.translate("No Records On This Number"));
     }
-    setState(() => isLoading = false);
+  } catch (e) {
+    showError("Something went wrong");
   }
+
+  setState(() => isLoading = false);
+}
 
  Future<void> sendOtp(String mobile) async {
   final localization = Provider.of<LocalizationProvider>(context, listen: false);
@@ -289,28 +291,37 @@ void showError( String message) {
                 SizedBox(height: 20,),
 
                 
-              SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-                onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
-                style: ElevatedButton.styleFrom(
-                  
-          backgroundColor: (isLoading || isOtpSent)
-              ? Colors.grey
-              : const Color.fromARGB(255, 12, 1, 72),
-              shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5), // ✅ Border Radius here
+            SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: (isLoading || isOtpSent) ? null : verifyMobileNumber,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: (isLoading || isOtpSent)
+          ? Colors.grey
+          : const Color.fromARGB(255, 12, 1, 72),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
     ),
-                ),
-                child: Text(
-         localization.translate("Get OTP"),
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    child: isLoading
+        ? const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2.5,
+            ),
+          )
+        : Text(
+            localization.translate("Get OTP"),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-                ),
-          ),
-                ),
+  ),
+),
+
                 
                 if (isOtpSent) ...[
                   SizedBox(height: 20),
