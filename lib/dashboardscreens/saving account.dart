@@ -10,8 +10,9 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/rejected%20screen.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
-import 'package:csc/utillity/sample.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,7 +110,7 @@ void _onRefresh() async {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -333,7 +334,7 @@ Future<bool> checkInternet() async {
                         height: screenHeight * 0.07,
                         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-               backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+               backgroundColor:AppColors.blue,
          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),

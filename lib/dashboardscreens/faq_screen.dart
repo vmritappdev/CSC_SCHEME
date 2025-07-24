@@ -1,4 +1,5 @@
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -61,12 +62,12 @@ class _FAQScreenState extends State<FAQScreen> {
           iconTheme: const IconThemeData(color: Colors.white),
           title: Text(
             localization.translate("FAQ"),
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.nunito(
               color: Colors.white,
               fontSize: screenWidth * 0.045,
             ),
           ),
-          backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
+          backgroundColor: AppColors.blue,
           elevation: 2,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
@@ -146,7 +147,7 @@ class _FAQScreenState extends State<FAQScreen> {
                       child: ElevatedButton(
                         onPressed: _openWhatsApp,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                          backgroundColor: AppColors.blue,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(screenWidth * 0.02),
                           ),

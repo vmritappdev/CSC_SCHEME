@@ -1,5 +1,6 @@
 import 'package:csc/dashboardscreens/terms_condition.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 
 
@@ -102,7 +103,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: AppColors.blue,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -164,7 +165,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
               height: size.height * 0.20,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color.fromRGBO(2, 5, 67, 1), Color.fromRGBO(2, 5, 67, 1)],
+                  colors: [AppColors.blue,AppColors.blue],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -291,7 +292,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
               padding: EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color.fromRGBO(2, 5, 67, 1), Color.fromRGBO(2, 5, 67, 1)],
+                  colors: [AppColors.blue, AppColors.blue],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),

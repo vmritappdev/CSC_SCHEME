@@ -5,7 +5,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/api_services.dart/custmer_care%20api.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 
 import 'package:flutter/material.dart';
@@ -38,7 +40,7 @@ class CustomerCare extends StatefulWidget {
   State<CustomerCare> createState() => _CustomerCareState();
 }
 
-class _CustomerCareState extends State<CustomerCare> {
+class _CustomerCareState extends State<CustomerCare>   with NetworkMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -199,10 +201,10 @@ Future<void> requestCallPermission() async {
           automaticallyImplyLeading: false,
           leading: const BackButton(color: Colors.white),
           centerTitle: true,
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor:AppColors.blue,
           title: Text(
            localization.translate("Enquiry Form"),
-            style: GoogleFonts.roboto(
+            style: GoogleFonts.nunito(
               textStyle: const TextStyle(
                 fontSize: 18,
                 color: Colors.white,
@@ -293,7 +295,7 @@ Future<void> requestCallPermission() async {
                             ),
                           ),
                           backgroundColor: WidgetStateProperty.all(
-                            const Color.fromRGBO(2, 5, 62, 1),
+                           AppColors.blue,
                           ),
                         ),
                        // onPressed: submitForm,

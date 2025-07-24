@@ -32,8 +32,9 @@ import 'package:csc/model/activescheme.dart';
 import 'package:csc/model/loginresponse.dart';
 import 'package:csc/navigation_drwer.dart';
 import 'package:csc/upidetails/loding%20screen.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
-import 'package:csc/utillity/networkhandeler.dart';
+
 
 
 
@@ -193,12 +194,10 @@ Future<void> _fetchNotificationCount() async {
   bool isProcessComplete = false;
 
     final List<String> images = [
-    'assets/images/e7.png',   
-  //  'assets/images/e4.png',
-    'assets/images/jewe2.jpg',
-    'assets/images/Banner.png',
-   // 'assets/images/e2.png',
-    //'assets/images/ssss.png',
+      'assets/images/Banner.png',
+      'assets/images/jewe2.jpg',
+      'assets/images/e7.png',   
+ 
   ];
 
    int activeIndex = 0;
@@ -367,7 +366,7 @@ void showCompletePopup(VerificationResponse response) {
           backgroundColor: Colors.white,
           title: Row(
             children: [
-              Image.asset('assets/images/csc2.png', height: 40, width: 40,color: Color.fromRGBO(2, 5, 67, 1),),
+              Image.asset('assets/images/csc2.png', height: 40, width: 40,color: AppColors.blue,),
               const SizedBox(width: 10),
               Text(
                 Provider.of<LocalizationProvider>(context, listen: false)
@@ -390,7 +389,7 @@ void showCompletePopup(VerificationResponse response) {
                   },
                   child: Text("View Details", style: TextStyle(fontSize: 12,color: Colors.white)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                    backgroundColor: AppColors.blue,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
@@ -451,7 +450,7 @@ Future<void> closePopupAPI() async {
     fetchRates();
     _fetchVerificationResponse();
     _fetchNotificationCount();
-    NetworkHandler().startMonitoring(context);
+
     
   _startPolling();
   
@@ -646,7 +645,7 @@ localization.translate('CSC App'),
         
             toolbarHeight: 90,
             centerTitle: true,
-            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+            backgroundColor: AppColors.blue,
             
             title: 
               
@@ -863,7 +862,7 @@ localization.translate('CSC App'),
                   //"Today's Gold Rate",
                  localization.translate("Today's Rate"),
                   style:GoogleFonts.lato(
-                    color: const Color.fromRGBO(2, 5, 62, 1),fontWeight: FontWeight.bold,fontSize: 14
+                    color: AppColors.blue,fontWeight: FontWeight.bold,fontSize: 14
                     
                   )
                   // TextStyle(color: Color.fromRGBO(43, 49, 101, 1),fontWeight: FontWeight.bold,fontSize: 17),
@@ -896,7 +895,7 @@ localization.translate('CSC App'),
                       vertical: MediaQuery.of(context).size.height * 0.008,  // Dynamic padding
                     ),
                     decoration: BoxDecoration(
-                      color:    Color.fromRGBO(2, 5, 67, 1),
+                      color:    AppColors.blue,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -937,7 +936,7 @@ localization.translate('CSC App'),
                       vertical: MediaQuery.of(context).size.height * 0.008, // Dynamic padding
                     ),
                     decoration: BoxDecoration(
-                      color:  Color.fromRGBO(2, 5, 67, 1),
+                      color:  AppColors.blue,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -1020,7 +1019,7 @@ localization.translate('CSC App'),
                 // Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                    backgroundColor: AppColors.blue,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 8), // Small button
                     shape: RoundedRectangleBorder(
@@ -1068,7 +1067,7 @@ localization.translate('CSC App'),
                 child: Text(
                   localization.translate("Welcome Back"),
                   style: GoogleFonts.lato(
-                    color: const Color.fromRGBO(43, 49, 101, 1),
+                    color:AppColors.blue,
                     fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
                     fontWeight: FontWeight.bold,
                   ),
@@ -1090,7 +1089,7 @@ localization.translate('CSC App'),
               },
               child: Image.asset(
                 'assets/images/person1.png',
-                color:  Color.fromRGBO(2, 5, 67, 1),
+                color: AppColors.blue,
                 height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
               ),
             ),
@@ -1108,7 +1107,7 @@ localization.translate('CSC App'),
               '$firstName $lastName',
               style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-              color:  Color.fromRGBO(2, 5, 67, 1),fontWeight: FontWeight.bold
+              color:  AppColors.blue,fontWeight: FontWeight.bold
                    ),
                   textAlign: TextAlign.start, // Left align for natural reading flow
             ),
@@ -1296,7 +1295,7 @@ localization.translate('CSC App'),
                     width: 40,
                     decoration: BoxDecoration(
                       color: isSelected
-                          ?  Color.fromRGBO(2, 5, 67, 1)
+                          ?  AppColors.blue
                           : Colors.transparent,
                       borderRadius: const BorderRadius.vertical(
                         bottom: Radius.circular(20),
@@ -1310,7 +1309,7 @@ localization.translate('CSC App'),
                     imagePath,
                     height: 24,
                     color: isSelected
-                        ? const Color.fromARGB(255, 3, 1, 22)
+                        ? AppColors.blue
                         : Colors.black,
                   ),
                    
@@ -1320,7 +1319,7 @@ localization.translate('CSC App'),
                     style: TextStyle(
                       fontSize: 13,
                       color: isSelected
-                          ? const Color.fromARGB(255, 3, 1, 22)
+                          ?AppColors.blue
                           : Colors.black,
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.normal,
@@ -1401,7 +1400,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
             style: GoogleFonts.lato(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: const Color.fromRGBO(33, 36, 86, 1),
+              color: AppColors.blue,
             ),
           ),
         ],
@@ -1515,7 +1514,7 @@ void showGoldBottomSheet(BuildContext context) async {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Color.fromRGBO(2, 5, 67, 1),
+                              color: AppColors.blue,
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
@@ -1569,7 +1568,7 @@ void showGoldBottomSheet(BuildContext context) async {
                               padding: const EdgeInsets.only(right: 0),
                               child: TextButton(
                                 style: TextButton.styleFrom(
-                                  backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                                  backgroundColor: AppColors.blue,
                                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
@@ -1676,7 +1675,7 @@ void _showErrorDialog(BuildContext context, String message) {
           Container(
             width: double.infinity, // Full width button
             decoration: const BoxDecoration(
-              color: Color.fromRGBO(2, 5, 62, 1), // Button background color
+              color: AppColors.blue, // Button background color
               borderRadius: BorderRadius.only(
                // bottomLeft: Radius.circular(16),
               //  bottomRight: Radius.circular(16),
@@ -1767,7 +1766,7 @@ void showWarningPopup(BuildContext context) {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {

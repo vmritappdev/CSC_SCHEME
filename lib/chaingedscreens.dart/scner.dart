@@ -8,6 +8,8 @@ import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/payment%20page.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 
 import 'package:flutter/material.dart';
 
@@ -49,7 +51,7 @@ class Scanner extends StatefulWidget {
   State<Scanner> createState() => _ScannerState();
 }
 
-class _ScannerState extends State<Scanner> {
+class _ScannerState extends State<Scanner>   with NetworkMixin {
 
   
 
@@ -116,7 +118,7 @@ class _ScannerState extends State<Scanner> {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -241,7 +243,7 @@ Future<bool> checkInternet() async {
         backgroundColor: Colors.white,
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: AppColors.blue,
           centerTitle: true,
           title: Text(
             localization.translate("UPI Transaction"),
@@ -465,7 +467,7 @@ Future<bool> checkInternet() async {
               _isChecked = value ?? false;
             });
           },
-          activeColor: const Color.fromRGBO(2, 5, 62, 1),
+          activeColor: AppColors.blue,
         ),
         Expanded(
           child: Text(
@@ -483,7 +485,7 @@ Future<bool> checkInternet() async {
       width: double.infinity,
       height: 45,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
+        style: ElevatedButton.styleFrom(backgroundColor: AppColors.blue),
         onPressed: _isChecked ? _navigateToPaymentScreen : null,
         child: Text(
          localization.translate("I Have Paid"), 

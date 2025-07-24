@@ -1,10 +1,12 @@
 import 'dart:io';
-import 'package:csc/api_services.dart/custmer_care%20api.dart';
+
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
@@ -21,7 +23,7 @@ class BrochureScreen extends StatefulWidget {
   State<BrochureScreen> createState() => _BrochureScreenState();
 }
 
-class _BrochureScreenState extends State<BrochureScreen> {
+class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
   bool isDownloading = false;
 
  Future<void> _downloadBrochure(BuildContext context) async {
@@ -77,10 +79,11 @@ class _BrochureScreenState extends State<BrochureScreen> {
        final localization = Provider.of<LocalizationProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
         title:  Text(localization.translate('Brochure'),
         style: TextStyle(color: Colors.white),),
-        backgroundColor: const Color(0xFF0C021D),
+        backgroundColor: AppColors.blue,
       ),
       body: Padding(
          padding: const EdgeInsets.all(16),
@@ -126,7 +129,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 8, 1, 75)),
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
                         ),
                       )
                     : const Icon(Icons.download, color: Colors.white),
@@ -136,7 +139,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
                 ),
                 onPressed: isDownloading ? null : () => _downloadBrochure(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0C021D),
+                  backgroundColor: AppColors.blue,
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 ),
               ),

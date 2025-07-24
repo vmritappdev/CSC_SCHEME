@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/notification.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -99,7 +100,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   style: const TextStyle(color: Colors.white),
 ),
 
-        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor:AppColors.blue,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -162,7 +163,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       child: Icon(
         
         _getIconForNotification(notification),
-        color: const Color.fromRGBO(2, 5, 67, 1),
+        color:  AppColors.blue,
         size: 15,
       ),
     );

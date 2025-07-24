@@ -6,7 +6,7 @@ import 'package:csc/model/SchemeResponseNew.dart';
 import 'package:csc/utillity/check%20internet.dart';
 
 import 'package:csc/utillity/constant.dart';
-import 'package:csc/utillity/sample.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

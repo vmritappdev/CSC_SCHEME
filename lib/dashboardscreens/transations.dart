@@ -5,6 +5,7 @@ import 'package:csc/api_services.dart/transation.dart/fetchschemes.dart';
 import 'package:csc/api_services.dart/transation.dart/paydetails_api.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/pd%20frecipit.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/check%20internet.dart';
 
 import 'package:csc/utillity/constant.dart';
@@ -15,6 +16,7 @@ import 'package:csc/dashboardscreens/active_scheme.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 
 
@@ -267,25 +269,29 @@ Future<void> _fetchPayDetails(String id) async {
                 Container(
                   height: screenHeight * 0.2,
                   width: screenWidth, // Full width of the screen
-                  color: const Color.fromRGBO(2, 5, 62, 1), // Blue color
+                  color: AppColors.blue, // Blue color
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
       
                       Row(
+                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const BackButton(color: Colors.white),
       
                           SizedBox(width: MediaQuery.of(context).size.width * 0.05),
       
       
-                          Text(
-                            localization.translate("Scheme Investment"), // Localized text
-                            style:  TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.06,
-      
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              localization.translate("Scheme Investment"), // Localized text
+                              style:  TextStyle(
+                                fontSize: MediaQuery.of(context).size.width * 0.06,
+                                  
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ],
@@ -325,7 +331,7 @@ Future<void> _fetchPayDetails(String id) async {
               Text("Refresh Completed", style: TextStyle(color: Colors.green)),
               ],
             ),
-            waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+            waterDropColor: AppColors.blue,
           ),
                 child: Container(
                   color: Colors.white,
@@ -345,7 +351,7 @@ Future<void> _fetchPayDetails(String id) async {
                             const Icon(
                               Icons.payment, // Transaction icon
                               size: 24,
-                              color: Color.fromRGBO(2, 5, 62, 1),
+                              color: AppColors.blue,
                             ),
                             const SizedBox(width: 10),
                             Text(
@@ -354,7 +360,7 @@ Future<void> _fetchPayDetails(String id) async {
                                fontSize: MediaQuery.of(context).size.width * 0.045,
                 
                                 fontWeight: FontWeight.bold,
-                                color: const Color.fromRGBO(2, 5, 62, 1),
+                                color: AppColors.blue,
                               ),
                             ),
                           ],
@@ -415,9 +421,9 @@ Future<void> _fetchPayDetails(String id) async {
                       ),
                       border: const OutlineInputBorder(borderSide: BorderSide(color: Colors.blue, width: 3)),
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
+                        borderSide: BorderSide(color: AppColors.blue, width: 2),
                       ),
-                      floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 62, 1)),
+                      floatingLabelStyle: const TextStyle(color: AppColors.blue),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -484,7 +490,7 @@ Future<void> _fetchPayDetails(String id) async {
                       style:  TextStyle(
                       fontSize: MediaQuery.of(context).size.width * 0.030,
                     
-                        color: const Color.fromRGBO(2, 5, 62, 1),
+                        color: AppColors.blue,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -503,7 +509,7 @@ Future<void> _fetchPayDetails(String id) async {
                   '${getOrdinalSuffix(int.tryParse(transaction['remark']?.replaceAll(RegExp(r'[^0-9]'), '') ?? '') ?? 0)} installment',
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.03,
-                    color: const Color.fromRGBO(2, 5, 62, 1),
+                    color: AppColors.blue,
                   //  fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -639,7 +645,7 @@ Future<void> _fetchPayDetails(String id) async {
                         color: Colors.red[50],
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: const Color.fromRGBO(2, 6, 67, 1),
+                          color:AppColors.blue,
                           width: 2,
                         ),
                       ),
@@ -647,7 +653,7 @@ Future<void> _fetchPayDetails(String id) async {
                        localization.translate('The payment details you provided could not be verified as credited to our account. Please double-check your transaction status and ensure that the correct details are submitted. For further information or clarification, please contact the CSC Jewellers Admin. Contact: 94906 57008'),
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.03,
-                          color: const Color.fromRGBO(2, 6, 67, 1),
+                          color: AppColors.blue,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -710,7 +716,7 @@ Future<void> _fetchPayDetails(String id) async {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
-          color: const Color.fromRGBO(2, 5, 62, 1),
+          color: AppColors.blue,
           shape: const CircularNotchedRectangle(),
           notchMargin: 8.0,
           child: Padding(
@@ -907,10 +913,11 @@ Future<void> _fetchPayDetails(String id) async {
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             
                      isLoading
-                  ? const CircularProgressIndicator() // show loader
+                  ? const BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+                   size: 12.0,) // show loader
                   : ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
+                        backgroundColor: AppColors.blue,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),

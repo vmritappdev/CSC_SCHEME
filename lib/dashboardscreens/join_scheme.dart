@@ -7,13 +7,16 @@ import 'package:csc/api_services.dart/scheme_fetchdetails.dart';
 import 'package:csc/api_services.dart/scheme_submitform.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/scner.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/dashboardscreens/termcondition.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 
 
@@ -21,7 +24,7 @@ import 'package:csc/utillity/sample.dart';
 
 
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:http/http.dart' as http;
 
 
@@ -56,7 +59,7 @@ class Jionscheme2 extends StatefulWidget {
   _Jionscheme2State createState() => _Jionscheme2State();
 }
 
-class _Jionscheme2State extends State<Jionscheme2> {
+class _Jionscheme2State extends State<Jionscheme2> with NetworkMixin{
 
    bool isButtonVisible = true;
    bool isAdharReadOnly = false;
@@ -129,7 +132,7 @@ class _Jionscheme2State extends State<Jionscheme2> {
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color.fromRGBO(2, 5, 62, 1),
+                    color: AppColors.blue,
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(screenWidth * 0.02),
                       bottomRight: Radius.circular(screenWidth * 0.02),
@@ -894,7 +897,7 @@ DateTime? selectedDate;
               shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
           ),
-              backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+              backgroundColor: AppColors.blue,
               title: Padding(
                padding: const EdgeInsets.only(bottom: 0),
                 child: Column(
@@ -920,13 +923,21 @@ DateTime? selectedDate;
           
                          localization.translate("Registration"),
                         
-                            style: GoogleFonts.lato(color: Colors.white, fontSize: 22)
+                            style: GoogleFonts.nunito(color: Colors.white, fontSize: 22)
                             ),
-                        Image.asset('assets/images/csc2.png',
-                           height: 70, color: Colors.white)
+                        Column(
+                          children: [
+                            Image.asset('assets/images/csc2.png',
+                               height: 50, color: Colors.white),
+
+                               Text('Since 1971', style: GoogleFonts.nunito(color: Colors.white, fontSize: 12))
+                          ],
+                        )
                       ],
                     ),
                     const SizedBox(height: 30),
+
+                    
                   
                   ],
                 ),
@@ -947,14 +958,14 @@ DateTime? selectedDate;
                         Text(
                          // 'SCHEME REGISTRATION',
                          localization.translate("SCHEME REGISTRATION"),
-                            style:GoogleFonts.lato( color: const Color.fromRGBO(2, 5, 62, 1),
+                            style:GoogleFonts.lato( color: AppColors.blue,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold)
                                 ),
                         Text(
                           //'Continue to Register',
                           localization.translate("Customer Information"),
-                            style: GoogleFonts.lato(color: const Color.fromRGBO(2, 5, 62, 1), fontSize: 15)
+                            style: GoogleFonts.lato(color: AppColors.blue, fontSize: 15)
                                 ),
                        // const Divider(color: Color.fromRGBO(2, 5, 62, 1),thickness: 1,),
                         
@@ -1016,7 +1027,7 @@ DateTime? selectedDate;
               suffixIcon: IconButton(
                         icon: const Icon(
               Icons.calendar_today,
-              color: Color.fromRGBO(2, 5, 62, 1),
+              color: AppColors.blue,
                         ),
                         onPressed: () => _selectDate(context),
               ),
@@ -1198,7 +1209,7 @@ DateTime? selectedDate;
                             style: GoogleFonts.lato(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: const Color.fromRGBO(2, 5, 62, 1),
+                              color: AppColors.blue,
                             ),
                           ),
                         ),
@@ -1333,7 +1344,7 @@ DateTime? selectedDate;
                             style: GoogleFonts.lato(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: const Color.fromRGBO(2, 5, 62, 1),
+                              color: AppColors.blue,
                             ),
                           ),
                         ),
@@ -1423,10 +1434,10 @@ DateTime? selectedDate;
                               border: const OutlineInputBorder(),
                                focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+              borderSide: const BorderSide(color: AppColors.blue, width: 2), // Focus border color
                         ),
                         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                     floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                     floatingLabelStyle: const TextStyle(color: AppColors.blue),
                                // Remove border
                             //  filled: true,
                               //fillColor: Colors.grey[200], // Fill color for TextField
@@ -1460,7 +1471,7 @@ DateTime? selectedDate;
                   ),
                 ),
                 backgroundColor: const WidgetStatePropertyAll(
-                  Color.fromRGBO(1, 5, 41, 1),
+                  AppColors.blue,
                 ),
               ),
               onPressed: isLoading
@@ -1596,9 +1607,9 @@ DateTime? selectedDate;
             Container(
               color: Colors.black.withOpacity(0.7),
               child: Center(
-  child: SpinKitFadingFour(
-    color: Color.fromRGBO(2, 5, 67, 1,),
-    size: 40.0,
+  child: BouncingDotsLoader(
+    color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
   ),
 ),
             ),
@@ -1668,7 +1679,7 @@ DateTime? selectedDate;
         Container(
           width: double.infinity,
           decoration: const BoxDecoration(
-            color: Color.fromRGBO(2, 5, 65, 1),
+            color: AppColors.blue,
             borderRadius: BorderRadius.only(
             //  bottomLeft: Radius.circular(20),
              // bottomRight: Radius.circular(20),
@@ -1720,7 +1731,7 @@ Widget buildRow3() {
    // mainAxisAlignment: MainAxisAlignment.start,
     children: [
       Checkbox(
-        activeColor: const Color.fromRGBO(2, 5, 62, 1),
+        activeColor: AppColors.blue,
         value: _termsAccepted,
         onChanged: (value) {
           setState(() {
@@ -1774,7 +1785,7 @@ Widget buildRow4(){
             _termsAccepted = value!;
           });
                   },
-                  activeColor: const Color.fromARGB(255, 1, 14, 24), // Checkbox fill color
+                  activeColor:AppColors.blue, // Checkbox fill color
   checkColor: Colors.white, // Tick color
                 ),
                 Expanded(
@@ -1852,9 +1863,9 @@ Widget buildRow4(){
                 decoration:  InputDecoration(
                    border: const UnderlineInputBorder(),
                    focusedBorder:const UnderlineInputBorder(
-                     borderSide: BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+                     borderSide: BorderSide(color: AppColors.blue, width: 2), // Focus border color
                    ),
-                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                 floatingLabelStyle: const TextStyle(color: AppColors.blue),
 
                   hintText: localization.translate("Enter Amount"),
                   //border: UnderlineInputBorder(),
@@ -1903,9 +1914,9 @@ Widget buildRow4(){
       child: Container(
   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
   decoration: BoxDecoration(
-    color: selectedAmount == value ? const Color.fromRGBO(2, 5, 62, 1) : Colors.transparent, // Background color
+    color: selectedAmount == value ? AppColors.blue : Colors.transparent, // Background color
     border: Border.all(
-      color: selectedAmount == value ? const Color.fromRGBO(2, 5, 62, 1) : const Color.fromRGBO(2, 5, 62, 1),
+      color: selectedAmount == value ? AppColors.blue : AppColors.blue,
     ),
     borderRadius: BorderRadius.circular(15),
   ),
@@ -2003,10 +2014,10 @@ Widget buildRow4(){
             border: const OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
-              borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
+              borderSide: const BorderSide(color: AppColors.blue, width: 2),
             ),
             contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+            floatingLabelStyle: const TextStyle(color: AppColors.blue),
           ),
           items: items
               .map((item) => DropdownMenuItem(value: item, child: Text(item)))
@@ -2086,10 +2097,10 @@ Widget _buildTextField({
         ),
          focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+          borderSide: const BorderSide(color: AppColors.blue, width: 2), // Focus border color
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                 floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+                 floatingLabelStyle: const TextStyle(color: AppColors.blue),
  // Reduce padding
 
         suffixIcon: suffixIcon,
@@ -2130,10 +2141,10 @@ Widget _buildTextField4({
       border: const OutlineInputBorder(),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
-        borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+        borderSide: const BorderSide(color: AppColors.blue, width: 2), // Focus border color
       ),
       contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-      floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+      floatingLabelStyle: const TextStyle(color: AppColors.blue),
       counterText: "",
     ),
     validator: validator, // Validator function added
@@ -2161,14 +2172,14 @@ Widget _buildTextField4({
                   
                   labelText: localization.translate('First Name*'),labelStyle: GoogleFonts.lato(),
                   border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1),width: 2)
+                    borderSide: BorderSide(color: AppColors.blue,width: 2)
                   ), 
                    focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+          borderSide: const BorderSide(color:AppColors.blue, width: 2), // Focus border color
         ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-              floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
+              floatingLabelStyle: const TextStyle(color: AppColors.blue)
  // Reduce padding
 
                 //  filled: true,
@@ -2196,14 +2207,14 @@ Widget _buildTextField4({
                 decoration: InputDecoration(
                    labelText: localization.translate('Last Name*'),labelStyle: GoogleFonts.lato(),
                   border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1),width: 2)
+                    borderSide: BorderSide(color: AppColors.blue,width: 2)
                   ), // Remove border
                    focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2), // Focus border color
+          borderSide: const BorderSide(color: AppColors.blue, width: 2), // Focus border color
         ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                         floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1))
+                         floatingLabelStyle: const TextStyle(color: AppColors.blue)
  
 
                  // filled: true,

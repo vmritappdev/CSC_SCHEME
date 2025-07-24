@@ -9,7 +9,9 @@ import 'package:csc/utillity/check internet.dart';
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/registationfolder/create account.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -39,7 +41,7 @@ class OtpScreen extends StatefulWidget {
   _OtpScreenState createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends State<OtpScreen>  with NetworkMixin {
   /// Single controller instead of 6 controllers
   final TextEditingController otpController = TextEditingController();
  // final TextEditingController _mobileController = TextEditingController();
@@ -143,7 +145,7 @@ class _OtpScreenState extends State<OtpScreen> {
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: AppColors.blue,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -252,10 +254,10 @@ class _OtpScreenState extends State<OtpScreen> {
                   height: 72,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF10194E).withOpacity(0.95),
+                    color: AppColors.blue.withOpacity(0.95),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF10194E).withOpacity(0.3),
+                        color: AppColors.blue.withOpacity(0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
 
@@ -305,7 +307,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       navigateToNextScreen();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF10194E),
+                      backgroundColor: AppColors.blue,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -536,7 +538,7 @@ void showStylishSuccessSheet(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-      backgroundColor: const Color.fromRGBO(3, 4, 22, 1),
+      backgroundColor: AppColors.blue,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Text(
@@ -619,7 +621,7 @@ void showStylishSuccessSheet(BuildContext context) {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: const BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
+                        borderSide: const BorderSide(color: AppColors.blue, width: 2),
                       ),
                     ),
                     onChanged: (value) {
@@ -637,7 +639,7 @@ void showStylishSuccessSheet(BuildContext context) {
                     decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         colors: [
-                          Color.fromRGBO(2, 5, 62, 1),
+                          AppColors.blue,
                           Color.fromRGBO(78, 67, 138, 1),
                         ],
                         begin: Alignment.centerLeft,
@@ -677,7 +679,7 @@ void showStylishSuccessSheet(BuildContext context) {
                         child: Text(
                           localization.translate('Resend'),
                           style: const TextStyle(
-                            color: Color.fromRGBO(6, 8, 34, 1),
+                            color: AppColors.blue,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

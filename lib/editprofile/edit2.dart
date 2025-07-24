@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/dashboardscreens/view%20details.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,7 +47,7 @@ class Editscheme extends StatefulWidget {
   _EditschemeState createState() => _EditschemeState();
 }
 
-class _EditschemeState extends State<Editscheme> {
+class _EditschemeState extends State<Editscheme>   with NetworkMixin  {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -144,7 +147,7 @@ String regId = '';        // Holds Registration ID
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -409,10 +412,11 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
       style: TextStyle(color: Colors.white),
       ),
       iconTheme: IconThemeData(color: Colors.white),
-      backgroundColor: Color.fromRGBO(2, 6, 67, 1),
+      backgroundColor: AppColors.blue,
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,))
           : SafeArea(
             child: SingleChildScrollView(
                 child: Padding(
@@ -430,7 +434,7 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
                         ),
                     
                     
-                    
+                    /*
                     
                         Row(
                           children: [
@@ -450,7 +454,7 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
                           ],
                         ),
                     
-                    
+                    */
                           SizedBox(
                          height: MediaQuery.of(context).size.height * 0.02, // 6% of screen height
                        ),
@@ -636,6 +640,7 @@ schemeAmount = details['scheme_amount'] ?? 'N/A';
                       SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all(AppColors.blue)),
                 onPressed: () async {
               FocusScope.of(context).unfocus();
             
@@ -1035,14 +1040,14 @@ Widget genderDropdown(BuildContext context) {
         labelText: localization.translate('Gender*'),
         labelStyle: GoogleFonts.lato(),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color.fromRGBO(2, 5, 62, 1), width: 2),
+          borderSide: BorderSide(color: AppColors.blue, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(color: Color.fromARGB(255, 18, 5, 93), width: 2),
+          borderSide: const BorderSide(color:AppColors.blue, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 9, 90, 1)),
+        floatingLabelStyle: const TextStyle(color: AppColors.blue),
       ),
       items: genderOptions
           .map((String gender) => DropdownMenuItem<String>(

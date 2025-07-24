@@ -9,6 +9,7 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
 
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -190,7 +191,7 @@ void showError( String message) {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -249,7 +250,7 @@ void showError( String message) {
         appBar: AppBar(title: Text(
          localization.translate("Login with OTP"),
           style: TextStyle(color: Colors.white),),
-        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor: AppColors.blue,
         leading: BackButton(color: Colors.white,
         onPressed: () {
           Navigator.pushReplacement(
@@ -299,7 +300,7 @@ void showError( String message) {
     style: ElevatedButton.styleFrom(
       backgroundColor: (isLoading || isOtpSent)
           ? Colors.grey
-          : const Color.fromARGB(255, 12, 1, 72),
+          : AppColors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),
       ),
@@ -352,7 +353,7 @@ void showError( String message) {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
         borderSide: BorderSide(
-          color: Color.fromRGBO(2, 5, 67, 1),
+          color:AppColors.blue,
           width: 2,
         ),
       ),

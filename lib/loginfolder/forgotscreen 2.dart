@@ -6,7 +6,9 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/creatempin1.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +38,7 @@ class ForgotScreen1 extends StatefulWidget {
   State<ForgotScreen1> createState() => _ForgotScreen1State();
 }
 
-class _ForgotScreen1State extends State<ForgotScreen1> {
+class _ForgotScreen1State extends State<ForgotScreen1>   with NetworkMixin {
   final TextEditingController _controllerMobileNumber = TextEditingController();
   bool isLoading = false;
 
@@ -89,7 +91,7 @@ Future<String?> loadMobileNumber() async {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -222,7 +224,7 @@ void initState() {
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: AppColors.blue,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -278,7 +280,7 @@ void initState() {
                         )
                       );
                     },
-                    color: const Color.fromRGBO(2, 5, 62, 1),
+                    color:AppColors.blue,
                   ),
                 ),
                 Image.asset('assets/images/csc2.png', height: 90),
@@ -288,7 +290,7 @@ void initState() {
                     fontSize: 13,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(43, 49, 101, 1),
+                    color: AppColors.blue,
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.09),
@@ -321,7 +323,7 @@ void initState() {
                   child: ElevatedButton(
                     onPressed: isLoading ? null : verifyMobileNumber,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                      backgroundColor:AppColors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

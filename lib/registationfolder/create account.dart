@@ -9,7 +9,7 @@ import 'dart:async'; // Import for async operations
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/dashboardscreens/terms3.dart';
-import 'package:csc/dashboardscreens/terms_condition.dart';
+
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
@@ -17,8 +17,9 @@ import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
-import 'package:csc/utillity/sample.dart';
+
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -163,7 +164,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color:  Color.fromRGBO(2, 5, 67, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -220,7 +221,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color:AppColors.blue,
                 //  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
                 ),
                 child: TextButton(
@@ -402,11 +403,11 @@ Widget build(BuildContext context) {
                             fontSize: screenWidth * 0.03,
                             letterSpacing: 4,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(2, 5, 67, 1),
+                            color: AppColors.blue,
                           ),
                         ),
                         Text(localization.translate('Since 1971'),
-                            style: TextStyle(fontSize: 8, color: Color.fromRGBO(2, 5, 67, 1), fontWeight: FontWeight.bold)),
+                            style: TextStyle(fontSize: 8, color: AppColors.blue, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -490,8 +491,8 @@ Widget build(BuildContext context) {
                                       _showTermsError = false;
                                     });
                                   },
-                                  activeColor: Color.fromRGBO(2, 5, 67, 1),
-                                  side: BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 1.5),
+                                  activeColor: AppColors.blue,
+                                  side: BorderSide(color: AppColors.blue, width: 1.5),
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 ),
                               ),
@@ -509,7 +510,7 @@ Widget build(BuildContext context) {
           text: localization.translate('Terms and Conditions'),
           style: GoogleFonts.nunito(
             decoration: TextDecoration.underline,
-            color: Color.fromRGBO(2, 5, 67, 1),
+            color: AppColors.blue,
             fontWeight: FontWeight.bold,
           ),
           recognizer: TapGestureRecognizer()
@@ -521,7 +522,7 @@ Widget build(BuildContext context) {
     builder: (BuildContext context) {
       return Center(
         child: SpinKitFadingFour(
-          color: Color.fromRGBO(2, 5, 67, 1),
+          color:AppColors.blue,
           size: 40.0,
         ),
       );
@@ -573,7 +574,7 @@ Widget build(BuildContext context) {
                         height: screenHeight * 0.06,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+                            backgroundColor: AppColors.blue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -605,7 +606,7 @@ Widget build(BuildContext context) {
                             SizedBox(width: 5),
                             Text(
                               localization.translate('Login'),
-                                style: TextStyle(color: Color.fromRGBO(2, 5, 67, 1), fontWeight: FontWeight.bold),
+                                style: TextStyle(color: AppColors.blue, fontWeight: FontWeight.bold),
                               ),
                             
                           ],
@@ -624,7 +625,7 @@ Widget build(BuildContext context) {
               color: Colors.black.withOpacity(0.7),
               child: Center(
                 child:SpinKitFadingFour(
-          color: Color.fromRGBO(2, 5, 67, 1),
+          color: AppColors.blue,
           size: 40.0,
         ),
               ),
@@ -712,7 +713,7 @@ Widget build(BuildContext context) {
     fontSize: 9,
     height: 0.18, // NEW: make error text use less vertical space
   ),
-  prefixIcon: Icon(icon,color: Color.fromRGBO(2, 5, 67, 1),),
+  prefixIcon: Icon(icon,color: AppColors.blue,),
   isDense: true, // NEW: reduce default vertical space
   contentPadding: EdgeInsets.symmetric(
     vertical: screenWidth * 0.025, // smaller vertical padding
@@ -722,9 +723,9 @@ Widget build(BuildContext context) {
   enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: const Color.fromARGB(255, 202, 200, 200))),
   focusedBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(5),
-    borderSide: const BorderSide(color:   Color.fromRGBO(2, 5, 67, 1), width: 2),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
   ),
-  floatingLabelStyle: const TextStyle(color:   Color.fromRGBO(2, 5, 67, 1),),
+  floatingLabelStyle: const TextStyle(color:   AppColors.blue,),
 ),
 
         validator: validator,
@@ -773,11 +774,11 @@ Widget build(BuildContext context) {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(
-            color: Color.fromRGBO(2, 5, 67, 1),
+            color: AppColors.blue,
             width: 2,
           ),
         ),
-        floatingLabelStyle: const TextStyle(color: Color.fromRGBO(2, 5, 67, 1)),
+        floatingLabelStyle: const TextStyle(color: AppColors.blue),
         contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
       ),
       validator: (value) {

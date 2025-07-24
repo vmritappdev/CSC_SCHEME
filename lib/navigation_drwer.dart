@@ -7,6 +7,7 @@ import 'package:csc/dashboardscreens/active_scheme.dart';
 import 'package:csc/dashboardscreens/transations.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/dashboardscreens/saving%20account.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -114,7 +115,7 @@ await prefs.setBool('isFirstTime', isFirstTime);
         /// Blue Header Container
         Container(
           width: double.infinity,
-          color: const Color.fromRGBO(2, 5, 62, 1),
+          color:AppColors.blue,
           padding: EdgeInsets.only(
             top: 24 + topPadding,
             bottom: screenHeight * 0.03,

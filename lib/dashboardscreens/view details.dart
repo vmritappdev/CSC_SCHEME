@@ -16,7 +16,10 @@ import 'package:csc/editprofile/edit2.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -50,11 +53,14 @@ class JewelryTransactionScreen extends StatefulWidget {
   State<JewelryTransactionScreen> createState() => _JewelryTransactionScreenState();
 }
 
-class _JewelryTransactionScreenState extends State<JewelryTransactionScreen> {
-  static const Color headerBackgroundColor = Color.fromRGBO(2, 5, 62, 1);
+class _JewelryTransactionScreenState extends State<JewelryTransactionScreen>   with NetworkMixin {
+  static const Color headerBackgroundColor = AppColors.blue;
   final Color cardBackgroundColor = Colors.white;
   final Color bodyTextColor = Colors.black87;
   final RefreshController _refreshController = RefreshController();
+
+  bool _isDownloading = false;
+
 
    void _onRefresh() async {
    await fetchData(); 
@@ -234,7 +240,8 @@ Future<void> verifyPaymentProcess() async {
           ),
         ),
         body: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,))
             : SmartRefresher(
                controller: _refreshController,
           onRefresh: _onRefresh,
@@ -248,7 +255,7 @@ Future<void> verifyPaymentProcess() async {
               Text("Refresh Completed", style: TextStyle(color: Colors.green)),
               ],
             ),
-           waterDropColor: const Color.fromARGB(255, 4, 2, 29),
+           waterDropColor: AppColors.blue,
           ),
               child: SingleChildScrollView(
                   child: Column(
@@ -444,7 +451,7 @@ Future<void> verifyPaymentProcess() async {
       child: Text(
         capitalizeEachWord(name), // Capitalize each word
         style: GoogleFonts.lato(
-          color: const Color.fromRGBO(2, 5, 67, 1),
+          color: AppColors.blue,
           fontWeight: FontWeight.bold,
           fontSize: 14 * MediaQuery.of(context).textScaleFactor,
         ),
@@ -693,61 +700,93 @@ GestureDetector(
               SizedBox(height: MediaQuery.of(context).size.height * 0.012), // 1.2% of screen height
     
     
-    GestureDetector(
-    onTap: (paymentStatusText == localization.translate("Completed")) 
-        ? () async {
+  GestureDetector(
+  onTap: (paymentStatusText == localization.translate("Completed"))
+      ? () async {
+          if (!mounted) return;
+
+          setState(() {
+            _isDownloading = true;
+          });
+
+          try {
             print("Downloading for ID: ${widget.schemeId}");
             ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId: payid);
             await pdfGenerator.generatePDF(context);
+
+            if (!mounted) return;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(localization.translate("Downloading")),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } catch (e) {
+            if (!mounted) return;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(localization.translate("Something went wrong")),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } finally {
+            if (!mounted) return;
+
+            setState(() {
+              _isDownloading = false;
+            });
           }
-        : (paymentStatusText == localization.translate("Reject") || 
-           paymentStatusText == localization.translate("Process"))
-            ? () {
-                _showErrorDialog(context, message);
-              }
-            : null,
-    child: Opacity(
-      opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
-      child: IgnorePointer(
-        ignoring: paymentStatusText != localization.translate("Completed"),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * 0.005,
-                horizontal: MediaQuery.of(context).size.width * 0.02,
-              ),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(2, 5, 62, 1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.download,
-                    color: Colors.white,
-                    size: 12 * MediaQuery.of(context).textScaleFactor,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    localization.translate("Download"),
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+        }
+      : (paymentStatusText == localization.translate("Reject") ||
+              paymentStatusText == localization.translate("Process"))
+          ? () {
+              _showErrorDialog(context, message);
+            }
+          : null,
+  child: Opacity(
+    opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
+    child: IgnorePointer(
+      ignoring: paymentStatusText != localization.translate("Completed"),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.005,
+              horizontal: MediaQuery.of(context).size.width * 0.02,
             ),
-          ],
-        ),
+            decoration: BoxDecoration(
+              color: AppColors.blue,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.download,
+                  color: Colors.white,
+                  size: 12 * MediaQuery.of(context).textScaleFactor,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  localization.translate("Download"),
+                  style: GoogleFonts.lato(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
-    ),
-    
+  ),
+),
+
     
     
               ],
@@ -825,7 +864,7 @@ void _showErrorDialog(BuildContext context, String message) {
           Container(
             width: double.infinity, // Full width button
             decoration: const BoxDecoration(
-              color: Color.fromRGBO(2, 5, 62, 1), // Button background color
+              color: AppColors.blue, // Button background color
               borderRadius: BorderRadius.only(
               //  bottomLeft: Radius.circular(16),
                // bottomRight: Radius.circular(16),

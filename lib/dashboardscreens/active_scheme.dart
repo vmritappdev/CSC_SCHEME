@@ -14,7 +14,9 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/dashboardscreens/saving%20account.dart';
 import 'package:csc/model/SchemeResponseNew.dart';
 import 'package:csc/model/activescheme.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 
 
@@ -48,7 +50,7 @@ class PaymentCard extends StatefulWidget {
   _PaymentCardState createState() => _PaymentCardState();
 }
 
-class _PaymentCardState extends State<PaymentCard> {
+class _PaymentCardState extends State<PaymentCard>  with NetworkMixin {
   SchemeResponseNew? activeSchemeNew;
   bool isDataLoaded = false; 
    final RefreshController _refreshController = RefreshController();
@@ -182,7 +184,7 @@ void showNoSchemePopup(BuildContext currentContext) {
                 localization.translate("No Scheme Details"),
                 style: GoogleFonts.lato(fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: const Color.fromRGBO(2, 5, 62, 1),)
+                  color:AppColors.blue,)
               ),
             ],
           ),
@@ -206,7 +208,7 @@ void showNoSchemePopup(BuildContext currentContext) {
         Container(
           width: double.infinity,
           decoration: const BoxDecoration(
-            color: Color.fromRGBO(2, 5, 62, 1),
+            color:AppColors.blue,
             borderRadius: BorderRadius.only(
               
             ),
@@ -382,10 +384,10 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
       appBar: AppBar(
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
-       backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+       backgroundColor:AppColors.blue,
         title: Text(
           localization.translate("Advance Gold Purchase Plan"),
-          style: GoogleFonts.lato( color: Colors.white,
+          style: GoogleFonts.nunito( color: Colors.white,
             fontStyle: FontStyle.italic,
             fontWeight: FontWeight.bold,
             fontSize: screenWidth * 0.045,
@@ -488,7 +490,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Divider(
-                  color: Color.fromRGBO(2, 5, 62, 1),
+                  color: AppColors.blue,
                   thickness: 1,
                 ),
               ),
@@ -534,7 +536,7 @@ Color getDueDateColor(String dueDate, String schemeStatus) {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: const Color.fromRGBO(2, 5, 62, 1),
+        color: AppColors.blue,
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(
@@ -647,7 +649,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                     title,
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold,
                       fontSize: 14* MediaQuery.of(context).textScaleFactor,
-                      color: const Color.fromRGBO(2, 5, 62, 1),)
+                      color: AppColors.blue,)
                     ),
                   ),
             
@@ -678,7 +680,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                  Text(
   capitalizeEachWord(name), // Capitalize each word
   style: GoogleFonts.lato(
-    color: const Color.fromRGBO(2, 5, 67, 1),
+    color: AppColors.blue,
     fontWeight: FontWeight.bold,
     fontSize: 10 * MediaQuery.of(context).textScaleFactor,
   ),
@@ -704,7 +706,7 @@ double screenHeight = MediaQuery.of(context).size.height;
                   style: GoogleFonts.lato(fontSize: 11* MediaQuery.of(context).textScaleFactor,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 3, 18, 30),)
+                    color: AppColors.blue,)
                 ),
               ),
               Row(
@@ -779,7 +781,7 @@ double screenHeight = MediaQuery.of(context).size.height;
               status == "suspend" || status == "suspended" || status == "ready";
              
           return shouldEnableButton
-              ? const Color.fromRGBO(2, 5, 62, 1) // Dark blue
+              ?AppColors.blue // Dark blue
               : const Color.fromARGB(255, 233, 231, 231); // Grey
         },
       ),

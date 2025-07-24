@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/loginfolder/loginotp.dart';
+import 'package:csc/utillity/bouncing.dart';
 
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
@@ -12,12 +13,13 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/registationfolder/create%20account.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -40,9 +42,10 @@ bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
 bool _rememberMe = false;
-//final FocusNode phoneFocusNode = FocusNode();
+final FocusNode phoneFocusNode = FocusNode();
 
-late FocusNode phoneFocusNode;
+final FocusNode mpinFocusNode = FocusNode(); // top-level in your class
+
 
 Future<void> _checkSavedPhoneNumber() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -98,7 +101,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     super.initState();
     loadPhoneNumber();
 
-     phoneFocusNode = FocusNode();
+  
     
  WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkSavedPhoneNumber();
@@ -107,11 +110,7 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     
     
   }
-@override
-void dispose() {
-  phoneFocusNode.dispose();
-  super.dispose();
-}
+
 
  
 
@@ -273,8 +272,8 @@ void _verifyMpin() async {
     });
     return;
   }
-  
-
+  mpinFocusNode.unfocus(); 
+ FocusScope.of(context).unfocus(); 
  showLoaderDialog(context);
   
 
@@ -289,7 +288,8 @@ void _verifyMpin() async {
     await savePhoneNumber(mobileNumber);
     await _fetchUserDetails();
     await loadPhoneNumber();
-
+    
+ Future.delayed(Duration(milliseconds: 0), () {
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -298,6 +298,7 @@ void _verifyMpin() async {
         ),
       );
     }
+      });
   } else {
   //  Navigator.pop(context);
 
@@ -356,7 +357,7 @@ void _showErrorPopup(String reason) {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
                 borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               ),
               child: TextButton(
@@ -365,9 +366,7 @@ void _showErrorPopup(String reason) {
                   phoneController.clear();
                   mpinController.clear();
 
-                  Future.delayed(Duration(milliseconds: 100), () {
-    FocusScope.of(context).requestFocus(phoneFocusNode);
-  });
+               
                   setState(() {});
                  // FocusScope.of(context).requestFocus(phoneFocusNode);
 
@@ -517,6 +516,7 @@ localization.translate('CSC App'),
             child: Image.asset(
               'assets/images/cs.png', // 👈 replace with your image path
               height: screenHeight * 0.10, // adjust size
+              color: AppColors.blue,
               fit: BoxFit.contain,
             ),
           ),
@@ -529,21 +529,21 @@ localization.translate('CSC App'),
                             fontSize: screenWidth * 0.03,
                             letterSpacing: 4,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromRGBO(2, 5, 67, 1),
+                            color:AppColors.blue,
                           ),
                         ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
-                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: Color.fromRGBO(2, 5, 67, 1),fontSize: 9),)
+                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: AppColors.blue,fontSize: 9),)
         
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.020),
                   Text(
                     localization.translate("Welcome back to your CSC account!"),
-                    style: GoogleFonts.nunito(fontSize: fontSizeSmall, color: Color.fromRGBO(2, 5, 67, 1),fontWeight: FontWeight.bold),
+                    style: GoogleFonts.nunito(fontSize: fontSizeSmall, color:AppColors.blue,fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.04),
 
@@ -554,27 +554,31 @@ localization.translate('CSC App'),
 
                     SizedBox(height: screenHeight * 0.015),
         
-                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10,focusNode: phoneFocusNode),
+                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10, focusNode: phoneFocusNode, ),
                   SizedBox(height: screenHeight * 0.010),
 
 
                  
 
                   SizedBox(height: screenHeight * 0.015),
-                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
+                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,focusNode: mpinFocusNode),
 
                    SizedBox(height: screenHeight * 0.020),
         
                  Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
   children: [
     // left side checkbox + text will start from left
+
+
+    /*
     Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,  // force start
         children: [
          Checkbox(
   value: _rememberMe,
-  activeColor: const Color.fromARGB(255, 3, 21, 47),
+  activeColor: AppColors.blue,
   onChanged: (bool? newValue) {
     setState(() {
       _rememberMe = newValue ?? false;
@@ -593,7 +597,7 @@ SizedBox(width: 8,),
         ],
       ),
     ),
-
+*/
     // right side forgot mpin
     GestureDetector(
       onTap: () {
@@ -622,7 +626,7 @@ SizedBox(width: 8,),
                     Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
         
                   SizedBox(height: screenHeight * 0.04),
-                  _buildButton(localization.translate("Login"), const Color.fromARGB(255, 3, 21, 47), Colors.white, buttonHeight, _verifyMpin,),
+                  _buildButton(localization.translate("Login"), AppColors.blue, Colors.white, buttonHeight, _verifyMpin,),
                   SizedBox(height: screenHeight * 0.015),
 
                   RichText(
@@ -647,7 +651,7 @@ SizedBox(width: 8,),
 
   SizedBox(height: screenHeight * 0.015),
 
-                  _buildButton(localization.translate("Login with OTP"), Colors.white, const Color.fromARGB(255, 3, 21, 47), buttonHeight, () {
+                  _buildButton(localization.translate("Login with OTP"), Colors.white, AppColors.blue, buttonHeight, () {
                      Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -678,7 +682,7 @@ SizedBox(width: 8,),
       },
       child: Text(
         localization.translate("Sign up"),
-        style: GoogleFonts.nunito( color: const Color.fromARGB(255, 3, 21, 47),
+        style: GoogleFonts.nunito( color: AppColors.blue,
           fontSize: fontSizeSmall,
           fontWeight: FontWeight.bold,)
       ),
@@ -712,15 +716,18 @@ Widget _buildTextField(
   bool obscureText = false,
   int? maxLength,
   bool isMPINField = false,
-  FocusNode? focusNode, // ✅ Add this
+   FocusNode? focusNode, 
+  
 }) {
   return SizedBox(
     height: fieldHeight,
     child: TextField(
-      focusNode: focusNode, // ✅ Apply here
+      focusNode: focusNode, // ✅ assign here
+     // focusNode: focusNode, // ✅ Apply here
       inputFormatters: [
         FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
       ],
+      textInputAction: TextInputAction.done, 
       controller: controller,
       obscureText: isMPINField ? _isObscured : obscureText,
       keyboardType: label == "Mobile Number"
@@ -728,7 +735,7 @@ Widget _buildTextField(
           : TextInputType.number,
       maxLength: maxLength,
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47), size: 18),
+        prefixIcon: Icon(icon, color:AppColors.blue, size: 18),
         suffixIcon: isMPINField
             ? IconButton(
                 icon: Icon(
@@ -753,10 +760,10 @@ Widget _buildTextField(
           borderRadius: BorderRadius.circular(5),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: const Color.fromARGB(255, 3, 21, 47), width: 2),
+          borderSide: BorderSide(color: AppColors.blue, width: 2),
           borderRadius: BorderRadius.circular(5),
         ),
-        floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 3, 21, 47)),
+        floatingLabelStyle: TextStyle(color: AppColors.blue),
         
       ),
     ),
@@ -771,7 +778,7 @@ Widget _buildTextField(
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          side: const BorderSide(color: Color.fromARGB(255, 3, 21, 47)),
+          side: const BorderSide(color: AppColors.blue),
         ),
         onPressed: onPressed,
         child: Text(
@@ -788,10 +795,8 @@ void showLoaderDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Center(
-        child: SpinKitFadingFour(
-          color: Color.fromRGBO(2, 5, 67, 1),
-          size: 40.0,
-        ),
+        child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,)
       );
     },
   );

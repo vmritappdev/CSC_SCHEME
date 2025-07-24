@@ -2,6 +2,8 @@ import 'dart:convert'; // Add this import for json.decode
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,7 +20,7 @@ class BillSummaryScreen extends StatefulWidget {
   State<BillSummaryScreen> createState() => _BillSummaryScreenState();
 }
 
-class _BillSummaryScreenState extends State<BillSummaryScreen> {
+class _BillSummaryScreenState extends State<BillSummaryScreen>   with NetworkMixin {
   String productName = '';
   String netWeight = '';
   String grossWeight = '';
@@ -111,7 +113,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
       backgroundColor: const Color(0xFFF5F5F7), // Premium light background
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF0A0E21), // Darker premium color
+        backgroundColor:AppColors.blue, // Darker premium color
         centerTitle: true,
         elevation: 0,
         title: Text(
@@ -163,7 +165,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   Row(
                     children: [
                       Icon(Icons.receipt_long,
-                          color: const Color(0xFF0A0E21),
+                          color: AppColors.blue,
                           size: isSmallScreen ? 24 : 28),
                       const SizedBox(width: 10),
 
@@ -173,7 +175,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                         style: GoogleFonts.playfairDisplay(
                           fontSize: isSmallScreen ? 24 : 14,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF0A0E21),
+                          color:AppColors.blue,
                         ),
                       ),
                     ],
@@ -214,7 +216,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                   Container(
                     padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0A0E21).withOpacity(0.05),
+                      color: AppColors.blue.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -225,7 +227,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                           style: GoogleFonts.lato(
                             fontSize: isSmallScreen ? 13 : 13,
                             fontWeight: FontWeight.w800,
-                            color: const Color(0xFF0A0E21),
+                            color: AppColors.blue,
                           ),
                         ),
                         Text(
@@ -233,7 +235,7 @@ class _BillSummaryScreenState extends State<BillSummaryScreen> {
                           style: GoogleFonts.lato(
                             fontSize: isSmallScreen ? 14 : 14,
                             fontWeight: FontWeight.w900,
-                            color: const Color(0xFF0A0E21),
+                            color: AppColors.blue,
                           ),
                         ),
 
@@ -253,7 +255,7 @@ Center(
     icon: const Icon(Icons.download),
     label: Text(localization.translate('Download Sale Invoice')),
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF0A0E21),
+      backgroundColor: AppColors.blue,
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -301,7 +303,7 @@ Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
       style: GoogleFonts.playfairDisplay(
         fontSize: isSmallScreen ? 15 : 13,
         fontWeight: FontWeight.w700,
-        color: const Color(0xFF0A0E21),
+        color: AppColors.blue,
       ),
     );
   }
@@ -326,7 +328,7 @@ Future<void> _openBrochureUrl(BuildContext context, String saleId) async {
             style: GoogleFonts.lato(
               fontSize: isSmallScreen ? (isAmount ? 13 : 11) : (isAmount ? 13 : 13),
               fontWeight: isAmount ? FontWeight.w800 : FontWeight.w600,
-              color: isAmount ? const Color(0xFF0A0E21) : Colors.grey[800],
+              color: isAmount ? AppColors.blue : Colors.grey[800],
             ),
           ),
         ],

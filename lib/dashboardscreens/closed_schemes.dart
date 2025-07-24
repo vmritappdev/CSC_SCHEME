@@ -6,7 +6,9 @@ import 'package:csc/chaingedscreens.dart/saledetails%20page.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +42,7 @@ class MyScreen extends StatefulWidget {
   _MyScreenState createState() => _MyScreenState();
 }
 
-class _MyScreenState extends State<MyScreen> {
+class _MyScreenState extends State<MyScreen>    with NetworkMixin {
   final bool _showDetails = false;
   String lastPayDate = '';
   String totalPayAmount = '';
@@ -136,7 +138,7 @@ List<dynamic> salesList = [];
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {

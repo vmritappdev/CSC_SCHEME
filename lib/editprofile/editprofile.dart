@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dainamicsizes.dart/dainamicsizes.dart';
 import 'package:csc/dashboardscreens/user_profile.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +38,7 @@ class EditProfileScreen extends StatefulWidget {
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen>    with NetworkMixin  {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -106,7 +108,7 @@ void _showInvalidOTPDialog(String message) {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color:AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -259,27 +261,13 @@ Future<bool> checkInternet() async {
 
     return  Scaffold(
         appBar: AppBar(
-          toolbarHeight: 100,
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          toolbarHeight: 90,
+          backgroundColor:AppColors.blue,
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
           title: Column(
             children: [
-              Image.asset(
-                'assets/images/csc2.png',
-                height: MediaQuery.of(context).size.height * 0.05,  // 5% of screen height
-        width: MediaQuery.of(context).size.width * 0.2, 
-                color: Colors.white,
-              ),
-               Text(
-               localization.translate("jewellarys"),
-                style: TextStyle(
-                  color: Colors.white,
-                 fontSize: MediaQuery.of(context).size.width * 0.035,  // 3.5% of the screen width
-      
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
+            Text('Change Profile',style: GoogleFonts.nunito(color: Colors.white),)
             ],
           ),
           centerTitle: true,
@@ -301,13 +289,13 @@ Future<bool> checkInternet() async {
                           Text(
                            localization.translate("Edit Profile Details"),
                             style: TextStyle(
-                              color: const Color.fromRGBO(43, 49, 101, 1),
+                              color: AppColors.blue,
                               fontWeight: FontWeight.bold,
                              fontSize: MediaQuery.of(context).size.width * 0.05,  // 5% of the screen width
                 
                             ),
                           ),
-                          const Icon(Icons.person, color: Color.fromRGBO(43, 49, 101, 1)),
+                          const Icon(Icons.person, color:AppColors.blue),
                         ],
                       ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),  // 3% of the screen height
@@ -338,7 +326,7 @@ Future<bool> checkInternet() async {
                             
                             
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
+                              backgroundColor: AppColors.blue,
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                             ),
                             child:  Text(
@@ -395,10 +383,8 @@ Future<bool> checkInternet() async {
                 ),
               ),
               if (_isLoading) ...[
-                const CircularProgressIndicator(
-                  strokeWidth: 4,
-                  color: Color.fromARGB(255, 7, 1, 39),
-                ),
+                BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,)
               ],
             ],
           ),

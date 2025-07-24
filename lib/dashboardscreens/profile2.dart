@@ -11,6 +11,7 @@ import 'package:csc/localization/localizationpro.dart';
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -278,7 +279,7 @@ Future<void> fetchAndSaveImage() async {
             // Top section with background
         Container(
   width: double.infinity,
-  color: Color.fromRGBO(2, 5, 67, 1),
+  color:AppColors.blue,
   padding: const EdgeInsets.fromLTRB(16, 40, 16, 24), // Top padding increased
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +472,7 @@ Future<void> fetchAndSaveImage() async {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: Color.fromRGBO(2, 5, 62, 1),
+        color: AppColors.blue,
         shape: CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(
@@ -528,7 +529,7 @@ Future<void> fetchAndSaveImage() async {
         children: [
           Row(
             children: [
-              Icon(icon, color: Color.fromRGBO(5, 6, 67, 1),),
+              Icon(icon, color: AppColors.blue,),
               const SizedBox(width: 16),
               Text(
                 title,

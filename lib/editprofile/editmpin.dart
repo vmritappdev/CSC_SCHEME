@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +28,7 @@ class EditMPINScreen extends StatefulWidget {
   State<EditMPINScreen> createState() => _EditMPINScreenState();
 }
 
-  class _EditMPINScreenState extends State<EditMPINScreen> {
+  class _EditMPINScreenState extends State<EditMPINScreen>   with NetworkMixin  {
   final TextEditingController _controllerMobileNumber = TextEditingController();
   final TextEditingController _controllerOtp = TextEditingController();
 
@@ -38,6 +40,7 @@ class EditMPINScreen extends StatefulWidget {
   final _pinFocusNode = FocusNode(); 
   
     
+bool isLoading = false;
 
 
   int _timerSeconds = 60;
@@ -84,54 +87,84 @@ class EditMPINScreen extends StatefulWidget {
   }
 
   Future<void> fetchOtpApi() async {
-    if (!await checkInternet()) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  ErrorScreen()));
-      return;
-    }
+  if (!mounted) return;
+  setState(() {
+    isLoading = true;
+  });
 
-    String mobileNumber = _controllerMobileNumber.text;
-    if (mobileNumber.isEmpty || mobileNumber.length < 10) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(context.read<LocalizationProvider>().translate("Enter a valid mobile number or email ID")),
-      ));
-      return;
-    }
-
-    setState(() => _isSendOtpDisabled = true);
-
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/otp.php'),
-        body: {'mobile_no': mobileNumber},
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        setState(() {
-          receivedOtp = responseData['otp'].toString();
-           _controllerOtp.clear();
-            _isOtpCorrect = false;  
-           _isOtpVisible = true;
-          _isOtpVisible = true;
-          _isResendAvailable = false;
-          _timerSeconds = 60;
-          otpSentTime = DateTime.now();
-          _isOtpExpired = false;
-        });
-
-        _startResendTimer();
-        _startOtpExpiryTimer();
-
-        print("✅ OTP Received: $receivedOtp");
-      } else {
-        print("🔴 API Error: ${response.statusCode}");
-        _isSendOtpDisabled = false;
-      }
-    } catch (e) {
-      print("🔴 API Call Failed: $e");
-      _isSendOtpDisabled = false;
-    }
+  if (!await checkInternet()) {
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => ErrorScreen()),
+    );
+    return;
   }
+
+  String mobileNumber = _controllerMobileNumber.text;
+  if (mobileNumber.isEmpty || mobileNumber.length < 10) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(context.read<LocalizationProvider>().translate("Enter a valid mobile number or email ID")),
+    ));
+    if (!mounted) return;
+    setState(() {
+      isLoading = false;
+    });
+    return;
+  }
+
+  if (!mounted) return;
+  setState(() => _isSendOtpDisabled = true);
+
+  try {
+    final response = await http.post(
+      Uri.parse('$baseUrl/otp.php'),
+      body: {'mobile_no': mobileNumber},
+    );
+
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+
+      if (!mounted) return;
+      setState(() {
+        receivedOtp = responseData['otp'].toString();
+        _controllerOtp.clear();
+        _isOtpCorrect = false;
+        _isOtpVisible = true;
+        _isResendAvailable = false;
+        _timerSeconds = 60;
+        otpSentTime = DateTime.now();
+        _isOtpExpired = false;
+      });
+
+      _startResendTimer();
+      _startOtpExpiryTimer();
+
+      print("✅ OTP Received: $receivedOtp");
+    } else {
+      print("🔴 API Error: ${response.statusCode}");
+      if (!mounted) return;
+      setState(() {
+        _isSendOtpDisabled = false;
+      });
+    }
+  } catch (e) {
+    print("🔴 API Call Failed: $e");
+    if (!mounted) return;
+    setState(() {
+      _isSendOtpDisabled = false;
+    });
+  }
+
+  if (!mounted) return;
+  setState(() {
+    isLoading = false;
+  });
+}
+
 
   void _startResendTimer() {
     _resendTimer?.cancel();
@@ -227,7 +260,7 @@ void _onResendOtp() {
             const SizedBox(height: 16),
             Container(
               width: double.infinity,
-              color: const Color.fromRGBO(2, 5, 62, 1),
+              color:AppColors.blue,
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: const Text("OK", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -246,13 +279,11 @@ void _onResendOtp() {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor:AppColors.blue,
         centerTitle: true,
         title: Column(
           children: [
-            Image.asset('assets/images/csc2.png', color: Colors.white, height: 40),
-            Text(localization.translate('Jewellers'),
-                style: const TextStyle(color: Colors.white, fontSize: 14, fontStyle: FontStyle.italic))
+             Text('Change Mpin',style: GoogleFonts.nunito(color: Colors.white),)
           ],
         ),
       ),
@@ -300,7 +331,7 @@ void _onResendOtp() {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
-                        borderSide: const BorderSide(color: Color.fromRGBO(2, 5, 67, 1), width: 2),
+                        borderSide: const BorderSide(color:AppColors.blue, width: 2),
                       ),
                     ),
  
@@ -318,7 +349,7 @@ void _onResendOtp() {
                   child: ElevatedButton(
                     onPressed: _onVerifyOtp,
                     
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.blue,shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
                     child:  Text(
                       localization.translate("Verify"),
                     style: TextStyle(color: Colors.white),),
@@ -329,18 +360,29 @@ void _onResendOtp() {
                   Text("${localization.translate("Resend OTP in")} $_timerSeconds ${localization.translate("seconds")}"),
                 if (_isResendAvailable)
                   TextButton(onPressed: _onResendOtp, child:  Text(localization.translate("Resend OTP"),
-                  style: TextStyle(color: Color.fromARGB(255, 5, 23, 38),fontWeight: FontWeight.bold),)),
+                  style: TextStyle(color: AppColors.blue,fontWeight: FontWeight.bold),)),
               ] else
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isSendOtpDisabled ? null : fetchOtpApi,
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-                    child:  Text(
-                     localization.translate("Send OTP"),
-                    style: TextStyle(color: Colors.white),),
-                  ),
-                )
+               SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: _isSendOtpDisabled || isLoading ? null : fetchOtpApi,
+    style: ElevatedButton.styleFrom(backgroundColor: AppColors.blue),
+    child: isLoading
+        ? SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
+            ),
+          )
+        : Text(
+            localization.translate("Send OTP"),
+            style: TextStyle(color: Colors.white),
+          ),
+  ),
+)
+
             ],
           ),
         ),

@@ -1,9 +1,17 @@
+
+
+
+
+
+/*
+
 import 'dart:async';
 
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:csc/dashboardscreens/home_screen.dart';
+
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/model/activescheme.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -96,6 +104,145 @@ void initState() {
               
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+*/
+
+
+
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+class ErrorScreen extends StatefulWidget {
+  @override
+  _ErrorScreenState createState() => _ErrorScreenState();
+}
+
+class _ErrorScreenState extends State<ErrorScreen> {
+  late StreamSubscription<List<ConnectivityResult>> _subscription;
+  bool isConnected = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initial check
+    Connectivity().checkConnectivity().then((results) {
+      final result = results.isNotEmpty ? results.first : ConnectivityResult.none;
+      setState(() {
+        isConnected = result != ConnectivityResult.none;
+      });
+    });
+
+    _subscription = Connectivity().onConnectivityChanged.listen((results) {
+      final result = results.isNotEmpty ? results.first : ConnectivityResult.none;
+      setState(() {
+        isConnected = result != ConnectivityResult.none;
+      });
+
+    if (result != ConnectivityResult.none) {
+  // Connected, wait 3 seconds then pop
+  Future.delayed(Duration(seconds: 13), () {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+  });
+}
+
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localization = Provider.of<LocalizationProvider>(context);
+
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop(); // Exit app
+        return false;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Container(
+              height: 140,
+              width: double.infinity,
+              color: isConnected ? Colors.green : Colors.red,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Center(
+                child: Text(
+                  isConnected ? 'Internet Connected' : 'No Internet Connection',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/net.jpg',
+                      width: 200,
+                      height: 200,
+                    ),
+                    SizedBox(height: 24),
+                    Text(
+                      localization.translate('No Internet Connection'),
+                      style: GoogleFonts.poppins(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.blue,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      localization.translate('Please check your internet connection.'),
+                      style: TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                    SizedBox(height: 18),
+                    SizedBox(
+                      height: 33,
+                      width: 260,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Optionally retry logic here
+                        },
+                        child: Text(
+                          'Try Again',
+                          style: GoogleFonts.nunito(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

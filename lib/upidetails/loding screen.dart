@@ -1,6 +1,7 @@
-import 'package:csc/utillity/hbjjkjk.dart';
+import 'package:csc/utillity/bouncing.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});

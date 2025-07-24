@@ -14,6 +14,8 @@ import 'package:csc/dashboardscreens/active_scheme.dart';
 import 'package:csc/editprofile/editmpin.dart';
 import 'package:csc/editprofile/editprofile.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
@@ -47,7 +49,7 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen>   with NetworkMixin {
   File? _image; // Variable to hold the image file
   final ImagePicker _picker = ImagePicker(); // ImagePicker instance
 
@@ -284,7 +286,7 @@ Navigator.pop(context);
       
         child: Scaffold(
           
-         appBar: AppBar(elevation: 0,backgroundColor:  Color.fromRGBO(2, 5, 67, 1),iconTheme: IconThemeData(color: Colors.white),),
+         appBar: AppBar(elevation: 0,backgroundColor:  AppColors.blue,iconTheme: IconThemeData(color: Colors.white),),
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
@@ -292,7 +294,7 @@ Navigator.pop(context);
                 children: [
                    Container(
                     width: double.infinity,
-                    color: Color.fromRGBO(2, 5, 67, 1),
+                    color:AppColors.blue,
                     padding: const EdgeInsets.fromLTRB(16, 0, 0, 10), // Top padding increased
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +340,7 @@ Navigator.pop(context);
                           child: Icon(
                             Icons.camera_alt,
                             size: 16,
-                            color: Color.fromRGBO(2, 5, 62, 1),
+                            color: AppColors.blue,
                           ),
                         ),
                       ),
@@ -506,7 +508,7 @@ Navigator.pop(context);
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: BottomAppBar(
-            color: const Color.fromRGBO(2, 5, 62, 1),
+            color: AppColors.blue,
             shape: const CircularNotchedRectangle(),
             notchMargin: 8.0,
             child: Padding(
@@ -555,7 +557,7 @@ Navigator.pop(context);
     child: ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey[200],
-        foregroundColor: const Color.fromRGBO(2, 5, 62, 1),
+        foregroundColor: AppColors.blue,
         padding: const EdgeInsets.symmetric(vertical: 16),
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
@@ -565,7 +567,7 @@ Navigator.pop(context);
       ),
       icon: Padding(
         padding: const EdgeInsets.only(left: 10),
-        child: Icon(icon, color: const Color.fromRGBO(2, 5, 62, 1), size: 20),
+        child: Icon(icon, color: AppColors.blue, size: 20),
       ),
       label: Text(
         label,

@@ -8,6 +8,8 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +39,7 @@ class PaymentVerificationScreen extends StatefulWidget {
   State<PaymentVerificationScreen> createState() => _PaymentVerificationScreenState();
 }
 
-class _PaymentVerificationScreenState extends State<PaymentVerificationScreen> {
+class _PaymentVerificationScreenState extends State<PaymentVerificationScreen>   with NetworkMixin{
   late int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60 * 60 * 48;
 
  bool isVerifying = false;
@@ -247,7 +249,7 @@ String processTimer(String remaingtimer) {
               
             },
            ),
-            backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
+            backgroundColor:AppColors.blue,
             elevation: 0,
             centerTitle: true,
             title: Text(
@@ -405,7 +407,7 @@ String processTimer(String remaingtimer) {
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(),
                     minimumSize: Size(double.infinity, screenHeight * 0.06),
-                    backgroundColor: const Color.fromRGBO(43, 49, 101, 1),
+                    backgroundColor: AppColors.blue,
                   ),
                   child: Text(
                     localization.translate("okay"),

@@ -2,6 +2,7 @@
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -74,8 +75,8 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromRGBO(2, 5, 62, 1),
-                      Color.fromRGBO(2, 5, 62, 1),
+                    AppColors.blue,
+                    AppColors.blue,
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.centerRight,
@@ -205,7 +206,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: AppColors.blue,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () {
@@ -262,7 +263,7 @@ class _CreateMpin2ScreenState extends State<CreateMpin2Screen> {
              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
 
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
               ),
               child: Row(

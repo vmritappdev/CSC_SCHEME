@@ -5,7 +5,9 @@ import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +38,7 @@ class MobileScreen extends StatefulWidget {
   _MobileScreenState createState() => _MobileScreenState();
 }
 
-class _MobileScreenState extends State<MobileScreen> {
+class _MobileScreenState extends State<MobileScreen>   with NetworkMixin {
   final TextEditingController _controller = TextEditingController();
   bool isLoading = false; // Loader stat
 
@@ -145,7 +147,7 @@ if (!context.mounted) return;
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -249,7 +251,7 @@ Future<void> verifyMobileNumber() async {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor: AppColors.blue,
         title: Text(
          localization.translate('Forgot Mobile Number',), 
         style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05)),
@@ -291,7 +293,7 @@ Future<void> verifyMobileNumber() async {
                 width: double.infinity,
                 child:ElevatedButton(
   style: ButtonStyle(
-    backgroundColor: const WidgetStatePropertyAll(Color.fromRGBO(2, 5, 62, 1)),
+    backgroundColor: const WidgetStatePropertyAll(AppColors.blue),
     shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),

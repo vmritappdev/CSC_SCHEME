@@ -3,6 +3,7 @@
 
 
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,7 +66,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
       return false; // Prevent default back action
     },
         child: Scaffold(
-          backgroundColor: const Color(0xFF02053E),
+          backgroundColor:AppColors.blue,
           body: SafeArea(
             child: Column(
               children: [
@@ -85,7 +86,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02, horizontal: screenWidth * 0.04),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF02053E), Color(0xFF02053E)],
+          colors: [AppColors.blue, AppColors.blue],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -114,7 +115,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
   Widget _buildTermsSection(LocalizationProvider localization, double screenHeight, double screenWidth) {
     final buttonStyle = ElevatedButton.styleFrom(
       foregroundColor: Colors.white,
-      backgroundColor: const Color(0xFF02053E),
+      backgroundColor:AppColors.blue,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
     );
 

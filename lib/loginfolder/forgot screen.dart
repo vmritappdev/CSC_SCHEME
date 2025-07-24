@@ -5,6 +5,8 @@ import 'package:csc/loginfolder/mpinscreen.dart';
 
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +37,7 @@ class ForgotScreen extends StatefulWidget {
   State<ForgotScreen> createState() => _ForgotScreenState();
 }
 
-class _ForgotScreenState extends State<ForgotScreen> {
+class _ForgotScreenState extends State<ForgotScreen>    with NetworkMixin {
   final TextEditingController _controllerMobileNumber = TextEditingController();
   final TextEditingController _controllerOtp = TextEditingController();
 
@@ -47,6 +49,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
   DateTime? otpReceivedTime; // ✅ OTP timestamp
 
    String phoneNumber = '';
+
+bool _isLoading = false; // declare this in your State
+
+
 
    bool showNewNumberBox = true; // initial state
 
@@ -95,17 +101,18 @@ class _ForgotScreenState extends State<ForgotScreen> {
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  localization.translate("No Records On This Number"),
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
-                ),
+                child:Text(
+  message,
+  textAlign: TextAlign.center,
+  style: GoogleFonts.lato(fontSize: 15, color: Colors.red),
+),
+
               ),
               const SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
                 ),
                 child: TextButton(
                   onPressed: () {
@@ -130,53 +137,58 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
   bool isVerifyButtonDisabled = false;
 
-  Future<void> verifyMobileNumber() async {
-    if (isVerifyButtonDisabled) return;
+ Future<void> verifyMobileNumber() async {
+  if (isVerifyButtonDisabled) return;
 
+  setState(() {
+    isVerifyButtonDisabled = true;
+    _isLoading = true; // show loader
+    showNewNumberBox = false;
+  });
+
+  String mobileNumber = _controllerMobileNumber.text.trim();
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
+  if (mobileNumber.isEmpty || mobileNumber.length != 10) {
+    _showErrorPopup(localization.translate("Enter a valid 10-digit mobile number"));
     setState(() {
-      isVerifyButtonDisabled = true;
-      showNewNumberBox = false; // hide the box
+      isVerifyButtonDisabled = false;
+      _isLoading = false; // hide loader
     });
-
-    String mobileNumber = _controllerMobileNumber.text.trim();
-    final localization = Provider.of<LocalizationProvider>(context, listen: false);
-
-    if (mobileNumber.isEmpty || mobileNumber.length != 10) {
-      _showErrorPopup(localization.translate("Enter a valid 10-digit mobile number"));
-      setState(() {
-        isVerifyButtonDisabled = false;
-      });
-      return;
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/mobile_verification.php'),
-        body: {'mobile_no': mobileNumber},
-      );
-
-      var responseData = jsonDecode(response.body);
-      print("✅ API Response: $responseData");
-
-      if (responseData['login'] == 'SUCCESS') {
-        setState(() {
-          _isOtpVisible = true;
-        });
-        fetchOtpApi();
-      } else {
-        _showErrorPopup(localization.translate("This mobile number is not found."));
-        setState(() {
-          isVerifyButtonDisabled = false;
-        });
-      }
-    } catch (e) {
-      print("❌ API Exception: $e");
-      _showErrorPopup("Error: $e");
-      setState(() {
-        isVerifyButtonDisabled = false;
-      });
-    }
+    return;
   }
+
+  try {
+    final response = await http.post(
+      Uri.parse('$baseUrl/mobile_verification.php'),
+      body: {'mobile_no': mobileNumber},
+    );
+
+    var responseData = jsonDecode(response.body);
+    print("✅ API Response: $responseData");
+
+    if (responseData['login'] == 'SUCCESS') {
+      setState(() {
+        _isOtpVisible = true;
+        _isLoading = false; // hide loader
+      });
+      fetchOtpApi();
+    } else {
+      _showErrorPopup(localization.translate("This mobile number is not found."));
+      setState(() {
+        isVerifyButtonDisabled = false;
+        _isLoading = false;
+      });
+    }
+  } catch (e) {
+    print("❌ API Exception: $e");
+    _showErrorPopup("Error: $e");
+    setState(() {
+      isVerifyButtonDisabled = false;
+      _isLoading = false;
+    });
+  }
+}
 
   Future<void> fetchOtpApi() async {
     String mobileNumber = _controllerMobileNumber.text;
@@ -334,18 +346,29 @@ class _ForgotScreenState extends State<ForgotScreen> {
 
 
 
-            SizedBox(
-    width: double.infinity,
-   child: ElevatedButton(
+           SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
     style: ElevatedButton.styleFrom(
-    backgroundColor: const Color.fromRGBO(2, 5, 62, 1)),
-    onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
-    child: Text(
-    localization.translate("Verify Mobile Number"),
-      style: const TextStyle(color: Colors.white),
+      backgroundColor: AppColors.blue,
     ),
+    onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
+    child: _isLoading
+        ? SizedBox(
+            height: 20,
+            width: 20,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2.5,
+            ),
+          )
+        : Text(
+            localization.translate("Verify Mobile Number"),
+            style: TextStyle(color: Colors.white),
+          ),
   ),
 ),
+
 
 const SizedBox(height: 20),
 
@@ -361,10 +384,10 @@ const SizedBox(height: 20),
       decoration: BoxDecoration(
         color: const Color(0xFFE3F2FD),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color.fromARGB(255, 1, 16, 42), width: 1.5),
+        border: Border.all(color:AppColors.blue, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: const Color.fromARGB(255, 2, 16, 41).withOpacity(0.2),
+            color: AppColors.blue.withOpacity(0.2),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -378,7 +401,7 @@ const SizedBox(height: 20),
           Text(
             localization.translate('New Mobile Number Register Here'),
             style: const TextStyle(
-              color: Color.fromARGB(255, 2, 29, 51),
+              color: AppColors.blue,
               fontWeight: FontWeight.bold,
               fontSize: 11,
             ),
@@ -436,7 +459,7 @@ TextFormField(
                     if (_isResendAvailable)
                       TextButton(
                         onPressed: fetchOtpApi,
-                        child: const Text("Resend", style: TextStyle(color: Color.fromRGBO(2, 5, 62, 1))),
+                        child: const Text("Resend", style: TextStyle(color: AppColors.blue)),
                       ),
                   ],
                 ),

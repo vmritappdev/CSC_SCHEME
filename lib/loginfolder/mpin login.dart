@@ -8,8 +8,9 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
-import 'package:csc/utillity/sample.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -450,7 +451,7 @@ localization.translate('CSC App'),
     style: GoogleFonts.poppins(
       fontSize: screenWidth * 0.04,
       fontWeight: FontWeight.bold,
-      color: const Color(0xFF02053E),
+      color:AppColors.blue,
     ),
     ),
     
@@ -489,7 +490,7 @@ localization.translate('CSC App'),
               _pin.length > index ? '●' : '',
               style: GoogleFonts.poppins(
                 fontSize: screenWidth * 0.08,
-                color: const Color(0xFF02053E),
+                color:AppColors.blue,
               ),
             ),
           );
@@ -572,7 +573,7 @@ localization.translate('CSC App'),
           child: Icon(
             Icons.fingerprint,
             size: screenWidth * 0.14,
-            color: const Color(0xFF02053E),
+            color: AppColors.blue,
           ),
         ),
       ),
@@ -617,7 +618,7 @@ localization.translate('CSC App'),
                     style: GoogleFonts.poppins(
                       fontSize: screenWidth * 0.07,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF02053E),
+                      color:AppColors.blue,
                     ),
                   ),
                 ),

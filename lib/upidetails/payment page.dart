@@ -11,7 +11,9 @@ import 'package:csc/model/activescheme.dart';
 import 'package:csc/model/installment.dart';
 import 'package:csc/model/loginresponse.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
-import 'package:csc/utillity/sample.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,7 +52,7 @@ class PaymentDetailsScreen extends StatefulWidget {
   _PaymentDetailsScreenState createState() => _PaymentDetailsScreenState();
 }
 
-class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
+class _PaymentDetailsScreenState extends State<PaymentDetailsScreen>  with NetworkMixin{
 
  
 
@@ -449,7 +451,7 @@ double screenWidth = MediaQuery.of(context).size.width;
           );
         },
        ),
-        backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+        backgroundColor: AppColors.blue,
         title: Text(
           localization.translate("Payment Details"),
           style: const TextStyle(color: Colors.white),
@@ -488,7 +490,7 @@ double screenWidth = MediaQuery.of(context).size.width;
     style: TextStyle(
       fontSize: screenWidth * 0.035,
       fontWeight: FontWeight.bold,
-      color:  const Color.fromRGBO(2, 5, 62, 1),
+      color:  AppColors.blue,
      // fontStyle: FontStyle.italic
     ),
   ),
@@ -606,7 +608,7 @@ if (_showImageError)
           },
                         style: ElevatedButton.styleFrom(
                           shape: const RoundedRectangleBorder(),
-                          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+                          backgroundColor: AppColors.blue,
                         ),
 
       

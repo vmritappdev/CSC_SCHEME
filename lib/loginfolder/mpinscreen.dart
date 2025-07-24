@@ -6,6 +6,7 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 
 
@@ -201,7 +202,7 @@ buildPinput(
                 child: 
                   ElevatedButton(
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+      backgroundColor: AppColors.blue,
       padding: EdgeInsets.symmetric(
         vertical: MediaQuery.of(context).size.height * 0.015,
       ),
@@ -258,7 +259,7 @@ Widget buildPinput({
       defaultPinTheme: defaultPinTheme,
       focusedPinTheme: defaultPinTheme.copyWith(
         decoration: defaultPinTheme.decoration!.copyWith(
-          border: Border.all(color: const Color.fromRGBO(43, 49, 101, 1), width: 2),
+          border: Border.all(color: AppColors.blue, width: 2),
         ),
       ),
       onChanged: onChanged,
@@ -440,7 +441,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
                 Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
-                    color: Color.fromRGBO(2, 5, 62, 1),
+                    color: AppColors.blue,
                   ),
                   child: TextButton(
                     onPressed: () {
@@ -525,7 +526,7 @@ void _showErrorPopup( String message) {
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

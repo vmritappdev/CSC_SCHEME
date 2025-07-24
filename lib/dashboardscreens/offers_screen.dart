@@ -4,6 +4,7 @@ import 'package:csc/dashboardscreens/active_scheme.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/model/offer_model.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -135,6 +136,7 @@ class GoldShopOffersScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
+          centerTitle: true,
           leading: const BackButton(color: Colors.white),
           title: Text(
             localization.translate("Gold Shop Offers"),
@@ -144,7 +146,7 @@ class GoldShopOffersScreen extends StatelessWidget {
               fontSize: fontSize,
             ),
           ),
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: AppColors.blue,
         ),
         body: SafeArea(
           child: Padding(
@@ -250,7 +252,7 @@ class GoldShopOffersScreen extends StatelessWidget {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
-          color: const Color.fromRGBO(2, 5, 62, 1),
+          color: AppColors.blue,
           shape: const CircularNotchedRectangle(),
           notchMargin: 8.0,
           child: Padding(

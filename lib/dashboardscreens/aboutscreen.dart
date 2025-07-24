@@ -3,6 +3,7 @@ import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/dashboardscreens/saving%20account.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
       appBar: AppBar(
         
         elevation: 0.5,
-        backgroundColor: const Color.fromRGBO(2, 5, 67, 1),
+        backgroundColor:AppColors.blue,
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
@@ -149,7 +150,7 @@ floatingActionButton: FloatingActionButton.extended(
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
-        color: const Color.fromRGBO(2, 5, 62, 1),
+        color:AppColors.blue,
         shape: const CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: Padding(

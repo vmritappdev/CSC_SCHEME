@@ -7,6 +7,8 @@ import 'package:csc/chaingedscreens.dart/scner.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/constantcolor.dart';
+import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,7 +41,7 @@ class InstallmentScreen extends StatefulWidget {
   _InstallmentScreenState createState() => _InstallmentScreenState();
 }
 
-class _InstallmentScreenState extends State<InstallmentScreen> {
+class _InstallmentScreenState extends State<InstallmentScreen>   with NetworkMixin{
   int selectedInstallment = -1; // First unpaid installment index
   List<Map<String, dynamic>> installments = [];
   bool isLoading = true; // Loader flag
@@ -224,7 +226,7 @@ Color getStatusColor(String? status) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(2, 5, 62, 1),
+          backgroundColor: AppColors.blue,
           title: Text(localization.translate('Installment Schedule'),
           style: GoogleFonts.lato(color: Colors.white),),
           leading: const BackButton(color: Colors.white,),
@@ -265,7 +267,7 @@ Color getStatusColor(String? status) {
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(
                     color: index == selectedInstallment && !isPaid
-              ? const Color.fromARGB(255, 5, 1, 37)
+              ? AppColors.blue
               : Colors.transparent,
                     width: 2,
                   ),
@@ -408,7 +410,7 @@ Color getStatusColor(String? status) {
                     selectedOption = val!;
                   });
                 },
-                activeColor: const Color(0xFF2B004B),
+                activeColor: AppColors.blue,
               ),
                Text(
               localization.translate('Pay Installment'),
@@ -520,7 +522,7 @@ Color getStatusColor(String? status) {
                                          labelText: localization.translate('Enter Amount'),
                                          border: const OutlineInputBorder(),
                                          focusedBorder: const OutlineInputBorder(
-                                           borderSide: BorderSide(color: Color(0xFF2B004B), width: 2),
+                                           borderSide: BorderSide(color: AppColors.blue, width: 2),
                                          ),
                                          errorText: _amountError, // 👈 Shows error here
                                            ),
@@ -669,7 +671,7 @@ Color getStatusColor(String? status) {
                     child:ElevatedButton(
                     style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  backgroundColor: const Color.fromARGB(255, 9, 1, 45),
+                  backgroundColor: AppColors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
             
@@ -857,7 +859,7 @@ Color getStatusColor(String? status) {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {
@@ -913,7 +915,7 @@ void _showInvalidOTPDialog1() {
             Container(
               width: double.infinity,
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(2, 5, 62, 1),
+                color: AppColors.blue,
               ),
               child: TextButton(
                 onPressed: () {

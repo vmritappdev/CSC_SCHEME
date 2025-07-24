@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/registationfolder/langvages%20page.dart';
+import 'package:csc/utillity/constantcolor.dart';
 
 
 
@@ -60,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen>   {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color.fromRGBO(2, 5, 62, 1),
+        color: AppColors.blue,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
