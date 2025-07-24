@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/utillity/sample.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -84,7 +85,7 @@ class EditMPINScreen extends StatefulWidget {
 
   Future<void> fetchOtpApi() async {
     if (!await checkInternet()) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ErrorScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  ErrorScreen()));
       return;
     }
 

@@ -6,6 +6,7 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/creatempin1.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -138,7 +139,7 @@ Future<bool> checkInternet() async {
     // ✅ Validation
     if (mobileNumber.isEmpty || mobileNumber.length != 10) {
     //  _showErrorPopup(localization.translate("Enter a valid 10-digit mobile number"));
-    const ErrorScreen();
+     ErrorScreen();
       return;
     }
 

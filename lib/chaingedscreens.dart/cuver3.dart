@@ -6,6 +6,7 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/sample.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -232,7 +233,7 @@ Future<void> submitForm() async {
     //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
      Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
+    MaterialPageRoute(builder: (context) =>  ErrorScreen()), // ✅
   );
   
       return;

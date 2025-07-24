@@ -1,3 +1,4 @@
+import 'package:csc/utillity/hbjjkjk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -36,11 +37,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body:Center(
-  child: SpinKitFadingFour(
-    color: Color.fromRGBO(2, 5, 67, 1,),
-    size: 40.0,
+  child: BouncingDotsLoader(
+    color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
   ),
-),
+)
+
     );
   }
 }
+
+
+
+/*
+Center(
+  child: SpinKitFadingFour(
+    color: Color.fromRGBO(4, 15, 228, 1),
+    size: 40.0,
+  ),
+),
+*/

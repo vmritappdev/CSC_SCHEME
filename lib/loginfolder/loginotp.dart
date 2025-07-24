@@ -9,6 +9,7 @@ import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
 
 import 'package:csc/utillity/constant.dart';
+import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class LoginOtpScreen extends StatefulWidget {
   _LoginOtpScreenState createState() => _LoginOtpScreenState();
 }
 
-class _LoginOtpScreenState extends State<LoginOtpScreen> {
+class _LoginOtpScreenState extends State<LoginOtpScreen>  with NetworkMixin  {
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
 

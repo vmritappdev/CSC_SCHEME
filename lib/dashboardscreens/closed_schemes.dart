@@ -6,6 +6,7 @@ import 'package:csc/chaingedscreens.dart/saledetails%20page.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -190,7 +191,7 @@ Future<void> fetchClosedSchemeData() async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    const ErrorScreen();
+     ErrorScreen();
     return;
   }
 

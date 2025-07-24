@@ -14,6 +14,7 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/dashboardscreens/saving%20account.dart';
 import 'package:csc/model/SchemeResponseNew.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/sample.dart';
 
 
 
@@ -107,7 +108,7 @@ Future<void> checkSchemeDetails(BuildContext currentContext) async {
     if (context.mounted) {
       Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+      MaterialPageRoute(builder: (_) =>  ErrorScreen()),
         );
       }
       return null;

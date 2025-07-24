@@ -13,6 +13,7 @@ import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/dashboardscreens/termcondition.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/sample.dart';
 
 
 
@@ -744,7 +745,7 @@ Future<void> submitForm() async {
     if (!hasInternet) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        MaterialPageRoute(builder: (context) =>  ErrorScreen()),
       );
       return;
     }

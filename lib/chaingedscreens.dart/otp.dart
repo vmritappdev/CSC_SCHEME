@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:csc/utillity/sample.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +48,7 @@ class _OtpScreen1State extends State<OtpScreen1> {
     if (!await checkInternet()) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        MaterialPageRoute(builder: (context) =>  ErrorScreen()),
       );
       return;
     }

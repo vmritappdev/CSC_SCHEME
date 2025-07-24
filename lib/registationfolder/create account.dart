@@ -17,6 +17,8 @@ import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/netmix.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +55,7 @@ class CurvedImageScreen3 extends StatefulWidget {
   State<CurvedImageScreen3> createState() => _CurvedImageScreen3State();
 }
 
-class _CurvedImageScreen3State extends State<CurvedImageScreen3> {
+class _CurvedImageScreen3State extends State<CurvedImageScreen3>  with NetworkMixin {
 
 
 
@@ -274,7 +276,7 @@ Future<void> submitForm() async {
     //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
      Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
+    MaterialPageRoute(builder: (context) =>  ErrorScreen()), // ✅
   );
   
       return;

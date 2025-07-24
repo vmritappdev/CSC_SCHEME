@@ -8,6 +8,8 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/loginfolder/forgot%20screen.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/netmix.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +40,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>   with NetworkMixin {
   final LocalAuthentication auth = LocalAuthentication();
   String _pin = '';
   bool _isSuccess = false;
@@ -59,7 +61,7 @@ final String correctMpin = "1234"; // Example correct MPIN
 if (!hasInternet) {
   if (context.mounted) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ErrorScreen()),
+      MaterialPageRoute(builder: (_) =>  ErrorScreen()),
     );
   }
   return null;
@@ -216,7 +218,7 @@ Future<void> _authenticateUser() async {
   if (!hasInternet) {
     if (context.mounted) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ErrorScreen()),
+        MaterialPageRoute(builder: (_) =>  ErrorScreen()),
       );
     }
     return;
@@ -287,7 +289,7 @@ Future<bool> checkInternet() async {
     bool hasInternet = await checkInternet();
     if (!hasInternet) {
     //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
-    const ErrorScreen();
+     ErrorScreen();
       return false;
     }
     String phpUrl = "$baseUrl/mpin_verify.php";
@@ -323,7 +325,7 @@ Future<bool> checkInternet() async {
   if (!hasInternet) {
     if (context.mounted) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const ErrorScreen()),
+        MaterialPageRoute(builder: (_) =>  ErrorScreen()),
       );
     }
     return;

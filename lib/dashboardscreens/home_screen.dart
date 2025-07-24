@@ -32,6 +32,9 @@ import 'package:csc/model/activescheme.dart';
 import 'package:csc/model/loginresponse.dart';
 import 'package:csc/navigation_drwer.dart';
 import 'package:csc/upidetails/loding%20screen.dart';
+import 'package:csc/utillity/netmix.dart';
+import 'package:csc/utillity/networkhandeler.dart';
+
 
 
 
@@ -71,7 +74,7 @@ const HomeScreen({super.key, required this.activescheme});
   State<HomeScreen> createState() => _HomeScreenState(); 
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>   with NetworkMixin {
 
 
 final RefreshController _refreshController = RefreshController();
@@ -191,11 +194,11 @@ Future<void> _fetchNotificationCount() async {
 
     final List<String> images = [
     'assets/images/e7.png',   
-    'assets/images/e4.png',
-    'assets/images/e2.png',
+  //  'assets/images/e4.png',
+    'assets/images/jewe2.jpg',
     'assets/images/Banner.png',
-    'assets/images/e2.png',
-    'assets/images/ssss.png',
+   // 'assets/images/e2.png',
+    //'assets/images/ssss.png',
   ];
 
    int activeIndex = 0;
@@ -448,6 +451,7 @@ Future<void> closePopupAPI() async {
     fetchRates();
     _fetchVerificationResponse();
     _fetchNotificationCount();
+    NetworkHandler().startMonitoring(context);
     
   _startPolling();
   
@@ -1459,7 +1463,7 @@ void showGoldBottomSheet(BuildContext context) async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    const ErrorScreen();
+     ErrorScreen();
     isBottomSheetOpen = false;
     return;
   }

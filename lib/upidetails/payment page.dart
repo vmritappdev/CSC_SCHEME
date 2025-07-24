@@ -11,6 +11,7 @@ import 'package:csc/model/activescheme.dart';
 import 'package:csc/model/installment.dart';
 import 'package:csc/model/loginresponse.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -317,7 +318,7 @@ Future<void> _submitDetails() async {
 
      Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
+    MaterialPageRoute(builder: (context) =>  ErrorScreen()), // ✅
   );
       return;
     }

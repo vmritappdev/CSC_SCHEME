@@ -15,6 +15,8 @@ import 'package:csc/dashboardscreens/active_scheme.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 
 import 'package:flutter/material.dart';
@@ -48,7 +50,7 @@ class Transaction extends StatefulWidget {
   State<Transaction> createState() => _TransactionState();
 }
 
-class _TransactionState extends State<Transaction> {
+class _TransactionState extends State<Transaction>   with NetworkMixin {
   final double budget = 10000; // Example total budget
   final double spent = 4500; // Example spent amount
 
@@ -110,7 +112,7 @@ Future<void> saveMobileNumber(String mobileNumber) async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    const ErrorScreen(); // This should be a Navigator.push or similar
+   ErrorScreen(); // This should be a Navigator.push or similar
     return;
   }
 
@@ -146,7 +148,7 @@ Future<void> saveMobileNumber(String mobileNumber) async {
 Future<void> _fetchPayDetails(String id) async {
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    const ErrorScreen(); // Navigator.push(context, MaterialPageRoute(...)) ideally
+     ErrorScreen(); // Navigator.push(context, MaterialPageRoute(...)) ideally
     return;
   }
 

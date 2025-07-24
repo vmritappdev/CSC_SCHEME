@@ -1,5 +1,7 @@
 import 'package:csc/dashboardscreens/terms_condition.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +17,7 @@ class LanguageSelectionScreen2 extends StatefulWidget {
       _LanguageSelectionScreen2State();
 }
 
-class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2> {
+class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   with NetworkMixin  {
   final List<Map<String, dynamic>> languages = [
 
      {

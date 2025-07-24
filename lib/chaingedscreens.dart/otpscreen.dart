@@ -9,6 +9,7 @@ import 'package:csc/utillity/check internet.dart';
 
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/registationfolder/create account.dart';
+import 'package:csc/utillity/sample.dart';
 import 'package:flutter/services.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -184,7 +185,7 @@ class _OtpScreenState extends State<OtpScreen> {
     if (!await checkInternet()) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        MaterialPageRoute(builder: (context) =>  ErrorScreen()),
       );
       return;
     }

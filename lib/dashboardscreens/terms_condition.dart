@@ -60,8 +60,8 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
 
     return SafeArea(
       child: WillPopScope(
-        onWillPop: () async {
-
+    onWillPop: () async {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageSelectionScreen2()));
       return false; // Prevent default back action
     },
         child: Scaffold(

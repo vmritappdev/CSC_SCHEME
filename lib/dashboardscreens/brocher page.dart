@@ -29,7 +29,7 @@ class _BrochureScreenState extends State<BrochureScreen> {
   if (!hasInternet) {
     if (context.mounted) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => NoInternetScreen()),
+        MaterialPageRoute(builder: (context) => ErrorScreen()),
       );
     }
     return;

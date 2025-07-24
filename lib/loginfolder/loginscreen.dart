@@ -12,6 +12,8 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/registationfolder/create%20account.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,7 +32,7 @@ class LoginScreen1 extends StatefulWidget {
   _LoginScreen1State createState() => _LoginScreen1State();
 }
 
-class _LoginScreen1State extends State<LoginScreen1> {
+class _LoginScreen1State extends State<LoginScreen1>   with NetworkMixin {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController mpinController = TextEditingController();
   String errorMessage = '';
@@ -38,8 +40,9 @@ bool isLoading = false;  // Loading state
    
 String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
 bool _rememberMe = false;
+//final FocusNode phoneFocusNode = FocusNode();
 
-
+late FocusNode phoneFocusNode;
 
 Future<void> _checkSavedPhoneNumber() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -94,6 +97,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   void initState() {
     super.initState();
     loadPhoneNumber();
+
+     phoneFocusNode = FocusNode();
     
  WidgetsBinding.instance.addPostFrameCallback((_) {
     _checkSavedPhoneNumber();
@@ -102,6 +107,11 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     
     
   }
+@override
+void dispose() {
+  phoneFocusNode.dispose();
+  super.dispose();
+}
 
  
 
@@ -189,7 +199,7 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
   if (!hasInternet) {
     Navigator.push(
     context,
-      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
     );
     return {'success': false, 'reason': 'NO_INTERNET'};
   }
@@ -229,7 +239,7 @@ void _verifyMpin() async {
   if (!hasInternet) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
     );
     return;
   }
@@ -265,11 +275,12 @@ void _verifyMpin() async {
   }
   
 
- 
+ showLoaderDialog(context);
   
 
   // 👉 Submit MPIN (no loader)
   Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
+  Navigator.pop(context); 
   bool isValid = result['success'];
   String reason = result['reason'];
 
@@ -288,6 +299,8 @@ void _verifyMpin() async {
       );
     }
   } else {
+  //  Navigator.pop(context);
+
     // 👉 Show error if login failed
     _showErrorPopup(reason);
   }
@@ -297,7 +310,7 @@ void _verifyMpin() async {
 
 
 // Declare a FocusNode for the mobile number field
-FocusNode phoneFocusNode = FocusNode();
+
 
 void _showErrorPopup(String reason) {
   final localization = Provider.of<LocalizationProvider>(context, listen: false);
@@ -351,8 +364,15 @@ void _showErrorPopup(String reason) {
                   Navigator.pop(context);
                   phoneController.clear();
                   mpinController.clear();
+
+                  Future.delayed(Duration(milliseconds: 100), () {
+    FocusScope.of(context).requestFocus(phoneFocusNode);
+  });
                   setState(() {});
-                  FocusScope.of(context).requestFocus(phoneFocusNode);
+                 // FocusScope.of(context).requestFocus(phoneFocusNode);
+
+
+                 
                 },
                 child: Text(
                   localization.translate("OK"),
@@ -534,7 +554,7 @@ localization.translate('CSC App'),
 
                     SizedBox(height: screenHeight * 0.015),
         
-                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
+                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10,focusNode: phoneFocusNode),
                   SizedBox(height: screenHeight * 0.010),
 
 
@@ -691,11 +711,13 @@ Widget _buildTextField(
   double fieldHeight, {
   bool obscureText = false,
   int? maxLength,
-  bool isMPINField = false, // ✅ Add this flag
+  bool isMPINField = false,
+  FocusNode? focusNode, // ✅ Add this
 }) {
   return SizedBox(
     height: fieldHeight,
     child: TextField(
+      focusNode: focusNode, // ✅ Apply here
       inputFormatters: [
         FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
       ],
@@ -705,40 +727,41 @@ Widget _buildTextField(
           ? TextInputType.phone
           : TextInputType.number,
       maxLength: maxLength,
-    decoration: InputDecoration(
- // filled: true,
-  //fillColor: Colors.grey.shade100, // light background color
-  prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47),size: 18,),
-  suffixIcon: isMPINField
-      ? IconButton(
-          icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility,size: 18,),
-          onPressed: () {
-            setState(() {
-              _isObscured = !_isObscured;
-            });
-          },
-        )
-      : null,
-  labelText: label,labelStyle: GoogleFonts.nunito(fontSize: 14,color: const Color.fromARGB(255, 139, 139, 139)),
-  counterText: "",
-  border: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(5),
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.grey), // light grey border
-    borderRadius: BorderRadius.circular(5),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(color: const Color.fromARGB(255, 3, 21, 47), width: 2),
-    borderRadius: BorderRadius.circular(5),
-  ),
-  floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 3, 21, 47)),
-),
-
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 3, 21, 47), size: 18),
+        suffixIcon: isMPINField
+            ? IconButton(
+                icon: Icon(
+                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                  size: 18,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isObscured = !_isObscured;
+                  });
+                },
+              )
+            : null,
+        labelText: label,
+        labelStyle: GoogleFonts.nunito(fontSize: 14, color: const Color.fromARGB(255, 139, 139, 139)),
+        counterText: "",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: const Color.fromARGB(255, 3, 21, 47), width: 2),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        floatingLabelStyle: TextStyle(color: const Color.fromARGB(255, 3, 21, 47)),
+        
+      ),
     ),
   );
 }
-
 
   Widget _buildButton(String text, Color bgColor, Color textColor, double buttonHeight, VoidCallback onPressed) {
     return SizedBox(
@@ -765,11 +788,11 @@ void showLoaderDialog(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return Center(
-  child: SpinKitFadingFour(
-    color: Color.fromRGBO(2, 5, 67, 1,),
-    size: 40.0,
-  ),
-);
+        child: SpinKitFadingFour(
+          color: Color.fromRGBO(2, 5, 67, 1),
+          size: 40.0,
+        ),
+      );
     },
   );
 }

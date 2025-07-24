@@ -5,6 +5,7 @@ import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -206,7 +207,7 @@ Future<void> verifyMobileNumber() async {
   //  _showInvalidOTPDialog("❌ Network connection not available. Please check your internet.");
        Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => const ErrorScreen()), // ✅
+    MaterialPageRoute(builder: (context) =>  ErrorScreen()), // ✅
   );
     return;
   }

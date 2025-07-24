@@ -1,180 +1,100 @@
-import 'package:csc/localization/localizationpro.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/dashboardscreens/home_screen.dart';
+import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/model/activescheme.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class ErrorScreen extends StatefulWidget {
-  const ErrorScreen({super.key});
-
   @override
-  State<ErrorScreen> createState() => _ErrorScreenState();
+  _ErrorScreenState createState() => _ErrorScreenState();
 }
 
 class _ErrorScreenState extends State<ErrorScreen> {
-  bool _isLoading = false;
+  late StreamSubscription<List<ConnectivityResult>> _subscription;
 
-  Future<void> _retryConnection() async {
-    setState(() {
-      _isLoading = true;
-    });
+  @override
+ @override
+void initState() {
+  super.initState();
 
-    await Future.delayed(const Duration(seconds: 1)); // simulate loading
-    final connectivityResult = await Connectivity().checkConnectivity();
+  _subscription = Connectivity().onConnectivityChanged.listen((results) {
+    final result = results.isNotEmpty ? results.first : ConnectivityResult.none;
 
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
-      Navigator.pop(context); // ✅ Internet available — go back
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            Provider.of<LocalizationProvider>(context, listen: false)
-                .translate('No internet connection.'),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+    if (result != ConnectivityResult.none) {
+      // Just go back to previous screen
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context); // This will return to the previous screen
+      }
     }
+  });
+}
+
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final localization = Provider.of<LocalizationProvider>(context);
+     final localization = Provider.of<LocalizationProvider>(context);
     return WillPopScope(
       onWillPop: () async {
-    bool shouldExit = await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                localization.translate('CSC App'),
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                localization.translate('Are you sure do you want to exit?'),
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(
-                      localization.translate('CANCEL'),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text(
-                      localization.translate('EXIT'),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    return shouldExit; 
-    // true అంటే app close అవుతుంది 
-    // false అంటే popup మాత్రమే close అవుతుంది, app run అవుతుంది
-  },
+       SystemNavigator.pop(); // 👉 యాప్ close చేస్తుంది
+      return false;
+      },
+      
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: _isLoading ? null : _retryConnection, // ✅ Same logic as retry button
-          ),
-        ),
+       //  backgroundColor: const Color.fromARGB(255, 239, 236, 236),
+         
         body: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/net.jpg',
-                  width: 200,
-                  height: 200,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  localization.translate('Something went wrong!'),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  localization.translate('Please try again later.'),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _isLoading
-                    ? const CircularProgressIndicator()
-                    : SizedBox(
-                        width: 120,
-                        height: 44,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromRGBO(2, 6, 67, 1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+          
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Image.asset(
+                            'assets/images/net.jpg',
+                            width: 200,
+                            height: 200,
                           ),
-                          onPressed: _retryConnection,
-                          child: Text(
-                            localization.translate('Retry'),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
+                ),
+                      //  const SizedBox(height: 24),
+                        Text(
+                          localization.translate('No Internet Connection'),
+                          style: GoogleFonts.poppins( fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(2, 5, 67, 1),)
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          localization.translate('Please check your internet connection.'),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
                           ),
                         ),
-                      ),
-              ],
-            ),
+
+
+                          const SizedBox(height: 18),
+
+
+                        SizedBox(
+                          height: 33,
+                          width: 260,
+                          child: ElevatedButton(
+                            onPressed: (){}, 
+                          child: Text('Try Again',style: GoogleFonts.nunito(color: Colors.white,fontSize: 18,fontWeight: FontWeight.bold),)),
+                        )
+              
+            ],
           ),
         ),
       ),

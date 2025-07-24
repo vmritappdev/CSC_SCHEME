@@ -10,6 +10,8 @@ import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
 import 'package:csc/upidetails/rejected%20screen.dart';
 import 'package:csc/upidetails/payment%20verify.dart';
+import 'package:csc/utillity/netmix.dart';
+import 'package:csc/utillity/sample.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,7 +41,7 @@ class SavingsAccountScreen extends StatefulWidget {
   _SavingsAccountScreenState createState() => _SavingsAccountScreenState();
 }
 
-class _SavingsAccountScreenState extends State<SavingsAccountScreen> {
+class _SavingsAccountScreenState extends State<SavingsAccountScreen>  with NetworkMixin  {
   bool isGoldSchemeComplete = false;
   bool isTransactionComplete = false;
   bool isPaymentComplete = false;

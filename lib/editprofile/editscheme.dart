@@ -6,6 +6,7 @@ import 'package:csc/dashboardscreens/user_profile.dart';
 import 'package:csc/utillity/constant.dart';
 
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/sample.dart';
 
 
 
@@ -143,7 +144,7 @@ Future<void> updateSchemeDetails() async {
 
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    const ErrorScreen();
+     ErrorScreen();
     return;
   }
 

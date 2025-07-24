@@ -6,6 +6,8 @@ import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/model/activescheme.dart';
+import 'package:csc/utillity/netmix.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +38,7 @@ class CreateMpinScreen5 extends StatefulWidget {
   State<CreateMpinScreen5> createState() => _CreateMpinScreen5State();
 }
 
-class _CreateMpinScreen5State extends State<CreateMpinScreen5> {
+class _CreateMpinScreen5State extends State<CreateMpinScreen5>    with NetworkMixin{
   final defaultPinTheme = PinTheme(
     width: 65,
     height: 50,
@@ -142,7 +144,7 @@ void dispose() {
              // MPIN field
 buildPinput(
   controller: _mpinController,
-  obscureText: true,
+  obscureText: false,
   onChanged: (value) {
     print('mpin changed: "$value"');
     setState(() {
@@ -153,7 +155,7 @@ buildPinput(
 ),
 // Confirm MPIN field
 
-              SizedBox(height: screenHeight * 0.07),
+              SizedBox(height: screenHeight * 0.05),
              Padding(
   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1), // Dynamic Padding
   child: Align(
@@ -171,7 +173,7 @@ buildPinput(
               SizedBox(height: screenHeight * 0.02),
 buildPinput(
   controller: _confirmMpinController,
-  obscureText: false,
+  obscureText: true,
   onChanged: (value) {
     print('confirmMpin changed: "$value"');
     setState(() {
@@ -333,7 +335,7 @@ Future<void> _submitForm(LocalizationProvider localization) async {
   if (!hasInternet) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ErrorScreen()),
+      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
     );
     return false;
   }
