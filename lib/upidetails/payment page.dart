@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -459,7 +460,8 @@ double screenWidth = MediaQuery.of(context).size.width;
         centerTitle: true,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 5, 62, 1),))
+          ? const Center(child: BouncingDotsLoader(color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,))
           : SingleChildScrollView(
               child: Padding(
                padding: EdgeInsets.symmetric(
@@ -586,6 +588,8 @@ if (_showImageError)
                  SizedBox(height: screenHeight * 0.03),
                     
                      SizedBox(height: screenHeight * 0.03),
+
+                     
                     SizedBox(
                        width: double.infinity,
                       child: ElevatedButton(

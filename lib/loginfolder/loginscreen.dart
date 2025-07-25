@@ -561,7 +561,7 @@ localization.translate('CSC App'),
                  
 
                   SizedBox(height: screenHeight * 0.015),
-                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,focusNode: mpinFocusNode),
+                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.pin, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,focusNode: mpinFocusNode),
 
                    SizedBox(height: screenHeight * 0.020),
         
@@ -637,7 +637,7 @@ SizedBox(width: 8,),
         style: TextStyle(color: Colors.grey),
       ),
       TextSpan(
-        text: ' Or ', 
+        text: localization.translate(' Or '), 
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       TextSpan(

@@ -210,7 +210,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                     Text(
                       localization.translate('No Internet Connection'),
                       style: GoogleFonts.poppins(
-                        fontSize: 25,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: AppColors.blue,
                       ),
@@ -218,7 +218,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                     SizedBox(height: 8),
                     Text(
                       localization.translate('Please check your internet connection.'),
-                      style: TextStyle(fontSize: 15, color: Colors.black),
+                      style: TextStyle(fontSize: 13, color: Colors.black),
                     ),
                     SizedBox(height: 18),
                     SizedBox(

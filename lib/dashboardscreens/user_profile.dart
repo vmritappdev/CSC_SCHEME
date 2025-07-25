@@ -557,7 +557,7 @@ Navigator.pop(context);
     child: ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.grey[200],
-        foregroundColor: AppColors.blue,
+        foregroundColor: AppColors.blue1,
         padding: const EdgeInsets.symmetric(vertical: 16),
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(

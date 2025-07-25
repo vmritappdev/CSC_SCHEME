@@ -283,7 +283,8 @@ void _onResendOtp() {
         centerTitle: true,
         title: Column(
           children: [
-             Text('Change Mpin',style: GoogleFonts.nunito(color: Colors.white),)
+             Text(localization.translate('Change Mpin'),
+             style: GoogleFonts.nunito(color: Colors.white),)
           ],
         ),
       ),
@@ -306,6 +307,11 @@ void _onResendOtp() {
                 readOnly: true,
                 controller: _controllerMobileNumber,
                 decoration:  InputDecoration(
+                  floatingLabelStyle: TextStyle(color: AppColors.blue),
+                   focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
                 labelText: localization.translate('Mobile Number'),
                   border: OutlineInputBorder(),
                   
@@ -314,12 +320,12 @@ void _onResendOtp() {
               const SizedBox(height: 20),
               if (_isOtpVisible) ...[
               TextFormField(
-  controller: _controllerOtp,
-  keyboardType: TextInputType.number,
-  maxLength: 6,
-  autofillHints: const [AutofillHints.oneTimeCode],
-   textAlign: TextAlign.center,
-  inputFormatters: [
+           controller: _controllerOtp,
+           keyboardType: TextInputType.number,
+           maxLength: 6,
+            autofillHints: const [AutofillHints.oneTimeCode],
+           textAlign: TextAlign.center,
+            inputFormatters: [
                       LengthLimitingTextInputFormatter(6),
                       FilteringTextInputFormatter.digitsOnly,
                     ],

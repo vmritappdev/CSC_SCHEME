@@ -58,8 +58,8 @@ class AssetTile extends StatelessWidget {
                 backgroundColor: Colors.white,
                 child: Image.asset(
                   gifPath,
-                  height: 40.0,
-                  width: 40.0,
+                  height: 20.0,
+                  width: 20.0,
                   fit: BoxFit.cover,
                 ),
               ),

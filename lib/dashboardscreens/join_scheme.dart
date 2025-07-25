@@ -930,7 +930,8 @@ DateTime? selectedDate;
                             Image.asset('assets/images/csc2.png',
                                height: 50, color: Colors.white),
 
-                               Text('Since 1971', style: GoogleFonts.nunito(color: Colors.white, fontSize: 12))
+                               Text(localization.translate('Since 1971'), 
+                               style: GoogleFonts.nunito(color: Colors.white, fontSize: 12))
                           ],
                         )
                       ],
@@ -1456,7 +1457,7 @@ DateTime? selectedDate;
                        
                     
                       
-                    
+                      const SizedBox(height: 5,),
                     
                       SizedBox(
               height: 50,
@@ -1738,6 +1739,8 @@ Widget buildRow3() {
             _termsAccepted = value!;
           });
         },
+         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+  visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
       ),
       GestureDetector(
         onTap: () async {
@@ -1786,8 +1789,12 @@ Widget buildRow4(){
           });
                   },
                   activeColor:AppColors.blue, // Checkbox fill color
-  checkColor: Colors.white, // Tick color
+  checkColor: Colors.white,
+   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+  visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact // Tick color
                 ),
+
+                SizedBox(width: 8,),
                 Expanded(
                   child: GestureDetector(
                      onTap: () async {
@@ -2277,9 +2284,11 @@ Widget _buildTextField1({
                 keyboardType: TextInputType.number,
                 maxLength: maxLength,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 2),),
                   labelText: label,
                   counterText: "",
                   border: const OutlineInputBorder(),
+                  floatingLabelStyle: TextStyle(color: AppColors.blue),
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
@@ -2426,6 +2435,8 @@ Widget _buildTextField3({
                   labelText: label,
                   counterText: "",
                   border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 2),),
+                  floatingLabelStyle: TextStyle(color: AppColors.blue),
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
@@ -2571,6 +2582,8 @@ Widget _buildTextField2({
                 textCapitalization: TextCapitalization.characters,
                 maxLength: maxLength,
                 decoration: InputDecoration(
+                   focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 2),),
+                  floatingLabelStyle: TextStyle(color: AppColors.blue),
                   labelText: label,
                   hintText: hintText,hintStyle: TextStyle(fontSize: 10),
                   counterText: "",

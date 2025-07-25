@@ -62,7 +62,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     return SafeArea(
       child: WillPopScope(
     onWillPop: () async {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageSelectionScreen2()));
+   Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageSelectionScreen2()));
       return false; // Prevent default back action
     },
         child: Scaffold(
@@ -140,7 +140,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     Text(
-                      localization.translate("The customer can also purchase jewelry from the 10th month of enrollment with full benefits."),
+                      localization.translate("The customer can also purchase jewellery from the 10th month of enrollment with full benefits."),
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: screenHeight * 0.02),

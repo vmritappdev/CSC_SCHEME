@@ -267,7 +267,8 @@ Future<bool> checkInternet() async {
           iconTheme: const IconThemeData(color: Colors.white),
           title: Column(
             children: [
-            Text('Change Profile',style: GoogleFonts.nunito(color: Colors.white),)
+            Text(localization.translate('Change Profile'),
+            style: GoogleFonts.nunito(color: Colors.white),)
             ],
           ),
           centerTitle: true,
@@ -406,12 +407,17 @@ Future<bool> checkInternet() async {
         controller: controller,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
+          floatingLabelStyle: TextStyle(color: AppColors.blue),
           labelText: label,
           labelStyle: const TextStyle(color: Colors.black),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
             borderSide: const BorderSide(color: Colors.grey),
           ),
+           focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
         ),
         enabled: true,
         validator: (value) {
@@ -433,6 +439,11 @@ Future<bool> checkInternet() async {
       ],
       controller: _emailController,
       decoration: InputDecoration(
+        floatingLabelStyle: TextStyle(color: AppColors.blue),
+         focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
         labelText: localization.translate('Email ID(Optional)'),
         labelStyle: const TextStyle(color: Colors.black),
         border: OutlineInputBorder(
@@ -472,6 +483,11 @@ Future<bool> checkInternet() async {
 ,],
       maxLength: 10,
       decoration: InputDecoration(
+        floatingLabelStyle: TextStyle(color: AppColors.blue),
+         focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
         counterText: '',
         labelText: localization.translate("Mobile Number*"),
         

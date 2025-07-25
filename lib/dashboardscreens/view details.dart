@@ -700,93 +700,61 @@ GestureDetector(
               SizedBox(height: MediaQuery.of(context).size.height * 0.012), // 1.2% of screen height
     
     
-  GestureDetector(
-  onTap: (paymentStatusText == localization.translate("Completed"))
-      ? () async {
-          if (!mounted) return;
-
-          setState(() {
-            _isDownloading = true;
-          });
-
-          try {
+    GestureDetector(
+    onTap: (paymentStatusText == localization.translate("Completed")) 
+        ? () async {
             print("Downloading for ID: ${widget.schemeId}");
             ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId: payid);
             await pdfGenerator.generatePDF(context);
-
-            if (!mounted) return;
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localization.translate("Downloading")),
-                backgroundColor: Colors.green,
-              ),
-            );
-          } catch (e) {
-            if (!mounted) return;
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localization.translate("Something went wrong")),
-                backgroundColor: Colors.red,
-              ),
-            );
-          } finally {
-            if (!mounted) return;
-
-            setState(() {
-              _isDownloading = false;
-            });
           }
-        }
-      : (paymentStatusText == localization.translate("Reject") ||
-              paymentStatusText == localization.translate("Process"))
-          ? () {
-              _showErrorDialog(context, message);
-            }
-          : null,
-  child: Opacity(
-    opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
-    child: IgnorePointer(
-      ignoring: paymentStatusText != localization.translate("Completed"),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.005,
-              horizontal: MediaQuery.of(context).size.width * 0.02,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.blue,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.download,
-                  color: Colors.white,
-                  size: 12 * MediaQuery.of(context).textScaleFactor,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  localization.translate("Download"),
-                  style: GoogleFonts.lato(
+        : (paymentStatusText == localization.translate("Reject") || 
+           paymentStatusText == localization.translate("Process"))
+            ? () {
+                _showErrorDialog(context, message);
+              }
+            : null,
+    child: Opacity(
+      opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
+      child: IgnorePointer(
+        ignoring: paymentStatusText != localization.translate("Completed"),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.005,
+                horizontal: MediaQuery.of(context).size.width * 0.02,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.blue,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.download,
                     color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                    size: 12 * MediaQuery.of(context).textScaleFactor,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 4),
+                  Text(
+                    localization.translate("Download"),
+                    style: GoogleFonts.lato(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
-  ),
-),
-
+    ),
+    
     
     
               ],

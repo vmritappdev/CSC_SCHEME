@@ -14,6 +14,7 @@ import 'package:csc/dashboardscreens/terms3.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/chaingedscreens.dart/otpscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -356,7 +357,7 @@ Widget build(BuildContext context) {
 
   return WillPopScope(
     onWillPop: () async {
-      Navigator.pushReplacement(
+     Navigator.pushReplacement(
   context,
   MaterialPageRoute(builder: (context) => const LoginScreen1()),
 );
@@ -382,7 +383,7 @@ Widget build(BuildContext context) {
                         Align(
                           alignment: Alignment.bottomLeft,
                           child: BackButton(
-                            color:  Color.fromRGBO(2, 5, 67, 1),
+                            color: AppColors.blue,
                             onPressed: () {
                              Navigator.pushReplacement(
   context,
@@ -395,7 +396,7 @@ Widget build(BuildContext context) {
                         Image.asset(
                           'assets/images/csc2.png',
                           height: screenHeight * 0.1,
-                          color: Color.fromRGBO(2, 5, 67, 1),
+                          color: AppColors.blue,
                         ),
                         Text(
                           localization.translate("JEWELLERS"),
@@ -419,7 +420,7 @@ Widget build(BuildContext context) {
                 // Form section in scroll view
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                     child: Form(
                       key: _formKey,
                       child: Column(
@@ -427,15 +428,19 @@ Widget build(BuildContext context) {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                localization.translate("Create Account"),
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: screenWidth * 0.05,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Text(
+                                  localization.translate("Create Account"),
+                                  style: GoogleFonts.poppins(
+                                   // color: Colors.black,
+                                   color: AppColors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: screenWidth * 0.05,
+                                  ),
                                 ),
                               ),
-                              Icon(Icons.touch_app, color: Colors.black),
+                              Icon(Icons.touch_app, color: AppColors.blue),
                             ],
                           ),
                           SizedBox(height: screenHeight * 0.02),
@@ -454,7 +459,7 @@ Widget build(BuildContext context) {
                           buildTextFormField(
                             _controllerLastName,
                             localization.translate("Last Name*"),
-                            Icons.person_2,
+                           Icons.account_circle,
                             TextInputType.name,
                             (value) => value == null || value.isEmpty
                                 ? localization.translate("enter_last_name")
@@ -603,7 +608,10 @@ Widget build(BuildContext context) {
                           children: [
                             Text(localization.translate('Already have an account?')
                               , style: TextStyle(color: Colors.black)),
+
+
                             SizedBox(width: 5),
+
                             Text(
                               localization.translate('Login'),
                                 style: TextStyle(color: AppColors.blue, fontWeight: FontWeight.bold),
@@ -622,12 +630,12 @@ Widget build(BuildContext context) {
           // Loader
           if (_isLoading)
             Container(
-              color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withOpacity(0.7),
               child: Center(
-                child:SpinKitFadingFour(
-          color: AppColors.blue,
-          size: 40.0,
-        ),
+                child: BouncingDotsLoader(
+    color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
+  ),
               ),
             ),
     
@@ -702,13 +710,7 @@ Widget build(BuildContext context) {
        decoration: InputDecoration(
   counterText: '',
   labelText: labelText,
-  labelStyle: GoogleFonts.nunito(
-    textStyle: TextStyle(
-      fontSize: screenWidth * 0.03,
-      color:  Colors.black,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
+   labelStyle: GoogleFonts.nunito(fontSize: 14, color: const Color.fromARGB(255, 139, 139, 139)),
   errorStyle: TextStyle(
     fontSize: 9,
     height: 0.18, // NEW: make error text use less vertical space
@@ -745,13 +747,7 @@ Widget build(BuildContext context) {
       decoration: InputDecoration(
         counterText: "",
         labelText: localization.translate("Mobile Number"),
-        labelStyle: GoogleFonts.nunito(
-          textStyle: const TextStyle(
-            fontSize: 12,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        labelStyle: GoogleFonts.nunito(fontSize: 14, color: const Color.fromARGB(255, 139, 139, 139)),
         prefixIcon: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

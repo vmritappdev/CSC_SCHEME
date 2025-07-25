@@ -119,6 +119,10 @@ class _FAQScreenState extends State<FAQScreen> {
                               borderSide: const BorderSide(color: Color.fromARGB(255, 242, 240, 240)),
                               borderRadius: BorderRadius.circular(screenWidth * 0.02),
                             ),
+                            focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
                           ),
                         ),
                       ),
@@ -191,7 +195,7 @@ class _FAQScreenState extends State<FAQScreen> {
         "answer": localization.translate("To qualify for zero wastage (VA), all monthly payments must be made continuously. Any missed payment will result in discontinuation of the plan."),
       },
       {
-        "question": localization.translate("What if I purchase jewelry exceeding the accumulated amount?"),
+        "question": localization.translate("What if I purchase jewellery exceeding the accumulated amount?"),
         "answer": localization.translate("If your purchase exceeds the accumulated amount, the applicable wastage (VA) and other charges on the excess portion must be paid at the time of purchase."),
       },
       {
@@ -200,7 +204,7 @@ class _FAQScreenState extends State<FAQScreen> {
       },
       {
         "question": localization.translate("What will happen after the completion of the plan period?"),
-        "answer": localization.translate("Upon completing 11 months from your enrollment date, you can purchase gold jewelry of your choice with zero wastage (VA) up to 18%, limited to your accumulated value."),
+        "answer": localization.translate("Upon completing 11 months from your enrollment date, you can purchase gold jewellery of your choice with zero wastage (VA) up to 18%, limited to your accumulated value."),
       },
       {
         "question": localization.translate("Can this plan be combined with other offers?"),
@@ -208,7 +212,7 @@ class _FAQScreenState extends State<FAQScreen> {
       },
       {
         "question": localization.translate("Will wastage (VA) be charged on special items?"),
-        "answer": localization.translate("Yes, wastage (VA) will be charged on special items like ethnic jewelry, vintage jewelry, pooja items, silver articles, silver jewelry, and other special items not included in this estimate. Charges for precious stones, semi-precious stones, zircon, birthstones, and other stones will also apply. If a member wishes to purchase any of these items, they may contact the showroom for details."),
+        "answer": localization.translate("Yes, wastage (VA) will be charged on special items like ethnic jewellery, vintage jewellery, pooja items, silver articles, silver jewellery, and other special items not included in this estimate. Charges for precious stones, semi-precious stones, zircon, birthstones, and other stones will also apply. If a member wishes to purchase any of these items, they may contact the showroom for details."),
       },
       {
         "question": localization.translate("How do I know the amount accumulated?"),
@@ -223,7 +227,7 @@ class _FAQScreenState extends State<FAQScreen> {
         "answer": localization.translate("Yes, as of now, we have only one branch located in Nellore. You can make the monthly advance payments at the CSC showroom in Nellore or through the CSC Jewellers mobile app, available on the Play Store and the Apple Store."),
       },
       {
-        "question": localization.translate("Can I purchase special items like ethnic and vintage jewelry and pooja items?"),
+        "question": localization.translate("Can I purchase special items like ethnic and vintage jewellery and pooja items?"),
         "answer": localization.translate("Yes, you can purchase special items with applicable wastage (VA) and making charges."),
       },
       {

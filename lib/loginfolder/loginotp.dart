@@ -247,9 +247,12 @@ void showError( String message) {
       return false; // Prevent default back action
     },
       child: Scaffold(
-        appBar: AppBar(title: Text(
-         localization.translate("Login with OTP"),
-          style: TextStyle(color: Colors.white),),
+        appBar: AppBar(title: Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: Text(
+           localization.translate("Login with OTP"),
+            style: TextStyle(color: Colors.white),),
+        ),
         backgroundColor: AppColors.blue,
         leading: BackButton(color: Colors.white,
         onPressed: () {

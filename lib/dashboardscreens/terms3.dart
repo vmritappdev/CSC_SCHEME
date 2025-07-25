@@ -137,7 +137,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     Text(
-                      localization.translate("The customer can also purchase jewelry from the 10th month of enrollment with full benefits."),
+                      localization.translate("The customer can also purchase jewellery from the 10th month of enrollment with full benefits."),
                       style: GoogleFonts.lato(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: screenHeight * 0.02),

@@ -217,8 +217,7 @@ String processTimer(String remaingtimer) {
 
     
 
-    return SafeArea(
-      child: WillPopScope(
+    return  WillPopScope(
         onWillPop: () async {
     // back press ayyaka em work cheyyalo ikkad implement cheyachu
     Navigator.pushReplacement(
@@ -253,172 +252,174 @@ String processTimer(String remaingtimer) {
             elevation: 0,
             centerTitle: true,
             title: Text(
-              localization.translate("Payment Verification Process"),
+            localization.translate("Payment Verification Process"),
               style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: screenHeight * 0.05),
-               CountdownTimer(
-          endTime: endTime,
-          widgetBuilder: (_, time) {
-        if (time == null) {
-          return Text(localization.translate("Time's up!"));
-        } else {
-          // మాన్యువల్‌గా 48 గంటల కౌంట్‌ను కలిక్యులేట్ చేయడం
-// మొత్తం గంటలు
-// మిగతా నిమిషాలు
-// మిగతా సెకన్లు
-        
-          return Container(
-            width: screenWidth * 0.3,
-            height: screenWidth * 0.3,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.orange, width: 3),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              remaingtimer,
-             
-            // "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
-              style: TextStyle(
-                color: Colors.orange,
-                fontSize: screenWidth * 0.05,
-                fontWeight: FontWeight.bold,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.05),
+                 CountdownTimer(
+            endTime: endTime,
+            widgetBuilder: (_, time) {
+                    if (time == null) {
+            return Text(localization.translate("Time's up!"));
+                    } else {
+            // మాన్యువల్‌గా 48 గంటల కౌంట్‌ను కలిక్యులేట్ చేయడం
+            // మొత్తం గంటలు
+            // మిగతా నిమిషాలు
+            // మిగతా సెకన్లు
+                    
+            return Container(
+              width: screenWidth * 0.3,
+              height: screenWidth * 0.3,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.orange, width: 3),
               ),
-            ),
-          );
-        }
-          },
-        )
-        ,
-                SizedBox(height: screenHeight * 0.02),
-                Text(
-                  localization.translate("Verifying your payment"),
-                  style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: screenHeight * 0.01),
-        
-               Text(
-          "${amount.isNotEmpty ? amount : "processing"} • ${dateTime.isNotEmpty ? dateTime : "N/A"}",
-          style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black54),
-        ),
-        
-        
-                SizedBox(height: screenHeight * 0.02),
-                Container(
-                  padding: EdgeInsets.all(screenWidth * 0.04),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.timelapse, color: Colors.orange),
-                          SizedBox(width: screenWidth * 0.02),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  localization.translate("Payment verification in progress"),
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
-                                Text(
-                                  localization.translate("We will verify your payment details after we receive the payment from your bank."),
-                                  style: TextStyle(fontSize: screenWidth * 0.04),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(height: screenHeight * 0.03, thickness: 1, color: Colors.grey[300]),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.radio_button_unchecked, color: Colors.grey),
-                          SizedBox(width: screenWidth * 0.02),
-                          Expanded(
-                            child: Text(
-                              localization.translate("Payment will be credited to wallet"),
-                              style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black54),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.03),
-                Container(
-                  padding: EdgeInsets.all(screenWidth * 0.04),
-                  decoration: BoxDecoration(
-                    color: Colors.orange[50],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.orange),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.info, color: Colors.orange),
-                      SizedBox(width: screenWidth * 0.02),
-        
-                      Expanded(
-                        child: Text(
-                          localization.translate("Note: This is a manual payment process. Payment verification is in process. Please wait for confirmation."),
-                          style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black87),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.1),
-                ElevatedButton(
-                  onPressed: () {
-        
-                    // SharedPreferences.getInstance().then((prefs) {
-                //  prefs.setBool('isPaymentComplete', true);
-                  
+              alignment: Alignment.center,
+              child: Text(
+                remaingtimer,
                
-               // });
-        
-                Navigator.pop(context); 
-                    Navigator.push(
-                      context, 
-                      MaterialPageRoute(
-                        builder: (context) => HomeScreen(activescheme: Activescheme(),),
-                      )
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(),
-                    minimumSize: Size(double.infinity, screenHeight * 0.06),
-                    backgroundColor: AppColors.blue,
-                  ),
-                  child: Text(
-                    localization.translate("okay"),
-                    style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
-                  ),
+              // "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
+                style: TextStyle(
+                  color: Colors.orange,
+                  fontSize: screenWidth * 0.05,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            );
+                    }
+            },
+                    )
+                    ,
+                  SizedBox(height: screenHeight * 0.02),
+                  Text(
+                    localization.translate("Verifying your payment"),
+                    style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                    
+                 Text(
+            "${amount.isNotEmpty ? amount : "processing"} • ${dateTime.isNotEmpty ? dateTime : "N/A"}",
+            style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black54),
+                    ),
+                    
+                    
+                  SizedBox(height: screenHeight * 0.02),
+                  Container(
+                    padding: EdgeInsets.all(screenWidth * 0.04),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey[300]!),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.timelapse, color: Colors.orange),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    localization.translate("Payment verification in progress"),
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
+                                  Text(
+                                    localization.translate("We will verify your payment details after we receive the payment from your bank."),
+                                    style: TextStyle(fontSize: screenWidth * 0.04),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(height: screenHeight * 0.03, thickness: 1, color: Colors.grey[300]),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.radio_button_unchecked, color: Colors.grey),
+                            SizedBox(width: screenWidth * 0.02),
+                            Expanded(
+                              child: Text(
+                                localization.translate("Payment will be credited to wallet"),
+                                style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black54),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
+                  Container(
+                    padding: EdgeInsets.all(screenWidth * 0.04),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[50],
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.orange),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info, color: Colors.orange),
+                        SizedBox(width: screenWidth * 0.02),
+                    
+                        Expanded(
+                          child: Text(
+                            localization.translate("Note: This is a manual payment process. Payment verification is in process. Please wait for confirmation."),
+                            style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black87),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.1),
+                  ElevatedButton(
+                    onPressed: () {
+                    
+                      // SharedPreferences.getInstance().then((prefs) {
+                  //  prefs.setBool('isPaymentComplete', true);
+                    
+                 
+                 // });
+                    
+                  Navigator.pop(context); 
+                      Navigator.push(
+                        context, 
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(activescheme: Activescheme(),),
+                        )
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(),
+                      minimumSize: Size(double.infinity, screenHeight * 0.06),
+                      backgroundColor: AppColors.blue,
+                    ),
+                    child: Text(
+                      localization.translate("okay"),
+                      style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      
     );
   }
 }

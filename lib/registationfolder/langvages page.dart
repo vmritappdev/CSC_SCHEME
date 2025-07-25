@@ -162,7 +162,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
         body: Column(
           children: [
             Container(
-              height: size.height * 0.20,
+              height: size.height * 0.15,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.blue,AppColors.blue],
@@ -301,7 +301,9 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.language, color: Colors.white, size: 24),
+                  
                   SizedBox(width: 12),
+
                   Text(
                     "Selected: ${languages.firstWhere((lang) => lang["code"] == selectedLanguageCode)["native"]}",
                     style: GoogleFonts.poppins(

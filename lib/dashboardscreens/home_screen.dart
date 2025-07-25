@@ -1400,7 +1400,7 @@ Widget _buildGridButton(String assetPath, String label, VoidCallback onTap, Buil
             style: GoogleFonts.lato(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: AppColors.blue,
+              color: AppColors.blue1,
             ),
           ),
         ],
@@ -1542,7 +1542,7 @@ void showGoldBottomSheet(BuildContext context) async {
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Column(
-                    children: schemeDetails.asMap().entries.map<Widget>((entry) {
+                  children: schemeDetails.asMap().entries.map<Widget>((entry) {
                       int index = entry.key;
                       var scheme = entry.value;
 

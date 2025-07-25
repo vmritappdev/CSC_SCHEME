@@ -232,6 +232,11 @@ Future<void> requestCallPermission() async {
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: const OutlineInputBorder(borderSide: BorderSide.none),
+
+                         focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -251,6 +256,10 @@ Future<void> requestCallPermission() async {
                         filled: true,
                         fillColor: Colors.grey[200],
                         border: const OutlineInputBorder(borderSide: BorderSide.none),
+                         focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
                       ),
                       keyboardType: TextInputType.phone,
                       validator: (value) {
@@ -274,6 +283,10 @@ Future<void> requestCallPermission() async {
                         border: const OutlineInputBorder(borderSide: BorderSide.none),
                         hintText: localization.translate('Enter your complaint details...',),
                         hintStyle: const TextStyle(fontSize: 14),
+                         focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+    borderSide: const BorderSide(color:   AppColors.blue, width: 2),
+  ),
                       ),
                       validator: (value) {
                 if (value == null || value.trim().isEmpty) {
