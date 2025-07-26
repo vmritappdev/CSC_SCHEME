@@ -53,8 +53,7 @@ class _TermsAndConditionsScreen2State extends State<TermsAndConditionsScreen2> {
     final titleStyle = GoogleFonts.lato(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold, color: Colors.white);
     final textStyle = GoogleFonts.lato(fontSize: screenWidth * 0.04, color: Colors.white70);
 
-    return SafeArea(
-      child: Scaffold(
+    return  Scaffold(
         backgroundColor:AppColors.blue,
         body: SafeArea(
           child: Column(
@@ -64,7 +63,7 @@ class _TermsAndConditionsScreen2State extends State<TermsAndConditionsScreen2> {
             ],
           ),
         ),
-      ),
+      
     );
   }
 

@@ -279,7 +279,7 @@ String processTimer(String remaingtimer) {
               height: screenWidth * 0.3,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.orange, width: 3),
+                border: Border.all(color: AppColors.blue, width: 3),
               ),
               alignment: Alignment.center,
               child: Text(
@@ -287,7 +287,7 @@ String processTimer(String remaingtimer) {
                
               // "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
                 style: TextStyle(
-                  color: Colors.orange,
+                  color: AppColors.blue,
                   fontSize: screenWidth * 0.05,
                   fontWeight: FontWeight.bold,
                 ),

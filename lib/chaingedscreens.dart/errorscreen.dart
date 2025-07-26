@@ -225,6 +225,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                       height: 33,
                       width: 260,
                       child: ElevatedButton(
+                        style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(AppColors.blue)),
                         onPressed: () {
                           // Optionally retry logic here
                         },

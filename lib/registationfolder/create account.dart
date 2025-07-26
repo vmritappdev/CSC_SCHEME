@@ -25,7 +25,7 @@ import 'package:csc/utillity/netmix.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+//import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
@@ -526,10 +526,10 @@ Widget build(BuildContext context) {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return Center(
-        child: SpinKitFadingFour(
-          color:AppColors.blue,
-          size: 40.0,
-        ),
+        child: BouncingDotsLoader(
+          color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
+        )
       );
     },
   );

@@ -1054,7 +1054,7 @@ DateTime? selectedDate;
               controller: _emailController,
               label: localization.translate("Email ID(Optional)"),
                          // readOnly: true,
-              prefixIcon: const Icon(Icons.email_outlined),
+             // prefixIcon: const Icon(Icons.email_outlined),
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                         if (value != null && value.isNotEmpty) {
@@ -1790,6 +1790,7 @@ Widget buildRow4(){
                   },
                   activeColor:AppColors.blue, // Checkbox fill color
   checkColor: Colors.white,
+  side: BorderSide(color: AppColors.blue),
    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
   visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact // Tick color
                 ),

@@ -250,20 +250,22 @@ Future<bool> checkInternet() async {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final localization = Provider.of<LocalizationProvider>(context);
-    return SafeArea(
-      child: Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
           elevation: 0,
+         centerTitle: true, 
           title: Text(
+            
             localization.translate('Join Scheme'),
-            style: GoogleFonts.lato( color: Colors.black,
+            style: GoogleFonts.lato( color: AppColors.blue,
             fontSize: screenWidth * 0.045, 
             fontWeight: FontWeight.bold,)
           ),
           backgroundColor: Colors.transparent,
+        //backgroundColor: AppColors.blue,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: const Icon(Icons.arrow_back, color: AppColors.blue,),
             onPressed: () {
               Navigator.push(context, 
               MaterialPageRoute(
@@ -273,7 +275,9 @@ Future<bool> checkInternet() async {
             },
           ),
         ),
-        body: _isLoading
+        body: SafeArea( // ✅ SafeArea moved here
+    child:
+        _isLoading
         ? const CircularProgressIndicator()
        : SmartRefresher(
         controller: _refreshController,
@@ -297,6 +301,7 @@ Future<bool> checkInternet() async {
                 child: Image.asset(
                    'assets/images/test2.png', // Update with your asset
                      height: screenHeight * 0.25,
+                    // color: AppColors.blue,
                 ),
               ),
                SizedBox(height: screenHeight * 0.02),
@@ -331,18 +336,19 @@ Future<bool> checkInternet() async {
                       ),
                     SizedBox(
                         width: double.infinity,
-                        height: screenHeight * 0.07,
+                        height: 50,
                         child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-               backgroundColor:AppColors.blue,
-         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-               shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-               ),
-          ),
-               
-               
-               
+                          
+          style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                backgroundColor: const WidgetStatePropertyAll(
+                  AppColors.blue,
+                ),
+              ),
                
           onPressed: () async {
           await fetchProcessStatus(); // Ensure latest status is fetched
@@ -405,59 +411,7 @@ Future<bool> checkInternet() async {
                },
                
                
-          /*
-           onPressed: () async {
-          await fetchProcessStatus(); // Ensure latest status is fetched
-               
-          if (processStatus == "1") {
-               Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
-               );
-               return; // Stop further execution
-          }
-               
-          if (!isGoldSchemeComplete) {
-               final result = await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Jionscheme2()),
-               );
-               if (result == true) {
-          setState(() {
-            isGoldSchemeComplete = true;
-          });
-               }
-          } else if (!isTransactionComplete) {
-               final result = await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Scanner(activescheme: Activescheme())),
-               );
-               if (result == true) {
-          setState(() {
-            isTransactionComplete = true;
-            saveProcessStatus();
-          });
-               }
-          } else if (!isPaymentComplete) {
-               Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PaymentVerificationScreen(id: '',)),
-               );
-          } else {
-               setState(() {
-          isGoldSchemeComplete = false;
-          isTransactionComplete = false;
-          isPaymentComplete = false;
-          saveProcessStatus();
-               });
-               
-               Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Jionscheme2()),
-               );
-          }
-               },
-               */
+
                
           child: Text(
                localization.translate('Get Started'),
@@ -477,7 +431,7 @@ Future<bool> checkInternet() async {
             ],
           ),
        ),
-      ),
+        ),
     );
   }
 

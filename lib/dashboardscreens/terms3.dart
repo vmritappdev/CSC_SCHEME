@@ -57,8 +57,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
     final titleStyle = GoogleFonts.lato(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold, color: Colors.white);
     final textStyle = GoogleFonts.lato(fontSize: screenWidth * 0.04, color: Colors.white70);
 
-    return SafeArea(
-      child: WillPopScope(
+    return  WillPopScope(
       onWillPop: () async {
 
       Navigator.pop(context);
@@ -76,7 +75,7 @@ class _TermsAndConditionsScreen3State extends State<TermsAndConditionsScreen3> {
             ),
           ),
         ),
-      ),
+      
     );
   }
 

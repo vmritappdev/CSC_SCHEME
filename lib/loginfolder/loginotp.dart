@@ -236,6 +236,8 @@ void showError( String message) {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+double screenHeight = MediaQuery.of(context).size.height;
      final localization = Provider.of<LocalizationProvider>(context);
     return WillPopScope(
        onWillPop: () async {
@@ -274,15 +276,27 @@ void showError( String message) {
           
           
                 Image.asset('assets/images/otp.4.jpg'),
+
+                
+/*
+                 Image.asset(
+  'assets/images/otp7.png',
+
+),
+       */        
           
                 SizedBox(height: 20,),
+
+
                 TextFormField(
                   
                   controller: mobileController,
                   keyboardType: TextInputType.phone,
                   
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 2)),
                     border: OutlineInputBorder(),
+                    floatingLabelStyle: TextStyle(color: AppColors.blue),
                     labelText: 
                   
                   localization.translate("Mobile Number"),

@@ -490,7 +490,7 @@ double screenWidth = MediaQuery.of(context).size.width;
   child: Text(
    localization.translate("Kindly upload the payment slip or a screenshot below for verification of your payment."),
     style: TextStyle(
-      fontSize: screenWidth * 0.035,
+      fontSize: screenWidth * 0.032,
       fontWeight: FontWeight.bold,
       color:  AppColors.blue,
      // fontStyle: FontStyle.italic
@@ -572,7 +572,8 @@ if (_showImageError)
                     keyboardType: TextInputType.name,
   controller: _transactionNumberController,
   decoration:  InputDecoration(
-    
+    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 1)),
+    floatingLabelStyle: TextStyle(color: AppColors.blue),
    // labelText: localization.translate("Transaction Number"),
    labelText:localization.translate('Transaction Number'),
     labelStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: screenWidth * 0.035), // Label text

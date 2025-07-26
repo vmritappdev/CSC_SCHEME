@@ -44,7 +44,7 @@ class _ForgotScreenState extends State<ForgotScreen>    with NetworkMixin {
   bool _isOtpVisible = false;
   bool _isResendAvailable = false;
   bool _isVerifyEnabled = false;
-  int _timerSeconds = 30;
+  int _timerSeconds = 60;
   String receivedOtp = "";
   DateTime? otpReceivedTime; // ✅ OTP timestamp
 
@@ -204,7 +204,7 @@ bool _isLoading = false; // declare this in your State
         setState(() {
           receivedOtp = responseData['otp'].toString();
           _isResendAvailable = false;
-          _timerSeconds = 30;
+          _timerSeconds = 60;
           otpReceivedTime = DateTime.now(); // ✅ Store timestamp
         });
 
@@ -311,14 +311,14 @@ bool _isLoading = false; // declare this in your State
                 );
                 
                },
-               icon: Icon(Icons.arrow_forward), // ← Left side arrow icon
+               icon: Icon(Icons.arrow_forward,color: AppColors.blue,), // ← Left side arrow icon
              ),
            ),
 
-              Image.asset('assets/images/csc2.png', height: 90),
+              Image.asset('assets/images/csc2.png', height: 90,color: AppColors.blue,),
                Text(
                localization.translate('CSCJEWELLERYS'),
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color.fromRGBO(43, 49, 101, 1)),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.blue),
               ),
               const SizedBox(height: 40),
       
@@ -332,9 +332,10 @@ bool _isLoading = false; // declare this in your State
                controller: _controllerMobileNumber,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.blue,width: 2)),
                 counterText: '',
                   hintText: localization.translate("Mobile Number*"),
-                  prefixIcon: const Icon(Icons.phone),
+                  prefixIcon: const Icon(Icons.phone,color: AppColors.blue,),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
                 ),
               ),
@@ -433,11 +434,12 @@ TextFormField(
     contentPadding: const EdgeInsets.symmetric(vertical: 15),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Color.fromARGB(255, 9, 1, 34)),
+      
+      borderSide:  BorderSide(color: AppColors.blue),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Color.fromARGB(255, 9, 1, 34), width: 2),
+      borderSide: const BorderSide(color: AppColors.blue, width: 2),
     ),
   ),
   onChanged: (value) {
@@ -450,7 +452,7 @@ TextFormField(
                 const SizedBox(height: 20),
       
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(_isResendAvailable
                         ? localization.translate("Didn't receive the OTP?")

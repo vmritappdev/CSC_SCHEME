@@ -467,12 +467,18 @@ Future<bool> checkInternet() async {
               _isChecked = value ?? false;
             });
           },
+          side: BorderSide(color: AppColors.blue),
           activeColor: AppColors.blue,
+           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+              visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
         ),
+
+        SizedBox(width: 8,),
+
         Expanded(
           child: Text(
            localization.translate('I have successfully made the payment to the provided UPI details.'),
-            style: GoogleFonts.lato(fontSize: screenWidth * 0.035, fontWeight: FontWeight.bold),
+            style: GoogleFonts.lato(fontSize: screenWidth * 0.031, fontWeight: FontWeight.bold),
           ),
         ),
       ],

@@ -59,8 +59,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
     final titleStyle = GoogleFonts.lato(fontSize: screenWidth * 0.06, fontWeight: FontWeight.bold, color: Colors.white);
     final textStyle = GoogleFonts.lato(fontSize: screenWidth * 0.04, color: Colors.white70);
 
-    return SafeArea(
-      child: WillPopScope(
+    return WillPopScope(
     onWillPop: () async {
    Navigator.push(context, MaterialPageRoute(builder: (context) => LanguageSelectionScreen2()));
       return false; // Prevent default back action
@@ -76,7 +75,7 @@ class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
             ),
           ),
         ),
-      ),
+      
     );
   }
 

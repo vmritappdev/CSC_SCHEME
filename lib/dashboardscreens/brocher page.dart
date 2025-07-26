@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/check%20internet.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/utillity/constantcolor.dart';
@@ -124,14 +125,10 @@ class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
 
               child: ElevatedButton.icon(
                 icon: isDownloading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
-                        ),
-                      )
+                    ? BouncingDotsLoader(
+    color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
+  )
                     : const Icon(Icons.download, color: Colors.white),
                 label:  Text(
                  localization.translate('Download Brochure'),

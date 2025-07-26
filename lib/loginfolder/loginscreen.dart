@@ -480,229 +480,215 @@ localization.translate('CSC App'),
   return false;
 },
 
-      child: SafeArea(
+      
         child: Scaffold(
          
           backgroundColor: Colors.white,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(paddingAll),
-              child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-               //   SizedBox(height: screenHeight * 0.08),
-        
-        
-        /*
-                   Align(
-                        alignment: Alignment.bottomLeft,
-                        child: BackButton(
-                          color:  const Color.fromARGB(255, 12, 2, 42),
-                          onPressed: () {
-                            Navigator.push(
-                              context, 
-                              MaterialPageRoute(
-                              builder: (context) =>  TermsAndConditionsScreen(),
-                              )
-                            );
-                          },
-                        ),
-                      ),
-        
-                        */        SizedBox(height: screenHeight * 0.04),
-
-          // 🖼️ Asset Image in center
-          Center(
-            child: Image.asset(
-              'assets/images/cs.png', // 👈 replace with your image path
-              height: screenHeight * 0.10, // adjust size
-              color: AppColors.blue,
-              fit: BoxFit.contain,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(paddingAll),
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                     SizedBox(height: screenHeight * 0.04),
+            
+            // 🖼️ Asset Image in center
+            Center(
+              child: Image.asset(
+                'assets/images/cs.png', // 👈 replace with your image path
+                height: screenHeight * 0.10, // adjust size
+                color: AppColors.blue,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-
-        //  SizedBox(height: screenHeight * 0.02),
-
-         Text(
-                          localization.translate("JEWELLERS"),
-                          style: GoogleFonts.lato(
-                            fontSize: screenWidth * 0.03,
-                            letterSpacing: 4,
-                            fontWeight: FontWeight.bold,
-                            color:AppColors.blue,
+            
+                    //  SizedBox(height: screenHeight * 0.02),
+            
+                     Text(
+                            localization.translate("JEWELLERS"),
+                            style: GoogleFonts.lato(
+                              fontSize: screenWidth * 0.03,
+                              letterSpacing: 4,
+                              fontWeight: FontWeight.bold,
+                              color:AppColors.blue,
+                            ),
                           ),
-                        ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+            
+                        Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: AppColors.blue,fontSize: 9,fontWeight:  FontWeight.bold),)
+                    
+                      ],
+                    ),
+                    
+                    SizedBox(height: screenHeight * 0.020),
+            
+            
+                    Text(
+                      localization.translate("Welcome back to your CSC account!"),
+                      style: GoogleFonts.nunito(fontSize: fontSizeSmall, color:AppColors.blue,fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: screenHeight * 0.04),
+            
+            
+                    
+            
+            
+            
+                      SizedBox(height: screenHeight * 0.015),
+                    
+                    _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10, focusNode: phoneFocusNode, ),
+                    SizedBox(height: screenHeight * 0.010),
+            
+            
+                   
+            
+                    SizedBox(height: screenHeight * 0.015),
+                    _buildTextField(localization.translate("Mpin"), mpinController, Icons.pin, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,focusNode: mpinFocusNode),
+            
+                     SizedBox(height: screenHeight * 0.020),
+                    
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // left side checkbox + text will start from left
+            
+            
+                /*
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,  // force start
                     children: [
-
-                      Text(localization.translate('Since 1971'),style: GoogleFonts.nunito(color: AppColors.blue,fontSize: 9),)
-        
+                     Checkbox(
+              value: _rememberMe,
+              activeColor: AppColors.blue,
+              onChanged: (bool? newValue) {
+                setState(() {
+                  _rememberMe = newValue ?? false;
+                });
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+              visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
+            ),
+            
+            SizedBox(width: 8,),
+            
+            Text(
+              localization.translate("Remember me"),
+              style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
+            ),
                     ],
                   ),
-                  SizedBox(height: screenHeight * 0.020),
-                  Text(
-                    localization.translate("Welcome back to your CSC account!"),
-                    style: GoogleFonts.nunito(fontSize: fontSizeSmall, color:AppColors.blue,fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: screenHeight * 0.04),
-
-
-                  
-
-
-
-                    SizedBox(height: screenHeight * 0.015),
-        
-                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10, focusNode: phoneFocusNode, ),
-                  SizedBox(height: screenHeight * 0.010),
-
-
-                 
-
-                  SizedBox(height: screenHeight * 0.015),
-                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.pin, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,focusNode: mpinFocusNode),
-
-                   SizedBox(height: screenHeight * 0.020),
-        
-                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-  children: [
-    // left side checkbox + text will start from left
-
-
-    /*
-    Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,  // force start
-        children: [
-         Checkbox(
-  value: _rememberMe,
-  activeColor: AppColors.blue,
-  onChanged: (bool? newValue) {
-    setState(() {
-      _rememberMe = newValue ?? false;
-    });
-  },
-  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
-  visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
-),
-
-SizedBox(width: 8,),
-
-          Text(
-            localization.translate("Remember me"),
-            style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
-          ),
-        ],
-      ),
-    ),
-*/
-    // right side forgot mpin
-    GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LoginOtpScreen(),
-          ),
-        );
-      },
-      child: Text(
-        localization.translate("Forgot MPIN?"),
-        style: GoogleFonts.nunito(
-          color: const Color.fromARGB(255, 88, 7, 1),
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-  ],
-)
-,
-        
-                 // SizedBox(height: screenHeight * 0.010),
-                  if (errorMessage.isNotEmpty)
-                    Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
-        
-                  SizedBox(height: screenHeight * 0.04),
-                  _buildButton(localization.translate("Login"), AppColors.blue, Colors.white, buttonHeight, _verifyMpin,),
-                  SizedBox(height: screenHeight * 0.015),
-
-                  RichText(
-  text: TextSpan(
-    children: [
-      TextSpan(
-        text: '--------------------------------------', 
-        style: TextStyle(color: Colors.grey),
-      ),
-      TextSpan(
-        text: localization.translate(' Or '), 
-        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-      ),
-      TextSpan(
-        text: '-------------------------------------', 
-        style: TextStyle(color: Colors.grey),
-      ),
-    ],
-  ),
-)
-,
-
-  SizedBox(height: screenHeight * 0.015),
-
-                  _buildButton(localization.translate("Login with OTP"), Colors.white, AppColors.blue, buttonHeight, () {
-                     Navigator.pushReplacement(
+                ),
+            */
+                // right side forgot mpin
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => LoginOtpScreen(),
             ),
-          );
-                
-                      }),
-        
-                  SizedBox(height: screenHeight * 0.03),
-
-                  Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Text(
-      localization.translate("Don't have an account?"),
-      style: GoogleFonts.nunito(color: Colors.black, fontSize: fontSizeSmall),
-    ),
-    SizedBox(width: 4),
-    InkWell(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CurvedImageScreen3(),
-          ),
-        );
-      },
-      child: Text(
-        localization.translate("Sign up"),
-        style: GoogleFonts.nunito( color: AppColors.blue,
-          fontSize: fontSizeSmall,
-          fontWeight: FontWeight.bold,)
-      ),
-    ),
-  ],
-),
-
-
-
-                 
-                 // SizedBox(height: screenHeight * 0.03),
-                 // const Divider(),
-                  SizedBox(height: screenHeight * 0.015),
-                 // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                    );
+                  },
+                  child: Text(
+                    localization.translate("Forgot MPIN?"),
+                    style: GoogleFonts.nunito(
+            color: const Color.fromARGB(255, 88, 7, 1),
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            )
+            ,
+                    
+                   // SizedBox(height: screenHeight * 0.010),
+                    if (errorMessage.isNotEmpty)
+                      Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
+                    
+                    SizedBox(height: screenHeight * 0.04),
+                    _buildButton(localization.translate("Login"), AppColors.blue, Colors.white, buttonHeight, _verifyMpin,),
+                    SizedBox(height: screenHeight * 0.015),
+            
+                    RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '--------------------------------------', 
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  TextSpan(
+                    text: localization.translate(' Or '), 
+                    style: TextStyle(color: AppColors.blue, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '-------------------------------------', 
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ],
+              ),
+            )
+            ,
+            
+              SizedBox(height: screenHeight * 0.015),
+            
+                    _buildButton(localization.translate("Login with OTP"), Colors.white, AppColors.blue, buttonHeight, () {
+                       Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginOtpScreen(),
+              ),
+            );
+                  
+                        }),
+                    
+                    SizedBox(height: screenHeight * 0.03),
+            
+                    Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  localization.translate("Don't have an account?"),
+                  style: GoogleFonts.nunito(color: Colors.black, fontSize: fontSizeSmall),
+                ),
+                SizedBox(width: 4),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CurvedImageScreen3(),
+            ),
+                    );
+                  },
+                  child: Text(
+                    localization.translate("Sign up"),
+                    style: GoogleFonts.nunito( color: AppColors.blue,
+            fontSize: fontSizeSmall,
+            fontWeight: FontWeight.bold,)
+                  ),
+                ),
+              ],
+            ),
+            
+            
+            
+                   
+                   // SizedBox(height: screenHeight * 0.03),
+                   // const Divider(),
+                    SizedBox(height: screenHeight * 0.015),
+                   // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
+      
     );
   }
 
@@ -741,6 +727,7 @@ Widget _buildTextField(
                 icon: Icon(
                   _isObscured ? Icons.visibility_off : Icons.visibility,
                   size: 18,
+                  color: AppColors.blue,
                 ),
                 onPressed: () {
                   setState(() {

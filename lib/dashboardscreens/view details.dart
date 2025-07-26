@@ -217,8 +217,7 @@ Future<void> verifyPaymentProcess() async {
     final localization = Provider.of<LocalizationProvider>(context,listen: false);
    
 
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
        // backgroundColor: const Color.fromARGB(255, 212, 210, 210),
         appBar: AppBar(
           //iconTheme: const IconThemeData(color: Colors.white),
@@ -239,59 +238,61 @@ Future<void> verifyPaymentProcess() async {
             ),
           ),
         ),
-        body: isLoading
-            ? const Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
-    size: 12.0,))
-            : SmartRefresher(
-               controller: _refreshController,
-          onRefresh: _onRefresh,
-      
-            header: WaterDropHeader(
-            complete: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              Icon(Icons.check, color: Colors.green),
-              SizedBox(width: 8),
-              Text("Refresh Completed", style: TextStyle(color: Colors.green)),
-              ],
+        body: SafeArea(
+          child: isLoading
+              ? const Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+              size: 12.0,))
+              : SmartRefresher(
+                 controller: _refreshController,
+            onRefresh: _onRefresh,
+                
+              header: WaterDropHeader(
+              complete: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Icon(Icons.check, color: Colors.green),
+                SizedBox(width: 8),
+                Text("Refresh Completed", style: TextStyle(color: Colors.green)),
+                ],
+              ),
+             waterDropColor: AppColors.blue,
             ),
-           waterDropColor: AppColors.blue,
-          ),
-              child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _buildUserInfo(localization),
-                      ...accountDetails.map((installment) {
-                        return _buildTransactionCard(
-               installmentNumber: accountDetails.indexOf(installment) + 1,
-                  date: installment['date'],
-                  receiptNo: installment['receipt_no'],
-                  amount: installment['amount'],
-                  payid: installment['pay_id'],
-                  paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
-                  installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
-                  context: context,
-                );
-                      }),
-              
-              
-              
-                        MyScreen(schemeId: widget.schemeId,),
-                       
-              
-              
-              
-              
-              
+                child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildUserInfo(localization),
+                        ...accountDetails.map((installment) {
+                          return _buildTransactionCard(
+                 installmentNumber: accountDetails.indexOf(installment) + 1,
+                    date: installment['date'],
+                    receiptNo: installment['receipt_no'],
+                    amount: installment['amount'],
+                    payid: installment['pay_id'],
+                    paymentStatus: installment['payment_status']?.toString() ?? "0", // Ensure payment_status is a String
+                    installment: installment['installment']?.toString() ?? '0', // Ensure installment is a String
+                    context: context,
+                  );
+                        }),
+                
+                
+                
+                          MyScreen(schemeId: widget.schemeId,),
+                         
+                
+                
+                
+                
+                
+                        
+                      ],
+                
+                
                       
-                    ],
-              
-              
-                    
+                    ),
                   ),
-                ),
-            ),
-      ),
+              ),
+        ),
+      
     );
   }
 
@@ -700,62 +701,87 @@ GestureDetector(
               SizedBox(height: MediaQuery.of(context).size.height * 0.012), // 1.2% of screen height
     
     
-    GestureDetector(
-    onTap: (paymentStatusText == localization.translate("Completed")) 
-        ? () async {
-            print("Downloading for ID: ${widget.schemeId}");
-            ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId: payid);
-            await pdfGenerator.generatePDF(context);
-          }
-        : (paymentStatusText == localization.translate("Reject") || 
-           paymentStatusText == localization.translate("Process"))
-            ? () {
-                _showErrorDialog(context, message);
-              }
-            : null,
-    child: Opacity(
-      opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
-      child: IgnorePointer(
-        ignoring: paymentStatusText != localization.translate("Completed"),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * 0.005,
-                horizontal: MediaQuery.of(context).size.width * 0.02,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.blue,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+   GestureDetector(
+  onTap: (paymentStatusText == localization.translate("Completed")) 
+      ? () async {
+          print("Downloading for ID: ${widget.schemeId}");
+
+          // Show loader dialog
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              content: Row(
                 children: [
-                  Icon(
-                    Icons.download,
-                    color: Colors.white,
-                    size: 12 * MediaQuery.of(context).textScaleFactor,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    localization.translate("Download"),
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  BouncingDotsLoader(
+    color: Color(0xFF002970), // Paytm blue or gold
+    size: 12.0,
+  ),
+                  const SizedBox(width: 20),
+                  Expanded(child: Text("Downloading...")),
                 ],
               ),
             ),
-          ],
-        ),
+          );
+
+          // Generate PDF
+          try {
+            ReceiptPDFGenerator pdfGenerator = ReceiptPDFGenerator(payId: payid);
+            await pdfGenerator.generatePDF(context);
+          } catch (e) {
+            print("Error generating PDF: $e");
+          } finally {
+            Navigator.of(context).pop(); // Close the loader dialog
+          }
+        }
+      : (paymentStatusText == localization.translate("Reject") || 
+         paymentStatusText == localization.translate("Process"))
+          ? () {
+              _showErrorDialog(context, message);
+            }
+          : null,
+  child: Opacity(
+    opacity: paymentStatusText == localization.translate("Completed") ? 1.0 : 0.4,
+    child: IgnorePointer(
+      ignoring: paymentStatusText != localization.translate("Completed"),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.005,
+              horizontal: MediaQuery.of(context).size.width * 0.02,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.blue,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.download,
+                  color: Colors.white,
+                  size: 12 * MediaQuery.of(context).textScaleFactor,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  localization.translate("Download"),
+                  style: GoogleFonts.lato(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
-    ),
-    
-    
+  ),
+)
+
     
               ],
             ),
