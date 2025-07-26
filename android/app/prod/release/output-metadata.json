@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 5,
+      "versionCode": 4,
       "versionName": "1.0.4",
-      "outputFile": "app-prod-release.apk"
+      "outputFile": "CSC_Scheme_prod_release_20250726_200529.apk"
     }
   ],
   "elementType": "File"

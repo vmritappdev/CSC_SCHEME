@@ -15,7 +15,7 @@ Future<void> main() async {
 
   AppConfig(
     appName: 'CSC Dev',
-    baseUrl: 'https://vmrdemos.com/csc_scheme/',
+    baseUrl: 'https://vmrdemos.com/csc_scheme',
     environment: Environment.dev,
   );
 

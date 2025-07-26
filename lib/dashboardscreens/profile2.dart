@@ -171,7 +171,7 @@ Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
     return;
   }
 
-  const String apiUrl = "$baseUrl/profile.php";
+  final String apiUrl = "$baseUrl/profile.php";
 
   try {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -225,7 +225,7 @@ Future<void> fetchAndSaveImage() async {
     return; // Exit if no mobile number
   }
 
-  const String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
+  final String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
 
   try {
     final response = await http.post(

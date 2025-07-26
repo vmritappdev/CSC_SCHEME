@@ -2,7 +2,7 @@ name: csc
 description: "CSC Gold SCHEME"
 publish_to: 'none'
 
-version: 1.0.2+3  # version: version_number+build_number
+version: 1.0.4+5  # version: version_number+build_number
 
 environment:
   sdk: ^3.7.2

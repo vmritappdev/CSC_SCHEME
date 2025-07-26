@@ -14,8 +14,8 @@ Future<void> main() async {
   await localizationProvider.loadSavedLanguage();
 
   AppConfig(
-    appName: 'CSC',
-    baseUrl: 'https://cscjewellers.com/nellore/scheme/',
+    appName: 'CSC Scheme',
+    baseUrl: 'https://cscjewellers.com/nellore/scheme',
     environment: Environment.prod,
   );
 

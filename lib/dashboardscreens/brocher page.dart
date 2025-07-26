@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 class BrochureScreen extends StatefulWidget {
   const BrochureScreen({super.key});
 
-  static const brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
+  static final brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
 
   @override
   State<BrochureScreen> createState() => _BrochureScreenState();

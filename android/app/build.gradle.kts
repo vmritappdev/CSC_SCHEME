@@ -30,26 +30,45 @@ android {
         versionName = flutter.versionName
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def flavor = variant.flavorName
+                    def buildType = variant.buildType.name
+                    def timestamp = new Date().format("yyyyMMdd_HHmmss")
+
+            // Customize the APK name
+            outputFileName = "CSC_Schem_kt_${flavor}_${buildType}_${timestamp}.apk"
+        }
+    }
+
     flavorDimensions "env"
+
     productFlavors {
         dev {
             dimension "env"
             applicationIdSuffix ".dev"
-            versionNameSuffix "-dev"
+            versionName "1.0.4-dev"
+            versionCode 5
         }
         prod {
             dimension "env"
+            versionName "1.0.4"
+            versionCode 4
         }
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        debug {
+            // Debug-specific options
+            applicationIdSuffix ".debug"
         }
-        debug{
 
+        release {
+            // Use real signingConfig in production!
+            signingConfig signingConfigs.debug
+                    minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile ('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

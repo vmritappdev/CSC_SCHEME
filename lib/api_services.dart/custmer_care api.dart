@@ -24,7 +24,7 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> submitForm(String name, String mobileNo, String description) async {
-    const url = "$baseUrl/enquiry.php";
+    final url = "$baseUrl/enquiry.php";
     final data = {
       'name': name,
       'mobile_no': mobileNo,
