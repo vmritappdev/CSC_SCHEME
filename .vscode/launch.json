@@ -2,6 +2,25 @@
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "CSC_SCHEME (main_dev.dart - debug)",
+//       "request": "launch",
+//       "type": "dart",
+//       "flutterMode": "debug"
+//     },
+//     {
+//       "name": "CSC_SCHEME (main_prod.dart - release)",
+//       "request": "launch",
+//       "type": "dart",
+//       "flutterMode": "release"
+//     }
+//   ]
+// }
+
+
     "version": "0.2.0",
     "configurations": [
         
@@ -11,7 +30,7 @@
             "type": "dart"
         },
         {
-            "name": "CSC_SCHEME (debug mode)",
+            "name": "CSC_SCHEME_dev_debug",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
@@ -23,7 +42,7 @@
             "flutterMode": "profile"
         },
         {
-            "name": "CSC_SCHEME (release mode)",
+            "name": "CSC_SCHEME",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

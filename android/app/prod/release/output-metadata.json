@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.scheme",
+  "applicationId": "com.vmrits.csc.scheme",
   "variantName": "prodRelease",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0.0",
+      "versionCode": 5,
+      "versionName": "1.0.4",
       "outputFile": "app-prod-release.apk"
     }
   ],

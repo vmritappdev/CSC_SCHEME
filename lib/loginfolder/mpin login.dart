@@ -209,9 +209,6 @@ Future<bool> authenticate() async {
   }
 }
 
-
-
-
 Future<void> _authenticateUser() async {
   bool hasInternet = await checkInternet();
   if (!hasInternet) {

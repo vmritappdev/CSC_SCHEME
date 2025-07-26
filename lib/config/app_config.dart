@@ -5,7 +5,7 @@ class AppConfig {
   final String baseUrl;
   final Environment environment;
 
-  static late AppConfig instance;
+  static late final AppConfig _instance;
 
   AppConfig._internal({
     required this.appName,
@@ -18,11 +18,14 @@ class AppConfig {
     required String baseUrl,
     required Environment environment,
   }) {
-    instance = AppConfig._internal(
+    _instance = AppConfig._internal(
       appName: appName,
       baseUrl: baseUrl,
       environment: environment,
     );
-    return instance;
+    return _instance;
   }
+
+  static AppConfig get instance => _instance;
 }
+

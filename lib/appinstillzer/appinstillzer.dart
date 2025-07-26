@@ -1,7 +1,8 @@
 import 'package:csc/app.dart';
-import 'package:csc/localization/localizationpro.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:csc/localization/localizationpro.dart';
+
 
 class AppInitializer extends StatefulWidget {
   const AppInitializer({super.key});
