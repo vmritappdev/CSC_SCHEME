@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class BrochureScreen extends StatefulWidget {
   const BrochureScreen({super.key});
 
-  static const brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
+  static final brochureUrl = '$baseUrl/CSC_SCHEME_BROUCHER.pdf';
 
   @override
   State<BrochureScreen> createState() => _BrochureScreenState();
@@ -106,7 +106,7 @@ class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
             const SizedBox(height: 20),
              Text(
              localization.translate('Gold Saving Scheme'),
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF0C021D),
@@ -115,10 +115,10 @@ class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
             const SizedBox(height: 10),
              Text(
               localization.translate('Save gold every month and get exclusive benefits!'),
-              style: TextStyle(fontSize: 16, color: Colors.black87),
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
             ),
 
-            SizedBox(height: 50,),
+            const SizedBox(height: 50,),
             Center(
 
 
@@ -132,7 +132,7 @@ class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
                     : const Icon(Icons.download, color: Colors.white),
                 label:  Text(
                  localization.translate('Download Brochure'),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 onPressed: isDownloading ? null : () => _downloadBrochure(context),
                 style: ElevatedButton.styleFrom(

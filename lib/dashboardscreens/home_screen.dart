@@ -244,7 +244,7 @@ Future<String?> getMobileNumber() async {
 bool _popupShown = false; // To track if popup is already shown
 
 void _startPolling() {
-  if (!_isPolling) return; // ✅ Stop if polling is off
+  if (!_isPolling) return; // Stop if polling is off
 
   Future.delayed(const Duration(seconds: 1), () async {
     if (_isPolling) {

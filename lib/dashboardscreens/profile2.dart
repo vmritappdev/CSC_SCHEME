@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen2 extends StatefulWidget {
-  const ProfileScreen2({Key? key}) : super(key: key);
+  const ProfileScreen2({super.key});
 
   @override
   State<ProfileScreen2> createState() => _ProfileScreen2State();
@@ -102,10 +102,10 @@ Future<void> _pickImage() async {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text("Choose Option"),
+        title: const Text("Choose Option"),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(1), child: Text("Gallery")),
-          TextButton(onPressed: () => Navigator.of(context).pop(2), child: Text("Camera")),
+          TextButton(onPressed: () => Navigator.of(context).pop(1), child: const Text("Gallery")),
+          TextButton(onPressed: () => Navigator.of(context).pop(2), child: const Text("Camera")),
         ],
       );
     },
@@ -125,7 +125,7 @@ Future<void> _pickImage() async {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
+      builder: (_) => const Center(child: CircularProgressIndicator(color: Color.fromRGBO(2, 6, 67, 1),)),
     );
 
     try {
@@ -172,7 +172,7 @@ Future<void> updateProfileDetails(String mobileNo, File? profileImage) async {
     return;
   }
 
-  const String apiUrl = "$baseUrl/profile.php";
+  final String apiUrl = "$baseUrl/profile.php";
 
   try {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -226,7 +226,7 @@ Future<void> fetchAndSaveImage() async {
     return; // Exit if no mobile number
   }
 
-  const String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
+  final String apiUrl = "$baseUrl/get_profile_image.php"; // Update API URL if needed
 
   try {
     final response = await http.post(
@@ -289,7 +289,7 @@ Future<void> fetchAndSaveImage() async {
         onTap: () {
           Navigator.pop(context);
         },
-        child: Icon(
+        child: const Icon(
           Icons.arrow_back,
           size: 28,
           color: Colors.white,
@@ -305,7 +305,7 @@ Future<void> fetchAndSaveImage() async {
           // Avatar with camera icon
           Stack(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.white,
                 child: Text(
@@ -343,8 +343,8 @@ Future<void> fetchAndSaveImage() async {
               Row(
                 children: [
                   Text(
-                    '$firstName',
-                    style: TextStyle(
+                    firstName,
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -352,8 +352,8 @@ Future<void> fetchAndSaveImage() async {
                   ),
 
                     Text(
-                    '$lastName',
-                    style: TextStyle(
+                    lastName,
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -363,8 +363,8 @@ Future<void> fetchAndSaveImage() async {
               ),
               const SizedBox(height: 4),
               Text(
-                '$phoneNumber',
-                style: TextStyle(
+                phoneNumber,
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.white,
                 ),
@@ -383,8 +383,8 @@ Future<void> fetchAndSaveImage() async {
             // List Items
             _buildTile(Icons.person, 'Change Profile'),
         
-            Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+            const Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
               child: Divider(),
             ),
         
@@ -393,8 +393,8 @@ Future<void> fetchAndSaveImage() async {
             
             _buildTile(Icons.history, 'Change Mpin'),
         
-                      Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+                      const Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
               child: Divider(),
             ),
         
@@ -404,8 +404,8 @@ Future<void> fetchAndSaveImage() async {
             
             _buildTile(Icons.help_outline, 'Help & Support'),
         
-                      Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16),
+                      const Padding(
+              padding: EdgeInsets.only(left: 16, right: 16),
               child: Divider(),
             ),
         
@@ -413,7 +413,7 @@ Future<void> fetchAndSaveImage() async {
         
            // const Spacer(),
         
-           SizedBox(height: 190,),
+           const SizedBox(height: 190,),
         
             // Bottom Logout and Terms
         InkWell(
@@ -425,19 +425,19 @@ Future<void> fetchAndSaveImage() async {
             // await prefs.clear();
             // Navigator.pushReplacement(...);
           },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            children: const [
+            children: [
               Icon(Icons.power_settings_new, size: 20, color: Colors.red),
               SizedBox(width: 8),
               Text("Logout", style: TextStyle(fontSize: 16, color: Colors.red)),
             ],
           ),
-          const Text(
+          Text(
             "Terms & Policies",
             textAlign: TextAlign.right,
             style: TextStyle(fontSize: 12, color: Colors.teal),
@@ -459,13 +459,13 @@ Future<void> fetchAndSaveImage() async {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PaymentCard(),
+              builder: (context) => const PaymentCard(),
             ) 
           ); // Redirect or logout functionality
         },
         label: Text(
           localization.translate("My Scheme"),
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
        // icon: Icon(Icons.logout, color: Colors.white),
         backgroundColor: Colors.red,
@@ -481,7 +481,7 @@ Future<void> fetchAndSaveImage() async {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.home, color: Colors.white),
+                icon: const Icon(Icons.home, color: Colors.white),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -491,7 +491,7 @@ Future<void> fetchAndSaveImage() async {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FAQScreen()),
+                    MaterialPageRoute(builder: (context) => const FAQScreen()),
                   );
                 },
               ),
@@ -508,17 +508,17 @@ Future<void> fetchAndSaveImage() async {
       if (title == 'Change Profile') {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => EditProfileScreen()),
+          MaterialPageRoute(builder: (context) => const EditProfileScreen()),
         );
       } else if (title == 'Change Mpin') {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => EditMPINScreen()),
+          MaterialPageRoute(builder: (context) => const EditMPINScreen()),
         );
       } else if (title == 'Help & Support') {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FAQScreen()),
+          MaterialPageRoute(builder: (context) => const FAQScreen()),
         );
       }
     },
@@ -533,11 +533,11 @@ Future<void> fetchAndSaveImage() async {
               const SizedBox(width: 16),
               Text(
                 title,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),
-          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey), // Arrow icon
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey), // Arrow icon
         ],
       ),
     ),

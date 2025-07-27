@@ -555,10 +555,10 @@ double screenWidth = MediaQuery.of(context).size.width;
 ),
 if (_showImageError)
    Padding(
-    padding: EdgeInsets.only(top: 5),
+    padding: const EdgeInsets.only(top: 5),
     child: Text(
     localization.translate("Please fill the image") ,
-      style: TextStyle(color: Colors.red, fontSize: 13),
+      style: const TextStyle(color: Colors.red, fontSize: 13),
     ),
   ),
 

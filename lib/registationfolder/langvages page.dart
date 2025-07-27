@@ -25,7 +25,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
       "native": "English",
       "english": "English",
       "code": "en",
-      "color": [Color(0xFF2C3E50), Color(0xFF3498DB)]
+      "color": [const Color(0xFF2C3E50), const Color(0xFF3498DB)]
     },
 
 
@@ -34,20 +34,20 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
       "native": "Telugu",
       "english": "తెలుగు",
       "code": "te",
-      "color": [Color(0xFF1A4E8B), Color(0xFF2C7D91)]
+      "color": [const Color(0xFF1A4E8B), const Color(0xFF2C7D91)]
     },
 
      {
       "native": "Hindi",
       "english": "हिन्दी",
       "code": "hi",
-      "color": [Color(0xFFE67E22), Color(0xFFD35400)]
+      "color": [const Color(0xFFE67E22), const Color(0xFFD35400)]
     },
     {
       "native": "Tamil",
       "english": "தமிழ்",
       "code": "ta",
-      "color": [Color(0xFF27AE60), Color(0xFF229954)]
+      "color": [const Color(0xFF27AE60), const Color(0xFF229954)]
     },
    
   ];
@@ -196,9 +196,9 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
@@ -210,7 +210,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                     final isSelected = selectedLanguageCode == lang["code"];
                     
                     return AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
@@ -219,7 +219,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                             color: Colors.black26,
                             blurRadius: 10,
@@ -242,7 +242,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                             children: [
                               Positioned.fill(
                                 child: Padding(
-                                  padding: EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(16),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -254,7 +254,7 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       Text(
                                         lang["english"],
                                         style: GoogleFonts.poppins(
@@ -271,8 +271,8 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
                                   top: 12,
                                   right: 12,
                                   child: Container(
-                                    padding: EdgeInsets.all(6),
-                                    decoration: BoxDecoration(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: const BoxDecoration(
                                     //  color: Colors.white,
                                       shape: BoxShape.circle,
                                     ),
@@ -289,8 +289,8 @@ class _LanguageSelectionScreen2State extends State<LanguageSelectionScreen2>   w
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [AppColors.blue, AppColors.blue],
                   begin: Alignment.centerLeft,

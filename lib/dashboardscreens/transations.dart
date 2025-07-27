@@ -322,7 +322,7 @@ Future<void> _fetchPayDetails(String id) async {
                 controller: _refreshController,
           onRefresh: _onRefresh,
       
-            header: WaterDropHeader(
+            header: const WaterDropHeader(
             complete: Row(
             mainAxisAlignment: MainAxisAlignment.center,
               children: [

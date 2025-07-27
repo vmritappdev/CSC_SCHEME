@@ -204,6 +204,8 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
   }
 
   String phpUrl = "$baseUrl/mpin_verify.php";
+  print("Request URL: ${phpUrl}");
+
   try {
     final response = await http.post(
       Uri.parse(phpUrl),

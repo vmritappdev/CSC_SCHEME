@@ -1,8 +1,8 @@
 name: csc
-description: "CSC SCHEME"
+description: "CSC Gold SCHEME"
 publish_to: 'none'
 
-version: 1.0.0+1  # version: version_number+build_number
+version: 1.0.4+5  # version: version_number+build_number
 
 environment:
   sdk: ^3.7.2
@@ -19,7 +19,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   image_picker: ^0.8.5+3
   local_auth: ^2.3.0
-  intl: ^0.19.0  # 🔧 Downgraded for easy_localization compatibility
+  intl: ^0.20.0  # Downgraded for easy_localization compatibility
   lottie: ^2.0.0
   shared_preferences: ^2.0.0
   http: ^1.2.2

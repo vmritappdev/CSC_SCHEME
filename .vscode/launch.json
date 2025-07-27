@@ -1,0 +1,72 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CSC_SCHEME (dev - debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_dev.dart",
+      "args": ["--flavor", "dev"],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "CSC_SCHEME (prod - debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "prod"],
+      "flutterMode": "debug"
+    },
+    {
+      "name": "CSC_SCHEME (prod - release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "prod"],
+      "flutterMode": "release"
+    },
+    {
+      "name": "CSC_SCHEME (prod - profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main_prod.dart",
+      "args": ["--flavor", "prod"],
+      "flutterMode": "profile"
+    }
+  ]
+}
+
+
+//Working env
+    // "version": "0.2.0",
+    // "configurations": [
+        
+    //     {
+    //         "name": "CSC_SCHEME",
+    //         "request": "launch",
+    //         "type": "dart"
+    //     },
+    //     {
+    //         "name": "CSC_SCHEME_dev_debug",
+    //         "request": "launch",
+    //         "type": "dart",
+    //         "flutterMode": "debug"
+    //     },
+    //     {
+    //         "name": "CSC_SCHEME (profile mode)",
+    //         "request": "launch",
+    //         "type": "dart",
+    //         "flutterMode": "profile"
+    //     },
+    //     {
+    //         "name": "CSC_SCHEME",
+    //         "request": "launch",
+    //         "type": "dart",
+    //         "flutterMode": "release"
+    //     }
+    // ]
+// }

@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.vmrits.csc.scheme",
+  "variantName": "prodRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 4,
+      "versionName": "1.0.4",
+      "outputFile": "CSC_Scheme_prod_release_20250727_112056.apk"
+    }
+  ],
+  "elementType": "File"
+}
