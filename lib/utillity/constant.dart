@@ -14,7 +14,10 @@ import 'package:csc/config/app_config.dart';
  //String baseUrl = config.baseUrl;
 
 
-String baseUrl = AppConfig.instance.baseUrl;
+// String baseUrl = AppConfig.instance.baseUrl;
+
+String get baseUrl => AppConfig.instance.baseUrl;
+
 
 
 

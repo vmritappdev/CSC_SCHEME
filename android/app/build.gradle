@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace =  "com.vmrits.csc.scheme"                                                            //"com.vmrits.csc.scheme"
+    namespace = "com.vmrits.csc.scheme"
     compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
@@ -63,13 +63,12 @@ android {
             // Debug-specific options
             applicationIdSuffix ".debug"
         }
-
         release {
-            // Use real signingConfig in production!
-            signingConfig signingConfigs.debug // TEMP: for testing only
+            signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
 }

@@ -5,18 +5,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+
 android {
     namespace = "com.vmrits.csc.scheme"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
@@ -62,13 +63,12 @@ android {
             // Debug-specific options
             applicationIdSuffix ".debug"
         }
-
         release {
-            // Use real signingConfig in production!
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
                     minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile ('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
         }
     }
 }
