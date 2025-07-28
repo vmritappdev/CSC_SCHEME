@@ -640,7 +640,7 @@ void showStylishSuccessSheet(BuildContext context) {
                     gradient: LinearGradient(
                         colors: [
                           AppColors.blue,
-                          Color.fromRGBO(78, 67, 138, 1),
+                           AppColors.blue,
                         ],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
@@ -649,6 +649,7 @@ void showStylishSuccessSheet(BuildContext context) {
                     child: ElevatedButton(
                       onPressed: checkOtp,
                       style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                         backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                       ),

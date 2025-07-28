@@ -1026,7 +1026,7 @@ Widget genderDropdown(BuildContext context) {
   }
 
   return SizedBox(
-    height: 50,
+    //height: 50,
     child: DropdownButtonFormField<String>(
       value: selectedGender, // Step 3: Use only valid value
       onChanged: (String? newValue) async {

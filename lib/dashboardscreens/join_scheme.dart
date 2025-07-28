@@ -2247,11 +2247,11 @@ Widget buildGenderDropdown() {
     (value) async {
       final prefs = await SharedPreferences.getInstance();
       setState(() {
-      selectedGender = value;
+        selectedGender = value;
       });
       await prefs.setString('gender', selectedGender ?? '');
-    }
-    
+    },
+
   );
   
 // ✅ specific message

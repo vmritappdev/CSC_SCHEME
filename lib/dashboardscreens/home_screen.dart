@@ -5,6 +5,7 @@ import 'dart:convert';
 
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -348,6 +349,10 @@ Future<void> _fetchVerificationResponse() async {
 }
     
  
+Future<String?> _getSavedImageUrl() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('saved_image_url');
+}
 
 
 
@@ -975,31 +980,41 @@ localization.translate('CSC App'),
            // SizedBox(height: 10),
                    
             
-                   
-                  Center(
-             child: (verificationResponse?.process == "pending" ||
-            verificationResponse?.process == "incomplete")
-                 ? Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            decoration: BoxDecoration(
-              color: verificationResponse?.process == "pending"
-                  ? Colors.orange.shade50
-                  : Colors.red.shade50,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: verificationResponse?.process == "pending"
-                    ? Colors.orange
-                    : Colors.red,
-                width: 1,
+              Center(
+  child: (verificationResponse?.process == "pending" ||
+          verificationResponse?.process == "incomplete")
+      ? Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            color:  Colors.white, // Light greyish-blue background
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(0, 8),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Text Message
-                Expanded(
-                  child: Text(
+            ],
+          ),
+          child: Row(
+            children: [
+              // Pause Icon
+              Container(
+                margin: const EdgeInsets.only(right: 12),
+                child: Icon(
+                  Icons.pause_circle_filled,
+                  color: Colors.orange,
+                  size: 20,
+                ),
+              ),
+
+              // Texts (Title & Subtitle)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Text(
                     verificationResponse?.process == "pending"
                         ? "Transaction is pending. Please complete it to proceed."
                         : localization.translate(
@@ -1007,51 +1022,57 @@ localization.translate('CSC App'),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.030,
+                      fontSize: MediaQuery.of(context).size.width * 0.027,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
                     ),
                   ),
+                  ],
                 ),
-           
-                //const SizedBox(width: 10),
-           
-                // Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8), // Small button
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Scanner(activescheme: Activescheme(), rejectId: ''),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    localization.translate('continue'),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: MediaQuery.of(context).size.width * 0.03,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-                   )
-                 : const SizedBox.shrink(),
-           ),
-           
-               
-                   
+              ),
+
+              // "Refresh Now" Button
+             ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color(0xFF00C853), // Green button
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 6, // 🔽 vertical padding తగ్గించాం
+      ),
+      minimumSize: Size(0, 0), // ✅ prevent default height
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap, // ✅ reduce touch area padding
+    ),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Scanner(
+            activescheme: Activescheme(),
+            rejectId: '',
+          ),
+        ),
+      );
+    },
+    child: Text(
+      "Continue", // Typo fixed
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: MediaQuery.of(context).size.width * 0.030,
+      ),
+    ),
+  ),
+
+
+            ],
+          ),
+        )
+      : const SizedBox.shrink(),
+)
+,
            
                    
               Row(
@@ -1065,49 +1086,26 @@ localization.translate('CSC App'),
                   horizontal: MediaQuery.of(context).size.width * 0.07, // Dynamic horizontal padding
                 ),
                 child: Text(
-                  localization.translate("Welcome Back"),
+                  localization.translate("Welcome,"),
                   style: GoogleFonts.lato(
                     color:AppColors.blue,
-                    fontSize: MediaQuery.of(context).size.width * 0.045, // Dynamic font size
+                    fontSize: MediaQuery.of(context).size.width * 0.038, // Dynamic font size
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
                    ),
-                   
-                   Padding(
-            padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
-            ),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => ProfileScreen(schemeID: '')),
-                );
-              },
-              child: Image.asset(
-                'assets/images/person1.png',
-                color: AppColors.blue,
-                height: MediaQuery.of(context).size.height * 0.06, // Dynamic height
-              ),
-            ),
-                   ),
-            ],
-                   ),
-                   
-                   
-                 Container(
-            padding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.07, // Dynamic left padding
-            ),
-            alignment: Alignment.bottomLeft, 
+
+                     Container(
+           
+          //  alignment: Alignment.bottomLeft, 
+          padding: EdgeInsets.only(left: 60),
             child: Text(
               '$firstName $lastName',
               style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.04, // Dynamic font size
-              color:  AppColors.blue,fontWeight: FontWeight.bold
+              color:  Colors.black,fontWeight: FontWeight.bold
                    ),
                   textAlign: TextAlign.start, // Left align for natural reading flow
             ),
@@ -1115,11 +1113,55 @@ localization.translate('CSC App'),
                    
                    
                    
+                   
+                   Padding(
+            padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.03, // Dynamic padding
+            ),
+            child: InkWell(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileScreen(schemeID: ''),
+      ),
+    );
+  },
+  child: FutureBuilder<String?>(
+    future: _getSavedImageUrl(),
+    builder: (context, snapshot) {
+      String? imageUrl = snapshot.data;
+
+      return CircleAvatar(
+        radius: MediaQuery.of(context).size.width * 0.06,
+        backgroundColor: AppColors.blue,
+        backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+            ? CachedNetworkImageProvider(imageUrl)
+            : null,
+        child: (imageUrl == null || imageUrl.isEmpty)
+            ? Icon(
+                Icons.person,
+                color: Colors.white,
+                size: MediaQuery.of(context).size.width * 0.06,
+              )
+            : null,
+      );
+    },
+  ),
+),
+
+
+                   ),
+            ],
+                   ),
+                   
+                   
+               
                // SizedBox(height: 20,),
                 
             Expanded(
             child: LayoutBuilder(
-                   builder: (context, constraints) {
+              builder: (context, constraints) {
             int crossAxisCount = getCrossAxisCount(constraints.maxWidth);
             double spacing = getSpacing(constraints.maxWidth);
                    
@@ -1240,7 +1282,7 @@ localization.translate('CSC App'),
 
 
            
-
+SizedBox(height: 40,),
                    
                    
               ],

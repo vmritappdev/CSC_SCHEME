@@ -70,7 +70,7 @@ class _CustomerCareState extends State<CustomerCare>   with NetworkMixin {
 
 
   Future<void> _openGoogleMaps() async {
-  final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=CSC+Jewellerys+Nellore';
+  final String googleMapsUrl = 'https://maps.app.goo.gl/vymNrAjr2a6ZtFGR8?g_st=aw';
   final Uri googleMapsUri = Uri.parse(googleMapsUrl);
 
   if (await canLaunchUrl(googleMapsUri)) {
