@@ -121,8 +121,8 @@ void dispose() {
             SizedBox(height: screenHeight * 0.1),
               Center(
                 child: Image.asset(
-                 'assets/images/mpin9.png',
-                  // 'assets/images/pin.png',
+                // 'assets/images/mpin9.png',
+                   'assets/images/pin.png',
                   height: screenHeight * 0.3,
                  // width: 20,
                 ),

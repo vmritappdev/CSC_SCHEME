@@ -275,15 +275,15 @@ double screenHeight = MediaQuery.of(context).size.height;
               children: [
           
           
-                Image.asset('assets/images/otp.4.jpg'),
+               // Image.asset('assets/images/otp.4.jpg'),
 
                 
-/*
+
                  Image.asset(
   'assets/images/otp7.png',
 
 ),
-       */        
+             
           
                 SizedBox(height: 20,),
 

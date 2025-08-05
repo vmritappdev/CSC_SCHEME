@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.vmrits.csc.scheme",
+  "applicationId": "com.csc.goldscheme",
   "variantName": "prodRelease",
   "elements": [
     {

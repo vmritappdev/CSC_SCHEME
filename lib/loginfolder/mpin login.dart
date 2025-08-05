@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/dashboardscreens/notification.dart';
 import 'package:csc/localization/localizationpro.dart';
+import 'package:csc/localization/provider.dart';
 
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
@@ -53,6 +55,29 @@ String lastName = '';
 
   final List<String> _enteredMpin = [];
 final String correctMpin = "1234"; // Example correct MPIN
+
+
+
+Future<void> _goToNextScreenAfterLogin() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? target = prefs.getString('postLoginRedirect');
+
+  if (target == 'notification') {
+    await prefs.remove('postLoginRedirect');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => NotificationScreen()),
+    );
+  } else {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => HomeScreen(activescheme: Activescheme())),
+    );
+  }
+}
+
+
+
 
 
  Future<void> _fetchUserDetails() async {
@@ -164,10 +189,7 @@ void _validatePin() async {
     });
 
     Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
-      );
+      _goToNextScreenAfterLogin();
     });
 
   } else {
@@ -243,10 +265,7 @@ Future<void> _authenticateUser() async {
 }
 
   void _goToHomeScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
-    );
+    _goToNextScreenAfterLogin();
   }
 
 
@@ -353,9 +372,13 @@ Future<bool> checkInternet() async {
 
 @override
 Widget build(BuildContext context) {
+  
+  // After login is successful
+
+
   double screenWidth = MediaQuery.of(context).size.width;
   double screenHeight = MediaQuery.of(context).size.height;
-    final localization = Provider.of<LocalizationProvider>(context,listen: false);
+  final localization = Provider.of<LocalizationProvider>(context,listen: false);
   double fontSize = screenWidth * 0.045;
   double iconSize = screenWidth * 0.12;
   double buttonSize = screenWidth * 0.18;
@@ -452,7 +475,7 @@ localization.translate('CSC App'),
     ),
     ),
     
-      
+     
       SizedBox(height: screenHeight * 0.01),
       Text(
       localization.translate('Enter your 4-digit MPIN'),

@@ -612,7 +612,7 @@ return prefs.getString('mobile_number');
       _phoneController.text = prefs.getString('phoneNumber') ?? '';
       _emailController.text = prefs.getString('email') ?? '';
 
-      selectedGender = prefs.getString('gender');
+     // selectedGender = prefs.getString('gender');
 
 
       dobController.clear();                      
@@ -635,6 +635,7 @@ return prefs.getString('mobile_number');
      
 
        selectedAmount = null;
+       selectedGender = null;
       selectedCountry = null;
       selectedState = null;
       selectedDistrict = null;

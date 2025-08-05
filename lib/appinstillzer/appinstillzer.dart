@@ -2,7 +2,7 @@ import 'package:csc/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:csc/localization/localizationpro.dart';
-
+import 'package:firebase_core/firebase_core.dart'; // 🔺 Add this import
 
 class AppInitializer extends StatefulWidget {
   const AppInitializer({super.key});
@@ -12,23 +12,25 @@ class AppInitializer extends StatefulWidget {
 }
 
 class _AppInitializerState extends State<AppInitializer> {
-bool _isLoading = true;
+  bool _isLoading = true;
 
   @override
   void initState() {
-  super.initState();
+    super.initState();
     _initApp();
   }
 
   Future<void> _initApp() async {
     try {
+      // ✅ Firebase Initialization
+      await Firebase.initializeApp();
+      print("✅ Firebase Initialized");
+
+      // ✅ Localization Load
       final localizationProvider = Provider.of<LocalizationProvider>(context, listen: false);
       await localizationProvider.loadSavedLanguage();
-
-      // Add more initializations here if needed
-      // await Firebase.initializeApp();
     } catch (e) {
-      debugPrint('Initialization error: $e');
+      debugPrint('❌ Initialization error: $e');
     }
 
     if (mounted) {
@@ -40,8 +42,14 @@ bool _isLoading = true;
 
   @override
   Widget build(BuildContext context) {
-   
-      return const MyApp();
+    if (_isLoading) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      );
     }
-  
+
+    return const MyApp();
+  }
 }

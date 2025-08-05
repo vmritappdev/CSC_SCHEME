@@ -58,6 +58,7 @@ Future<void> _checkSavedPhoneNumber() async {
   print("✅ Mobile Number Found: $savedPhoneNumber");
 
   // Navigate directly to the HomeScreen
+  if (!mounted) return;
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
@@ -87,6 +88,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
     await prefs.reload();  // ✅ Reloads latest data
     String? phoneNumber = prefs.getString('userPhoneNumber');
 
+    if (!mounted) return;
+
     setState(() {
       
      
@@ -112,7 +115,8 @@ Future<void> savePhoneNumber(String mobileNumber) async {
   }
 
 
- 
+
+
 
 
   
@@ -308,6 +312,10 @@ void _verifyMpin() async {
     _showErrorPopup(reason);
   }
 }
+
+
+
+
 
 
 

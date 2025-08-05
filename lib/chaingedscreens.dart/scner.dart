@@ -491,12 +491,22 @@ Future<bool> checkInternet() async {
       width: double.infinity,
       height: 45,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: AppColors.blue),
-        onPressed: _isChecked ? _navigateToPaymentScreen : null,
-        child: Text(
-         localization.translate("I Have Paid"), 
-        style: TextStyle(fontSize: screenWidth * 0.045, color: Colors.white)),
-      ),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: AppColors.blue,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5), // ✅ Radius 5
+    ),
+  ),
+  onPressed: _isChecked ? _navigateToPaymentScreen : null,
+  child: Text(
+    localization.translate("I Have Paid"),
+    style: TextStyle(
+      fontSize: screenWidth * 0.045,
+      color: Colors.white,
+    ),
+  ),
+),
+
     );
   }
 
