@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 import 'dart:convert';
 
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
@@ -201,14 +209,14 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
     Navigator.push(
-    context,
-      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
+      context,
+      MaterialPageRoute(builder: (context) => ErrorScreen()),
     );
     return {'success': false, 'reason': 'NO_INTERNET'};
   }
 
   String phpUrl = "$baseUrl/mpin_verify.php";
-  print("Request URL: ${phpUrl}");
+  print("Request URL: $phpUrl");
 
   try {
     final response = await http.post(
@@ -222,7 +230,6 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       bool success = jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
-     // String reason = jsonResponse['login1'] ?? 'UNKNOWN';
       String reason = jsonResponse['login1']?.toString() ?? 'UNKNOWN';
       return {'success': success, 'reason': reason};
     }
@@ -233,86 +240,90 @@ Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumbe
   }
 }
 
-
 void _verifyMpin() async {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
   String mpin = mpinController.text.trim();
   String mobileNumber = phoneController.text.trim();
-  final localization = Provider.of<LocalizationProvider>(context, listen: false);
 
-  // 👉 Check internet first
+  // Check internet
   bool hasInternet = await checkInternet();
   if (!hasInternet) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
-    );
+    if (!mounted) return;
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ErrorScreen()));
     return;
   }
 
-  // 👉 Validate mobile number
+  // Validate input
   if (mobileNumber.isEmpty || mobileNumber.length != 10) {
+    if (!mounted) return;
     setState(() {
       errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
     });
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          errorMessage = '';
-        });
-      }
-    });
+    _clearErrorAfterDelay();
     return;
   }
 
-  // 👉 Validate MPIN
   if (mpin.isEmpty || mpin.length != 4) {
+    if (!mounted) return;
     setState(() {
       errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
     });
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          errorMessage = '';
-        });
-      }
-    });
+    _clearErrorAfterDelay();
     return;
   }
-  mpinFocusNode.unfocus(); 
- FocusScope.of(context).unfocus(); 
- showLoaderDialog(context);
-  
 
-  // 👉 Submit MPIN (no loader)
-  Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
-  Navigator.pop(context); 
-  bool isValid = result['success'];
-  String reason = result['reason'];
+  // Unfocus keyboard
+  mpinFocusNode.unfocus();
+  FocusScope.of(context).unfocus();
 
-  if (isValid) {
-    // 👉 Go to next screen immediately (no delay, no loader)
-    await savePhoneNumber(mobileNumber);
-    await _fetchUserDetails();
-    await loadPhoneNumber();
-    
- Future.delayed(Duration(milliseconds: 0), () {
+  // ✅ Show loader
+  if (!mounted) return;
+  showLoaderDialog(context);
+
+  try {
+    Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        throw Exception('timeout');
+      },
+    );
+
+    // ✅ Dismiss loader safely
     if (mounted) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+
+    bool isValid = result['success'];
+    String reason = result['reason'];
+
+    if (isValid) {
+      // Save and navigate
+      await savePhoneNumber(mobileNumber);
+      await _fetchUserDetails();
+      await loadPhoneNumber();
+
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(activescheme: Activescheme()),
-        ),
+        MaterialPageRoute(builder: (context) => HomeScreen(activescheme: Activescheme())),
       );
+    } else {
+      if (!mounted) return;
+      _showErrorPopup(reason);
     }
-      });
-  } else {
-  //  Navigator.pop(context);
+  } catch (e) {
+    // ✅ Dismiss loader on error too
+    if (mounted) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
 
-    // 👉 Show error if login failed
-    _showErrorPopup(reason);
+    if (e.toString().contains("timeout")) {
+      _showErrorPopup(localization.translate("Server is taking too long. Please try again."));
+    } else {
+      _showErrorPopup(localization.translate("Something went wrong. Please try again."));
+    }
   }
 }
-
 
 
 
@@ -338,66 +349,66 @@ void _showErrorPopup(String reason) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-        ),
-        backgroundColor: Colors.white,
-        contentPadding: EdgeInsets.zero,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 15),
-            const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+    builder: (context) => AlertDialog(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+      ),
+      backgroundColor: Colors.white,
+      contentPadding: EdgeInsets.zero,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 15),
+          const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              errorMsg,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.lato(
+                fontSize: 15,
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: AppColors.blue,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+            ),
+            child: TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                phoneController.clear();
+                mpinController.clear();
+                setState(() {});
+              },
               child: Text(
-                errorMsg,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.lato(
-                  fontSize: 15,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
+                localization.translate("OK"),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.blue,
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  phoneController.clear();
-                  mpinController.clear();
-
-               
-                  setState(() {});
-                 // FocusScope.of(context).requestFocus(phoneFocusNode);
-
-
-                 
-                },
-                child: Text(
-                  localization.translate("OK"),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    },
+          ),
+        ],
+      ),
+    ),
   );
+}
+void _clearErrorAfterDelay() {
+  Future.delayed(const Duration(seconds: 2), () {
+    if (!mounted) return;
+    setState(() {
+      errorMessage = '';
+    });
+  });
 }
 
 
@@ -790,10 +801,783 @@ void showLoaderDialog(BuildContext context) {
   showDialog(
     barrierDismissible: false,
     context: context,
+    useRootNavigator: true, // ✅ This is the main fix
+    builder: (BuildContext context) {
+      return const Center(
+        child: BouncingDotsLoader(
+          color: Color(0xFF002970),
+          size: 12.0,
+        ),
+      );
+    },
+  );
+}
+
+
+  
+}
+
+
+
+
+
+
+/*
+
+import 'dart:convert';
+
+
+import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/loginfolder/loginotp.dart';
+
+import 'package:csc/utillity/check%20internet.dart';
+import 'package:csc/utillity/constant.dart';
+import 'package:csc/dashboardscreens/home_screen.dart';
+import 'package:csc/dashboardscreens/terms_condition.dart';
+import 'package:csc/localization/localizationpro.dart';
+
+import 'package:csc/loginfolder/mpin%20login.dart';
+import 'package:csc/model/activescheme.dart';
+import 'package:csc/registationfolder/create%20account.dart';
+import 'package:csc/utillity/constantcolor.dart';
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+class LoginScreen1 extends StatefulWidget {
+  const LoginScreen1({super.key});
+
+  @override
+  _LoginScreen1State createState() => _LoginScreen1State();
+}
+
+class _LoginScreen1State extends State<LoginScreen1> {
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController mpinController = TextEditingController();
+  String errorMessage = '';
+bool isLoading = false;  // Loading state
+   
+String phoneNumber = ""; // ఫోన్ నంబర్ స్టోర్ చేయడానికి
+bool _rememberMe = false;
+
+
+
+Future<void> _checkSavedPhoneNumber() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.reload(); // Ensure the latest data is fetched
+  String? savedPhoneNumber = prefs.getString('userPhoneNumber');
+  String? savedMpin = prefs.getString('userMpin');
+
+
+  if (savedPhoneNumber != null && savedPhoneNumber.length == 10 && savedMpin == "true") {
+
+    print("✅ Mobile Number Found: $savedPhoneNumber");
+
+    // Navigate directly to the HomeScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  } else {
+    print("❌ No valid Mobile Number found");
+    // Optionally, you can show a message or take other actions here
+  }
+}
+
+
+Future<void> savePhoneNumber(String mobileNumber) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userPhoneNumber', mobileNumber);
+    await prefs.setString('userMpin', 'true');
+    await prefs.reload();  // ✅ Ensures the latest value is stored
+    
+    print("✅ Mobile Number Saved: $mobileNumber");
+  }
+
+  // ✅ Load Mobile Number from SharedPreferences
+  Future<void> loadPhoneNumber() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();  // ✅ Reloads latest data
+    String? phoneNumber = prefs.getString('userPhoneNumber');
+
+    setState(() {
+      
+     // phoneController.text = phoneNumber!;
+    });
+    print("✅ Loaded Mobile Number: $phoneNumber");
+    }
+
+
+
+@override
+  void initState() {
+    super.initState();
+    loadPhoneNumber();
+    
+ WidgetsBinding.instance.addPostFrameCallback((_) {
+    _checkSavedPhoneNumber();
+  });
+  
+    
+    
+  }
+
+ 
+
+
+  
+
+Future<void> _fetchUserDetails() async {
+  String apiUrl = "$baseUrl/get_reg_account_details.php";  
+
+  try {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload(); // ✅ Ensures latest data is fetched
+    String? mobileNumber = prefs.getString('userPhoneNumber');
+
+    if (mobileNumber!.length != 10) {
+      print("❌ Mobile Number not found in SharedPreferences");
+      return;
+    }
+
+    print("📤 Sending Mobile Number to API: $mobileNumber");
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/x-www-form-urlencoded"}, // ✅ Important
+      body: {'mobile_no': mobileNumber},
+    );
+
+    print("📥 API Response Status: ${response.statusCode}");
+    print("📥 API Response Body: ${response.body}");
+
+    final jsonResponse = json.decode(response.body);
+    if (jsonResponse['status'] == 200) {
+      print("✅ User Details: $jsonResponse");
+
+      var userDetails = jsonResponse['account_details'][0]; // ✅ First user data
+      String firstName = userDetails['f_name']?.trim() ?? "";
+      String lastName = userDetails['l_name']?.trim() ?? "";
+      String phoneNumber = userDetails['mobile_no']?.trim() ?? "";
+      String email = userDetails['email_id']?.trim() ?? "";
+
+      // ✅ Save to SharedPreferences
+      await prefs.setString('firstName', firstName);
+      await prefs.setString('lastName', lastName);
+      await prefs.setString('phoneNumber', phoneNumber);
+      await prefs.setString('email', email);
+
+      print("✅ Saved Data: FirstName: $firstName, LastName: $lastName, Mobile: $phoneNumber, Email: $email");
+
+    } else {
+      print("❌ User details fetch failed: ${jsonResponse['message']}");
+    }
+  } catch (e) {
+    print("❌ Error fetching user details: $e");
+  }
+}
+
+
+
+
+
+  // 🔹 MPIN వెరిఫై చేసే Function
+Future<Map<String, dynamic>> _submitMpinToServer(String mpin, String mobileNumber) async {
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    Navigator.push(
+    context,
+      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
+    );
+    return {'success': false, 'reason': 'NO_INTERNET'};
+  }
+
+  String phpUrl = "$baseUrl/mpin_verify.php";
+  try {
+    final response = await http.post(
+      Uri.parse(phpUrl),
+      body: {'mpin': mpin, 'mobile_no': mobileNumber},
+    );
+
+    print("Response Status: ${response.statusCode}");
+    print("Response Body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      bool success = jsonResponse['status'] == 200 && jsonResponse['login'] == 'SUCCESS';
+     // String reason = jsonResponse['login1'] ?? 'UNKNOWN';
+      String reason = jsonResponse['login1']?.toString() ?? 'UNKNOWN';
+      return {'success': success, 'reason': reason};
+    }
+
+    return {'success': false, 'reason': 'SERVER_ERROR'};
+  } catch (e) {
+    return {'success': false, 'reason': 'EXCEPTION'};
+  }
+}
+
+
+void _verifyMpin() async {
+  String mpin = mpinController.text.trim();
+  String mobileNumber = phoneController.text.trim();
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+
+  bool hasInternet = await checkInternet();
+  if (!hasInternet) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) =>  ErrorScreen()),
+    );
+    return;
+  }
+
+  if (mobileNumber.isEmpty || mobileNumber.length != 10) {
+    setState(() {
+      errorMessage = localization.translate('Please enter a valid 10-digit Mobile Number');
+    });
+   Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      setState(() {
+        errorMessage = '';
+      });
+    }
+  });
+  return;
+}
+
+  if (mpin.isEmpty || mpin.length != 4) {
+    setState(() {
+      errorMessage = localization.translate('Please enter a valid 4-digit MPIN');
+    });
+   Future.delayed(const Duration(seconds: 2), () {
+    if (mounted) {
+      setState(() {
+        errorMessage = '';
+      });
+    }
+  });
+  return;
+}
+
+  showLoaderDialog(context);
+
+  // 👉 Submit & get both success and reason
+  Map<String, dynamic> result = await _submitMpinToServer(mpin, mobileNumber);
+  bool isValid = result['success'];
+  String reason = result['reason'];
+
+  Navigator.pop(context);
+
+  if (isValid) {
+    await savePhoneNumber(mobileNumber);
+    await _fetchUserDetails();
+    await Future.delayed(const Duration(milliseconds: 300));
+    await loadPhoneNumber();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(activescheme: Activescheme()),
+      ),
+    );
+  } else {
+    // 👉 Show reason-specific popup
+    _showErrorPopup(reason);
+  }
+}
+
+
+
+// Declare a FocusNode for the mobile number field
+FocusNode phoneFocusNode = FocusNode();
+
+void _showErrorPopup(String reason) {
+  final localization = Provider.of<LocalizationProvider>(context, listen: false);
+  String errorMsg;
+
+  if (reason == 'MPIN') {
+    errorMsg = localization.translate("The MPIN you entered is incorrect. Please try again.");
+  } else if (reason == 'MOBILE_NO') {
+    errorMsg = localization.translate("We couldn’t verify your MPIN or Mobile Number. Please recheck and try again.");
+  } else {
+    errorMsg = localization.translate("");
+  }
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+        ),
+        backgroundColor: Colors.white,
+        contentPadding: EdgeInsets.zero,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 15),
+            const Icon(Icons.error_outline, size: 50, color: Colors.redAccent),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                errorMsg,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(
+                  fontSize: 15,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+              color:AppColors.blue,
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  phoneController.clear();
+                  mpinController.clear();
+                  setState(() {});
+                  FocusScope.of(context).requestFocus(phoneFocusNode);
+                },
+                child: Text(
+                  localization.translate("OK"),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
+
+  // title: Text("Login Failed"),
+        //  content: Text("Invalid MPIN or Mobile Number. Please try again."),
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double paddingAll = screenWidth * 0.05;
+    double fontSizeLarge = screenHeight * 0.035;
+    double fontSizeSmall = screenHeight * 0.02;
+    double inputFieldHeight = screenHeight * 0.06;
+    double buttonHeight = screenHeight * 0.06;
+    final localization = Provider.of<LocalizationProvider>(context,listen: false);
+
+    return WillPopScope(
+  onWillPop: () async {
+ bool shouldExit = await showDialog(
+  
+  barrierDismissible: false,
+  context: context,
+  builder: (context) => Dialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+localization.translate('CSC App'),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+           localization.translate('Are you sure do you want to exit?'),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                 localization.translate('CANCEL'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                 localization.translate('EXIT'),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  ),
+);
+
+  if (shouldExit) {
+  SystemNavigator.pop();
+
+    
+  }
+
+  return false;
+},
+
+      child: SafeArea(
+        child: Scaffold(
+         
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(paddingAll),
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+               //   SizedBox(height: screenHeight * 0.08),
+        
+        
+        /*
+                   Align(
+                        alignment: Alignment.bottomLeft,
+                        child: BackButton(
+                          color:  const Color.fromARGB(255, 12, 2, 42),
+                          onPressed: () {
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(
+                              builder: (context) =>  TermsAndConditionsScreen(),
+                              )
+                            );
+                          },
+                        ),
+                      ),
+        
+                        */        SizedBox(height: screenHeight * 0.04),
+
+          // 🖼️ Asset Image in center
+          Center(
+            child: Image.asset(
+              'assets/images/cs.png', // 👈 replace with your image path
+              height: screenHeight * 0.10, // adjust size
+              fit: BoxFit.contain,
+              color: AppColors.blue,
+            ),
+          ),
+
+        //  SizedBox(height: screenHeight * 0.02),
+
+        
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+
+                      Text('Since 1971',style: GoogleFonts.nunito(color: AppColors.blue),)
+        
+                     /*
+                      Icon(Icons.touch_app, color: Colors.orange, size: screenWidth * 0.08),
+                      SizedBox(width: screenWidth * 0.02),
+                      Text(
+                       localization.translate("CSC"),
+                        style: GoogleFonts.roboto(
+                          fontSize: fontSizeLarge,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 3, 21, 47),
+                        ),
+                      ),
+
+                 */
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * 0.020),
+                  Text(
+                    localization.translate("Welcome back to your CSC account!"),
+                    style: GoogleFonts.nunito(fontSize: fontSizeSmall, color: Colors.black,fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: screenHeight * 0.04),
+
+
+                  
+
+
+
+                    SizedBox(height: screenHeight * 0.015),
+        
+                  _buildTextField(localization.translate("Mobile Number*"), phoneController, Icons.phone, inputFieldHeight, maxLength: 10),
+                  SizedBox(height: screenHeight * 0.010),
+
+
+                 
+
+                  SizedBox(height: screenHeight * 0.015),
+                  _buildTextField(localization.translate("Mpin"), mpinController, Icons.lock, inputFieldHeight, obscureText: true, maxLength: 4, isMPINField: true,),
+
+                   SizedBox(height: screenHeight * 0.020),
+        
+                 Row(
+  children: [
+    // left side checkbox + text will start from left
+    Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,  // force start
+        children: [
+         Checkbox(
+  value: _rememberMe,
+  activeColor: AppColors.blue,
+  side: BorderSide(color: AppColors.blue),
+  onChanged: (bool? newValue) {
+    setState(() {
+      _rememberMe = newValue ?? false;
+    });
+  },
+  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // smaller box
+  visualDensity: VisualDensity(horizontal: -4, vertical: -4), // make it more compact
+),
+
+SizedBox(width: 8,),
+
+          Text(
+            localization.translate("Remember me"),
+            style: GoogleFonts.nunito(color: AppColors.blue, fontSize: 15,fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    ),
+
+    // right side forgot mpin
+    GestureDetector(
+    onTap: () {
+    Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginOtpScreen(),
+          ),
+        );
+      },
+      child: Text(
+        localization.translate("Forgot MPIN?"),
+        style: GoogleFonts.nunito(
+          color: const Color.fromARGB(255, 133, 11, 2),
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ],
+)
+,
+        
+                 // SizedBox(height: screenHeight * 0.010),
+                  if (errorMessage.isNotEmpty)
+                    Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: screenHeight * 0.016)),
+        
+                  SizedBox(height: screenHeight * 0.04),
+                  _buildButton(localization.translate("Login"),AppColors.blue, Colors.white, buttonHeight, _verifyMpin,),
+                  SizedBox(height: screenHeight * 0.015),
+
+                  RichText(
+  text: TextSpan(
+    children: [
+      TextSpan(
+        text: '--------------------------------------', 
+        style: TextStyle(color: Colors.grey),
+      ),
+      TextSpan(
+        text: ' Or ', 
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      TextSpan(
+        text: '-------------------------------------', 
+        style: TextStyle(color: Colors.grey),
+      ),
+    ],
+  ),
+)
+,
+
+  SizedBox(height: screenHeight * 0.015),
+
+                  _buildButton(localization.translate("Login with OTP"), Colors.white, AppColors.blue, buttonHeight, () {
+                    Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginOtpScreen(),
+            ),
+          );
+                
+                      }),
+        
+                  SizedBox(height: screenHeight * 0.03),
+
+                  Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Text(
+      localization.translate("Don't have an account?"),
+      style: GoogleFonts.nunito(color: Colors.black, fontSize: fontSizeSmall),
+    ),
+    SizedBox(width: 8),
+    InkWell(
+      onTap: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CurvedImageScreen3(),
+          ),
+        );
+      },
+      child: Text(
+        localization.translate("Sign up"),
+        style: GoogleFonts.nunito( color: AppColors.blue,
+          fontSize: fontSizeSmall,
+          fontWeight: FontWeight.bold,)
+      ),
+    ),
+  ],
+),
+
+
+
+                 
+                 // SizedBox(height: screenHeight * 0.03),
+                 // const Divider(),
+                  SizedBox(height: screenHeight * 0.015),
+                 // Text(localization.translate("or Login/Register with"), style: TextStyle(color: Colors.black54, fontSize: fontSizeSmall)),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+bool _isObscured = true; // 🔹 MPIN visibility toggle
+
+Widget _buildTextField(
+  String label,
+  TextEditingController controller,
+  IconData icon,
+  double fieldHeight, {
+  bool obscureText = false,
+  int? maxLength,
+  bool isMPINField = false, // ✅ Add this flag
+}) {
+  return SizedBox(
+    height: fieldHeight,
+    child: TextField(
+      inputFormatters: [
+        FilteringTextInputFormatter.deny(RegExp(r"[#&']"))
+      ],
+      controller: controller,
+      obscureText: isMPINField ? _isObscured : obscureText,
+      keyboardType: label == "Mobile Number"
+          ? TextInputType.phone
+          : TextInputType.number,
+      maxLength: maxLength,
+    decoration: InputDecoration(
+ // filled: true,
+  //fillColor: Colors.grey.shade100, // light background color
+  prefixIcon: Icon(icon, color:AppColors.blue,size: 18,),
+  suffixIcon: isMPINField
+      ? IconButton(
+          icon: Icon(_isObscured ? Icons.visibility_off : Icons.visibility,size: 18,color: AppColors.blue,),
+          onPressed: () {
+            setState(() {
+              _isObscured = !_isObscured;
+            });
+          },
+        )
+      : null,
+  labelText: label,labelStyle: GoogleFonts.nunito(fontSize: 14,color: Colors.black),
+  counterText: "",
+  border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(5),
+  ),
+  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: const Color.fromARGB(255, 202, 200, 200))),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: AppColors.blue, width: 2),
+    borderRadius: BorderRadius.circular(5),
+  ),
+  floatingLabelStyle: TextStyle(color: AppColors.blue),
+),
+
+    ),
+  );
+}
+
+
+  Widget _buildButton(String text, Color bgColor, Color textColor, double buttonHeight, VoidCallback onPressed) {
+    return SizedBox(
+      width: double.infinity,
+      height: buttonHeight,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          side: const BorderSide(color:AppColors.blue),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+void showLoaderDialog(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
     builder: (BuildContext context) {
       return Center(
-        child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
-    size: 12.0,)
+        child: SizedBox(
+          width: 100,
+          height: 100,
+          child: Image.asset(
+            'assets/images/gif.gif', // ✅ Replace with your gif path
+            fit: BoxFit.contain,
+          ),
+        ),
       );
     },
   );
@@ -801,3 +1585,5 @@ void showLoaderDialog(BuildContext context) {
 
   
 }
+
+*/

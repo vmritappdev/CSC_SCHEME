@@ -519,33 +519,34 @@ Widget build(BuildContext context) {
             fontWeight: FontWeight.bold,
           ),
           recognizer: TapGestureRecognizer()
-         ..onTap = () async {
-  // Show loading dialog
+       ..onTap = () async {
+  // Show loader
   showDialog(
     context: context,
     barrierDismissible: false,
+    useRootNavigator: true,
     builder: (BuildContext context) {
-      return Center(
+      return const Center(
         child: BouncingDotsLoader(
-          color: Color(0xFF002970), // Paytm blue or gold
-    size: 12.0,
-        )
+          color: Color(0xFF002970),
+          size: 12.0,
+        ),
       );
     },
   );
 
-  // Wait for 1 second (optional: simulate loading or API call)
+  // Optional wait or API
   await Future.delayed(Duration(seconds: 1));
 
-  // Close the loader
-  Navigator.of(context).pop();
+  // Close loader
+  Navigator.of(context, rootNavigator: true).pop();
 
-  // Navigate to TermsAndConditionScreen
+  // Now navigate
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => TermsAndConditionsScreen3()),
   );
-},
+}
 
         ),
       ],

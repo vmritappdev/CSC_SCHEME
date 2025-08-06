@@ -455,6 +455,7 @@ Future<void> closePopupAPI() async {
     fetchRates();
     _fetchVerificationResponse();
     _fetchNotificationCount();
+    
 
     
   _startPolling();

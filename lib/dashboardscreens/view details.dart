@@ -69,6 +69,10 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen>   w
 
    //String mobile_number = "Loading...";
 
+
+
+   
+
   bool isLoading = true;
   String name = "";
   String phone = "";
@@ -105,6 +109,8 @@ class _JewelryTransactionScreenState extends State<JewelryTransactionScreen>   w
 
      
    });
+
+   
  }
 
 
@@ -240,7 +246,7 @@ Future<void> verifyPaymentProcess() async {
         ),
         body: SafeArea(
           child: isLoading
-              ? const Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+              ?  Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
               size: 12.0,))
               : SmartRefresher(
                  controller: _refreshController,

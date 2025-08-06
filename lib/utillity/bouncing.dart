@@ -38,7 +38,9 @@ class _BouncingDotsLoaderState extends State<BouncingDotsLoader>
 
     for (int i = 0; i < _controllers.length; i++) {
       Future.delayed(Duration(milliseconds: i * 150), () {
-        _controllers[i].repeat(reverse: true);
+        if (mounted) {
+          _controllers[i].repeat(reverse: true);
+        }
       });
     }
   }
