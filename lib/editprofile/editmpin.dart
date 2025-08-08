@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constantcolor.dart';
 import 'package:csc/utillity/netmix.dart';
 
@@ -377,14 +378,10 @@ void _onResendOtp() {
     onPressed: _isSendOtpDisabled || isLoading ? null : fetchOtpApi,
     style: ElevatedButton.styleFrom(backgroundColor: AppColors.blue),
     child: isLoading
-        ? SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2,
-            ),
-          )
+        ?  BouncingDotsLoader(
+    color: AppColors.blue, // Paytm blue or gold
+    size: 12.0,
+  )
         : Text(
             localization.translate("Send OTP"),
             style: TextStyle(color: Colors.white),

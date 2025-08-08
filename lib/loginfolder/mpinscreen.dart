@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:csc/chaingedscreens.dart/errorscreen.dart';
+import 'package:csc/utillity/bouncing.dart';
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/dashboardscreens/home_screen.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -211,14 +212,10 @@ buildPinput(
     ),
     onPressed: isSubmitting ? null : () => _submitForm(localization),
     child: isSubmitting
-        ? const SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              color: Colors.white,
-            ),
-          )
+        ?  BouncingDotsLoader(
+    color: AppColors.blue, // Paytm blue or gold
+    size: 12.0,
+  )
         : Text(
             localization.translate('SUBMIT'),
             style: TextStyle(

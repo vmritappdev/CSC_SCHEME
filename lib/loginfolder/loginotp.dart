@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:csc/localization/localizationpro.dart';
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
+import 'package:csc/utillity/bouncing.dart';
 
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/utillity/constantcolor.dart';
@@ -323,14 +324,10 @@ double screenHeight = MediaQuery.of(context).size.height;
       ),
     ),
     child: isLoading
-        ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2.5,
-            ),
-          )
+        ?  BouncingDotsLoader(
+    color: AppColors.blue, // Paytm blue or gold
+    size: 12.0,
+  )
         : Text(
             localization.translate("Get OTP"),
             style: const TextStyle(

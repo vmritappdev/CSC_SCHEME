@@ -2,6 +2,7 @@
 import 'package:csc/loginfolder/loginscreen.dart';
 import 'package:csc/loginfolder/mpin%20login.dart';
 import 'package:csc/loginfolder/mpinscreen.dart';
+import 'package:csc/utillity/bouncing.dart';
 
 import 'package:csc/utillity/constant.dart';
 import 'package:csc/localization/localizationpro.dart';
@@ -355,14 +356,10 @@ bool _isLoading = false; // declare this in your State
     ),
     onPressed: isVerifyButtonDisabled ? null : verifyMobileNumber,
     child: _isLoading
-        ? SizedBox(
-            height: 20,
-            width: 20,
-            child: CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2.5,
-            ),
-          )
+        ? const BouncingDotsLoader(
+    color: AppColors.blue, // Paytm blue or gold
+    size: 12.0,
+  )
         : Text(
             localization.translate("Verify Mobile Number"),
             style: TextStyle(color: Colors.white),

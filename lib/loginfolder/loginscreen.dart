@@ -805,7 +805,7 @@ void showLoaderDialog(BuildContext context) {
     builder: (BuildContext context) {
       return const Center(
         child: BouncingDotsLoader(
-          color: Color(0xFF002970),
+          color:Color.fromRGBO(204, 153, 0, 1.0),
           size: 12.0,
         ),
       );

@@ -126,7 +126,7 @@ class _BrochureScreenState extends State<BrochureScreen> with NetworkMixin {
               child: ElevatedButton.icon(
                 icon: isDownloading
                     ? BouncingDotsLoader(
-    color: Color(0xFF002970), // Paytm blue or gold
+    color: AppColors.blue, // Paytm blue or gold
     size: 12.0,
   )
                     : const Icon(Icons.download, color: Colors.white),

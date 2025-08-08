@@ -528,7 +528,7 @@ Widget build(BuildContext context) {
     builder: (BuildContext context) {
       return const Center(
         child: BouncingDotsLoader(
-          color: Color(0xFF002970),
+          color:Color.fromRGBO(204, 153, 0, 1.0),
           size: 12.0,
         ),
       );
@@ -634,7 +634,7 @@ Widget build(BuildContext context) {
             color: Colors.black.withOpacity(0.7),
               child: Center(
                 child: BouncingDotsLoader(
-    color: Color(0xFF002970), // Paytm blue or gold
+    color:Color.fromRGBO(204, 153, 0, 1.0), // Paytm blue or gold
     size: 12.0,
   ),
               ),

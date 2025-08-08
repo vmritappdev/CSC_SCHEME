@@ -246,7 +246,7 @@ Future<void> verifyPaymentProcess() async {
         ),
         body: SafeArea(
           child: isLoading
-              ?  Center(child: BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+              ?  Center(child: BouncingDotsLoader( color: AppColors.blue, // Paytm blue or gold
               size: 12.0,))
               : SmartRefresher(
                  controller: _refreshController,
@@ -720,7 +720,7 @@ GestureDetector(
               content: Row(
                 children: [
                   BouncingDotsLoader(
-    color: Color(0xFF002970), // Paytm blue or gold
+    color: AppColors.blue, // Paytm blue or gold
     size: 12.0,
   ),
                   const SizedBox(width: 20),

@@ -1,4 +1,5 @@
 import 'package:csc/utillity/bouncing.dart';
+import 'package:csc/utillity/constantcolor.dart';
 
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       backgroundColor: Colors.white,
       body:Center(
   child: BouncingDotsLoader(
-    color: Color(0xFF002970), // Paytm blue or gold
+    color: AppColors.blue, // Paytm blue or gold
     size: 12.0,
   ),
 )

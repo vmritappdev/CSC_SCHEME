@@ -1610,7 +1610,7 @@ DateTime? selectedDate;
               color: Colors.black.withOpacity(0.7),
               child: Center(
   child: BouncingDotsLoader(
-    color: Color(0xFF002970), // Paytm blue or gold
+    color:Color.fromRGBO(204, 153, 0, 1.0), // Paytm blue or gold
     size: 12.0,
   ),
 ),

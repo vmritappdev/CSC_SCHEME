@@ -913,7 +913,7 @@ Future<void> _fetchPayDetails(String id) async {
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             
                      isLoading
-                  ? const BouncingDotsLoader( color: Color(0xFF002970), // Paytm blue or gold
+                  ? const BouncingDotsLoader(  color:Color.fromRGBO(204, 153, 0, 1.0), // Paytm blue or gold
                    size: 12.0,) // show loader
                   : ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(

@@ -4,9 +4,9 @@ class BouncingDotsLoader extends StatefulWidget {
   final Color color;
   final double size;
 
-  const BouncingDotsLoader({
+  const BouncingDotsLoader({                                         
     Key? key,
-    this.color = const Color(0xFF002970), // Paytm Blue
+    this.color = const  Color.fromRGBO(204, 153, 0, 1.0), 
     this.size = 10.0,
   }) : super(key: key);
 

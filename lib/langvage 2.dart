@@ -26,7 +26,7 @@ const Lang10({super.key});
 }
 
 class _Lang10State extends State<Lang10> {
-  final List<Map<String, dynamic>> languages = [
+final List<Map<String, dynamic>> languages = [
     {"native": "Telugu", "english": "\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41", "code": "te", "color": Colors.teal},
     {"native": "English", "english": "\u0C07\u0C02\u0C17\u0C4D\u0C32\u0C40\u0C37\u0C4D", "code": "en", "color": Colors.blue},
    // {"native": "Hindi", "english": "\u0939\u093F\u0928\u094D\u0926\u0940", "code": "hi", "color": Colors.orange},
@@ -100,8 +100,8 @@ class _Lang10State extends State<Lang10> {
               child: GridView.builder(
                 padding: EdgeInsets.all(padding),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: padding,
+                crossAxisCount: 2,
+                crossAxisSpacing: padding,
                   mainAxisSpacing: padding,
                   childAspectRatio: 1,
                 ),
