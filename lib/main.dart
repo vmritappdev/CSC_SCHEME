@@ -1,7 +1,5 @@
 
 
-
-
 import 'package:csc/appinstillzer/appinstillzer.dart';
 import 'package:csc/localization/provider.dart';
 import 'package:flutter/material.dart';

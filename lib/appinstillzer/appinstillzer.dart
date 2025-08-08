@@ -2,7 +2,6 @@ import 'package:csc/app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:csc/localization/localizationpro.dart';
-import 'package:firebase_core/firebase_core.dart'; // 🔺 Add this import
 
 class AppInitializer extends StatefulWidget {
   const AppInitializer({super.key});
@@ -23,7 +22,7 @@ class _AppInitializerState extends State<AppInitializer> {
   Future<void> _initApp() async {
     try {
       // ✅ Firebase Initialization
-      await Firebase.initializeApp();
+    
       print("✅ Firebase Initialized");
 
       // ✅ Localization Load

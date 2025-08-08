@@ -1,0 +1,2 @@
+C:/Users/91955/projects/scheme1/CSC_blue_theme/android/app/.cxx/RelWithDebInfo/2i4m645m/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/91955/projects/scheme1/CSC_blue_theme/android/app/.cxx/RelWithDebInfo/2i4m645m/arm64-v8a/CMakeFiles/rebuild_cache.dir
