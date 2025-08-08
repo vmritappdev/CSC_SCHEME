@@ -15,7 +15,7 @@ class BouncingDotsLoader extends StatefulWidget {
 }
 
 class _BouncingDotsLoaderState extends State<BouncingDotsLoader>
-    with TickerProviderStateMixin {
+  with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
   late List<Animation<double>> _animations;
 
@@ -64,7 +64,7 @@ class _BouncingDotsLoaderState extends State<BouncingDotsLoader>
             animation: _animations[index],
             builder: (context, child) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+               margin: const EdgeInsets.symmetric(horizontal: 4.0),
                 transform: Matrix4.translationValues(
                   0.0,
                   _animations[index].value,

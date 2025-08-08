@@ -294,7 +294,10 @@ void _onResendOtp() {
           child: Column(
             children: [
         
-              Image.asset('assets/images/otp.4.jpg'),
+              Image.asset(
+                //'assets/images/otp.4.jpg'
+                 'assets/images/otp7.png',
+              ),
               
               const SizedBox(height: 10),
               Text(
